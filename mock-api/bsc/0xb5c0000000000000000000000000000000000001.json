@@ -1,0 +1,53 @@
+{
+  "chain": "bsc",
+  "address": "0xB5C0000000000000000000000000000000000001",
+  "label": "BSC sample account",
+  "input": [
+    {
+      "id": "bsc-input-1",
+      "address": "0xB5C1000000000000000000000000000000000001",
+      "time": "2026-07-10T01:08:12Z",
+      "rawAmount": "18600000000000000000",
+      "decimals": 18,
+      "asset": "BNB",
+      "assetAddress": null,
+      "txHash": "0xb5caa00100000000000000000000000000000000000000000000000000000001",
+      "tag": "BSC exchange wallet"
+    },
+    {
+      "id": "bsc-input-2",
+      "address": "0xB5C2000000000000000000000000000000000002",
+      "time": "2026-07-10T01:31:43Z",
+      "rawAmount": "920000000000000000000",
+      "decimals": 18,
+      "asset": "USDT",
+      "assetAddress": "0xB5C5000000000000000000000000000000000005",
+      "txHash": "0xb5caa00200000000000000000000000000000000000000000000000000000002",
+      "tag": "BEP20 stablecoin source"
+    }
+  ],
+  "output": [
+    {
+      "id": "bsc-output-1",
+      "address": "0xB5C3000000000000000000000000000000000003",
+      "time": "2026-07-10T02:04:51Z",
+      "rawAmount": "11200000000000000000",
+      "decimals": 18,
+      "asset": "BNB",
+      "assetAddress": null,
+      "txHash": "0xb5cbb00100000000000000000000000000000000000000000000000000000003",
+      "tag": "DEX router"
+    },
+    {
+      "id": "bsc-output-2",
+      "address": "0xB5C4000000000000000000000000000000000004",
+      "time": "2026-07-10T02:18:09Z",
+      "rawAmount": "640000000000000000000",
+      "decimals": 18,
+      "asset": "USDT",
+      "assetAddress": "0xB5C5000000000000000000000000000000000005",
+      "txHash": "0xb5cbb00200000000000000000000000000000000000000000000000000000004",
+      "tag": "BSC receiver"
+    }
+  ]
+}

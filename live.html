@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>实时交易图谱</title>
+    <meta
+      name="description"
+      content="选择区块链网络，查看最近 10 秒的账户间资金流动"
+    />
+    <link rel="stylesheet" href="./live.css" />
+    <script src="./live-search.js" defer></script>
+  </head>
+  <body class="live-home-body">
+    <header class="site-header">
+      <a class="site-brand" href="./index.html" aria-label="DF Flow Tracker 首页">
+        <span class="site-brand-mark" aria-hidden="true">DF</span>
+        <span>Flow Tracker</span>
+      </a>
+      <nav class="tool-nav" aria-label="分析工具">
+        <a href="./index.html">地址追踪</a>
+        <a href="./live.html" aria-current="page">实时交易</a>
+      </nav>
+    </header>
+
+    <main class="live-home-main">
+      <section class="live-home-copy" aria-labelledby="live-home-title">
+        <p class="section-kicker">链上实时资金流</p>
+        <h1 id="live-home-title">选择币种，进入最近 10 秒</h1>
+        <p class="live-home-lead">
+          图谱每 10 秒请求一次数据，将当前时间窗口内的账户和转账方向动态绘制出来。
+        </p>
+
+        <form class="asset-search" id="live-search-form">
+          <label for="asset-search-input">搜索币种或网络</label>
+          <div class="asset-search-row">
+            <input
+              id="asset-search-input"
+              list="asset-options"
+              autocomplete="off"
+              spellcheck="false"
+              value="ETH"
+              placeholder="例如 ETH、BNB 或 POL"
+            />
+            <button type="submit">进入图谱</button>
+          </div>
+          <datalist id="asset-options">
+            <option value="ETH">Ethereum</option>
+            <option value="BNB">BNB Smart Chain</option>
+            <option value="POL">Polygon PoS</option>
+          </datalist>
+          <p class="form-error" id="live-search-error" aria-live="polite" hidden></p>
+        </form>
+      </section>
+
+      <section class="network-picker" aria-labelledby="network-picker-title">
+        <div class="section-heading">
+          <div>
+            <p class="section-kicker">演示网络</p>
+            <h2 id="network-picker-title">直接选择</h2>
+          </div>
+          <p>三个网络使用相同的轮询和绘图规则。</p>
+        </div>
+
+        <div class="network-grid">
+          <button class="network-option" type="button" data-chain="eth">
+            <span class="network-swatch network-swatch-eth" aria-hidden="true">E</span>
+            <span class="network-option-copy">
+              <strong>Ethereum</strong>
+              <small>ETH · 18 decimals</small>
+            </span>
+            <span class="network-option-action" aria-hidden="true">→</span>
+          </button>
+          <button class="network-option" type="button" data-chain="bsc">
+            <span class="network-swatch network-swatch-bsc" aria-hidden="true">B</span>
+            <span class="network-option-copy">
+              <strong>BNB Smart Chain</strong>
+              <small>BNB · 18 decimals</small>
+            </span>
+            <span class="network-option-action" aria-hidden="true">→</span>
+          </button>
+          <button class="network-option" type="button" data-chain="polygon">
+            <span class="network-swatch network-swatch-polygon" aria-hidden="true">P</span>
+            <span class="network-option-copy">
+              <strong>Polygon PoS</strong>
+              <small>POL · 18 decimals</small>
+            </span>
+            <span class="network-option-action" aria-hidden="true">→</span>
+          </button>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

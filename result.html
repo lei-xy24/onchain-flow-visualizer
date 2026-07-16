@@ -1,0 +1,1243 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>资金流分析结果</title>
+    <meta
+      name="description"
+      content="链上账户资金流入、流出关系分析前端原型"
+    />
+    <style>
+      :root {
+        --background: #f3f6f8;
+        --foreground: #142024;
+        --muted: #647174;
+        --panel: #ffffff;
+        --line: #d8e0e2;
+        --teal: #0f8b8d;
+        --teal-dark: #0b5c61;
+        --amber: #d97706;
+        --blue: #2563eb;
+        --green: #109367;
+        --shadow: 0 18px 55px rgba(20, 32, 36, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        background: var(--background);
+        color: var(--foreground);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        margin: 0;
+        min-height: 100vh;
+      }
+
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      code {
+        background: #edf2f4;
+        border: 1px solid #dce5e7;
+        border-radius: 6px;
+        color: #263538;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.82rem;
+        padding: 0.18rem 0.38rem;
+      }
+
+      .home-shell {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 32px 18px;
+      }
+
+      .home-hero {
+        max-width: 920px;
+        text-align: center;
+        width: 100%;
+      }
+
+      .brand-mark {
+        align-items: center;
+        background: #142024;
+        border-radius: 8px;
+        color: #ffffff;
+        display: inline-flex;
+        font-weight: 800;
+        height: 48px;
+        justify-content: center;
+        margin-bottom: 22px;
+        width: 48px;
+      }
+
+      .eyebrow {
+        color: var(--teal-dark);
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0;
+        margin: 0 0 8px;
+        text-transform: uppercase;
+      }
+
+      .home-hero h1,
+      .result-header h1 {
+        color: #10191c;
+        font-size: clamp(2.3rem, 8vw, 5.4rem);
+        letter-spacing: 0;
+        line-height: 0.96;
+        margin: 0;
+      }
+
+      .hero-copy {
+        color: var(--muted);
+        font-size: 1.08rem;
+        line-height: 1.75;
+        margin: 22px auto 0;
+        max-width: 620px;
+      }
+
+      .search-panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        margin: 34px auto 0;
+        max-width: 780px;
+        padding: 14px;
+        text-align: left;
+      }
+
+      .field-label {
+        color: #405055;
+        display: block;
+        font-size: 0.86rem;
+        font-weight: 700;
+        margin: 2px 0 10px;
+      }
+
+      .search-row {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: 128px minmax(0, 1fr) 104px;
+      }
+
+      .chain-select,
+      .search-row input {
+        background: #f8fafb;
+        border: 1px solid #cfdadd;
+        border-radius: 7px;
+        color: var(--foreground);
+        min-height: 52px;
+        outline: none;
+        padding: 0 14px;
+      }
+
+      .search-row input {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        min-width: 0;
+      }
+
+      .chain-select:focus,
+      .search-row input:focus {
+        border-color: var(--teal);
+        box-shadow: 0 0 0 3px rgba(15, 139, 141, 0.16);
+      }
+
+      .search-row button,
+      .quick-examples button,
+      .account-node,
+      .table-address {
+        cursor: pointer;
+      }
+
+      .search-row button {
+        background: var(--teal);
+        border: 0;
+        border-radius: 7px;
+        color: white;
+        font-weight: 800;
+        min-height: 52px;
+      }
+
+      .search-row button:hover {
+        background: var(--teal-dark);
+      }
+
+      .form-error {
+        color: #b42318;
+        font-size: 0.9rem;
+        margin: 10px 2px 0;
+      }
+
+      .quick-examples {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 20px;
+      }
+
+      .quick-examples button,
+      .header-actions a,
+      .back-link {
+        background: #ffffff;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        color: #233236;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.86rem;
+        padding: 9px 12px;
+      }
+
+      .quick-examples button:hover,
+      .header-actions a:hover,
+      .back-link:hover {
+        border-color: var(--teal);
+        color: var(--teal-dark);
+      }
+
+      .result-shell {
+        margin: 0 auto;
+        max-width: 1480px;
+        padding: 26px;
+      }
+
+      .result-header {
+        align-items: center;
+        display: grid;
+        gap: 18px;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        margin-bottom: 18px;
+      }
+
+      .result-header h1 {
+        font-size: clamp(1.9rem, 4vw, 3.6rem);
+      }
+
+      .back-link {
+        font-family: inherit;
+        font-weight: 700;
+      }
+
+      .header-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: flex-end;
+        max-width: 440px;
+      }
+
+      .summary-strip {
+        display: grid;
+        gap: 1px;
+        grid-template-columns: repeat(4, 1fr);
+        margin-bottom: 18px;
+        overflow: hidden;
+      }
+
+      .summary-strip div {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        min-width: 0;
+        padding: 18px;
+      }
+
+      .summary-strip div:first-child {
+        border-radius: 8px 0 0 8px;
+      }
+
+      .summary-strip div:last-child {
+        border-radius: 0 8px 8px 0;
+      }
+
+      .summary-strip span,
+      .details-panel dt {
+        color: var(--muted);
+        display: block;
+        font-size: 0.78rem;
+        font-weight: 700;
+        margin-bottom: 7px;
+      }
+
+      .summary-strip strong {
+        display: block;
+        font-size: 1.35rem;
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .workspace-grid {
+        align-items: start;
+        display: grid;
+        gap: 18px;
+        grid-template-columns: minmax(0, 1fr) 360px;
+      }
+
+      .graph-panel,
+      .details-panel,
+      .table-section {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: 0 12px 34px rgba(20, 32, 36, 0.07);
+      }
+
+      .graph-panel,
+      .details-panel,
+      .table-section {
+        padding: 20px;
+      }
+
+      .table-section {
+        margin-top: 18px;
+      }
+
+      .panel-heading {
+        align-items: center;
+        display: flex;
+        gap: 18px;
+        justify-content: space-between;
+        margin-bottom: 18px;
+      }
+
+      .panel-heading h2,
+      .details-panel h2,
+      .flow-column h3 {
+        color: #111b1f;
+        letter-spacing: 0;
+        margin: 0;
+      }
+
+      .panel-heading h2,
+      .details-panel h2 {
+        font-size: 1.25rem;
+      }
+
+      .status-pill {
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        border-radius: 999px;
+        color: #9a3412;
+        flex: 0 0 auto;
+        font-size: 0.76rem;
+        font-weight: 800;
+        padding: 7px 10px;
+      }
+
+      .status-pill.ready {
+        background: #ecfdf5;
+        border-color: #bbf7d0;
+        color: #047857;
+      }
+
+      .flow-graph {
+        align-items: center;
+        display: grid;
+        gap: 18px;
+        grid-template-columns:
+          minmax(190px, 1fr) minmax(220px, 0.9fr)
+          minmax(190px, 1fr);
+        min-height: 430px;
+        padding: 10px;
+      }
+
+      .flow-column h3 {
+        color: #4d5c60;
+        font-size: 0.9rem;
+        margin-bottom: 12px;
+      }
+
+      .account-stack {
+        display: grid;
+        gap: 12px;
+      }
+
+      .account-node {
+        background: #f8fbfb;
+        border: 1px solid #dbe5e7;
+        border-radius: 8px;
+        color: var(--foreground);
+        display: grid;
+        gap: 6px;
+        min-height: 100px;
+        padding: 14px;
+        text-align: left;
+        width: 100%;
+      }
+
+      .account-node span {
+        color: var(--muted);
+        font-size: 0.76rem;
+        font-weight: 700;
+        overflow-wrap: anywhere;
+      }
+
+      .account-node strong {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.98rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .account-node small {
+        color: #314044;
+        font-size: 0.85rem;
+      }
+
+      .account-node:hover,
+      .account-node.selected {
+        border-color: var(--teal);
+        box-shadow: 0 0 0 3px rgba(15, 139, 141, 0.13);
+      }
+
+      .flow-column.input .account-node {
+        border-left: 4px solid var(--blue);
+      }
+
+      .flow-column.output .account-node {
+        border-left: 4px solid var(--green);
+      }
+
+      .center-column {
+        align-items: center;
+        display: grid;
+        grid-template-columns: 1fr;
+        justify-items: center;
+        position: relative;
+      }
+
+      .account-node.center {
+        background: #111b1f;
+        border-color: #111b1f;
+        color: #ffffff;
+        max-width: 280px;
+        min-height: 136px;
+        text-align: center;
+        z-index: 1;
+      }
+
+      .account-node.center span,
+      .account-node.center small {
+        color: #cbd5d8;
+      }
+
+      .edge-line {
+        background: linear-gradient(90deg, transparent, #92a4aa, transparent);
+        height: 2px;
+        position: absolute;
+        top: 50%;
+        width: 48%;
+      }
+
+      .edge-line.left {
+        right: 76%;
+      }
+
+      .edge-line.right {
+        left: 76%;
+      }
+
+      .detail-address {
+        background: #f7fafb;
+        border: 1px solid #dbe5e7;
+        border-radius: 8px;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        line-height: 1.5;
+        margin: 14px 0;
+        overflow-wrap: anywhere;
+        padding: 12px;
+      }
+
+      .detail-metrics {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: repeat(3, 1fr);
+        margin: 0 0 18px;
+      }
+
+      .detail-metrics div {
+        background: #f8fafb;
+        border: 1px solid #dfe8ea;
+        border-radius: 8px;
+        min-width: 0;
+        padding: 12px;
+      }
+
+      .detail-metrics dd {
+        font-weight: 800;
+        margin: 0;
+        overflow-wrap: anywhere;
+      }
+
+      .detail-list {
+        display: grid;
+        gap: 10px;
+      }
+
+      .detail-list article {
+        border: 1px solid #dfe8ea;
+        border-radius: 8px;
+        display: grid;
+        gap: 8px;
+        padding: 12px;
+      }
+
+      .detail-list span {
+        color: var(--amber);
+        font-size: 0.78rem;
+        font-weight: 800;
+      }
+
+      .detail-list small,
+      .muted {
+        color: var(--muted);
+      }
+
+      .empty-state {
+        background: #fff7ed;
+        border: 1px solid #fed7aa;
+        border-radius: 8px;
+        color: #7c2d12;
+        margin-top: 18px;
+        padding: 14px;
+      }
+
+      .table-wrap {
+        overflow-x: auto;
+      }
+
+      table {
+        border-collapse: collapse;
+        min-width: 820px;
+        width: 100%;
+      }
+
+      th,
+      td {
+        border-bottom: 1px solid #e4ecee;
+        padding: 13px 10px;
+        text-align: left;
+        white-space: nowrap;
+      }
+
+      th {
+        color: var(--muted);
+        font-size: 0.78rem;
+        text-transform: uppercase;
+      }
+
+      .table-address {
+        background: transparent;
+        border: 0;
+        color: var(--teal-dark);
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-weight: 800;
+        padding: 0;
+      }
+
+      @media (max-width: 1040px) {
+        .result-header,
+        .workspace-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .header-actions {
+          justify-content: flex-start;
+        }
+
+        .summary-strip {
+          grid-template-columns: repeat(2, 1fr);
+        }
+
+        .summary-strip div,
+        .summary-strip div:first-child,
+        .summary-strip div:last-child {
+          border-radius: 8px;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .home-shell,
+        .result-shell {
+          padding: 18px;
+        }
+
+        .search-row,
+        .flow-graph,
+        .summary-strip,
+        .detail-metrics {
+          grid-template-columns: 1fr;
+        }
+
+        .flow-graph {
+          min-height: auto;
+          padding: 0;
+        }
+
+        .edge-line {
+          display: none;
+        }
+
+        .panel-heading {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+
+        .summary-strip strong {
+          font-size: 1.1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script>
+      // Set this to the real endpoint, for example: https://api.example.com/flow
+      const BACKEND_API_URL = "";
+      let flowData = null;
+      let currentRequest = null;
+
+      const chainOptions = [
+        { id: "eth", label: "ETH" },
+        { id: "bsc", label: "BSC" },
+        { id: "polygon", label: "Polygon" },
+      ];
+      const EVM_ADDRESS_PATTERN = /^0x[0-9a-fA-F]{40}$/;
+      const TX_HASH_PATTERN = /^0x[0-9a-fA-F]{64}$/;
+      const RAW_AMOUNT_PATTERN = /^\d+$/;
+      let selectedAddress = "";
+
+      async function loadFlowData(chain, address) {
+        currentRequest = { chain, address };
+        renderDataState(
+          "正在查询资金流数据",
+          `正在向后端查询 ${chain.toUpperCase()} 地址 ${shortAddress(address)}。`,
+        );
+
+        try {
+          const response = await fetch(buildFlowRequestUrl(chain, address), {
+            cache: "no-store",
+            headers: { Accept: "application/json" },
+          });
+          if (!response.ok) {
+            throw new Error("HTTP " + response.status);
+          }
+
+          flowData = validateFlowResponse(
+            await response.json(),
+            chain,
+            address,
+          );
+          renderResult(chain, address);
+        } catch (error) {
+          console.error("Failed to load flow data:", error);
+          const message =
+            location.protocol === "file:"
+              ? "浏览器不允许 file:// 页面发送数据请求。请通过 GitHub Pages 或本地 HTTP 服务打开。"
+              : "后端请求失败，或返回的 JSON 不符合约定格式。";
+          renderDataState("JSON 读取失败", message, true);
+        }
+      }
+
+      function renderDataState(title, message, allowRetry, showHome) {
+        document.getElementById("app").innerHTML =
+          '<main class="home-shell">' +
+          '<section class="home-hero" aria-live="polite">' +
+          '<div class="brand-mark" aria-hidden="true">DF</div>' +
+          '<p class="eyebrow">区块链与数字金融服务安全测试平台</p>' +
+          "<h1>" +
+          escapeHtml(title) +
+          "</h1>" +
+          '<p class="hero-copy">' +
+          escapeHtml(message) +
+          "</p>" +
+          (allowRetry
+            ? '<div class="quick-examples"><button id="retry-data" type="button">重新读取</button></div>'
+            : "") +
+          (showHome
+            ? '<div class="quick-examples"><a class="back-link" href="./index.html">返回搜索</a></div>'
+            : "") +
+          "</section></main>";
+
+        const retryButton = document.getElementById("retry-data");
+        if (retryButton && currentRequest) {
+          retryButton.addEventListener("click", () => {
+            loadFlowData(currentRequest.chain, currentRequest.address);
+          });
+        }
+      }
+
+      function buildFlowRequestUrl(chain, address) {
+        if (BACKEND_API_URL.trim()) {
+          const url = new URL(BACKEND_API_URL, location.href);
+          url.searchParams.set("chain", chain);
+          url.searchParams.set("address", address);
+          return url.toString();
+        }
+
+        return `./mock-api/${encodeURIComponent(chain)}/${encodeURIComponent(address.toLowerCase())}.json`;
+      }
+
+      function validateFlowResponse(value, requestedChain, requestedAddress) {
+        const flow = requireObject(value, "flow response");
+        const responseChain = normalizeChain(
+          requireString(flow.chain, "flow response.chain"),
+        );
+        if (!responseChain || responseChain !== requestedChain) {
+          throw new Error("flow response.chain does not match the request");
+        }
+
+        const responseAddress = requireString(
+          flow.address,
+          "flow response.address",
+        );
+        if (
+          !isEvmAddress(responseAddress) ||
+          responseAddress.toLowerCase() !== requestedAddress.toLowerCase()
+        ) {
+          throw new Error("flow response.address does not match the request");
+        }
+
+        if (flow.label !== undefined) {
+          requireString(flow.label, "flow response.label");
+        }
+        const seenTransferIds = new Set();
+        validateTransfers(flow.input, "flow response.input", seenTransferIds);
+        validateTransfers(flow.output, "flow response.output", seenTransferIds);
+        return value;
+      }
+
+      function validateTransfers(value, path, seenTransferIds) {
+        if (!Array.isArray(value)) {
+          throw new Error(`${path} must be an array`);
+        }
+
+        value.forEach((item, index) => {
+          const itemPath = `${path}[${index}]`;
+          const transfer = requireObject(item, itemPath);
+          const id = requireString(transfer.id, `${itemPath}.id`);
+          if (seenTransferIds.has(id)) {
+            throw new Error(`duplicate transfer id: ${id}`);
+          }
+          seenTransferIds.add(id);
+
+          const address = requireString(
+            transfer.address,
+            `${itemPath}.address`,
+          );
+          if (!isEvmAddress(address)) {
+            throw new Error(`${itemPath}.address is invalid`);
+          }
+
+          const time = requireString(transfer.time, `${itemPath}.time`);
+          if (Number.isNaN(Date.parse(time))) {
+            throw new Error(`${itemPath}.time is invalid`);
+          }
+
+          const rawAmount = requireString(
+            transfer.rawAmount,
+            `${itemPath}.rawAmount`,
+          );
+          if (!RAW_AMOUNT_PATTERN.test(rawAmount)) {
+            throw new Error(`${itemPath}.rawAmount must contain digits only`);
+          }
+
+          if (
+            !Number.isInteger(transfer.decimals) ||
+            transfer.decimals < 0 ||
+            transfer.decimals > 255
+          ) {
+            throw new Error(
+              `${itemPath}.decimals must be an integer from 0 to 255`,
+            );
+          }
+
+          requireString(transfer.asset, `${itemPath}.asset`);
+          if (
+            transfer.assetAddress !== null &&
+            !isEvmAddress(transfer.assetAddress)
+          ) {
+            throw new Error(
+              `${itemPath}.assetAddress must be null or an EVM address`,
+            );
+          }
+
+          const txHash = requireString(transfer.txHash, `${itemPath}.txHash`);
+          if (!TX_HASH_PATTERN.test(txHash)) {
+            throw new Error(`${itemPath}.txHash is invalid`);
+          }
+          if (transfer.tag !== undefined) {
+            requireString(transfer.tag, `${itemPath}.tag`);
+          }
+        });
+      }
+
+      function requireObject(value, path) {
+        if (!value || typeof value !== "object" || Array.isArray(value)) {
+          throw new Error(`${path} must be an object`);
+        }
+        return value;
+      }
+
+      function requireString(value, path) {
+        if (typeof value !== "string" || !value.trim()) {
+          throw new Error(`${path} must be a non-empty string`);
+        }
+        return value;
+      }
+
+      function isEvmAddress(value) {
+        return typeof value === "string" && EVM_ADDRESS_PATTERN.test(value.trim());
+      }
+
+      function getKnownAddresses(chain) {
+        const chainKey = normalizeChain(chain);
+        return chainKey && flowData && flowData.chain === chainKey
+          ? [flowData.address]
+          : [];
+      }
+
+      function getFlowByAddress(chain, address) {
+        const chainKey = normalizeChain(chain);
+        if (!chainKey || !flowData || flowData.chain !== chainKey) return null;
+        return flowData.address.toLowerCase() === address.trim().toLowerCase()
+          ? flowData
+          : null;
+      }
+
+      function normalizeChain(chain) {
+        const normalized = String(chain || "").trim().toLowerCase();
+        return chainOptions.some((item) => item.id === normalized)
+          ? normalized
+          : null;
+      }
+
+      function initializeResultPage() {
+        const params = new URLSearchParams(location.search);
+        const chain = normalizeChain(params.get("chain"));
+        const address = String(params.get("address") || "").trim();
+        if (!chain) {
+          renderDataState(
+            "不支持的链",
+            "请返回首页并选择 ETH、BSC 或 Polygon。",
+            false,
+            true,
+          );
+          return;
+        }
+        if (!isEvmAddress(address)) {
+          renderDataState(
+            "地址格式无效",
+            "EVM 地址必须以 0x 开头，后面包含 40 位十六进制字符。",
+            false,
+            true,
+          );
+          return;
+        }
+
+        loadFlowData(chain, address);
+      }
+
+      function renderResult(chain, address) {
+        const chainKey = normalizeChain(chain);
+        if (!chainKey) {
+          renderDataState(
+            "不支持的链",
+            "请返回首页并选择 ETH、BSC 或 Polygon。",
+            false,
+            true,
+          );
+          return;
+        }
+        if (!isEvmAddress(address)) {
+          renderDataState(
+            "地址格式无效",
+            "EVM 地址必须以 0x 开头，后面包含 40 位十六进制字符。",
+            false,
+            true,
+          );
+          return;
+        }
+
+        const flow = getFlowByAddress(chainKey, address);
+        if (!flow) return;
+        if (!selectedAddress || selectedAddress.toLowerCase() === address.toLowerCase()) {
+          selectedAddress = flow.address;
+        }
+        const summaries = buildAccountSummaries(flow);
+        const selectedSummary =
+          summaries.find(
+            (summary) =>
+              summary.address.toLowerCase() === selectedAddress.toLowerCase(),
+          ) || summaries[0];
+        selectedAddress = selectedSummary.address;
+        const hasData = flow.input.length > 0 || flow.output.length > 0;
+
+        document.getElementById("app").innerHTML = `
+          <main class="result-shell">
+            <header class="result-header">
+              <a class="back-link" href="./index.html">返回搜索</a>
+              <div>
+                <p class="eyebrow">链上分析 / ${escapeHtml(chainKey.toUpperCase())}</p>
+                <h1>资金流分析结果</h1>
+              </div>
+              <div class="header-actions" aria-label="示例地址快捷入口">
+                ${getKnownAddresses(chainKey)
+                  .map(
+                    (item) => `
+                      <a href="./result.html?chain=${encodeURIComponent(chainKey)}&amp;address=${encodeURIComponent(item)}">${shortAddress(item)}</a>
+                    `,
+                  )
+                  .join("")}
+              </div>
+            </header>
+
+            <section class="summary-strip" aria-label="账户概览">
+              <div>
+                <span>搜索地址</span>
+                <strong title="${escapeHtml(flow.address)}">${shortAddress(flow.address)}</strong>
+              </div>
+              <div>
+                <span>流入合计</span>
+                <strong>${formatTransferTotal(flow.input)}</strong>
+              </div>
+              <div>
+                <span>流出合计</span>
+                <strong>${formatTransferTotal(flow.output)}</strong>
+              </div>
+              <div>
+                <span>关联账户</span>
+                <strong>${Math.max(summaries.length - 1, 0)}</strong>
+              </div>
+            </section>
+
+            <section class="workspace-grid">
+              <div class="graph-panel">
+                <div class="panel-heading">
+                  <div>
+                    <p class="eyebrow">Flow graph</p>
+                    <h2>Input / Output 关系图</h2>
+                  </div>
+                  <span class="${hasData ? "status-pill ready" : "status-pill"}">
+                    ${hasData ? "example JSON loaded" : "waiting for backend data"}
+                  </span>
+                </div>
+
+                <div class="flow-graph" aria-label="资金流向图">
+                  ${renderFlowColumn("资金流入", "input", flow.input)}
+                  <div class="center-column">
+                    <div class="edge-line left" aria-hidden="true"></div>
+                    <button
+                      type="button"
+                      class="account-node center ${selectedAddress.toLowerCase() === flow.address.toLowerCase() ? "selected" : ""}"
+                      data-account="${escapeHtml(flow.address)}"
+                    >
+                      <span>中心账户</span>
+                      <strong title="${escapeHtml(flow.address)}">${shortAddress(flow.address)}</strong>
+                      <small>${escapeHtml(flow.label || "")}</small>
+                    </button>
+                    <div class="edge-line right" aria-hidden="true"></div>
+                  </div>
+                  ${renderFlowColumn("资金流出", "output", flow.output)}
+                </div>
+
+                ${
+                  hasData
+                    ? ""
+                    : `<div class="empty-state">当前地址还没有示例 JSON 数据。后端接口接入后，这里会显示真实资金流。</div>`
+                }
+              </div>
+
+              <aside class="details-panel" aria-label="账户详情">
+                <p class="eyebrow">Account detail</p>
+                <h2>${roleLabel(selectedSummary.role)}</h2>
+                <p class="detail-address" title="${escapeHtml(selectedSummary.address)}">
+                  ${escapeHtml(selectedSummary.address)}
+                </p>
+                <dl class="detail-metrics">
+                  <div>
+                    <dt>交易数</dt>
+                    <dd>${selectedSummary.transfers.length}</dd>
+                  </div>
+                  <div>
+                    <dt>合计金额</dt>
+                    <dd>${formatTransferTotal(selectedSummary.transfers)}</dd>
+                  </div>
+                  <div>
+                    <dt>标签</dt>
+                    <dd>${escapeHtml(selectedSummary.tag || "未标注")}</dd>
+                  </div>
+                </dl>
+                <div class="detail-list">
+                  ${
+                    selectedSummary.transfers.length
+                      ? selectedSummary.transfers
+                          .map(
+                            (transfer) => `
+                              <article>
+                                <span>${transfer.direction === "input" ? "流入" : "流出"}</span>
+                                <strong>${formatAmount(transfer)}</strong>
+                                <small>${formatTime(transfer.time)}</small>
+                                <code title="${escapeHtml(transfer.txHash)}">${shortHash(transfer.txHash)}</code>
+                              </article>
+                            `,
+                          )
+                          .join("")
+                      : `<p class="muted">暂无关联交易。</p>`
+                  }
+                </div>
+              </aside>
+            </section>
+
+            <section class="table-section" aria-labelledby="transaction-table">
+              <div class="panel-heading">
+                <div>
+                  <p class="eyebrow">Transaction list</p>
+                  <h2 id="transaction-table">交易明细</h2>
+                </div>
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>方向</th>
+                      <th>账户</th>
+                      <th>时间</th>
+                      <th>金额</th>
+                      <th>交易哈希</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${[...flow.input, ...flow.output]
+                      .map((transfer) => {
+                        const direction = flow.input.includes(transfer)
+                          ? "input"
+                          : "output";
+                        return `
+                          <tr>
+                            <td>${direction === "input" ? "流入" : "流出"}</td>
+                            <td>
+                              <button
+                                type="button"
+                                class="table-address"
+                                data-account="${escapeHtml(transfer.address)}"
+                                title="${escapeHtml(transfer.address)}"
+                              >
+                                ${shortAddress(transfer.address)}
+                              </button>
+                            </td>
+                            <td>${formatTime(transfer.time)}</td>
+                            <td>${formatAmount(transfer)}</td>
+                            <td><code title="${escapeHtml(transfer.txHash)}">${shortHash(transfer.txHash)}</code></td>
+                          </tr>
+                        `;
+                      })
+                      .join("")}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          </main>
+        `;
+
+        document.querySelectorAll("[data-account]").forEach((button) => {
+          button.addEventListener("click", () => {
+            selectedAddress = button.dataset.account;
+            renderResult(chainKey, flow.address);
+          });
+        });
+      }
+
+      function renderFlowColumn(title, direction, transfers) {
+        return `
+          <div class="flow-column ${direction}">
+            <h3>${title}</h3>
+            <div class="account-stack">
+              ${transfers
+                .map(
+                  (transfer) => `
+                    <button
+                      type="button"
+                      class="account-node ${selectedAddress.toLowerCase() === transfer.address.toLowerCase() ? "selected" : ""}"
+                      data-account="${escapeHtml(transfer.address)}"
+                    >
+                      <span>${escapeHtml(transfer.tag || "Unknown")}</span>
+                      <strong title="${escapeHtml(transfer.address)}">${shortAddress(transfer.address)}</strong>
+                      <small>${formatAmount(transfer)}</small>
+                    </button>
+                  `,
+                )
+                .join("")}
+            </div>
+          </div>
+        `;
+      }
+
+      function buildAccountSummaries(flow) {
+        const centerTransfers = [
+          ...flow.input.map((transfer) => ({ ...transfer, direction: "input" })),
+          ...flow.output.map((transfer) => ({ ...transfer, direction: "output" })),
+        ];
+        const summaries = [
+          {
+            address: flow.address,
+            role: "center",
+            tag: flow.label,
+            transfers: centerTransfers,
+          },
+        ];
+
+        ["input", "output"].forEach((direction) => {
+          flow[direction].forEach((transfer) => {
+            const existing = summaries.find(
+              (summary) =>
+                summary.address.toLowerCase() === transfer.address.toLowerCase(),
+            );
+            if (existing) {
+              existing.transfers.push({ ...transfer, direction });
+              if (existing.role !== "center" && existing.role !== direction) {
+                existing.role = "both";
+              }
+            } else {
+              summaries.push({
+                address: transfer.address,
+                role: direction,
+                tag: transfer.tag,
+                transfers: [{ ...transfer, direction }],
+              });
+            }
+          });
+        });
+
+        return summaries;
+      }
+
+      function roleLabel(role) {
+        if (role === "center") return "中心账户";
+        if (role === "both") return "双向账户";
+        return role === "input" ? "流入账户" : "流出账户";
+      }
+
+      function formatAmount(transfer) {
+        return `${formatRawAmount(transfer.rawAmount, transfer.decimals)} ${escapeHtml(transfer.asset)}`;
+      }
+
+      function formatTransferTotal(transfers) {
+        if (!transfers.length) return "0";
+        const totals = new Map();
+        transfers.forEach((transfer) => {
+          const key = assetKey(transfer);
+          const existing = totals.get(key);
+          totals.set(
+            key,
+            existing
+              ? {
+                  ...existing,
+                  rawAmount: addRawAmounts(
+                    existing.rawAmount,
+                    transfer.rawAmount,
+                  ),
+                }
+              : { ...transfer },
+          );
+        });
+
+        const symbolCounts = new Map();
+        totals.forEach((total) => {
+          symbolCounts.set(
+            total.asset,
+            (symbolCounts.get(total.asset) || 0) + 1,
+          );
+        });
+
+        return [...totals.values()]
+          .map((total) => {
+            const qualifier =
+              (symbolCounts.get(total.asset) || 0) > 1 && total.assetAddress
+                ? ` (${shortAddress(total.assetAddress)})`
+                : "";
+            return `${formatRawAmount(total.rawAmount, total.decimals)} ${escapeHtml(total.asset)}${qualifier}`;
+          })
+          .join(" + ");
+      }
+
+      function assetKey(transfer) {
+        return [
+          transfer.asset.toLowerCase(),
+          transfer.assetAddress
+            ? transfer.assetAddress.toLowerCase()
+            : "native",
+          transfer.decimals,
+        ].join(":");
+      }
+
+      function addRawAmounts(left, right) {
+        return (BigInt(left) + BigInt(right)).toString();
+      }
+
+      function formatRawAmount(rawAmount, decimals) {
+        const normalized = rawAmount.replace(/^0+(?=\d)/, "");
+        if (decimals === 0) return groupDigits(normalized);
+
+        const padded = normalized.padStart(decimals + 1, "0");
+        const integer = padded.slice(0, -decimals);
+        const fraction = padded.slice(-decimals).replace(/0+$/, "");
+        return fraction
+          ? `${groupDigits(integer)}.${fraction}`
+          : groupDigits(integer);
+      }
+
+      function groupDigits(value) {
+        return value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      }
+
+      function formatTime(time) {
+        return new Intl.DateTimeFormat("zh-CN", {
+          month: "2-digit",
+          day: "2-digit",
+          hour: "2-digit",
+          minute: "2-digit",
+        }).format(new Date(time));
+      }
+
+      function shortAddress(address) {
+        if (!address || address.length <= 14) return escapeHtml(address || "");
+        return `${escapeHtml(address.slice(0, 8))}...${escapeHtml(address.slice(-6))}`;
+      }
+
+      function shortHash(hash) {
+        if (!hash || hash.length <= 16) return escapeHtml(hash || "");
+        return `${escapeHtml(hash.slice(0, 10))}...${escapeHtml(hash.slice(-8))}`;
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#039;");
+      }
+
+      initializeResultPage();
+    </script>
+  </body>
+</html>

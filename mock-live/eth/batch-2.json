@@ -1,0 +1,93 @@
+{
+  "chain": "eth",
+  "window": {
+    "from": "2026-07-16T08:00:10Z",
+    "to": "2026-07-16T08:00:20Z"
+  },
+  "transfers": [
+    {
+      "id": "eth-live-2-1",
+      "from": "0xA91c7F2b2f32E7d42A61A0C4A53e80B3d8D7C91A",
+      "to": "0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97",
+      "fromLabel": "Bridge Vault",
+      "toLabel": "Demo Exchange",
+      "time": "2026-07-16T08:00:11Z",
+      "rawAmount": "2400000000000000000",
+      "decimals": 18,
+      "asset": "ETH",
+      "assetAddress": null,
+      "valueUsd": 8400,
+      "txHash": "0x7d3d2f8b7d7d5e9d01a6b2073d2a531d74fb8f93d6b18d26c2b2d4f93a3d4813"
+    },
+    {
+      "id": "eth-live-2-2",
+      "from": "0x7b3E86178f3c2C5D8b57a322A3f8aD5D7c3118Be",
+      "to": "0x5E34cB1aef9E5B0E0E6C23d27D087F23E8bd3c70",
+      "fromLabel": "Market Maker",
+      "toLabel": "Treasury",
+      "time": "2026-07-16T08:00:13Z",
+      "rawAmount": "75000000000000000000",
+      "decimals": 18,
+      "asset": "ETH",
+      "assetAddress": null,
+      "valueUsd": 262500,
+      "txHash": "0x1db129cb8f0e4509b57166ac2a7fd2f06e0d22f5b52c8a6e7223da310fbb9e21"
+    },
+    {
+      "id": "eth-live-2-3",
+      "from": "0x3DcA2a336a29C02E4c2d06b0940Bf338c5d07001",
+      "to": "0x44Fb3B9fF2fB3D0Fe4b3D837a9E0b2F07f5DA443",
+      "fromLabel": "DeFi Router",
+      "toLabel": "Fresh Wallet",
+      "time": "2026-07-16T08:00:14Z",
+      "rawAmount": "70000000000000000",
+      "decimals": 18,
+      "asset": "ETH",
+      "assetAddress": null,
+      "valueUsd": 245,
+      "txHash": "0x9c8829c5dd8e524dfe65a745fa129e0a33b93997a8bb5ff2d3148b1f7500a224"
+    },
+    {
+      "id": "eth-live-2-4",
+      "from": "0x5E34cB1aef9E5B0E0E6C23d27D087F23E8bd3c70",
+      "to": "0xA91c7F2b2f32E7d42A61A0C4A53e80B3d8D7C91A",
+      "fromLabel": "Treasury",
+      "toLabel": "Bridge Vault",
+      "time": "2026-07-16T08:00:16Z",
+      "rawAmount": "3000000000",
+      "decimals": 6,
+      "asset": "USDC",
+      "assetAddress": "0xA0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "valueUsd": 3000,
+      "txHash": "0x8759df9f62ac553d41031ad353af3b75850edc368ef9468881cfb70b76507dc8"
+    },
+    {
+      "id": "eth-live-2-5",
+      "from": "0x79165aAB3F8305cFC771B5Ea5986D9a6f958a5B0",
+      "to": "0x7b3E86178f3c2C5D8b57a322A3f8aD5D7c3118Be",
+      "fromLabel": "Custody Wallet",
+      "toLabel": "Market Maker",
+      "time": "2026-07-16T08:00:18Z",
+      "rawAmount": "600000000000000000000",
+      "decimals": 18,
+      "asset": "ETH",
+      "assetAddress": null,
+      "valueUsd": 2100000,
+      "txHash": "0xd730c11824962d856ebad077bce0f5624ae4484d8da33048967bb2189ccb04e3"
+    },
+    {
+      "id": "eth-live-2-6",
+      "from": "0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97",
+      "to": "0x3DcA2a336a29C02E4c2d06b0940Bf338c5d07001",
+      "fromLabel": "Demo Exchange",
+      "toLabel": "DeFi Router",
+      "time": "2026-07-16T08:00:19Z",
+      "rawAmount": "8500000000000000000",
+      "decimals": 18,
+      "asset": "ETH",
+      "assetAddress": null,
+      "valueUsd": 29750,
+      "txHash": "0xa0f10ce3b888d01c7943e2ff720044d83a8037366adce349d6fdc1f36b2a42f6"
+    }
+  ]
+}

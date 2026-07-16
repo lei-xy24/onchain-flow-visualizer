@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>实时交易图谱</title>
+    <meta
+      name="description"
+      content="每 10 秒更新一次的链上账户交易动态图谱"
+    />
+    <link rel="stylesheet" href="./live.css" />
+    <script type="module" src="./live-result.js"></script>
+  </head>
+  <body class="monitor-body">
+    <header class="monitor-header">
+      <div class="monitor-header-main">
+        <a class="site-brand" href="./live.html" aria-label="返回实时交易搜索页">
+          <span class="site-brand-mark" aria-hidden="true">DF</span>
+        </a>
+        <div class="monitor-title">
+          <strong>实时交易图谱</strong>
+          <span id="window-label">正在准备最近 10 秒数据</span>
+        </div>
+      </div>
+
+      <div class="monitor-controls">
+        <div class="chain-control">
+          <label for="live-chain-select">网络</label>
+          <select id="live-chain-select">
+            <option value="eth">Ethereum</option>
+            <option value="bsc">BNB Smart Chain</option>
+            <option value="polygon">Polygon PoS</option>
+          </select>
+        </div>
+
+        <div class="monitor-status" aria-live="polite">
+          <span class="status-dot is-loading" id="status-dot" aria-hidden="true"></span>
+          <span class="status-copy">
+            <strong id="status-label">连接中</strong>
+            <span id="countdown-label">首次请求</span>
+          </span>
+        </div>
+
+        <div class="monitor-actions">
+          <button class="monitor-action" id="pause-button" type="button">暂停</button>
+          <button
+            class="monitor-action monitor-action-primary"
+            id="refresh-button"
+            type="button"
+          >
+            立即刷新
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="monitor-layout">
+      <section class="graph-workspace" aria-labelledby="graph-title">
+        <div class="graph-summary">
+          <div class="graph-heading">
+            <h1 id="graph-title">账户间资金流</h1>
+            <p>运动点从付款账户流向收款账户，美元价值越高则点越密。</p>
+          </div>
+          <div class="graph-metrics" aria-label="当前时间窗口统计">
+            <div class="graph-metric">
+              <span>交易</span>
+              <strong id="transaction-count">0</strong>
+            </div>
+            <div class="graph-metric">
+              <span>账户</span>
+              <strong id="account-count">0</strong>
+            </div>
+            <div class="graph-metric">
+              <span>折合价值</span>
+              <strong id="total-value">$0</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="graph-canvas" id="graph-canvas">
+          <svg
+            id="flow-graph"
+            viewBox="0 0 1100 700"
+            preserveAspectRatio="xMidYMid meet"
+            role="img"
+            aria-labelledby="flow-graph-title flow-graph-description"
+          >
+            <title id="flow-graph-title">账户间实时转账图</title>
+            <desc id="flow-graph-description">
+              每个圆形代表一个账户，点状动画线从付款账户指向收款账户。
+            </desc>
+            <g id="edge-layer"></g>
+            <g id="node-layer"></g>
+          </svg>
+          <div class="graph-loading" id="graph-message">
+            <div class="loading-bars" aria-hidden="true">
+              <span></span><span></span><span></span>
+            </div>
+            <strong>正在请求交易数据</strong>
+            <p>首次请求完成后，这里会显示最近 10 秒的账户和转账路径。</p>
+          </div>
+          <div class="graph-tooltip" id="graph-tooltip" role="status" hidden></div>
+        </div>
+
+        <div class="density-legend" id="density-legend" aria-label="运动点密度规则"></div>
+      </section>
+
+      <aside class="activity-panel" aria-labelledby="activity-title">
+        <div class="activity-header">
+          <h2 id="activity-title">当前 10 秒交易</h2>
+          <p>点击交易或账户可以在图中突出显示对应路径。</p>
+        </div>
+
+        <section class="account-inspector" id="account-inspector" aria-live="polite" hidden>
+          <div class="inspector-top">
+            <strong id="inspector-label"></strong>
+            <button id="close-inspector" type="button" aria-label="取消账户选择">×</button>
+          </div>
+          <code class="inspector-address" id="inspector-address"></code>
+          <div class="inspector-metrics">
+            <div><span>流入</span><strong id="inspector-in">$0</strong></div>
+            <div><span>流出</span><strong id="inspector-out">$0</strong></div>
+            <div><span>交易</span><strong id="inspector-count">0</strong></div>
+          </div>
+        </section>
+
+        <div class="transaction-list" id="transaction-list">
+          <p class="transaction-empty">正在等待首批数据。</p>
+        </div>
+      </aside>
+    </main>
+  </body>
+</html>

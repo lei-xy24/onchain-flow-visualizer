@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>地址资金流追踪</title>
+    <meta
+      name="description"
+      content="搜索链上账户地址并进入独立资金流分析页面"
+    />
+    <style>
+      :root {
+        --background: #f3f6f8;
+        --foreground: #142024;
+        --muted: #647174;
+        --panel: #ffffff;
+        --line: #d8e0e2;
+        --teal: #0f8b8d;
+        --teal-dark: #0b5c61;
+        --shadow: 0 18px 55px rgba(20, 32, 36, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        background: var(--background);
+        color: var(--foreground);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        margin: 0;
+        min-height: 100vh;
+      }
+
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      .home-shell {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 32px 18px;
+      }
+
+      .home-hero {
+        max-width: 920px;
+        text-align: center;
+        width: 100%;
+      }
+
+      .brand-mark {
+        align-items: center;
+        background: #142024;
+        border-radius: 8px;
+        color: #ffffff;
+        display: inline-flex;
+        font-weight: 800;
+        height: 48px;
+        justify-content: center;
+        margin-bottom: 22px;
+        width: 48px;
+      }
+
+      .eyebrow {
+        color: var(--teal-dark);
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0;
+        margin: 0 0 8px;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        color: #10191c;
+        font-size: clamp(2.3rem, 8vw, 5.4rem);
+        letter-spacing: 0;
+        line-height: 0.96;
+        margin: 0;
+      }
+
+      .hero-copy {
+        color: var(--muted);
+        font-size: 1.08rem;
+        line-height: 1.75;
+        margin: 22px auto 0;
+        max-width: 620px;
+      }
+
+      .search-panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        margin: 34px auto 0;
+        max-width: 780px;
+        padding: 14px;
+        text-align: left;
+      }
+
+      .field-label {
+        color: #405055;
+        display: block;
+        font-size: 0.86rem;
+        font-weight: 700;
+        margin: 2px 0 10px;
+      }
+
+      .search-row {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: 128px minmax(0, 1fr) 104px;
+      }
+
+      .chain-select,
+      .search-row input {
+        background: #f8fafb;
+        border: 1px solid #cfdadd;
+        border-radius: 7px;
+        color: var(--foreground);
+        min-height: 52px;
+        outline: none;
+        padding: 0 14px;
+      }
+
+      .search-row input {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        min-width: 0;
+      }
+
+      .chain-select:focus,
+      .search-row input:focus {
+        border-color: var(--teal);
+        box-shadow: 0 0 0 3px rgba(15, 139, 141, 0.16);
+      }
+
+      .search-row button,
+      .quick-examples button {
+        cursor: pointer;
+      }
+
+      .search-row button {
+        background: var(--teal);
+        border: 0;
+        border-radius: 7px;
+        color: white;
+        font-weight: 800;
+        min-height: 52px;
+      }
+
+      .search-row button:hover {
+        background: var(--teal-dark);
+      }
+
+      .form-error {
+        color: #b42318;
+        font-size: 0.9rem;
+        margin: 10px 2px 0;
+      }
+
+      .quick-examples {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 20px;
+      }
+
+      .quick-examples button {
+        background: #ffffff;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        color: #233236;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.86rem;
+        padding: 9px 12px;
+      }
+
+      .quick-examples button:hover {
+        border-color: var(--teal);
+        color: var(--teal-dark);
+      }
+
+      .live-feature-link {
+        align-items: center;
+        color: var(--teal-dark);
+        display: inline-flex;
+        font-size: 0.92rem;
+        font-weight: 800;
+        gap: 8px;
+        margin-top: 28px;
+        text-decoration: none;
+      }
+
+      .live-feature-link:hover {
+        color: var(--teal);
+      }
+
+      .live-feature-link span {
+        font-size: 1.2rem;
+      }
+
+      @media (max-width: 760px) {
+        .home-shell {
+          padding: 18px;
+        }
+
+        .search-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="home-shell">
+      <section class="home-hero" aria-labelledby="home-title">
+        <div class="brand-mark" aria-hidden="true">DF</div>
+        <p class="eyebrow">区块链与数字金融服务安全测试平台</p>
+        <h1 id="home-title">地址资金流追踪</h1>
+        <p class="hero-copy">
+          输入链上账户地址，系统会进入独立结果页并向后端查询该地址的资金流。
+        </p>
+
+        <form class="search-panel" id="search-form">
+          <label class="field-label" for="address-search">搜索地址</label>
+          <div class="search-row">
+            <select aria-label="选择链" class="chain-select" id="chain-select">
+              <option value="eth">ETH</option>
+              <option value="bsc">BSC</option>
+              <option value="polygon">Polygon</option>
+            </select>
+            <input
+              id="address-search"
+              autocomplete="off"
+              spellcheck="false"
+              value="0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97"
+              placeholder="0x..."
+            />
+            <button type="submit">搜索</button>
+          </div>
+          <p class="form-error" id="form-error" aria-live="polite" hidden></p>
+        </form>
+
+        <div class="quick-examples" aria-label="示例地址">
+          <button
+            type="button"
+            data-chain="eth"
+            data-address="0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97"
+          >
+            ETH 0x4838B1...AD5f97
+          </button>
+          <button
+            type="button"
+            data-chain="bsc"
+            data-address="0xB5C0000000000000000000000000000000000001"
+          >
+            BSC 0xB5C000...000001
+          </button>
+          <button
+            type="button"
+            data-chain="polygon"
+            data-address="0x9000000000000000000000000000000000000001"
+          >
+            Polygon 0x900000...000001
+          </button>
+        </div>
+
+        <a class="live-feature-link" href="./live.html">
+          打开实时交易图谱 <span aria-hidden="true">→</span>
+        </a>
+      </section>
+    </main>
+
+    <script>
+      const EXAMPLE_ADDRESSES = {
+        eth: "0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97",
+        bsc: "0xB5C0000000000000000000000000000000000001",
+        polygon: "0x9000000000000000000000000000000000000001",
+      };
+      const EVM_ADDRESS_PATTERN = /^0x[0-9a-fA-F]{40}$/;
+      const form = document.getElementById("search-form");
+      const chainSelect = document.getElementById("chain-select");
+      const addressInput = document.getElementById("address-search");
+      const error = document.getElementById("form-error");
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        openResult(chainSelect.value, addressInput.value);
+      });
+
+      chainSelect.addEventListener("change", () => {
+        addressInput.value = EXAMPLE_ADDRESSES[chainSelect.value] || "";
+        error.hidden = true;
+      });
+
+      addressInput.addEventListener("input", () => {
+        error.hidden = true;
+      });
+
+      document.querySelectorAll("[data-address]").forEach((button) => {
+        button.addEventListener("click", () => {
+          openResult(button.dataset.chain, button.dataset.address);
+        });
+      });
+
+      function openResult(chain, address) {
+        const cleaned = address.trim();
+        if (!EXAMPLE_ADDRESSES[chain]) {
+          showError("请选择受支持的链。");
+          return;
+        }
+        if (!EVM_ADDRESS_PATTERN.test(cleaned)) {
+          showError("请输入有效的 EVM 地址（0x 加 40 位十六进制字符）。");
+          return;
+        }
+
+        const resultUrl = new URL("./result.html", location.href);
+        resultUrl.searchParams.set("chain", chain);
+        resultUrl.searchParams.set("address", cleaned);
+        location.assign(resultUrl.href);
+      }
+
+      function showError(message) {
+        error.textContent = message;
+        error.hidden = false;
+      }
+    </script>
+  </body>
+</html>
