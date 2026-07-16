@@ -230,13 +230,8 @@ function renderGraph(chain) {
     "viewBox",
     `0 0 ${state.graph.width} ${state.graph.height}`,
   );
-  elements.edgeLayer.innerHTML = [
-    `<defs>
-      <marker id="flow-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="strokeWidth">
-        <path d="M 0 0 L 8 4 L 0 8 z" fill="${chain.accent}"></path>
-      </marker>
-    </defs>`,
-    ...state.graph.edges.map((edge) => {
+  elements.edgeLayer.innerHTML = state.graph.edges
+    .map((edge) => {
       const amount = `${formatRawAmount(edge.rawAmount, edge.decimals)} ${edge.asset}`;
       const description = `${edge.fromLabel || shortAddress(edge.from)} 到 ${edge.toLabel || shortAddress(edge.to)}，${amount}，${formatUsd(edge.valueUsd)}`;
       return `<g
@@ -251,13 +246,12 @@ function renderGraph(chain) {
           class="flow-edge-motion"
           d="${edge.path}"
           stroke="${chain.accent}"
-          marker-end="url(#flow-arrow)"
           style="--dot-gap: ${edge.density.dotGap}; --edge-width: ${edge.density.width}"
         ></path>
         <path class="flow-edge-hit" d="${edge.path}" data-edge-hit="${escapeHtml(edge.id)}"></path>
       </g>`;
-    }),
-  ].join("");
+    })
+    .join("");
 
   const showLabels = state.graph.nodes.length <= 18;
   elements.nodeLayer.innerHTML = state.graph.nodes
