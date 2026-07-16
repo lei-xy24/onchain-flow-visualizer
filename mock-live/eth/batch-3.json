@@ -1,0 +1,93 @@
+{
+  "chain": "eth",
+  "window": {
+    "from": "2026-07-16T08:00:20Z",
+    "to": "2026-07-16T08:00:30Z"
+  },
+  "transfers": [
+    {
+      "id": "eth-live-3-1",
+      "from": "0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97",
+      "to": "0x1111111111111111111111111111111111111111",
+      "fromLabel": "Demo Exchange",
+      "toLabel": "Whale Wallet",
+      "time": "2026-07-16T08:00:21Z",
+      "rawAmount": "8000000000000000000",
+      "decimals": 18,
+      "asset": "ETH",
+      "assetAddress": null,
+      "valueUsd": 28000,
+      "txHash": "0x1aa4334db30c21d405c6a7e0a61c49d8738fab02220427498a95123fccf8cbc4"
+    },
+    {
+      "id": "eth-live-3-2",
+      "from": "0x1111111111111111111111111111111111111111",
+      "to": "0x2222222222222222222222222222222222222222",
+      "fromLabel": "Whale Wallet",
+      "toLabel": "Lending Pool",
+      "time": "2026-07-16T08:00:23Z",
+      "rawAmount": "420000000000",
+      "decimals": 6,
+      "asset": "USDC",
+      "assetAddress": "0xA0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "valueUsd": 420000,
+      "txHash": "0x1db8471327ea27563f264d2e09c6e8b8ee3e9e6c6924e37c9c3393658e6684c8"
+    },
+    {
+      "id": "eth-live-3-3",
+      "from": "0x2222222222222222222222222222222222222222",
+      "to": "0x7b3E86178f3c2C5D8b57a322A3f8aD5D7c3118Be",
+      "fromLabel": "Lending Pool",
+      "toLabel": "Market Maker",
+      "time": "2026-07-16T08:00:24Z",
+      "rawAmount": "240000000000000000",
+      "decimals": 18,
+      "asset": "ETH",
+      "assetAddress": null,
+      "valueUsd": 840,
+      "txHash": "0x747ab83f7096ebf4c4771223bbaef33e0ea9b2d26a705f10a2f121345f43722e"
+    },
+    {
+      "id": "eth-live-3-4",
+      "from": "0x3DcA2a336a29C02E4c2d06b0940Bf338c5d07001",
+      "to": "0x44Fb3B9fF2fB3D0Fe4b3D837a9E0b2F07f5DA443",
+      "fromLabel": "DeFi Router",
+      "toLabel": "Fresh Wallet",
+      "time": "2026-07-16T08:00:26Z",
+      "rawAmount": "2000000000000000000",
+      "decimals": 18,
+      "asset": "ETH",
+      "assetAddress": null,
+      "valueUsd": 7000,
+      "txHash": "0x356bd8d723348201e544278db3ecf1072bb8eafe0e7df8579268629a289ee5b5"
+    },
+    {
+      "id": "eth-live-3-5",
+      "from": "0x5E34cB1aef9E5B0E0E6C23d27D087F23E8bd3c70",
+      "to": "0x79165aAB3F8305cFC771B5Ea5986D9a6f958a5B0",
+      "fromLabel": "Treasury",
+      "toLabel": "Custody Wallet",
+      "time": "2026-07-16T08:00:28Z",
+      "rawAmount": "500000000000000000000",
+      "decimals": 18,
+      "asset": "ETH",
+      "assetAddress": null,
+      "valueUsd": 1750000,
+      "txHash": "0x924084aaad97d92da14179141c37e949044157126578109f3281833eac0405be"
+    },
+    {
+      "id": "eth-live-3-6",
+      "from": "0xA91c7F2b2f32E7d42A61A0C4A53e80B3d8D7C91A",
+      "to": "0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97",
+      "fromLabel": "Bridge Vault",
+      "toLabel": "Demo Exchange",
+      "time": "2026-07-16T08:00:29Z",
+      "rawAmount": "85000000000",
+      "decimals": 6,
+      "asset": "USDC",
+      "assetAddress": "0xA0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
+      "valueUsd": 85000,
+      "txHash": "0x0bca422370d67f34777644bbccf698a23897c0429f1c7b10d7f23dc63b386f43"
+    }
+  ]
+}

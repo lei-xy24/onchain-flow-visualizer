@@ -12,7 +12,7 @@ import {
 // Set this to the real HTTPS endpoint after the backend is available.
 const BACKEND_API_URL = "";
 const POLL_INTERVAL_MS = 10_000;
-const MOCK_BATCH_COUNTS = Object.freeze({ eth: 2, bsc: 2, polygon: 2 });
+const MOCK_BATCH_COUNTS = Object.freeze({ eth: 5, bsc: 5, polygon: 5 });
 
 const elements = {
   chainSelect: document.getElementById("live-chain-select"),
@@ -125,6 +125,9 @@ async function refreshData({ manual }) {
   setStatus("正在查询", manual ? "手动刷新" : "请求最近 10 秒", "loading");
 
   try {
+    const mockBatchNumber = BACKEND_API_URL.trim()
+      ? null
+      : state.mockBatchIndex + 1;
     const requestUrl = buildRequestUrl();
     const response = await fetch(requestUrl, {
       cache: "no-store",
@@ -162,7 +165,9 @@ async function refreshData({ manual }) {
       setStatus("已暂停", "手动刷新完成", "paused");
     } else {
       setStatus(
-        BACKEND_API_URL.trim() ? "实时连接" : "演示数据",
+        BACKEND_API_URL.trim()
+          ? "实时连接"
+          : `演示数据 ${mockBatchNumber}/${MOCK_BATCH_COUNTS[state.chain]}`,
         "10 秒后更新",
         "ready",
       );

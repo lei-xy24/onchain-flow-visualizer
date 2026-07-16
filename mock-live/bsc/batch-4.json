@@ -1,0 +1,93 @@
+{
+  "chain": "bsc",
+  "window": {
+    "from": "2026-07-16T08:01:30Z",
+    "to": "2026-07-16T08:01:40Z"
+  },
+  "transfers": [
+    {
+      "id": "bsc-live-4-1",
+      "from": "0x79165aAB3F8305cFC771B5Ea5986D9a6f958a5B0",
+      "to": "0x3333333333333333333333333333333333333333",
+      "fromLabel": "Custody Wallet",
+      "toLabel": "Staking Vault",
+      "time": "2026-07-16T08:01:31Z",
+      "rawAmount": "4666666666666666666666",
+      "decimals": 18,
+      "asset": "BNB",
+      "assetAddress": null,
+      "valueUsd": 2800000,
+      "txHash": "0xf56b9c34954d80928cd6b4f9a0fa81f721c2a57aa4dd1562eabbe9ebb99dcf23"
+    },
+    {
+      "id": "bsc-live-4-2",
+      "from": "0x3333333333333333333333333333333333333333",
+      "to": "0x5E34cB1aef9E5B0E0E6C23d27D087F23E8bd3c70",
+      "fromLabel": "Staking Vault",
+      "toLabel": "Treasury",
+      "time": "2026-07-16T08:01:33Z",
+      "rawAmount": "525000000000000000000",
+      "decimals": 18,
+      "asset": "BNB",
+      "assetAddress": null,
+      "valueUsd": 315000,
+      "txHash": "0x30bbeb344ade422699206f7b4014c0520c86417f08379805f25faa311119f349"
+    },
+    {
+      "id": "bsc-live-4-3",
+      "from": "0x7b3E86178f3c2C5D8b57a322A3f8aD5D7c3118Be",
+      "to": "0x1111111111111111111111111111111111111111",
+      "fromLabel": "Market Maker",
+      "toLabel": "Whale Wallet",
+      "time": "2026-07-16T08:01:34Z",
+      "rawAmount": "95000000000000000000000",
+      "decimals": 18,
+      "asset": "USDT",
+      "assetAddress": "0x55d398326f99059fF775485246999027B3197955",
+      "valueUsd": 95000,
+      "txHash": "0x21e5c9b376d4049e70eef9847b9329d71ac6d8b93b2b4b6357c89d9e7d809f7b"
+    },
+    {
+      "id": "bsc-live-4-4",
+      "from": "0x44Fb3B9fF2fB3D0Fe4b3D837a9E0b2F07f5DA443",
+      "to": "0xA91c7F2b2f32E7d42A61A0C4A53e80B3d8D7C91A",
+      "fromLabel": "Fresh Wallet",
+      "toLabel": "Bridge Vault",
+      "time": "2026-07-16T08:01:36Z",
+      "rawAmount": "1166666666666666666",
+      "decimals": 18,
+      "asset": "BNB",
+      "assetAddress": null,
+      "valueUsd": 700,
+      "txHash": "0xa49bd23f6392d0c99f34d3c86ded9053835c99baa1d3572e7aaef3cba28681cb"
+    },
+    {
+      "id": "bsc-live-4-5",
+      "from": "0xB5C0000000000000000000000000000000000001",
+      "to": "0x3DcA2a336a29C02E4c2d06b0940Bf338c5d07001",
+      "fromLabel": "Demo Exchange",
+      "toLabel": "DeFi Router",
+      "time": "2026-07-16T08:01:38Z",
+      "rawAmount": "12500000000000000000000",
+      "decimals": 18,
+      "asset": "USDT",
+      "assetAddress": "0x55d398326f99059fF775485246999027B3197955",
+      "valueUsd": 12500,
+      "txHash": "0x0f06edb649da430f788cccd97b7e56cf90f7165a1d1d8df55faa720edc0902b6"
+    },
+    {
+      "id": "bsc-live-4-6",
+      "from": "0x2222222222222222222222222222222222222222",
+      "to": "0xB5C0000000000000000000000000000000000001",
+      "fromLabel": "Lending Pool",
+      "toLabel": "Demo Exchange",
+      "time": "2026-07-16T08:01:39Z",
+      "rawAmount": "7000000000000000000",
+      "decimals": 18,
+      "asset": "BNB",
+      "assetAddress": null,
+      "valueUsd": 4200,
+      "txHash": "0x129fb6778a458fc86b972bea590f2af208f0c9ebb9ef964201914cf3b8ad695d"
+    }
+  ]
+}

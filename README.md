@@ -7,7 +7,7 @@
 - `mock-api/`：后端尚未完成时使用的逐地址模拟响应。
 - `live.html`：搜索 ETH、BNB/BSC 或 POL/Polygon。
 - `live-result.html`：每 10 秒请求一次最近 10 秒交易并绘制动态图谱。
-- `mock-live/`：ETH、BSC 和 Polygon 各两批实时交易演示数据。
+- `mock-live/`：ETH、BSC 和 Polygon 各五批、共 50 秒的实时交易演示数据。
 
 页面流程：
 
@@ -146,11 +146,14 @@ Accept: application/json
 
 `from` 和 `to` 相差 10 秒。后端应返回这个时间窗口内的全部转账，不要分页或只返回大额交易。
 
-当 `BACKEND_API_URL` 为空时，页面每次从下面路径读取一批数据，并在两个批次之间循环：
+当 `BACKEND_API_URL` 为空时，页面每次从下面路径读取一批数据。每批覆盖 10 秒，五批连续播放 50 秒后重新循环：
 
 ```text
 ./mock-live/{chain}/batch-1.json
 ./mock-live/{chain}/batch-2.json
+./mock-live/{chain}/batch-3.json
+./mock-live/{chain}/batch-4.json
+./mock-live/{chain}/batch-5.json
 ```
 
 ### 实时后端响应
