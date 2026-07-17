@@ -284,7 +284,8 @@
       }
 
       .workspace-grid {
-        align-items: start;
+        --analysis-panel-height: clamp(560px, 58vh, 680px);
+        align-items: stretch;
         display: grid;
         gap: 18px;
         grid-template-columns: minmax(0, 1fr) 360px;
@@ -303,6 +304,13 @@
       .details-panel,
       .table-section {
         padding: 20px;
+      }
+
+      .graph-panel {
+        display: flex;
+        flex-direction: column;
+        height: var(--analysis-panel-height);
+        min-width: 0;
       }
 
       .table-section {
@@ -349,13 +357,55 @@
 
       .flow-graph {
         align-items: center;
+        column-gap: clamp(42px, 4.5vw, 76px);
         display: grid;
-        gap: 18px;
+        flex: 1;
         grid-template-columns:
-          minmax(190px, 1fr) minmax(220px, 0.9fr)
+          minmax(190px, 1fr) minmax(230px, 0.78fr)
           minmax(190px, 1fr);
-        min-height: 430px;
-        padding: 10px;
+        min-height: 0;
+        padding: 16px 20px 8px;
+        position: relative;
+        row-gap: 18px;
+      }
+
+      .flow-lines {
+        inset: 0;
+        overflow: visible;
+        pointer-events: none;
+        position: absolute;
+        z-index: 0;
+      }
+
+      .flow-connection {
+        animation: flow-dots var(--flow-duration, 2.2s) linear infinite;
+        fill: none;
+        opacity: var(--flow-opacity, 0.75);
+        stroke: var(--flow-color, var(--teal));
+        stroke-dasharray: 1 var(--flow-gap, 9);
+        stroke-linecap: round;
+        stroke-width: var(--flow-width, 3px);
+        vector-effect: non-scaling-stroke;
+      }
+
+      .flow-connection.input {
+        --flow-color: rgba(66, 102, 241, 0.72);
+      }
+
+      .flow-connection.output {
+        --flow-color: rgba(45, 151, 94, 0.76);
+      }
+
+      @keyframes flow-dots {
+        to {
+          stroke-dashoffset: -30;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .flow-connection {
+          animation: none;
+        }
       }
 
       .flow-column h3 {
@@ -422,14 +472,21 @@
         grid-template-columns: 1fr;
         justify-items: center;
         position: relative;
+        z-index: 1;
+      }
+
+      .flow-column {
+        position: relative;
+        z-index: 1;
       }
 
       .account-node.center {
         background: #111b1f;
         border-color: #111b1f;
         color: #ffffff;
+        cursor: default;
         max-width: 280px;
-        min-height: 136px;
+        min-height: 168px;
         text-align: center;
         z-index: 1;
       }
@@ -439,20 +496,44 @@
         color: #cbd5d8;
       }
 
-      .edge-line {
-        background: linear-gradient(90deg, transparent, #92a4aa, transparent);
-        height: 2px;
-        position: absolute;
-        top: 50%;
-        width: 48%;
+      .center-account-card {
+        align-content: center;
       }
 
-      .edge-line.left {
-        right: 76%;
+      .center-select-label {
+        color: #9fb0b4;
+        display: block;
+        font-size: 0.72rem;
+        font-weight: 700;
+        margin-top: 4px;
+        text-align: left;
       }
 
-      .edge-line.right {
-        left: 76%;
+      .center-account-select {
+        background: #17262b;
+        border: 1px solid #354a50;
+        border-radius: 7px;
+        color: #f8fbfb;
+        font: inherit;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.82rem;
+        font-weight: 700;
+        min-width: 0;
+        padding: 9px 10px;
+        width: 100%;
+      }
+
+      .center-account-select:focus {
+        outline: 2px solid rgba(15, 139, 141, 0.48);
+        outline-offset: 2px;
+      }
+
+      .details-panel {
+        display: flex;
+        flex-direction: column;
+        height: var(--analysis-panel-height);
+        min-height: 0;
+        padding: 20px;
       }
 
       .detail-address {
@@ -464,6 +545,38 @@
         margin: 14px 0;
         overflow-wrap: anywhere;
         padding: 12px;
+      }
+
+      .detail-actions {
+        margin: 0 0 14px;
+      }
+
+      .recenter-button {
+        align-items: center;
+        background: #111b1f;
+        border: 1px solid #111b1f;
+        border-radius: 8px;
+        color: #ffffff;
+        display: inline-flex;
+        font-size: 0.88rem;
+        font-weight: 800;
+        justify-content: center;
+        min-height: 42px;
+        padding: 0 14px;
+        text-decoration: none;
+        width: 100%;
+      }
+
+      .recenter-button:hover:not(:disabled) {
+        background: #0f8b8d;
+        border-color: #0f8b8d;
+      }
+
+      .recenter-button:disabled {
+        background: #eef3f4;
+        border-color: #dbe5e7;
+        color: #6c7a7e;
+        cursor: not-allowed;
       }
 
       .detail-metrics {
@@ -490,6 +603,9 @@
       .detail-list {
         display: grid;
         gap: 10px;
+        min-height: 0;
+        overflow: auto;
+        padding-right: 4px;
       }
 
       .detail-list article {
@@ -509,6 +625,118 @@
       .detail-list small,
       .muted {
         color: var(--muted);
+      }
+
+      .hash-button {
+        background: transparent;
+        border: 0;
+        color: var(--teal-dark);
+        display: inline-flex;
+        padding: 0;
+        text-align: left;
+      }
+
+      .hash-button code {
+        background: #edf3f4;
+        border-radius: 6px;
+        color: inherit;
+        display: inline-block;
+        max-width: 100%;
+        overflow: hidden;
+        padding: 4px 7px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .hash-button:hover code {
+        background: #dcebec;
+        text-decoration: underline;
+      }
+
+      .transaction-overlay {
+        align-items: center;
+        background: rgba(17, 27, 31, 0.42);
+        display: flex;
+        inset: 0;
+        justify-content: center;
+        padding: 20px;
+        position: fixed;
+        z-index: 30;
+      }
+
+      .transaction-dialog {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: 0 24px 70px rgba(17, 27, 31, 0.24);
+        max-height: min(720px, calc(100vh - 40px));
+        max-width: 760px;
+        overflow: auto;
+        padding: 22px;
+        width: min(760px, 100%);
+      }
+
+      .transaction-dialog-header {
+        align-items: center;
+        display: flex;
+        gap: 16px;
+        justify-content: space-between;
+        margin-bottom: 16px;
+      }
+
+      .transaction-dialog-header h2 {
+        margin: 0;
+      }
+
+      .dialog-close {
+        align-items: center;
+        background: #f2f6f7;
+        border: 1px solid #dbe5e7;
+        border-radius: 8px;
+        color: #111b1f;
+        display: inline-flex;
+        font-size: 1.25rem;
+        font-weight: 800;
+        height: 38px;
+        justify-content: center;
+        line-height: 1;
+        width: 38px;
+      }
+
+      .transaction-detail-grid {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        margin: 0;
+      }
+
+      .transaction-detail-grid div {
+        background: #f8fafb;
+        border: 1px solid #dfe8ea;
+        border-radius: 8px;
+        min-width: 0;
+        padding: 12px;
+      }
+
+      .transaction-detail-grid .wide {
+        grid-column: 1 / -1;
+      }
+
+      .transaction-detail-grid dt {
+        color: var(--muted);
+        font-size: 0.76rem;
+        font-weight: 800;
+        margin-bottom: 7px;
+      }
+
+      .transaction-detail-grid dd {
+        margin: 0;
+        min-width: 0;
+        overflow-wrap: anywhere;
+      }
+
+      .transaction-detail-grid code {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
       }
 
       .empty-state {
@@ -559,6 +787,11 @@
           grid-template-columns: 1fr;
         }
 
+        .graph-panel,
+        .details-panel {
+          height: auto;
+        }
+
         .header-actions {
           justify-content: flex-start;
         }
@@ -588,12 +821,19 @@
         }
 
         .flow-graph {
+          column-gap: 0;
           min-height: auto;
           padding: 0;
+          row-gap: 18px;
         }
 
-        .edge-line {
-          display: none;
+        .detail-list {
+          overflow: visible;
+          padding-right: 0;
+        }
+
+        .transaction-detail-grid {
+          grid-template-columns: 1fr;
         }
 
         .panel-heading {
@@ -624,6 +864,8 @@
       const TX_HASH_PATTERN = /^0x[0-9a-fA-F]{64}$/;
       const RAW_AMOUNT_PATTERN = /^\d+$/;
       let selectedAddress = "";
+      let activeFlow = null;
+      let flowConnectionFrame = 0;
 
       async function loadFlowData(chain, address) {
         currentRequest = { chain, address };
@@ -638,6 +880,11 @@
             headers: { Accept: "application/json" },
           });
           if (!response.ok) {
+            if (!BACKEND_API_URL.trim() && response.status === 404) {
+              flowData = createEmptyFlowResponse(chain, address);
+              renderResult(chain, address);
+              return;
+            }
             throw new Error("HTTP " + response.status);
           }
 
@@ -655,6 +902,16 @@
               : "后端请求失败，或返回的 JSON 不符合约定格式。";
           renderDataState("JSON 读取失败", message, true);
         }
+      }
+
+      function createEmptyFlowResponse(chain, address) {
+        return {
+          chain,
+          address,
+          label: "No example data loaded",
+          input: [],
+          output: [],
+        };
       }
 
       function renderDataState(title, message, allowRetry, showHome) {
@@ -942,19 +1199,10 @@
                 </div>
 
                 <div class="flow-graph" aria-label="资金流向图">
+                  <svg class="flow-lines" data-flow-lines aria-hidden="true"></svg>
                   ${renderFlowColumn("资金流入", "input", flow.input)}
                   <div class="center-column">
-                    <div class="edge-line left" aria-hidden="true"></div>
-                    <button
-                      type="button"
-                      class="account-node center ${selectedAddress.toLowerCase() === flow.address.toLowerCase() ? "selected" : ""}"
-                      data-account="${escapeHtml(flow.address)}"
-                    >
-                      <span>中心账户</span>
-                      <strong title="${escapeHtml(flow.address)}">${shortAddress(flow.address)}</strong>
-                      <small>${escapeHtml(flow.label || "")}</small>
-                    </button>
-                    <div class="edge-line right" aria-hidden="true"></div>
+                    ${renderCenterAccount(flow, summaries, selectedSummary)}
                   </div>
                   ${renderFlowColumn("资金流出", "output", flow.output)}
                 </div>
@@ -972,6 +1220,9 @@
                 <p class="detail-address" title="${escapeHtml(selectedSummary.address)}">
                   ${escapeHtml(selectedSummary.address)}
                 </p>
+                <div class="detail-actions">
+                  ${renderRecenterAction(chainKey, flow.address, selectedSummary.address)}
+                </div>
                 <dl class="detail-metrics">
                   <div>
                     <dt>交易数</dt>
@@ -996,7 +1247,7 @@
                                 <span>${transfer.direction === "input" ? "流入" : "流出"}</span>
                                 <strong>${formatAmount(transfer)}</strong>
                                 <small>${formatTime(transfer.time)}</small>
-                                <code title="${escapeHtml(transfer.txHash)}">${shortHash(transfer.txHash)}</code>
+                                ${renderHashButton(transfer)}
                               </article>
                             `,
                           )
@@ -1046,7 +1297,7 @@
                             </td>
                             <td>${formatTime(transfer.time)}</td>
                             <td>${formatAmount(transfer)}</td>
-                            <td><code title="${escapeHtml(transfer.txHash)}">${shortHash(transfer.txHash)}</code></td>
+                            <td>${renderHashButton(transfer)}</td>
                           </tr>
                         `;
                       })
@@ -1055,15 +1306,199 @@
                 </table>
               </div>
             </section>
+            <div id="transaction-detail-root"></div>
           </main>
         `;
 
+        activeFlow = flow;
         document.querySelectorAll("[data-account]").forEach((button) => {
           button.addEventListener("click", () => {
             selectedAddress = button.dataset.account;
             renderResult(chainKey, flow.address);
           });
         });
+        document.querySelectorAll("[data-recenter-address]").forEach((button) => {
+          button.addEventListener("click", () => {
+            selectedAddress = "";
+            location.href = buildResultPageUrl(
+              chainKey,
+              button.dataset.recenterAddress,
+            );
+          });
+        });
+        const centerSelect =
+          typeof document.querySelector === "function"
+            ? document.querySelector("[data-center-account-select]")
+            : null;
+        if (centerSelect) {
+          centerSelect.addEventListener("change", () => {
+            selectedAddress = centerSelect.value;
+            renderResult(chainKey, flow.address);
+          });
+        }
+        document.querySelectorAll("[data-transaction-id]").forEach((button) => {
+          button.addEventListener("click", () => {
+            showTransactionDetail(
+              chainKey,
+              flow,
+              button.dataset.transactionId,
+            );
+          });
+        });
+        scheduleFlowConnections();
+      }
+
+      function renderHashButton(transfer) {
+        return `
+          <button
+            class="hash-button"
+            type="button"
+            data-transaction-id="${escapeHtml(transfer.id)}"
+            title="查看交易详情 ${escapeHtml(transfer.txHash)}"
+          >
+            <code>${shortHash(transfer.txHash)}</code>
+          </button>
+        `;
+      }
+
+      function showTransactionDetail(chain, flow, transactionId) {
+        const transfer = buildDirectedTransfers(flow).find(
+          (item) => item.id === transactionId,
+        );
+        const root = document.getElementById("transaction-detail-root");
+        if (!transfer || !root) return;
+
+        root.innerHTML = renderTransactionDetail(chain, flow.address, transfer);
+        root.querySelectorAll("[data-close-transaction]").forEach((button) => {
+          button.addEventListener("click", () => {
+            root.innerHTML = "";
+          });
+        });
+      }
+
+      function renderTransactionDetail(chain, centerAddress, transfer) {
+        const fromAddress =
+          transfer.direction === "input" ? transfer.address : centerAddress;
+        const toAddress =
+          transfer.direction === "input" ? centerAddress : transfer.address;
+        return `
+          <div class="transaction-overlay" role="presentation">
+            <section
+              class="transaction-dialog"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="transaction-detail-title"
+            >
+              <div class="transaction-dialog-header">
+                <div>
+                  <p class="eyebrow">Transaction detail</p>
+                  <h2 id="transaction-detail-title">交易详情</h2>
+                </div>
+                <button
+                  class="dialog-close"
+                  type="button"
+                  aria-label="关闭交易详情"
+                  data-close-transaction
+                >
+                  ×
+                </button>
+              </div>
+              <dl class="transaction-detail-grid">
+                <div class="wide">
+                  <dt>交易哈希</dt>
+                  <dd><code>${escapeHtml(transfer.txHash)}</code></dd>
+                </div>
+                <div>
+                  <dt>网络</dt>
+                  <dd>${escapeHtml(chain.toUpperCase())}</dd>
+                </div>
+                <div>
+                  <dt>方向</dt>
+                  <dd>${transfer.direction === "input" ? "流入中心账户" : "流出中心账户"}</dd>
+                </div>
+                <div>
+                  <dt>时间</dt>
+                  <dd>${formatTime(transfer.time)}</dd>
+                </div>
+                <div>
+                  <dt>金额</dt>
+                  <dd>${formatAmount(transfer)}</dd>
+                </div>
+                <div class="wide">
+                  <dt>发送账户</dt>
+                  <dd><code>${escapeHtml(fromAddress)}</code></dd>
+                </div>
+                <div class="wide">
+                  <dt>接收账户</dt>
+                  <dd><code>${escapeHtml(toAddress)}</code></dd>
+                </div>
+                <div class="wide">
+                  <dt>资产合约</dt>
+                  <dd><code>${escapeHtml(transfer.assetAddress || "Native token")}</code></dd>
+                </div>
+                <div class="wide">
+                  <dt>关联标签</dt>
+                  <dd>${escapeHtml(transfer.tag || "未标注")}</dd>
+                </div>
+              </dl>
+            </section>
+          </div>
+        `;
+      }
+
+      function renderRecenterAction(chain, centerAddress, selectedAddress) {
+        if (selectedAddress.toLowerCase() === centerAddress.toLowerCase()) {
+          return `<button class="recenter-button" type="button" disabled>当前中心账户</button>`;
+        }
+
+        return `
+          <button
+            class="recenter-button"
+            type="button"
+            data-recenter-address="${escapeHtml(selectedAddress)}"
+          >
+            设为中心账户
+          </button>
+        `;
+      }
+
+      function buildResultPageUrl(chain, address) {
+        return `./result.html?chain=${encodeURIComponent(chain)}&address=${encodeURIComponent(address)}`;
+      }
+
+      function renderCenterAccount(flow, summaries, selectedSummary) {
+        const isCenterSelected =
+          selectedSummary.address.toLowerCase() === flow.address.toLowerCase();
+        return `
+          <div
+            class="account-node center center-account-card ${isCenterSelected ? "selected" : ""}"
+            data-flow-center="true"
+          >
+            <span>中心账户</span>
+            <strong title="${escapeHtml(flow.address)}">${shortAddress(flow.address)}</strong>
+            <small>${escapeHtml(flow.label || "")}</small>
+            <label class="center-select-label" for="center-account-select">查看账户详情</label>
+            <select
+              id="center-account-select"
+              class="center-account-select"
+              data-center-account-select
+              aria-label="选择账户查看详情"
+            >
+              ${summaries
+                .map(
+                  (summary) => `
+                    <option
+                      value="${escapeHtml(summary.address)}"
+                      ${summary.address.toLowerCase() === selectedSummary.address.toLowerCase() ? "selected" : ""}
+                    >
+                      ${roleLabel(summary.role)} - ${shortAddress(summary.address)}
+                    </option>
+                  `,
+                )
+                .join("")}
+            </select>
+          </div>
+        `;
       }
 
       function renderFlowColumn(title, direction, transfers) {
@@ -1073,11 +1508,13 @@
             <div class="account-stack">
               ${transfers
                 .map(
-                  (transfer) => `
+                  (transfer, index) => `
                     <button
                       type="button"
                       class="account-node ${selectedAddress.toLowerCase() === transfer.address.toLowerCase() ? "selected" : ""}"
                       data-account="${escapeHtml(transfer.address)}"
+                      data-flow-direction="${direction}"
+                      data-flow-index="${index}"
                     >
                       <span>${escapeHtml(transfer.tag || "Unknown")}</span>
                       <strong title="${escapeHtml(transfer.address)}">${shortAddress(transfer.address)}</strong>
@@ -1089,6 +1526,267 @@
             </div>
           </div>
         `;
+      }
+
+      function scheduleFlowConnections() {
+        if (!activeFlow) return;
+        const draw = () => {
+          flowConnectionFrame = 0;
+          renderFlowConnections(activeFlow);
+        };
+
+        if (typeof requestAnimationFrame === "function") {
+          if (flowConnectionFrame) cancelAnimationFrame(flowConnectionFrame);
+          flowConnectionFrame = requestAnimationFrame(draw);
+          return;
+        }
+
+        draw();
+      }
+
+      function renderFlowConnections(flow) {
+        if (
+          typeof document.querySelector !== "function" ||
+          typeof document.createElementNS !== "function"
+        ) {
+          return;
+        }
+
+        const graph = document.querySelector(".flow-graph");
+        if (
+          !graph ||
+          typeof graph.querySelector !== "function" ||
+          typeof graph.getBoundingClientRect !== "function"
+        ) {
+          return;
+        }
+
+        const svg = graph.querySelector("[data-flow-lines]");
+        const center = graph.querySelector("[data-flow-center]");
+        if (!svg || !center) return;
+
+        const graphRect = graph.getBoundingClientRect();
+        if (!graphRect.width || !graphRect.height) return;
+
+        while (svg.firstChild) {
+          svg.removeChild(svg.firstChild);
+        }
+
+        svg.setAttribute(
+          "viewBox",
+          `0 0 ${formatSvgNumber(graphRect.width)} ${formatSvgNumber(graphRect.height)}`,
+        );
+        svg.setAttribute("width", formatSvgNumber(graphRect.width));
+        svg.setAttribute("height", formatSvgNumber(graphRect.height));
+
+        const centerRect = center.getBoundingClientRect();
+        const scaleById = buildFlowVisualScales([
+          ...flow.input,
+          ...flow.output,
+        ]);
+        const namespace = "http://www.w3.org/2000/svg";
+
+        ["input", "output"].forEach((direction) => {
+          flow[direction].forEach((transfer, index) => {
+            const node = graph.querySelector(
+              `[data-flow-direction="${direction}"][data-flow-index="${index}"]`,
+            );
+            if (!node || typeof node.getBoundingClientRect !== "function") {
+              return;
+            }
+
+            const nodeRect = node.getBoundingClientRect();
+            const points =
+              direction === "input"
+                ? getFlowEndpoints(nodeRect, centerRect, graphRect)
+                : getFlowEndpoints(centerRect, nodeRect, graphRect);
+            const scale = scaleById.get(transfer.id) || defaultFlowVisualScale();
+            const path = document.createElementNS(namespace, "path");
+            path.classList.add("flow-connection", direction);
+            path.setAttribute("d", buildFlowPath(points.start, points.end));
+            path.style.setProperty("--flow-width", `${scale.width}px`);
+            path.style.setProperty("--flow-gap", `${scale.gap}`);
+            path.style.setProperty("--flow-duration", `${scale.duration}s`);
+            path.style.setProperty("--flow-opacity", `${scale.opacity}`);
+
+            const title = document.createElementNS(namespace, "title");
+            title.textContent = `${direction === "input" ? "流入" : "流出"} ${formatRawAmount(transfer.rawAmount, transfer.decimals)} ${transfer.asset}`;
+            path.appendChild(title);
+            svg.appendChild(path);
+          });
+        });
+      }
+
+      function getFlowEndpoints(fromRect, toRect, graphRect) {
+        const fromCenter = relativeCenter(fromRect, graphRect);
+        const toCenter = relativeCenter(toRect, graphRect);
+        const dx = toCenter.x - fromCenter.x;
+        const dy = toCenter.y - fromCenter.y;
+
+        if (Math.abs(dx) >= Math.abs(dy)) {
+          const leftToRight = dx >= 0;
+          return {
+            start: {
+              x: leftToRight
+                ? fromRect.right - graphRect.left
+                : fromRect.left - graphRect.left,
+              y: fromCenter.y,
+            },
+            end: {
+              x: leftToRight
+                ? toRect.left - graphRect.left
+                : toRect.right - graphRect.left,
+              y: toCenter.y,
+            },
+          };
+        }
+
+        const topToBottom = dy >= 0;
+        return {
+          start: {
+            x: fromCenter.x,
+            y: topToBottom
+              ? fromRect.bottom - graphRect.top
+              : fromRect.top - graphRect.top,
+          },
+          end: {
+            x: toCenter.x,
+            y: topToBottom
+              ? toRect.top - graphRect.top
+              : toRect.bottom - graphRect.top,
+          },
+        };
+      }
+
+      function relativeCenter(rect, graphRect) {
+        return {
+          x: rect.left - graphRect.left + rect.width / 2,
+          y: rect.top - graphRect.top + rect.height / 2,
+        };
+      }
+
+      function buildFlowPath(start, end) {
+        const dx = end.x - start.x;
+        const dy = end.y - start.y;
+
+        if (Math.abs(dx) >= Math.abs(dy)) {
+          const direction = dx >= 0 ? 1 : -1;
+          const curve = Math.max(34, Math.abs(dx) * 0.48);
+          return [
+            "M",
+            formatSvgNumber(start.x),
+            formatSvgNumber(start.y),
+            "C",
+            formatSvgNumber(start.x + direction * curve),
+            formatSvgNumber(start.y),
+            formatSvgNumber(end.x - direction * curve),
+            formatSvgNumber(end.y),
+            formatSvgNumber(end.x),
+            formatSvgNumber(end.y),
+          ].join(" ");
+        }
+
+        const direction = dy >= 0 ? 1 : -1;
+        const curve = Math.max(34, Math.abs(dy) * 0.48);
+        return [
+          "M",
+          formatSvgNumber(start.x),
+          formatSvgNumber(start.y),
+          "C",
+          formatSvgNumber(start.x),
+          formatSvgNumber(start.y + direction * curve),
+          formatSvgNumber(end.x),
+          formatSvgNumber(end.y - direction * curve),
+          formatSvgNumber(end.x),
+          formatSvgNumber(end.y),
+        ].join(" ");
+      }
+
+      function buildFlowVisualScales(transfers) {
+        const magnitudes = transfers.map(transferAmountMagnitude);
+        const finiteMagnitudes = magnitudes.filter(Number.isFinite);
+        const minMagnitude = finiteMagnitudes.length
+          ? Math.min(...finiteMagnitudes)
+          : 0;
+        const maxMagnitude = finiteMagnitudes.length
+          ? Math.max(...finiteMagnitudes)
+          : 0;
+        const scales = new Map();
+
+        transfers.forEach((transfer, index) => {
+          const magnitude = magnitudes[index];
+          const rawRatio =
+            maxMagnitude === minMagnitude
+              ? 0.5
+              : Number.isFinite(magnitude)
+                ? (magnitude - minMagnitude) / (maxMagnitude - minMagnitude)
+                : 0;
+          const ratio = Math.sqrt(clamp(rawRatio, 0, 1));
+          scales.set(transfer.id, {
+            duration: formatSvgNumber(2.9 - ratio * 1.65),
+            gap: formatSvgNumber(11.5 - ratio * 5.6),
+            opacity: formatSvgNumber(0.55 + ratio * 0.35),
+            width: formatSvgNumber(2 + ratio * 4.5),
+          });
+        });
+
+        return scales;
+      }
+
+      function transferAmountMagnitude(transfer) {
+        const rawAmount = String(transfer.rawAmount || "");
+        if (!RAW_AMOUNT_PATTERN.test(rawAmount)) return Number.NEGATIVE_INFINITY;
+        const normalized = rawAmount.replace(/^0+/, "");
+        if (!normalized) return Number.NEGATIVE_INFINITY;
+
+        const sampleLength = Math.min(15, normalized.length);
+        const sample = Number(normalized.slice(0, sampleLength));
+        if (!sample) return Number.NEGATIVE_INFINITY;
+
+        return (
+          Math.log10(sample) +
+          (normalized.length - sampleLength) -
+          transfer.decimals
+        );
+      }
+
+      function defaultFlowVisualScale() {
+        return {
+          duration: "2.1",
+          gap: "8.5",
+          opacity: "0.75",
+          width: "3.5",
+        };
+      }
+
+      function clamp(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+      }
+
+      function formatSvgNumber(value) {
+        return Number(value).toFixed(2).replace(/\.?0+$/, "");
+      }
+
+      function initializeFlowConnectionResize() {
+        if (
+          typeof window !== "undefined" &&
+          typeof window.addEventListener === "function"
+        ) {
+          window.addEventListener("resize", scheduleFlowConnections);
+        }
+      }
+
+      function buildDirectedTransfers(flow) {
+        return [
+          ...flow.input.map((transfer) => ({
+            ...transfer,
+            direction: "input",
+          })),
+          ...flow.output.map((transfer) => ({
+            ...transfer,
+            direction: "output",
+          })),
+        ];
       }
 
       function buildAccountSummaries(flow) {
@@ -1237,6 +1935,7 @@
           .replace(/'/g, "&#039;");
       }
 
+      initializeFlowConnectionResize();
       initializeResultPage();
     </script>
   </body>

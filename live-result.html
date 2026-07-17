@@ -8,8 +8,11 @@
       name="description"
       content="每 10 秒更新一次的链上账户交易动态图谱"
     />
-    <link rel="stylesheet" href="./live.css" />
-    <script type="module" src="./live-result.js"></script>
+    <link rel="stylesheet" href="./live.css?v=20260717-persistent-nodes" />
+    <script
+      type="module"
+      src="./live-result.js?v=20260717-persistent-nodes"
+    ></script>
   </head>
   <body class="monitor-body">
     <header class="monitor-header">
@@ -59,15 +62,15 @@
         <div class="graph-summary">
           <div class="graph-heading">
             <h1 id="graph-title">账户间资金流</h1>
-            <p>运动点从付款账户流向收款账户，美元价值越高则点越密。</p>
+            <p>历史账户持续保留；运动点表示当前窗口交易，美元价值越高则点越密。</p>
           </div>
-          <div class="graph-metrics" aria-label="当前时间窗口统计">
+          <div class="graph-metrics" aria-label="当前窗口与累计账户统计">
             <div class="graph-metric">
               <span>交易</span>
               <strong id="transaction-count">0</strong>
             </div>
             <div class="graph-metric">
-              <span>账户</span>
+              <span>累计账户</span>
               <strong id="account-count">0</strong>
             </div>
             <div class="graph-metric">
@@ -118,9 +121,9 @@
           </div>
           <code class="inspector-address" id="inspector-address"></code>
           <div class="inspector-metrics">
-            <div><span>流入</span><strong id="inspector-in">$0</strong></div>
-            <div><span>流出</span><strong id="inspector-out">$0</strong></div>
-            <div><span>交易</span><strong id="inspector-count">0</strong></div>
+            <div><span>累计流入</span><strong id="inspector-in">$0</strong></div>
+            <div><span>累计流出</span><strong id="inspector-out">$0</strong></div>
+            <div><span>累计交易</span><strong id="inspector-count">0</strong></div>
           </div>
         </section>
 

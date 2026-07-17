@@ -7,7 +7,7 @@ import {
   parseLiveResponse,
   shortAddress,
   shortHash,
-} from "./live-core.js";
+} from "./live-core.js?v=20260717-persistent-nodes";
 
 // Set this to the real HTTPS endpoint after the backend is available.
 const BACKEND_API_URL = "";
@@ -113,7 +113,12 @@ function bindEvents() {
       if (!state.response) return;
       const size = getGraphSize();
       if (state.graph.width === size.width && state.graph.height === size.height) return;
-      state.graph = buildGraphModel(state.response, size.width, size.height);
+      state.graph = buildGraphModel(
+        state.response,
+        size.width,
+        size.height,
+        state.graph,
+      );
       renderResponse();
     }, 160);
   });
@@ -140,7 +145,12 @@ async function refreshData({ manual }) {
     const parsed = parseLiveResponse(await response.json(), state.chain);
     state.response = parsed;
     const graphSize = getGraphSize();
-    state.graph = buildGraphModel(parsed, graphSize.width, graphSize.height);
+    state.graph = buildGraphModel(
+      parsed,
+      graphSize.width,
+      graphSize.height,
+      state.graph,
+    );
     state.nextPollAt = Date.now() + POLL_INTERVAL_MS;
     if (!BACKEND_API_URL.trim()) {
       state.mockBatchIndex =
@@ -213,7 +223,7 @@ function renderResponse() {
   elements.accountCount.textContent = String(state.graph.nodes.length);
   elements.totalValue.textContent = formatUsd(totalUsd);
 
-  if (state.response.transfers.length === 0) {
+  if (state.graph.nodes.length === 0) {
     elements.edgeLayer.replaceChildren();
     elements.nodeLayer.replaceChildren();
     elements.transactionList.innerHTML =
@@ -225,7 +235,12 @@ function renderResponse() {
 
   hideGraphMessage();
   renderGraph(chain);
-  renderTransactionList();
+  if (state.response.transfers.length === 0) {
+    elements.transactionList.innerHTML =
+      '<p class="transaction-empty">这个 10 秒窗口没有收到转账记录，历史账户节点继续保留。</p>';
+  } else {
+    renderTransactionList();
+  }
   bindGraphEvents();
   applySelection();
 }
@@ -263,9 +278,10 @@ function renderGraph(chain) {
     .map((node) => {
       const palette = getNodePalette(node.address);
       const label = truncateLabel(node.label, 18);
-      const ariaLabel = `${node.label}，${node.transactionCount} 笔交易，总额 ${formatUsd(node.totalUsd)}`;
+      const activityClass = node.active ? "is-active" : "is-inactive";
+      const ariaLabel = `${node.label}，本窗口 ${node.currentTransactionCount} 笔，累计 ${node.transactionCount} 笔交易，总额 ${formatUsd(node.totalUsd)}`;
       return `<g
-        class="account-node"
+        class="account-node ${activityClass}"
         data-node-address="${escapeHtml(node.key)}"
         transform="translate(${node.x} ${node.y})"
         role="button"
@@ -330,9 +346,10 @@ function bindGraphEvents() {
     });
     nodeElement.addEventListener("pointerenter", (event) => {
       const node = state.graph.nodes.find((item) => item.key === address);
+      const activity = node.active ? "本窗口活跃" : "历史账户 · 本窗口无交易";
       showTooltip(
         event,
-        `<strong>${escapeHtml(node.label)}</strong><span>${escapeHtml(shortAddress(node.address))}</span><span>${node.transactionCount} 笔 · ${escapeHtml(formatUsd(node.totalUsd))}</span>`,
+        `<strong>${escapeHtml(node.label)}</strong><span>${escapeHtml(shortAddress(node.address))}</span><span>${escapeHtml(activity)}</span><span>本窗口 ${node.currentTransactionCount} 笔 · 累计 ${node.transactionCount} 笔</span>`,
       );
     });
     nodeElement.addEventListener("pointermove", moveTooltip);

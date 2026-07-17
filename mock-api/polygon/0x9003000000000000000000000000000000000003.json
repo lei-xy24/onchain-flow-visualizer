@@ -1,0 +1,75 @@
+{
+  "chain": "polygon",
+  "address": "0x9003000000000000000000000000000000000003",
+  "label": "Gas dispersal",
+  "input": [
+    {
+      "id": "polygon-gas-input-1",
+      "address": "0x9000000000000000000000000000000000000001",
+      "time": "2026-07-10T04:09:18Z",
+      "rawAmount": "760000000000000000000",
+      "decimals": 18,
+      "asset": "MATIC",
+      "assetAddress": null,
+      "txHash": "0x92aa000100000000000000000000000000000000000000000000000000000001",
+      "tag": "Polygon sample account"
+    },
+    {
+      "id": "polygon-gas-input-2",
+      "address": "0x9001000000000000000000000000000000000001",
+      "time": "2026-07-10T04:16:06Z",
+      "rawAmount": "430000000000000000000",
+      "decimals": 18,
+      "asset": "MATIC",
+      "assetAddress": null,
+      "txHash": "0x92aa000200000000000000000000000000000000000000000000000000000002",
+      "tag": "Polygon bridge"
+    },
+    {
+      "id": "polygon-gas-input-3",
+      "address": "0x9002000000000000000000000000000000000002",
+      "time": "2026-07-10T04:19:44Z",
+      "rawAmount": "120000000",
+      "decimals": 6,
+      "asset": "USDC",
+      "assetAddress": "0x9005000000000000000000000000000000000005",
+      "txHash": "0x92aa000300000000000000000000000000000000000000000000000000000003",
+      "tag": "USDC treasury"
+    }
+  ],
+  "output": [
+    {
+      "id": "polygon-gas-output-1",
+      "address": "0x9009000000000000000000000000000000000009",
+      "time": "2026-07-10T04:25:30Z",
+      "rawAmount": "120000000000000000000",
+      "decimals": 18,
+      "asset": "MATIC",
+      "assetAddress": null,
+      "txHash": "0x92bb000100000000000000000000000000000000000000000000000000000004",
+      "tag": "Fresh wallet"
+    },
+    {
+      "id": "polygon-gas-output-2",
+      "address": "0x9004000000000000000000000000000000000004",
+      "time": "2026-07-10T04:31:22Z",
+      "rawAmount": "250000000000000000000",
+      "decimals": 18,
+      "asset": "MATIC",
+      "assetAddress": null,
+      "txHash": "0x92bb000200000000000000000000000000000000000000000000000000000005",
+      "tag": "Polygon receiver"
+    },
+    {
+      "id": "polygon-gas-output-3",
+      "address": "0x900A00000000000000000000000000000000000A",
+      "time": "2026-07-10T04:36:05Z",
+      "rawAmount": "95000000",
+      "decimals": 6,
+      "asset": "USDC",
+      "assetAddress": "0x9005000000000000000000000000000000000005",
+      "txHash": "0x92bb000300000000000000000000000000000000000000000000000000000006",
+      "tag": "Ops wallet"
+    }
+  ]
+}

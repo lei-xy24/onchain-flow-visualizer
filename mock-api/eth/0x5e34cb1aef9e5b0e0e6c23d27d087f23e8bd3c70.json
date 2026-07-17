@@ -1,0 +1,75 @@
+{
+  "chain": "eth",
+  "address": "0x5E34cB1aef9E5B0E0E6C23d27D087F23E8bd3c70",
+  "label": "Deposit address",
+  "input": [
+    {
+      "id": "eth-deposit-input-1",
+      "address": "0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97",
+      "time": "2026-07-09T10:14:37Z",
+      "rawAmount": "5120000000000000000",
+      "decimals": 18,
+      "asset": "ETH",
+      "assetAddress": null,
+      "txHash": "0xe2aa000100000000000000000000000000000000000000000000000000000001",
+      "tag": "ETH sample account"
+    },
+    {
+      "id": "eth-deposit-input-2",
+      "address": "0xE1A3000000000000000000000000000000000003",
+      "time": "2026-07-09T10:29:11Z",
+      "rawAmount": "12500000000",
+      "decimals": 6,
+      "asset": "USDC",
+      "assetAddress": "0xE1A5000000000000000000000000000000000005",
+      "txHash": "0xe2aa000200000000000000000000000000000000000000000000000000000002",
+      "tag": "Market maker"
+    },
+    {
+      "id": "eth-deposit-input-3",
+      "address": "0xE1A4000000000000000000000000000000000004",
+      "time": "2026-07-09T10:41:39Z",
+      "rawAmount": "900000000000000000",
+      "decimals": 18,
+      "asset": "ETH",
+      "assetAddress": null,
+      "txHash": "0xe2aa000300000000000000000000000000000000000000000000000000000003",
+      "tag": "Compliance wallet"
+    }
+  ],
+  "output": [
+    {
+      "id": "eth-deposit-output-1",
+      "address": "0xE1A6000000000000000000000000000000000006",
+      "time": "2026-07-09T10:52:00Z",
+      "rawAmount": "4800000000000000000",
+      "decimals": 18,
+      "asset": "ETH",
+      "assetAddress": null,
+      "txHash": "0xe2bb000100000000000000000000000000000000000000000000000000000004",
+      "tag": "Cold wallet"
+    },
+    {
+      "id": "eth-deposit-output-2",
+      "address": "0x3DcA2a336a29C02E4c2d06b0940Bf338c5d07001",
+      "time": "2026-07-09T11:03:46Z",
+      "rawAmount": "9000000000",
+      "decimals": 6,
+      "asset": "USDC",
+      "assetAddress": "0xE1A5000000000000000000000000000000000005",
+      "txHash": "0xe2bb000200000000000000000000000000000000000000000000000000000005",
+      "tag": "Mixer interaction"
+    },
+    {
+      "id": "eth-deposit-output-3",
+      "address": "0xE1A7000000000000000000000000000000000007",
+      "time": "2026-07-09T11:18:22Z",
+      "rawAmount": "240000000000000000",
+      "decimals": 18,
+      "asset": "ETH",
+      "assetAddress": null,
+      "txHash": "0xe2bb000300000000000000000000000000000000000000000000000000000006",
+      "tag": "Fee wallet"
+    }
+  ]
+}

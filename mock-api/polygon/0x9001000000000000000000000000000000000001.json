@@ -1,0 +1,75 @@
+{
+  "chain": "polygon",
+  "address": "0x9001000000000000000000000000000000000001",
+  "label": "Polygon bridge",
+  "input": [
+    {
+      "id": "polygon-bridge-input-1",
+      "address": "0x9006000000000000000000000000000000000006",
+      "time": "2026-07-10T02:42:18Z",
+      "rawAmount": "2500000000000000000000",
+      "decimals": 18,
+      "asset": "MATIC",
+      "assetAddress": null,
+      "txHash": "0x91aa000100000000000000000000000000000000000000000000000000000001",
+      "tag": "Bridge reserve"
+    },
+    {
+      "id": "polygon-bridge-input-2",
+      "address": "0x9002000000000000000000000000000000000002",
+      "time": "2026-07-10T02:57:04Z",
+      "rawAmount": "1800000000",
+      "decimals": 6,
+      "asset": "USDC",
+      "assetAddress": "0x9005000000000000000000000000000000000005",
+      "txHash": "0x91aa000200000000000000000000000000000000000000000000000000000002",
+      "tag": "USDC treasury"
+    },
+    {
+      "id": "polygon-bridge-input-3",
+      "address": "0x9007000000000000000000000000000000000007",
+      "time": "2026-07-10T03:03:55Z",
+      "rawAmount": "310000000000000000000",
+      "decimals": 18,
+      "asset": "MATIC",
+      "assetAddress": null,
+      "txHash": "0x91aa000300000000000000000000000000000000000000000000000000000003",
+      "tag": "Bridge operator"
+    }
+  ],
+  "output": [
+    {
+      "id": "polygon-bridge-output-1",
+      "address": "0x9000000000000000000000000000000000000001",
+      "time": "2026-07-10T03:11:20Z",
+      "rawAmount": "1480000000000000000000",
+      "decimals": 18,
+      "asset": "MATIC",
+      "assetAddress": null,
+      "txHash": "0x91bb000100000000000000000000000000000000000000000000000000000004",
+      "tag": "Polygon sample account"
+    },
+    {
+      "id": "polygon-bridge-output-2",
+      "address": "0x9003000000000000000000000000000000000003",
+      "time": "2026-07-10T03:26:48Z",
+      "rawAmount": "430000000000000000000",
+      "decimals": 18,
+      "asset": "MATIC",
+      "assetAddress": null,
+      "txHash": "0x91bb000200000000000000000000000000000000000000000000000000000005",
+      "tag": "Gas dispersal"
+    },
+    {
+      "id": "polygon-bridge-output-3",
+      "address": "0x9008000000000000000000000000000000000008",
+      "time": "2026-07-10T03:37:15Z",
+      "rawAmount": "900000000",
+      "decimals": 6,
+      "asset": "USDC",
+      "assetAddress": "0x9005000000000000000000000000000000000005",
+      "txHash": "0x91bb000300000000000000000000000000000000000000000000000000000006",
+      "tag": "Settlement wallet"
+    }
+  ]
+}

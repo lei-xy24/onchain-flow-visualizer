@@ -669,6 +669,25 @@ a {
   opacity: 0.2;
 }
 
+.account-node.is-inactive {
+  opacity: 0.58;
+}
+
+.account-node.is-inactive:hover,
+.account-node.is-inactive:focus-visible,
+.account-node.is-inactive.is-selected {
+  opacity: 1;
+}
+
+.account-node.is-inactive.is-dimmed {
+  opacity: 0.2;
+}
+
+.account-node.is-inactive .node-halo {
+  fill: rgba(82, 96, 100, 0.04);
+  stroke: rgba(82, 96, 100, 0.14);
+}
+
 .account-node .node-halo {
   fill: rgba(8, 127, 123, 0.08);
   stroke: rgba(8, 127, 123, 0.18);

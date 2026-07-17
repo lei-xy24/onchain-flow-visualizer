@@ -1,0 +1,75 @@
+{
+  "chain": "bsc",
+  "address": "0xB5C1000000000000000000000000000000000001",
+  "label": "BSC exchange wallet",
+  "input": [
+    {
+      "id": "bsc-exchange-input-1",
+      "address": "0xB5C6100000000000000000000000000000000001",
+      "time": "2026-07-10T00:39:12Z",
+      "rawAmount": "25000000000000000000",
+      "decimals": 18,
+      "asset": "BNB",
+      "assetAddress": null,
+      "txHash": "0xb1aa000100000000000000000000000000000000000000000000000000000001",
+      "tag": "Exchange treasury"
+    },
+    {
+      "id": "bsc-exchange-input-2",
+      "address": "0xB5C6200000000000000000000000000000000002",
+      "time": "2026-07-10T00:52:26Z",
+      "rawAmount": "1500000000000000000000",
+      "decimals": 18,
+      "asset": "USDT",
+      "assetAddress": "0xB5C5000000000000000000000000000000000005",
+      "txHash": "0xb1aa000200000000000000000000000000000000000000000000000000000002",
+      "tag": "Stablecoin desk"
+    },
+    {
+      "id": "bsc-exchange-input-3",
+      "address": "0xB5C7000000000000000000000000000000000007",
+      "time": "2026-07-10T01:01:19Z",
+      "rawAmount": "7800000000000000000",
+      "decimals": 18,
+      "asset": "BNB",
+      "assetAddress": null,
+      "txHash": "0xb1aa000300000000000000000000000000000000000000000000000000000003",
+      "tag": "Validator payout"
+    }
+  ],
+  "output": [
+    {
+      "id": "bsc-exchange-output-1",
+      "address": "0xB5C0000000000000000000000000000000000001",
+      "time": "2026-07-10T01:08:12Z",
+      "rawAmount": "18600000000000000000",
+      "decimals": 18,
+      "asset": "BNB",
+      "assetAddress": null,
+      "txHash": "0xb1bb000100000000000000000000000000000000000000000000000000000004",
+      "tag": "BSC sample account"
+    },
+    {
+      "id": "bsc-exchange-output-2",
+      "address": "0xB5C3000000000000000000000000000000000003",
+      "time": "2026-07-10T01:18:50Z",
+      "rawAmount": "4200000000000000000",
+      "decimals": 18,
+      "asset": "BNB",
+      "assetAddress": null,
+      "txHash": "0xb1bb000200000000000000000000000000000000000000000000000000000005",
+      "tag": "DEX router"
+    },
+    {
+      "id": "bsc-exchange-output-3",
+      "address": "0xB5C2000000000000000000000000000000000002",
+      "time": "2026-07-10T01:31:43Z",
+      "rawAmount": "1200000000000000000000",
+      "decimals": 18,
+      "asset": "USDT",
+      "assetAddress": "0xB5C5000000000000000000000000000000000005",
+      "txHash": "0xb1bb000300000000000000000000000000000000000000000000000000000006",
+      "tag": "BEP20 stablecoin source"
+    }
+  ]
+}

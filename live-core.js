@@ -165,27 +165,84 @@ export function getDensityRule(valueUsd) {
   );
 }
 
-export function buildGraphModel(response, width = 1100, height = 700) {
-  const nodeMap = new Map();
+export function buildGraphModel(
+  response,
+  width = 1100,
+  height = 700,
+  previousGraph = null,
+) {
+  const previousNodes = Array.isArray(previousGraph?.nodes)
+    ? previousGraph.nodes
+    : [];
+  const nodeMap = new Map(
+    previousNodes.map((node, index) => [
+      node.key,
+      {
+        ...node,
+        order: Number.isInteger(node.order) ? node.order : index,
+        active: false,
+        currentInUsd: 0,
+        currentOutUsd: 0,
+        currentTotalUsd: 0,
+        currentTransactionCount: 0,
+      },
+    ]),
+  );
+  const seenTransferIds = new Set(previousGraph?.seenTransferIds || []);
+  let nextOrder = previousNodes.reduce(
+    (highest, node, index) =>
+      Math.max(highest, Number.isInteger(node.order) ? node.order : index),
+    -1,
+  ) + 1;
 
   for (const transfer of response.transfers) {
-    const fromNode = getOrCreateNode(nodeMap, transfer.from, transfer.fromLabel);
-    const toNode = getOrCreateNode(nodeMap, transfer.to, transfer.toLabel);
-    fromNode.outUsd += transfer.valueUsd;
-    fromNode.totalUsd += transfer.valueUsd;
-    fromNode.transactionCount += 1;
-    toNode.inUsd += transfer.valueUsd;
-    toNode.totalUsd += transfer.valueUsd;
-    toNode.transactionCount += 1;
+    const fromResult = getOrCreateNode(
+      nodeMap,
+      transfer.from,
+      transfer.fromLabel,
+      nextOrder,
+      transfer.time,
+    );
+    if (fromResult.created) nextOrder += 1;
+    const toResult = getOrCreateNode(
+      nodeMap,
+      transfer.to,
+      transfer.toLabel,
+      nextOrder,
+      transfer.time,
+    );
+    if (toResult.created) nextOrder += 1;
+
+    updateNodeMetrics(
+      fromResult.node,
+      toResult.node,
+      transfer.valueUsd,
+      "current",
+    );
+    fromResult.node.active = true;
+    toResult.node.active = true;
+    fromResult.node.lastSeenAt = latestTime(
+      fromResult.node.lastSeenAt,
+      transfer.time,
+    );
+    toResult.node.lastSeenAt = latestTime(toResult.node.lastSeenAt, transfer.time);
+
+    if (!seenTransferIds.has(transfer.id)) {
+      updateNodeMetrics(fromResult.node, toResult.node, transfer.valueUsd);
+      seenTransferIds.add(transfer.id);
+    }
   }
 
   const nodes = [...nodeMap.values()].sort(
-    (left, right) =>
-      right.transactionCount - left.transactionCount ||
-      right.totalUsd - left.totalUsd ||
-      left.address.localeCompare(right.address),
+    (left, right) => left.order - right.order || left.address.localeCompare(right.address),
   );
-  positionNodes(nodes, width, height);
+  const layoutScale = positionNodes(
+    nodes,
+    response.transfers,
+    width,
+    height,
+    previousGraph,
+  );
   const positioned = new Map(nodes.map((node) => [node.key, node]));
 
   const edges = response.transfers.map((transfer) => {
@@ -201,7 +258,7 @@ export function buildGraphModel(response, width = 1100, height = 700) {
     };
   });
 
-  return { nodes, edges, width, height };
+  return { nodes, edges, width, height, layoutScale, seenTransferIds };
 }
 
 export function formatRawAmount(rawAmount, decimals, maxFractionDigits = 6) {
@@ -245,33 +302,60 @@ export function isEvmAddress(value) {
   return typeof value === "string" && EVM_ADDRESS_PATTERN.test(value);
 }
 
-function getOrCreateNode(nodeMap, address, label) {
+function getOrCreateNode(nodeMap, address, label, order, firstSeenAt) {
   const key = address.toLowerCase();
   if (!nodeMap.has(key)) {
     nodeMap.set(key, {
       key,
       address,
       label: label || shortAddress(address),
+      order,
+      firstSeenAt,
+      lastSeenAt: firstSeenAt,
+      active: false,
       inUsd: 0,
       outUsd: 0,
       totalUsd: 0,
       transactionCount: 0,
+      currentInUsd: 0,
+      currentOutUsd: 0,
+      currentTotalUsd: 0,
+      currentTransactionCount: 0,
       radius: 30,
       x: 0,
       y: 0,
     });
+    return { node: nodeMap.get(key), created: true };
   } else if (label && nodeMap.get(key).label === shortAddress(address)) {
     nodeMap.get(key).label = label;
   }
-  return nodeMap.get(key);
+  return { node: nodeMap.get(key), created: false };
 }
 
-function positionNodes(nodes, width, height) {
-  if (nodes.length === 0) return;
+function updateNodeMetrics(fromNode, toNode, valueUsd, prefix = "") {
+  const field = (name) =>
+    prefix ? `${prefix}${name[0].toUpperCase()}${name.slice(1)}` : name;
+  fromNode[field("outUsd")] += valueUsd;
+  toNode[field("inUsd")] += valueUsd;
+
+  if (fromNode.key === toNode.key) {
+    fromNode[field("totalUsd")] += valueUsd;
+    fromNode[field("transactionCount")] += 1;
+    return;
+  }
+
+  fromNode[field("totalUsd")] += valueUsd;
+  fromNode[field("transactionCount")] += 1;
+  toNode[field("totalUsd")] += valueUsd;
+  toNode[field("transactionCount")] += 1;
+}
+
+function positionNodes(nodes, transfers, width, height, previousGraph) {
+  if (nodes.length === 0) return 1;
   const centerX = width / 2;
   const centerY = height / 2;
-  const maxRadius = Math.min(width * 0.39, height * 0.39);
   const crowdedScale = nodes.length > 24 ? 0.72 : nodes.length > 14 ? 0.84 : 1;
+  const layoutScale = getLayoutScale(nodes.length);
 
   nodes.forEach((node) => {
     node.radius = Math.round(
@@ -282,19 +366,184 @@ function positionNodes(nodes, width, height) {
     );
   });
 
-  nodes[0].x = centerX;
-  nodes[0].y = centerY;
-  if (nodes.length === 1) return;
+  const previousByKey = new Map(
+    (previousGraph?.nodes || []).map((node) => [node.key, node]),
+  );
+  if (previousByKey.size === 0) {
+    positionInitialNodes(nodes, width, height, layoutScale);
+    return layoutScale;
+  }
 
-  const remaining = nodes.length - 1;
+  const previousWidth = previousGraph.width || width;
+  const previousHeight = previousGraph.height || height;
+  const previousCenterX = previousWidth / 2;
+  const previousCenterY = previousHeight / 2;
+  const previousLayoutScale =
+    previousGraph.layoutScale || getLayoutScale(previousByKey.size);
+  const compactRatio = layoutScale / previousLayoutScale;
+  const geometryChanged =
+    previousWidth !== width || previousHeight !== height || compactRatio !== 1;
+  const positionedNodes = [];
+
+  for (const node of nodes) {
+    const previousNode = previousByKey.get(node.key);
+    if (!previousNode) continue;
+    if (!geometryChanged) {
+      node.x = previousNode.x;
+      node.y = previousNode.y;
+      positionedNodes.push(node);
+      continue;
+    }
+    node.x = clamp(
+      centerX +
+        (previousNode.x - previousCenterX) *
+          (width / previousWidth) *
+          compactRatio,
+      node.radius + 54,
+      width - node.radius - 54,
+    );
+    node.y = clamp(
+      centerY +
+        (previousNode.y - previousCenterY) *
+          (height / previousHeight) *
+          compactRatio,
+      node.radius + 30,
+      height - node.radius - 58,
+    );
+    positionedNodes.push(node);
+  }
+
+  for (const node of nodes) {
+    if (previousByKey.has(node.key)) continue;
+    const anchor = getNodeAnchor(
+      node.key,
+      transfers,
+      new Map(positionedNodes.map((item) => [item.key, item])),
+      centerX,
+      centerY,
+    );
+    const position = findOpenPosition(
+      node,
+      positionedNodes,
+      anchor,
+      width,
+      height,
+    );
+    node.x = position.x;
+    node.y = position.y;
+    positionedNodes.push(node);
+  }
+
+  return layoutScale;
+}
+
+function positionInitialNodes(nodes, width, height, layoutScale) {
+  const centerX = width / 2;
+  const centerY = height / 2;
+  const maxRadius = Math.min(width * 0.39, height * 0.39) * layoutScale;
+  const layoutOrder = [...nodes].sort(
+    (left, right) =>
+      right.currentTransactionCount - left.currentTransactionCount ||
+      right.currentTotalUsd - left.currentTotalUsd ||
+      left.order - right.order,
+  );
+
+  layoutOrder[0].x = centerX;
+  layoutOrder[0].y = centerY;
+  if (layoutOrder.length === 1) return;
+
+  const remaining = layoutOrder.length - 1;
   const goldenAngle = Math.PI * (3 - Math.sqrt(5));
   for (let index = 0; index < remaining; index += 1) {
     const normalized = remaining === 1 ? 1 : Math.sqrt((index + 1) / remaining);
-    const radius = 120 + normalized * (maxRadius - 120);
+    const radius = 110 + normalized * Math.max(0, maxRadius - 110);
     const angle = -Math.PI / 2 + index * goldenAngle;
-    nodes[index + 1].x = centerX + Math.cos(angle) * radius;
-    nodes[index + 1].y = centerY + Math.sin(angle) * radius;
+    layoutOrder[index + 1].x = centerX + Math.cos(angle) * radius;
+    layoutOrder[index + 1].y = centerY + Math.sin(angle) * radius;
   }
+}
+
+function getLayoutScale(nodeCount) {
+  if (nodeCount <= 10) return 1;
+  return Math.max(0.72, 1 - (nodeCount - 10) * 0.012);
+}
+
+function getNodeAnchor(nodeKey, transfers, positioned, centerX, centerY) {
+  const related = [];
+  for (const transfer of transfers) {
+    const fromKey = transfer.from.toLowerCase();
+    const toKey = transfer.to.toLowerCase();
+    if (fromKey === nodeKey && positioned.has(toKey)) {
+      related.push(positioned.get(toKey));
+    } else if (toKey === nodeKey && positioned.has(fromKey)) {
+      related.push(positioned.get(fromKey));
+    }
+  }
+
+  if (related.length === 0) return { x: centerX, y: centerY };
+  return {
+    x: related.reduce((sum, node) => sum + node.x, 0) / related.length,
+    y: related.reduce((sum, node) => sum + node.y, 0) / related.length,
+  };
+}
+
+function findOpenPosition(node, positionedNodes, anchor, width, height) {
+  if (positionedNodes.length === 0) {
+    return { x: width / 2, y: height / 2 };
+  }
+
+  const horizontalMargin = node.radius + 54;
+  const topMargin = node.radius + 30;
+  const bottomMargin = node.radius + 58;
+  const desiredGap = positionedNodes.length > 24
+    ? 16
+    : positionedNodes.length > 14
+      ? 26
+      : 40;
+  const seedAngle = ((hashString(node.key) % 360) / 180) * Math.PI;
+  let best = null;
+
+  for (let ring = 1; ring <= 8; ring += 1) {
+    const slots = 10 + ring * 4;
+    const distance = 86 + ring * 42;
+    for (let slot = 0; slot < slots; slot += 1) {
+      const angle = seedAngle + (slot / slots) * Math.PI * 2;
+      const candidate = {
+        x: clamp(
+          anchor.x + Math.cos(angle) * distance,
+          horizontalMargin,
+          width - horizontalMargin,
+        ),
+        y: clamp(
+          anchor.y + Math.sin(angle) * distance,
+          topMargin,
+          height - bottomMargin,
+        ),
+      };
+      const clearance = Math.min(
+        ...positionedNodes.map(
+          (positioned) =>
+            Math.hypot(candidate.x - positioned.x, candidate.y - positioned.y) -
+            node.radius -
+            positioned.radius,
+        ),
+      );
+      const anchorDistance = Math.hypot(
+        candidate.x - anchor.x,
+        candidate.y - anchor.y,
+      );
+      const score = clearance - anchorDistance * 0.025;
+      if (!best || score > best.score) best = { ...candidate, score };
+      if (clearance >= desiredGap) return candidate;
+    }
+  }
+
+  return best || { x: width / 2, y: height / 2 };
+}
+
+function latestTime(current, candidate) {
+  if (!current || Date.parse(candidate) > Date.parse(current)) return candidate;
+  return current;
 }
 
 function createEdgePath(source, target, id) {
@@ -380,4 +629,8 @@ function hashString(value) {
 
 function round(value) {
   return Math.round(value * 10) / 10;
+}
+
+function clamp(value, minimum, maximum) {
+  return Math.max(minimum, Math.min(maximum, value));
 }
