@@ -16,7 +16,6 @@
       "decimals": 18,
       "asset": "POL",
       "assetAddress": null,
-      "valueUsd": 2500,
       "txHash": "0x900dd00100000000000000000000000000000000000000000000000000000007"
     },
     {
@@ -30,7 +29,6 @@
       "decimals": 18,
       "asset": "POL",
       "assetAddress": null,
-      "valueUsd": 480000,
       "txHash": "0x900dd00200000000000000000000000000000000000000000000000000000008"
     },
     {
@@ -44,7 +42,6 @@
       "decimals": 18,
       "asset": "POL",
       "assetAddress": null,
-      "valueUsd": 450,
       "txHash": "0x900ee00100000000000000000000000000000000000000000000000000000009"
     },
     {
@@ -54,11 +51,10 @@
       "fromLabel": "Treasury",
       "toLabel": "Bridge Vault",
       "time": "2026-07-16T08:02:16Z",
-      "rawAmount": "78000000000",
-      "decimals": 6,
-      "asset": "USDC",
-      "assetAddress": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
-      "valueUsd": 78000,
+      "rawAmount": "78000000000000000000000",
+      "decimals": 18,
+      "asset": "POL",
+      "assetAddress": null,
       "txHash": "0x900ee0020000000000000000000000000000000000000000000000000000000a"
     },
     {
@@ -72,7 +68,6 @@
       "decimals": 18,
       "asset": "POL",
       "assetAddress": null,
-      "valueUsd": 2200000,
       "txHash": "0x900ff0010000000000000000000000000000000000000000000000000000000b"
     },
     {
@@ -86,7 +81,6 @@
       "decimals": 18,
       "asset": "POL",
       "assetAddress": null,
-      "valueUsd": 21000,
       "txHash": "0x900ff0020000000000000000000000000000000000000000000000000000000c"
     }
   ]

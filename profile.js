@@ -8,7 +8,7 @@ import {
   loadFlowRecords,
   shortAddress,
   shortHash,
-} from "./flow-demo-data.js?v=20260722-analysis-tools";
+} from "./flow-demo-data.js?v=20260722-native-assets";
 
 const elements = {
   form: document.getElementById("profile-form"),

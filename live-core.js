@@ -131,13 +131,6 @@ export function parseLiveResponse(value, expectedChain) {
       );
     }
 
-    const valueUsd = transfer.valueUsd ?? 0;
-    if (typeof valueUsd !== "number" || !Number.isFinite(valueUsd) || valueUsd < 0) {
-      throw new LiveDataValidationError(
-        `${path}.valueUsd must be a non-negative number when provided`,
-      );
-    }
-
     const txHash = requireString(transfer.txHash, `${path}.txHash`);
     if (!TX_HASH_PATTERN.test(txHash)) {
       throw new LiveDataValidationError(`${path}.txHash is invalid`);
@@ -154,7 +147,6 @@ export function parseLiveResponse(value, expectedChain) {
       assetAddress,
       amountScore: getAmountScore(rawAmount, decimals),
       amountWeight: Math.max(0.1, getAmountScore(rawAmount, decimals) + 7),
-      valueUsd,
       txHash,
       ...optionalField(transfer.fromLabel, "fromLabel", `${path}.fromLabel`),
       ...optionalField(transfer.toLabel, "toLabel", `${path}.toLabel`),
@@ -192,9 +184,9 @@ export function buildGraphModel(
         ...node,
         order: Number.isInteger(node.order) ? node.order : index,
         active: false,
-        currentInUsd: 0,
-        currentOutUsd: 0,
-        currentTotalUsd: 0,
+        currentInAmountWeight: 0,
+        currentOutAmountWeight: 0,
+        currentTotalAmountWeight: 0,
         currentTransactionCount: 0,
       },
     ]),
@@ -321,19 +313,6 @@ export function formatTransferTotal(transfers) {
     .join(" + ");
 }
 
-export function formatUsd(value) {
-  if (!Number.isFinite(value)) return "$0";
-  const absolute = Math.abs(value);
-  if (absolute >= 1_000_000_000) return `$${trimFixed(value / 1_000_000_000)}B`;
-  if (absolute >= 1_000_000) return `$${trimFixed(value / 1_000_000)}M`;
-  if (absolute >= 1_000) return `$${trimFixed(value / 1_000)}K`;
-  return new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    maximumFractionDigits: absolute < 10 ? 2 : 0,
-  }).format(value);
-}
-
 function addRawAmounts(existing, transfer) {
   return {
     ...existing,
@@ -375,13 +354,13 @@ function getOrCreateNode(nodeMap, address, label, order, firstSeenAt) {
       firstSeenAt,
       lastSeenAt: firstSeenAt,
       active: false,
-      inUsd: 0,
-      outUsd: 0,
-      totalUsd: 0,
+      inAmountWeight: 0,
+      outAmountWeight: 0,
+      totalAmountWeight: 0,
       transactionCount: 0,
-      currentInUsd: 0,
-      currentOutUsd: 0,
-      currentTotalUsd: 0,
+      currentInAmountWeight: 0,
+      currentOutAmountWeight: 0,
+      currentTotalAmountWeight: 0,
       currentTransactionCount: 0,
       radius: 30,
       x: 0,
@@ -394,21 +373,21 @@ function getOrCreateNode(nodeMap, address, label, order, firstSeenAt) {
   return { node: nodeMap.get(key), created: false };
 }
 
-function updateNodeMetrics(fromNode, toNode, valueUsd, prefix = "") {
+function updateNodeMetrics(fromNode, toNode, amountWeight, prefix = "") {
   const field = (name) =>
     prefix ? `${prefix}${name[0].toUpperCase()}${name.slice(1)}` : name;
-  fromNode[field("outUsd")] += valueUsd;
-  toNode[field("inUsd")] += valueUsd;
+  fromNode[field("outAmountWeight")] += amountWeight;
+  toNode[field("inAmountWeight")] += amountWeight;
 
   if (fromNode.key === toNode.key) {
-    fromNode[field("totalUsd")] += valueUsd;
+    fromNode[field("totalAmountWeight")] += amountWeight;
     fromNode[field("transactionCount")] += 1;
     return;
   }
 
-  fromNode[field("totalUsd")] += valueUsd;
+  fromNode[field("totalAmountWeight")] += amountWeight;
   fromNode[field("transactionCount")] += 1;
-  toNode[field("totalUsd")] += valueUsd;
+  toNode[field("totalAmountWeight")] += amountWeight;
   toNode[field("transactionCount")] += 1;
 }
 
@@ -423,7 +402,10 @@ function positionNodes(nodes, transfers, width, height, previousGraph) {
     node.radius = Math.round(
       Math.max(
         22,
-        Math.min(44, (25 + Math.log10(node.totalUsd + 1) * 2.8) * crowdedScale),
+        Math.min(
+          44,
+          (25 + Math.log10(node.totalAmountWeight + 1) * 2.8) * crowdedScale,
+        ),
       ),
     );
   });
@@ -506,7 +488,7 @@ function positionInitialNodes(nodes, width, height, layoutScale) {
   const layoutOrder = [...nodes].sort(
     (left, right) =>
       right.currentTransactionCount - left.currentTransactionCount ||
-      right.currentTotalUsd - left.currentTotalUsd ||
+      right.currentTotalAmountWeight - left.currentTotalAmountWeight ||
       left.order - right.order,
   );
 

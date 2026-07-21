@@ -16,7 +16,6 @@
       "decimals": 18,
       "asset": "POL",
       "assetAddress": null,
-      "valueUsd": 1225000,
       "txHash": "0x63632f9fded71991f8bbbe7ab661982592a592cc8f8a7fd19d7073b711a2d24b"
     },
     {
@@ -26,11 +25,10 @@
       "fromLabel": "Treasury",
       "toLabel": "Lending Pool",
       "time": "2026-07-16T08:02:43Z",
-      "rawAmount": "260000000000",
-      "decimals": 6,
-      "asset": "USDC",
-      "assetAddress": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
-      "valueUsd": 260000,
+      "rawAmount": "260000000000000000000000",
+      "decimals": 18,
+      "asset": "POL",
+      "assetAddress": null,
       "txHash": "0xe2cafb4027f6fece34e6be6398498848f5a3be2e64cdbe5ddd6bfeb551a75106"
     },
     {
@@ -44,7 +42,6 @@
       "decimals": 18,
       "asset": "POL",
       "assetAddress": null,
-      "valueUsd": 35000,
       "txHash": "0x3210306d37cae181b3c1d73abba6a827819dfd82c3ca2103b4d7210fb542d681"
     },
     {
@@ -54,11 +51,10 @@
       "fromLabel": "Bridge Vault",
       "toLabel": "Fresh Wallet",
       "time": "2026-07-16T08:02:46Z",
-      "rawAmount": "950000000",
-      "decimals": 6,
-      "asset": "USDC",
-      "assetAddress": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
-      "valueUsd": 950,
+      "rawAmount": "950000000000000000000",
+      "decimals": 18,
+      "asset": "POL",
+      "assetAddress": null,
       "txHash": "0x1245bffd49be8516552b5d189b7e47a22f322989e496e96ce5752f193b4186d3"
     },
     {
@@ -72,7 +68,6 @@
       "decimals": 18,
       "asset": "POL",
       "assetAddress": null,
-      "valueUsd": 8750,
       "txHash": "0x750ba4735ac7ab983e3f9d725f87dbaa14e578d12a944811404979d1b4c06225"
     },
     {
@@ -86,7 +81,6 @@
       "decimals": 18,
       "asset": "POL",
       "assetAddress": null,
-      "valueUsd": 105000,
       "txHash": "0xb8d698e54e391f0e7a0265724b185fe5ddd63d2e292910f2e67057a0d7b4f09a"
     }
   ]

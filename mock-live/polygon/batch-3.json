@@ -16,7 +16,6 @@
       "decimals": 18,
       "asset": "POL",
       "assetAddress": null,
-      "valueUsd": 28000,
       "txHash": "0xbf9df16696c36b2bdfc1c02331f4eb4a659a9376f2cec91c1f71a6d39f1df17d"
     },
     {
@@ -26,11 +25,10 @@
       "fromLabel": "Whale Wallet",
       "toLabel": "Lending Pool",
       "time": "2026-07-16T08:02:23Z",
-      "rawAmount": "420000000000",
-      "decimals": 6,
-      "asset": "USDC",
-      "assetAddress": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
-      "valueUsd": 420000,
+      "rawAmount": "420000000000000000000000",
+      "decimals": 18,
+      "asset": "POL",
+      "assetAddress": null,
       "txHash": "0x94682b525334eaedb50444caa6396844e97eaf0c17da0855c451d5fc9f8ba866"
     },
     {
@@ -44,7 +42,6 @@
       "decimals": 18,
       "asset": "POL",
       "assetAddress": null,
-      "valueUsd": 840,
       "txHash": "0x005b0ef7b281736128cee5ca71e961c369ac447b4e17059a3115c59454d3e8f9"
     },
     {
@@ -58,7 +55,6 @@
       "decimals": 18,
       "asset": "POL",
       "assetAddress": null,
-      "valueUsd": 7000,
       "txHash": "0xcddfe572dea3631a165407d44ac95d70be9a0f906a324949bda1f7793e363759"
     },
     {
@@ -72,7 +68,6 @@
       "decimals": 18,
       "asset": "POL",
       "assetAddress": null,
-      "valueUsd": 1750000,
       "txHash": "0xcfad6a0fd67f50ca0c31a5c7c8d6f30ea6f0f351a956b8cf999c7594def9a61e"
     },
     {
@@ -82,11 +77,10 @@
       "fromLabel": "Bridge Vault",
       "toLabel": "Demo Exchange",
       "time": "2026-07-16T08:02:29Z",
-      "rawAmount": "85000000000",
-      "decimals": 6,
-      "asset": "USDC",
-      "assetAddress": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
-      "valueUsd": 85000,
+      "rawAmount": "85000000000000000000000",
+      "decimals": 18,
+      "asset": "POL",
+      "assetAddress": null,
       "txHash": "0x2e62e0e6e46f83903edf99d62a5a5daceff2e16d8fb15536e936c8a6dd0bdba1"
     }
   ]

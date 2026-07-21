@@ -16,7 +16,6 @@
       "decimals": 18,
       "asset": "POL",
       "assetAddress": null,
-      "valueUsd": 2800000,
       "txHash": "0xa5bac00c47f3c3254f0e7b298cee31b2c9b47cd6c4be692943b0c11c0a25eec8"
     },
     {
@@ -30,7 +29,6 @@
       "decimals": 18,
       "asset": "POL",
       "assetAddress": null,
-      "valueUsd": 315000,
       "txHash": "0x158ea3b4aaabc2b3b69806924ac105f4e219150f899914cd979f8a8b29cb70db"
     },
     {
@@ -40,11 +38,10 @@
       "fromLabel": "Market Maker",
       "toLabel": "Whale Wallet",
       "time": "2026-07-16T08:02:34Z",
-      "rawAmount": "95000000000",
-      "decimals": 6,
-      "asset": "USDC",
-      "assetAddress": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
-      "valueUsd": 95000,
+      "rawAmount": "95000000000000000000000",
+      "decimals": 18,
+      "asset": "POL",
+      "assetAddress": null,
       "txHash": "0x6ac03afa0493237b077703aaa60c6ba107c7403d62f070bec1dd41f0d1f345ac"
     },
     {
@@ -58,7 +55,6 @@
       "decimals": 18,
       "asset": "POL",
       "assetAddress": null,
-      "valueUsd": 700,
       "txHash": "0xc4952fd5d07b81c4d12bfe900409d4525b8a20a4f5dd1de74da32a43450e538e"
     },
     {
@@ -68,11 +64,10 @@
       "fromLabel": "Demo Exchange",
       "toLabel": "DeFi Router",
       "time": "2026-07-16T08:02:38Z",
-      "rawAmount": "12500000000",
-      "decimals": 6,
-      "asset": "USDC",
-      "assetAddress": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
-      "valueUsd": 12500,
+      "rawAmount": "12500000000000000000000",
+      "decimals": 18,
+      "asset": "POL",
+      "assetAddress": null,
       "txHash": "0xab7ed23d660ab3ebf32c049faae842ebb5849d663a5d6ff5765f006a9bebe26d"
     },
     {
@@ -86,7 +81,6 @@
       "decimals": 18,
       "asset": "POL",
       "assetAddress": null,
-      "valueUsd": 4200,
       "txHash": "0xf2bca237906d74d6d72bd42d96cf275acceaf3f3a9b5800a53ff643daa5e61e5"
     }
   ]

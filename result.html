@@ -852,6 +852,7 @@
     <script>
       // Set this to the real endpoint, for example: https://api.example.com/flow
       const BACKEND_API_URL = "";
+      const MOCK_DATA_VERSION = "20260722-native-assets";
       let flowData = null;
       let currentRequest = null;
 
@@ -950,7 +951,7 @@
           return url.toString();
         }
 
-        return `./mock-api/${encodeURIComponent(chain)}/${encodeURIComponent(address.toLowerCase())}.json`;
+        return `./mock-api/${encodeURIComponent(chain)}/${encodeURIComponent(address.toLowerCase())}.json?v=${MOCK_DATA_VERSION}`;
       }
 
       function validateFlowResponse(value, requestedChain, requestedAddress) {

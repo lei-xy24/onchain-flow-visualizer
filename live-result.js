@@ -8,10 +8,11 @@ import {
   parseLiveResponse,
   shortAddress,
   shortHash,
-} from "./live-core.js?v=20260722-analysis-tools";
+} from "./live-core.js?v=20260722-native-assets";
 
 // Set this to the real HTTPS endpoint after the backend is available.
 const BACKEND_API_URL = "";
+const MOCK_DATA_VERSION = "20260722-native-assets";
 const POLL_INTERVAL_MS = 10_000;
 const MOCK_BATCH_COUNTS = Object.freeze({ eth: 5, bsc: 5, polygon: 5 });
 
@@ -228,7 +229,7 @@ function buildRequestUrl() {
     return requestUrl.href;
   }
 
-  return `./mock-live/${state.chain}/batch-${state.mockBatchIndex + 1}.json`;
+  return `./mock-live/${state.chain}/batch-${state.mockBatchIndex + 1}.json?v=${MOCK_DATA_VERSION}`;
 }
 
 function renderResponse() {
@@ -461,8 +462,8 @@ function renderInspector() {
   elements.inspector.hidden = false;
   elements.inspectorLabel.textContent = node.label;
   elements.inspectorAddress.textContent = node.address;
-  elements.inspectorIn.textContent = `等级 ${Math.max(1, Math.min(5, Math.round(node.inUsd)))}/5`;
-  elements.inspectorOut.textContent = `等级 ${Math.max(1, Math.min(5, Math.round(node.outUsd)))}/5`;
+  elements.inspectorIn.textContent = `等级 ${Math.max(1, Math.min(5, Math.round(node.inAmountWeight)))}/5`;
+  elements.inspectorOut.textContent = `等级 ${Math.max(1, Math.min(5, Math.round(node.outAmountWeight)))}/5`;
   elements.inspectorCount.textContent = String(node.transactionCount);
 }
 

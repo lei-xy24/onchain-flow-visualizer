@@ -16,7 +16,6 @@
       "decimals": 18,
       "asset": "BNB",
       "assetAddress": null,
-      "valueUsd": 19200,
       "txHash": "0xb5caa00100000000000000000000000000000000000000000000000000000001"
     },
     {
@@ -30,7 +29,6 @@
       "decimals": 18,
       "asset": "BNB",
       "assetAddress": null,
-      "valueUsd": 480,
       "txHash": "0xb5caa00200000000000000000000000000000000000000000000000000000002"
     },
     {
@@ -44,7 +42,6 @@
       "decimals": 18,
       "asset": "BNB",
       "assetAddress": null,
-      "valueUsd": 720000,
       "txHash": "0xb5cbb00100000000000000000000000000000000000000000000000000000003"
     },
     {
@@ -58,7 +55,6 @@
       "decimals": 18,
       "asset": "USDT",
       "assetAddress": "0x55d398326f99059fF775485246999027B3197955",
-      "valueUsd": 8000,
       "txHash": "0xb5cbb00200000000000000000000000000000000000000000000000000000004"
     },
     {
@@ -72,7 +68,6 @@
       "decimals": 18,
       "asset": "BNB",
       "assetAddress": null,
-      "valueUsd": 1500000,
       "txHash": "0xb5ccc00100000000000000000000000000000000000000000000000000000005"
     },
     {
@@ -86,7 +81,6 @@
       "decimals": 18,
       "asset": "BNB",
       "assetAddress": null,
-      "valueUsd": 45000,
       "txHash": "0xb5ccc00200000000000000000000000000000000000000000000000000000006"
     }
   ]

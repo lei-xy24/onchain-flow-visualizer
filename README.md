@@ -203,7 +203,6 @@ Accept: application/json
 | `decimals` | integer | 是 | 资产小数位，0 到 255 |
 | `asset` | string | 是 | 资产符号，如 `ETH`、`BNB` 或 `POL` |
 | `assetAddress` | string/null | 是 | 代币合约地址；原生资产填 `null` |
-| `valueUsd` | number | 否 | 兼容旧数据的可选字段；当前前端不展示也不依赖 |
 | `txHash` | string | 是 | `0x` 加 64 位十六进制交易哈希 |
 
 ### 点状线密度规则

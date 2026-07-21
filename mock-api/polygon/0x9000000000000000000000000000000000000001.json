@@ -9,7 +9,7 @@
       "time": "2026-07-10T03:11:20Z",
       "rawAmount": "1480000000000000000000",
       "decimals": 18,
-      "asset": "MATIC",
+      "asset": "POL",
       "assetAddress": null,
       "txHash": "0x900aa00100000000000000000000000000000000000000000000000000000001",
       "tag": "Polygon bridge"
@@ -18,12 +18,12 @@
       "id": "polygon-input-2",
       "address": "0x9002000000000000000000000000000000000002",
       "time": "2026-07-10T03:42:37Z",
-      "rawAmount": "3500000000",
-      "decimals": 6,
-      "asset": "USDC",
-      "assetAddress": "0x9005000000000000000000000000000000000005",
+      "rawAmount": "3500000000000000000000",
+      "decimals": 18,
+      "asset": "POL",
+      "assetAddress": null,
       "txHash": "0x900aa00200000000000000000000000000000000000000000000000000000002",
-      "tag": "USDC treasury"
+      "tag": "Liquidity treasury"
     }
   ],
   "output": [
@@ -33,7 +33,7 @@
       "time": "2026-07-10T04:09:18Z",
       "rawAmount": "760000000000000000000",
       "decimals": 18,
-      "asset": "MATIC",
+      "asset": "POL",
       "assetAddress": null,
       "txHash": "0x900bb00100000000000000000000000000000000000000000000000000000003",
       "tag": "Gas dispersal"
@@ -42,10 +42,10 @@
       "id": "polygon-output-2",
       "address": "0x9004000000000000000000000000000000000004",
       "time": "2026-07-10T04:23:45Z",
-      "rawAmount": "2100000000",
-      "decimals": 6,
-      "asset": "USDC",
-      "assetAddress": "0x9005000000000000000000000000000000000005",
+      "rawAmount": "2100000000000000000000",
+      "decimals": 18,
+      "asset": "POL",
+      "assetAddress": null,
       "txHash": "0x900bb00200000000000000000000000000000000000000000000000000000004",
       "tag": "Polygon receiver"
     }

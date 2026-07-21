@@ -16,7 +16,6 @@
       "decimals": 18,
       "asset": "ETH",
       "assetAddress": null,
-      "valueUsd": 28000,
       "txHash": "0x1aa4334db30c21d405c6a7e0a61c49d8738fab02220427498a95123fccf8cbc4"
     },
     {
@@ -26,11 +25,10 @@
       "fromLabel": "Whale Wallet",
       "toLabel": "Lending Pool",
       "time": "2026-07-16T08:00:23Z",
-      "rawAmount": "420000000000",
-      "decimals": 6,
-      "asset": "USDC",
-      "assetAddress": "0xA0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-      "valueUsd": 420000,
+      "rawAmount": "420000000000000000000000",
+      "decimals": 18,
+      "asset": "ETH",
+      "assetAddress": null,
       "txHash": "0x1db8471327ea27563f264d2e09c6e8b8ee3e9e6c6924e37c9c3393658e6684c8"
     },
     {
@@ -44,7 +42,6 @@
       "decimals": 18,
       "asset": "ETH",
       "assetAddress": null,
-      "valueUsd": 840,
       "txHash": "0x747ab83f7096ebf4c4771223bbaef33e0ea9b2d26a705f10a2f121345f43722e"
     },
     {
@@ -58,7 +55,6 @@
       "decimals": 18,
       "asset": "ETH",
       "assetAddress": null,
-      "valueUsd": 7000,
       "txHash": "0x356bd8d723348201e544278db3ecf1072bb8eafe0e7df8579268629a289ee5b5"
     },
     {
@@ -72,7 +68,6 @@
       "decimals": 18,
       "asset": "ETH",
       "assetAddress": null,
-      "valueUsd": 1750000,
       "txHash": "0x924084aaad97d92da14179141c37e949044157126578109f3281833eac0405be"
     },
     {
@@ -82,11 +77,10 @@
       "fromLabel": "Bridge Vault",
       "toLabel": "Demo Exchange",
       "time": "2026-07-16T08:00:29Z",
-      "rawAmount": "85000000000",
-      "decimals": 6,
-      "asset": "USDC",
-      "assetAddress": "0xA0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-      "valueUsd": 85000,
+      "rawAmount": "85000000000000000000000",
+      "decimals": 18,
+      "asset": "ETH",
+      "assetAddress": null,
       "txHash": "0x0bca422370d67f34777644bbccf698a23897c0429f1c7b10d7f23dc63b386f43"
     }
   ]

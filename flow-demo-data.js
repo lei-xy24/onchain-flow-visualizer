@@ -37,6 +37,7 @@ export const FLOW_MOCK_FILES = Object.freeze({
   ],
 });
 
+const MOCK_DATA_VERSION = "20260722-native-assets";
 const EVM_ADDRESS_PATTERN = /^0x[0-9a-fA-F]{40}$/;
 const RAW_AMOUNT_PATTERN = /^\d+$/;
 
@@ -52,7 +53,7 @@ export async function loadFlowRecords(chain) {
   const files = FLOW_MOCK_FILES[chain] || [];
   const records = await Promise.all(
     files.map(async (file) => {
-      const response = await fetch(`./${file}`, {
+      const response = await fetch(`./${file}?v=${MOCK_DATA_VERSION}`, {
         cache: "no-store",
         headers: { Accept: "application/json" },
       });

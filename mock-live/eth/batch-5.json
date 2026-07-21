@@ -16,7 +16,6 @@
       "decimals": 18,
       "asset": "ETH",
       "assetAddress": null,
-      "valueUsd": 1225000,
       "txHash": "0xd46726faec14d91ebf6bdadbbfef4f32ff27aca7b3d071e1d2cefe3a1d2054a8"
     },
     {
@@ -26,11 +25,10 @@
       "fromLabel": "Treasury",
       "toLabel": "Lending Pool",
       "time": "2026-07-16T08:00:43Z",
-      "rawAmount": "260000000000",
-      "decimals": 6,
-      "asset": "USDC",
-      "assetAddress": "0xA0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-      "valueUsd": 260000,
+      "rawAmount": "260000000000000000000000",
+      "decimals": 18,
+      "asset": "ETH",
+      "assetAddress": null,
       "txHash": "0x9bad3e7be0ec2350bdf38dd97ab75bd272848fedbd969c8d3ca71dc20be1586b"
     },
     {
@@ -44,7 +42,6 @@
       "decimals": 18,
       "asset": "ETH",
       "assetAddress": null,
-      "valueUsd": 35000,
       "txHash": "0xb293fddd5c7f71530607fc2bafb80d3b7e9ac5b07bfa2f379a591a77973d98e1"
     },
     {
@@ -54,11 +51,10 @@
       "fromLabel": "Bridge Vault",
       "toLabel": "Fresh Wallet",
       "time": "2026-07-16T08:00:46Z",
-      "rawAmount": "950000000",
-      "decimals": 6,
-      "asset": "USDC",
-      "assetAddress": "0xA0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-      "valueUsd": 950,
+      "rawAmount": "950000000000000000000",
+      "decimals": 18,
+      "asset": "ETH",
+      "assetAddress": null,
       "txHash": "0x455f5211ad860c16c0e99972e356921c54b028a827d8242c7ff300e184d9fc55"
     },
     {
@@ -72,7 +68,6 @@
       "decimals": 18,
       "asset": "ETH",
       "assetAddress": null,
-      "valueUsd": 8750,
       "txHash": "0xf457763946f87cb8782694fd617c82a471b96cc7460478c1a008bb722b66a38d"
     },
     {
@@ -86,7 +81,6 @@
       "decimals": 18,
       "asset": "ETH",
       "assetAddress": null,
-      "valueUsd": 105000,
       "txHash": "0x88388bf6cfd532efb4de4f912885cbd0bcbbd07028c7b68a481a5f034c965ec1"
     }
   ]
