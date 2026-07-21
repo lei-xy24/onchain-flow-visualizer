@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>用户画像原型</title>
+    <meta
+      name="description"
+      content="基于资金流追踪示例数据生成链上账户用户画像原型"
+    />
+    <link rel="stylesheet" href="./live.css?v=20260722-analysis-tools" />
+    <script type="module" src="./profile.js?v=20260722-analysis-tools"></script>
+  </head>
+  <body class="analysis-body">
+    <header class="site-header">
+      <a class="site-brand" href="./index.html" aria-label="DF Flow Tracker 首页">
+        <span class="site-brand-mark" aria-hidden="true">DF</span>
+        <span>Flow Tracker</span>
+      </a>
+      <nav class="tool-nav" aria-label="分析工具">
+        <a href="./index.html">地址追踪</a>
+        <a href="./live.html">实时交易</a>
+        <a href="./profile.html" aria-current="page">用户画像</a>
+        <a href="./relation.html">地址关联</a>
+      </nav>
+    </header>
+
+    <main class="analysis-main">
+      <section class="analysis-hero">
+        <div>
+          <p class="section-kicker">Account profile</p>
+          <h1>用户画像原型</h1>
+          <p>
+            选择网络和账户地址，基于资金流追踪 JSON 汇总账户角色、交易行为、风险线索和关联网络。
+          </p>
+        </div>
+        <form class="analysis-search" id="profile-form">
+          <label for="profile-address">账户地址</label>
+          <div class="analysis-search-row">
+            <select id="profile-chain" aria-label="选择网络">
+              <option value="eth">Ethereum</option>
+              <option value="bsc">BNB Smart Chain</option>
+              <option value="polygon">Polygon PoS</option>
+            </select>
+            <input
+              id="profile-address"
+              autocomplete="off"
+              spellcheck="false"
+              value="0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97"
+              placeholder="0x..."
+            />
+            <button type="submit">生成画像</button>
+          </div>
+          <p class="form-error" id="profile-error" hidden></p>
+        </form>
+      </section>
+
+      <section class="profile-layout" id="profile-output" aria-live="polite"></section>
+    </main>
+  </body>
+</html>

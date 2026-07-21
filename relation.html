@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>地址关联交易查询</title>
+    <meta
+      name="description"
+      content="给定两个链上地址，查询示例资金流数据中的直接关联交易"
+    />
+    <link rel="stylesheet" href="./live.css?v=20260722-analysis-tools" />
+    <script type="module" src="./relation.js?v=20260722-analysis-tools"></script>
+  </head>
+  <body class="analysis-body">
+    <header class="site-header">
+      <a class="site-brand" href="./index.html" aria-label="DF Flow Tracker 首页">
+        <span class="site-brand-mark" aria-hidden="true">DF</span>
+        <span>Flow Tracker</span>
+      </a>
+      <nav class="tool-nav" aria-label="分析工具">
+        <a href="./index.html">地址追踪</a>
+        <a href="./live.html">实时交易</a>
+        <a href="./profile.html">用户画像</a>
+        <a href="./relation.html" aria-current="page">地址关联</a>
+      </nav>
+    </header>
+
+    <main class="analysis-main">
+      <section class="analysis-hero">
+        <div>
+          <p class="section-kicker">Address relation</p>
+          <h1>地址关联交易查询</h1>
+          <p>
+            输入两个地址，页面会读取资金流追踪 JSON，输出两个地址之间的直接转账记录；没有则返回空结果。
+          </p>
+        </div>
+        <form class="analysis-search relation-search" id="relation-form">
+          <label for="relation-address-a">查询条件</label>
+          <div class="analysis-search-row relation-search-row">
+            <select id="relation-chain" aria-label="选择网络">
+              <option value="eth">Ethereum</option>
+              <option value="bsc">BNB Smart Chain</option>
+              <option value="polygon">Polygon PoS</option>
+            </select>
+            <input id="relation-address-a" autocomplete="off" spellcheck="false" />
+            <input id="relation-address-b" autocomplete="off" spellcheck="false" />
+            <button type="submit">查询关联</button>
+          </div>
+          <p class="form-error" id="relation-error" hidden></p>
+        </form>
+      </section>
+
+      <section class="relation-output" id="relation-output" aria-live="polite"></section>
+    </main>
+  </body>
+</html>

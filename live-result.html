@@ -8,21 +8,27 @@
       name="description"
       content="每 10 秒更新一次的链上账户交易动态图谱"
     />
-    <link rel="stylesheet" href="./live.css?v=20260717-persistent-nodes" />
+    <link rel="stylesheet" href="./live.css?v=20260722-analysis-tools" />
     <script
       type="module"
-      src="./live-result.js?v=20260717-persistent-nodes"
+      src="./live-result.js?v=20260722-analysis-tools"
     ></script>
   </head>
   <body class="monitor-body">
     <header class="monitor-header">
       <div class="monitor-header-main">
-        <a class="site-brand" href="./live.html" aria-label="返回实时交易搜索页">
-          <span class="site-brand-mark" aria-hidden="true">DF</span>
-        </a>
-        <div class="monitor-title">
-          <strong>实时交易图谱</strong>
-          <span id="window-label">正在准备最近 10 秒数据</span>
+      <a class="site-brand" href="./live.html" aria-label="返回实时交易搜索页">
+        <span class="site-brand-mark" aria-hidden="true">DF</span>
+      </a>
+      <nav class="tool-nav monitor-nav" aria-label="分析工具">
+        <a href="./index.html">地址追踪</a>
+        <a href="./live.html" aria-current="page">实时交易</a>
+        <a href="./profile.html">用户画像</a>
+        <a href="./relation.html">地址关联</a>
+      </nav>
+      <div class="monitor-title">
+        <strong>实时交易图谱</strong>
+        <span id="window-label">正在准备最近 10 秒数据</span>
         </div>
       </div>
 
@@ -62,7 +68,7 @@
         <div class="graph-summary">
           <div class="graph-heading">
             <h1 id="graph-title">账户间资金流</h1>
-            <p>历史账户持续保留；运动点表示当前窗口交易，美元价值越高则点越密。</p>
+            <p>历史账户持续保留；运动点表示当前窗口交易，交易量越大则点越密。</p>
           </div>
           <div class="graph-metrics" aria-label="当前窗口与累计账户统计">
             <div class="graph-metric">
@@ -74,13 +80,19 @@
               <strong id="account-count">0</strong>
             </div>
             <div class="graph-metric">
-              <span>折合价值</span>
-              <strong id="total-value">$0</strong>
+              <span>交易量</span>
+              <strong id="total-value">0</strong>
             </div>
           </div>
         </div>
 
         <div class="graph-canvas" id="graph-canvas">
+          <div class="graph-zoom-controls" aria-label="图谱缩放">
+            <button id="zoom-out" type="button" aria-label="缩小图谱">−</button>
+            <span id="zoom-label" aria-live="polite">100%</span>
+            <button id="zoom-in" type="button" aria-label="放大图谱">+</button>
+            <button id="zoom-reset" type="button">复位</button>
+          </div>
           <svg
             id="flow-graph"
             viewBox="0 0 1100 700"
@@ -121,8 +133,8 @@
           </div>
           <code class="inspector-address" id="inspector-address"></code>
           <div class="inspector-metrics">
-            <div><span>累计流入</span><strong id="inspector-in">$0</strong></div>
-            <div><span>累计流出</span><strong id="inspector-out">$0</strong></div>
+            <div><span>流入强度</span><strong id="inspector-in">0</strong></div>
+            <div><span>流出强度</span><strong id="inspector-out">0</strong></div>
             <div><span>累计交易</span><strong id="inspector-count">0</strong></div>
           </div>
         </section>

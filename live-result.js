@@ -3,11 +3,12 @@ import {
   LIVE_CHAINS,
   buildGraphModel,
   formatRawAmount,
-  formatUsd,
+  formatTransferAmount,
+  formatTransferTotal,
   parseLiveResponse,
   shortAddress,
   shortHash,
-} from "./live-core.js?v=20260717-persistent-nodes";
+} from "./live-core.js?v=20260722-analysis-tools";
 
 // Set this to the real HTTPS endpoint after the backend is available.
 const BACKEND_API_URL = "";
@@ -27,6 +28,10 @@ const elements = {
   totalValue: document.getElementById("total-value"),
   graphCanvas: document.getElementById("graph-canvas"),
   flowGraph: document.getElementById("flow-graph"),
+  zoomIn: document.getElementById("zoom-in"),
+  zoomOut: document.getElementById("zoom-out"),
+  zoomReset: document.getElementById("zoom-reset"),
+  zoomLabel: document.getElementById("zoom-label"),
   edgeLayer: document.getElementById("edge-layer"),
   nodeLayer: document.getElementById("node-layer"),
   graphMessage: document.getElementById("graph-message"),
@@ -53,6 +58,7 @@ const state = {
   selectedAddress: null,
   selectedTransferId: null,
   resizeTimer: null,
+  zoom: 1,
 };
 
 initialize();
@@ -94,6 +100,19 @@ function bindEvents() {
   elements.refreshButton.addEventListener("click", () => {
     refreshData({ manual: true });
   });
+
+  elements.zoomIn.addEventListener("click", () => setZoom(state.zoom + 0.2));
+  elements.zoomOut.addEventListener("click", () => setZoom(state.zoom - 0.2));
+  elements.zoomReset.addEventListener("click", () => setZoom(1));
+  elements.graphCanvas.addEventListener(
+    "wheel",
+    (event) => {
+      if (!event.ctrlKey && !event.metaKey) return;
+      event.preventDefault();
+      setZoom(state.zoom + (event.deltaY < 0 ? 0.14 : -0.14));
+    },
+    { passive: false },
+  );
 
   elements.closeInspector.addEventListener("click", () => {
     state.selectedAddress = null;
@@ -214,14 +233,10 @@ function buildRequestUrl() {
 
 function renderResponse() {
   const chain = LIVE_CHAINS[state.chain];
-  const totalUsd = state.response.transfers.reduce(
-    (sum, transfer) => sum + transfer.valueUsd,
-    0,
-  );
   elements.windowLabel.textContent = `${formatWindow(state.response.window)} · ${chain.label}`;
   elements.transactionCount.textContent = String(state.response.transfers.length);
   elements.accountCount.textContent = String(state.graph.nodes.length);
-  elements.totalValue.textContent = formatUsd(totalUsd);
+  elements.totalValue.textContent = formatTransferTotal(state.response.transfers);
 
   if (state.graph.nodes.length === 0) {
     elements.edgeLayer.replaceChildren();
@@ -246,14 +261,11 @@ function renderResponse() {
 }
 
 function renderGraph(chain) {
-  elements.flowGraph.setAttribute(
-    "viewBox",
-    `0 0 ${state.graph.width} ${state.graph.height}`,
-  );
+  updateGraphViewport();
   elements.edgeLayer.innerHTML = state.graph.edges
     .map((edge) => {
-      const amount = `${formatRawAmount(edge.rawAmount, edge.decimals)} ${edge.asset}`;
-      const description = `${edge.fromLabel || shortAddress(edge.from)} 到 ${edge.toLabel || shortAddress(edge.to)}，${amount}，${formatUsd(edge.valueUsd)}`;
+      const amount = formatTransferAmount(edge);
+      const description = `${edge.fromLabel || shortAddress(edge.from)} 到 ${edge.toLabel || shortAddress(edge.to)}，${amount}`;
       return `<g
         class="flow-edge-group"
         data-transfer-id="${escapeHtml(edge.id)}"
@@ -279,7 +291,7 @@ function renderGraph(chain) {
       const palette = getNodePalette(node.address);
       const label = truncateLabel(node.label, 18);
       const activityClass = node.active ? "is-active" : "is-inactive";
-      const ariaLabel = `${node.label}，本窗口 ${node.currentTransactionCount} 笔，累计 ${node.transactionCount} 笔交易，总额 ${formatUsd(node.totalUsd)}`;
+      const ariaLabel = `${node.label}，本窗口 ${node.currentTransactionCount} 笔，累计 ${node.transactionCount} 笔交易`;
       return `<g
         class="account-node ${activityClass}"
         data-node-address="${escapeHtml(node.key)}"
@@ -320,7 +332,7 @@ function renderTransactionList() {
       >
         <span class="transaction-row-top">
           <span class="transaction-asset">${escapeHtml(amount)}</span>
-          <span class="transaction-value">${escapeHtml(formatUsd(transfer.valueUsd))}</span>
+          <span class="transaction-value">等级 ${transfer.density.level}/5</span>
         </span>
         <span class="transaction-route">
           <code>${escapeHtml(from)}</code><span aria-hidden="true">→</span><code>${escapeHtml(to)}</code>
@@ -361,10 +373,10 @@ function bindGraphEvents() {
     edgeElement.addEventListener("click", () => selectTransfer(id));
     edgeElement.addEventListener("pointerenter", (event) => {
       const transfer = state.graph.edges.find((edge) => edge.id === id);
-      const amount = `${formatRawAmount(transfer.rawAmount, transfer.decimals)} ${transfer.asset}`;
+      const amount = formatTransferAmount(transfer);
       showTooltip(
         event,
-        `<strong>${escapeHtml(amount)} · ${escapeHtml(formatUsd(transfer.valueUsd))}</strong><span>${escapeHtml(shortAddress(transfer.from))} → ${escapeHtml(shortAddress(transfer.to))}</span><span>密度 ${transfer.density.level}/5</span>`,
+        `<strong>${escapeHtml(amount)}</strong><span>${escapeHtml(shortAddress(transfer.from))} → ${escapeHtml(shortAddress(transfer.to))}</span><span>交易量等级 ${transfer.density.level}/5</span>`,
       );
     });
     edgeElement.addEventListener("pointermove", moveTooltip);
@@ -449,20 +461,40 @@ function renderInspector() {
   elements.inspector.hidden = false;
   elements.inspectorLabel.textContent = node.label;
   elements.inspectorAddress.textContent = node.address;
-  elements.inspectorIn.textContent = formatUsd(node.inUsd);
-  elements.inspectorOut.textContent = formatUsd(node.outUsd);
+  elements.inspectorIn.textContent = `等级 ${Math.max(1, Math.min(5, Math.round(node.inUsd)))}/5`;
+  elements.inspectorOut.textContent = `等级 ${Math.max(1, Math.min(5, Math.round(node.outUsd)))}/5`;
   elements.inspectorCount.textContent = String(node.transactionCount);
 }
 
 function renderDensityLegend() {
   elements.densityLegend.innerHTML = [
-    "<strong>点密度（按 USD）</strong>",
+    "<strong>点密度（按交易量）</strong>",
     ...DENSITY_RULES.map((rule) => {
       const dotCount = rule.level + 1;
       const dots = Array.from({ length: dotCount }, () => "<i></i>").join("");
       return `<span class="density-item"><span class="density-dots" style="--legend-gap: ${Math.max(2, 8 - rule.level)}px">${dots}</span>${escapeHtml(rule.label)}</span>`;
     }),
   ].join("");
+}
+
+function setZoom(nextZoom) {
+  state.zoom = Math.max(0.6, Math.min(2.4, Number(nextZoom.toFixed(2))));
+  updateGraphViewport();
+}
+
+function updateGraphViewport() {
+  if (!state.graph) return;
+  const viewWidth = state.graph.width / state.zoom;
+  const viewHeight = state.graph.height / state.zoom;
+  const viewX = (state.graph.width - viewWidth) / 2;
+  const viewY = (state.graph.height - viewHeight) / 2;
+  elements.flowGraph.setAttribute(
+    "viewBox",
+    `${roundViewBox(viewX)} ${roundViewBox(viewY)} ${roundViewBox(viewWidth)} ${roundViewBox(viewHeight)}`,
+  );
+  elements.zoomLabel.textContent = `${Math.round(state.zoom * 100)}%`;
+  elements.zoomOut.disabled = state.zoom <= 0.61;
+  elements.zoomIn.disabled = state.zoom >= 2.39;
 }
 
 function updateCountdown() {
@@ -549,6 +581,10 @@ function formatClock(time) {
     second: "2-digit",
     hour12: false,
   }).format(new Date(time));
+}
+
+function roundViewBox(value) {
+  return Number(value).toFixed(2).replace(/\.?0+$/, "");
 }
 
 function getInitials(label, address) {

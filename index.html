@@ -186,6 +186,15 @@
         color: var(--teal-dark);
       }
 
+      .feature-links {
+        align-items: center;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 16px;
+        justify-content: center;
+        margin-top: 28px;
+      }
+
       .live-feature-link {
         align-items: center;
         color: var(--teal-dark);
@@ -193,7 +202,6 @@
         font-size: 0.92rem;
         font-weight: 800;
         gap: 8px;
-        margin-top: 28px;
         text-decoration: none;
       }
 
@@ -270,9 +278,17 @@
           </button>
         </div>
 
-        <a class="live-feature-link" href="./live.html">
-          打开实时交易图谱 <span aria-hidden="true">→</span>
-        </a>
+        <div class="feature-links" aria-label="其他分析页面">
+          <a class="live-feature-link" href="./live.html">
+            实时交易图谱 <span aria-hidden="true">→</span>
+          </a>
+          <a class="live-feature-link" href="./profile.html">
+            用户画像原型 <span aria-hidden="true">→</span>
+          </a>
+          <a class="live-feature-link" href="./relation.html">
+            地址关联查询 <span aria-hidden="true">→</span>
+          </a>
+        </div>
       </section>
     </main>
 

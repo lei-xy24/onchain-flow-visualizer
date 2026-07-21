@@ -22,38 +22,45 @@ export const LIVE_CHAINS = Object.freeze({
   },
 });
 
-// Density is based on USD value so every chain and asset follows one scale.
+// Density is based on token amount magnitude so the demo does not require a price API.
 export const DENSITY_RULES = Object.freeze([
-  { level: 1, minUsd: 0, maxUsd: 1_000, label: "< $1K", dotGap: 28, width: 2.4 },
+  {
+    level: 1,
+    minScore: Number.NEGATIVE_INFINITY,
+    maxScore: 0,
+    label: "微量",
+    dotGap: 28,
+    width: 2.4,
+  },
   {
     level: 2,
-    minUsd: 1_000,
-    maxUsd: 10_000,
-    label: "$1K - $10K",
+    minScore: 0,
+    maxScore: 2,
+    label: "小额",
     dotGap: 22,
     width: 2.8,
   },
   {
     level: 3,
-    minUsd: 10_000,
-    maxUsd: 100_000,
-    label: "$10K - $100K",
+    minScore: 2,
+    maxScore: 4,
+    label: "中等",
     dotGap: 18,
     width: 3.2,
   },
   {
     level: 4,
-    minUsd: 100_000,
-    maxUsd: 1_000_000,
-    label: "$100K - $1M",
+    minScore: 4,
+    maxScore: 6,
+    label: "大额",
     dotGap: 13,
     width: 3.8,
   },
   {
     level: 5,
-    minUsd: 1_000_000,
-    maxUsd: Number.POSITIVE_INFINITY,
-    label: "≥ $1M",
+    minScore: 6,
+    maxScore: Number.POSITIVE_INFINITY,
+    label: "巨额",
     dotGap: 8,
     width: 4.4,
   },
@@ -124,9 +131,11 @@ export function parseLiveResponse(value, expectedChain) {
       );
     }
 
-    const valueUsd = transfer.valueUsd;
+    const valueUsd = transfer.valueUsd ?? 0;
     if (typeof valueUsd !== "number" || !Number.isFinite(valueUsd) || valueUsd < 0) {
-      throw new LiveDataValidationError(`${path}.valueUsd must be a non-negative number`);
+      throw new LiveDataValidationError(
+        `${path}.valueUsd must be a non-negative number when provided`,
+      );
     }
 
     const txHash = requireString(transfer.txHash, `${path}.txHash`);
@@ -143,6 +152,8 @@ export function parseLiveResponse(value, expectedChain) {
       decimals,
       asset,
       assetAddress,
+      amountScore: getAmountScore(rawAmount, decimals),
+      amountWeight: Math.max(0.1, getAmountScore(rawAmount, decimals) + 7),
       valueUsd,
       txHash,
       ...optionalField(transfer.fromLabel, "fromLabel", `${path}.fromLabel`),
@@ -157,10 +168,10 @@ export function parseLiveResponse(value, expectedChain) {
   };
 }
 
-export function getDensityRule(valueUsd) {
+export function getDensityRule(amountScore) {
   return (
     DENSITY_RULES.find(
-      (rule) => valueUsd >= rule.minUsd && valueUsd < rule.maxUsd,
+      (rule) => amountScore >= rule.minScore && amountScore < rule.maxScore,
     ) || DENSITY_RULES[DENSITY_RULES.length - 1]
   );
 }
@@ -216,7 +227,7 @@ export function buildGraphModel(
     updateNodeMetrics(
       fromResult.node,
       toResult.node,
-      transfer.valueUsd,
+      transfer.amountWeight,
       "current",
     );
     fromResult.node.active = true;
@@ -228,7 +239,7 @@ export function buildGraphModel(
     toResult.node.lastSeenAt = latestTime(toResult.node.lastSeenAt, transfer.time);
 
     if (!seenTransferIds.has(transfer.id)) {
-      updateNodeMetrics(fromResult.node, toResult.node, transfer.valueUsd);
+      updateNodeMetrics(fromResult.node, toResult.node, transfer.amountWeight);
       seenTransferIds.add(transfer.id);
     }
   }
@@ -248,7 +259,7 @@ export function buildGraphModel(
   const edges = response.transfers.map((transfer) => {
     const source = positioned.get(transfer.from.toLowerCase());
     const target = positioned.get(transfer.to.toLowerCase());
-    const density = getDensityRule(transfer.valueUsd);
+    const density = getDensityRule(transfer.amountScore);
     return {
       ...transfer,
       source,
@@ -277,6 +288,39 @@ export function formatRawAmount(rawAmount, decimals, maxFractionDigits = 6) {
   return fraction ? `${groupDigits(integer)}.${fraction}` : groupDigits(integer);
 }
 
+export function formatTransferAmount(transfer) {
+  return `${formatRawAmount(transfer.rawAmount, transfer.decimals)} ${transfer.asset}`;
+}
+
+export function formatTransferTotal(transfers) {
+  if (!Array.isArray(transfers) || transfers.length === 0) return "0";
+  const totals = new Map();
+  for (const transfer of transfers) {
+    const key = [
+      transfer.asset.toLowerCase(),
+      transfer.assetAddress?.toLowerCase() || "native",
+      transfer.decimals,
+    ].join(":");
+    const existing = totals.get(key);
+    totals.set(key, existing ? addRawAmounts(existing, transfer) : { ...transfer });
+  }
+
+  const symbolCounts = new Map();
+  for (const total of totals.values()) {
+    symbolCounts.set(total.asset, (symbolCounts.get(total.asset) || 0) + 1);
+  }
+
+  return [...totals.values()]
+    .map((total) => {
+      const qualifier =
+        (symbolCounts.get(total.asset) || 0) > 1 && total.assetAddress
+          ? ` (${shortAddress(total.assetAddress)})`
+          : "";
+      return `${formatRawAmount(total.rawAmount, total.decimals)} ${total.asset}${qualifier}`;
+    })
+    .join(" + ");
+}
+
 export function formatUsd(value) {
   if (!Number.isFinite(value)) return "$0";
   const absolute = Math.abs(value);
@@ -288,6 +332,24 @@ export function formatUsd(value) {
     currency: "USD",
     maximumFractionDigits: absolute < 10 ? 2 : 0,
   }).format(value);
+}
+
+function addRawAmounts(existing, transfer) {
+  return {
+    ...existing,
+    rawAmount: (BigInt(existing.rawAmount) + BigInt(transfer.rawAmount)).toString(),
+  };
+}
+
+function getAmountScore(rawAmount, decimals) {
+  const normalized = rawAmount.replace(/^0+/, "");
+  if (!normalized) return Number.NEGATIVE_INFINITY;
+
+  const sampleLength = Math.min(15, normalized.length);
+  const sample = Number(normalized.slice(0, sampleLength));
+  if (!sample) return Number.NEGATIVE_INFINITY;
+
+  return Math.log10(sample) + (normalized.length - sampleLength) - decimals;
 }
 
 export function shortAddress(address) {
