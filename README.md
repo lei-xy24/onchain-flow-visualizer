@@ -181,7 +181,6 @@ Accept: application/json
       "decimals": 18,
       "asset": "ETH",
       "assetAddress": null,
-      "valueUsd": 17500,
       "txHash": "0x7d3d2f8b7d7d5e9d01a6b2073d2a531d74fb8f93d6b18d26c2b2d4f93a3d4812"
     }
   ]
@@ -202,22 +201,22 @@ Accept: application/json
 | `time` | string | 是 | 转账时间，ISO 8601 |
 | `rawAmount` | string | 是 | 链上最小单位整数，只能包含数字 |
 | `decimals` | integer | 是 | 资产小数位，0 到 255 |
-| `asset` | string | 是 | 资产符号，如 `ETH` 或 `USDC` |
+| `asset` | string | 是 | 资产符号，如 `ETH`、`BNB` 或 `POL` |
 | `assetAddress` | string/null | 是 | 代币合约地址；原生资产填 `null` |
-| `valueUsd` | number | 是 | 转账时的美元估值，用于跨币种统一密度 |
+| `valueUsd` | number | 否 | 兼容旧数据的可选字段；当前前端不展示也不依赖 |
 | `txHash` | string | 是 | `0x` 加 64 位十六进制交易哈希 |
 
 ### 点状线密度规则
 
-所有链和所有资产都按 `valueUsd` 使用同一套规则：
+所有链都按币数量数量级使用同一套规则，计算值为 `log10(rawAmount / 10^decimals)`：
 
-| 密度等级 | 美元价值 | 点间距 `dotGap` |
+| 密度等级 | 数量级 | 点间距 `dotGap` |
 | --- | --- | --- |
-| 1 | `< $1,000` | 28 |
-| 2 | `$1,000 - $9,999.99` | 22 |
-| 3 | `$10,000 - $99,999.99` | 18 |
-| 4 | `$100,000 - $999,999.99` | 13 |
-| 5 | `>= $1,000,000` | 8 |
+| 1 | `< 1` | 28 |
+| 2 | `1 - 99.999999` | 22 |
+| 3 | `100 - 9,999.999999` | 18 |
+| 4 | `10,000 - 999,999.999999` | 13 |
+| 5 | `>= 1,000,000` | 8 |
 
 `dotGap` 越小，同一条路径上的运动点越密。方向只由运动点从 `from` 流向 `to` 来表达，不显示箭头。
 
