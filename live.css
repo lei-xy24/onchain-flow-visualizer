@@ -453,12 +453,16 @@ a {
   align-content: center;
   background: #f8fafb;
   border: 1px solid #dbe5e7;
+  display: grid;
+  justify-items: start;
   min-width: 0;
   padding: 20px;
 }
 
 .profile-wheel article:nth-of-type(1) {
   border-radius: 100% 8px 8px 8px;
+  justify-items: end;
+  text-align: right;
 }
 
 .profile-wheel article:nth-of-type(2) {
@@ -467,6 +471,8 @@ a {
 
 .profile-wheel article:nth-of-type(3) {
   border-radius: 8px 8px 8px 100%;
+  justify-items: end;
+  text-align: right;
 }
 
 .profile-wheel article:nth-of-type(4) {
@@ -527,6 +533,10 @@ a {
 .analysis-subsection h3,
 .relation-summary-panel h2 {
   margin: 0;
+}
+
+.relation-summary-panel > div:first-child {
+  margin-bottom: 22px;
 }
 
 .profile-metrics,
