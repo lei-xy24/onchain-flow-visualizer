@@ -8,11 +8,11 @@ import {
   parseLiveResponse,
   shortAddress,
   shortHash,
-} from "./live-core.js?v=20260722-native-assets";
+} from "./live-core.js?v=20260724-native-usd";
 
 // Set this to the real HTTPS endpoint after the backend is available.
 const BACKEND_API_URL = "";
-const MOCK_DATA_VERSION = "20260722-native-assets";
+const MOCK_DATA_VERSION = "20260724-native-usd";
 const POLL_INTERVAL_MS = 10_000;
 const MOCK_BATCH_COUNTS = Object.freeze({ eth: 5, bsc: 5, polygon: 5 });
 

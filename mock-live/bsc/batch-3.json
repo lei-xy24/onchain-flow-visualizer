@@ -27,8 +27,8 @@
       "time": "2026-07-16T08:01:23Z",
       "rawAmount": "420000000000000000000000",
       "decimals": 18,
-      "asset": "USDT",
-      "assetAddress": "0x55d398326f99059fF775485246999027B3197955",
+      "asset": "BNB",
+      "assetAddress": null,
       "txHash": "0xcd73d8a5d9e3420e075a810c813618b126ccf18c890e9a4991fb3bc274f114e1"
     },
     {
@@ -79,8 +79,8 @@
       "time": "2026-07-16T08:01:29Z",
       "rawAmount": "85000000000000000000000",
       "decimals": 18,
-      "asset": "USDT",
-      "assetAddress": "0x55d398326f99059fF775485246999027B3197955",
+      "asset": "BNB",
+      "assetAddress": null,
       "txHash": "0x92d235c619d5cbcf334fe7d179c0c91e6facbf3964e54e26acf4e08746c8bcec"
     }
   ]

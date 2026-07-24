@@ -37,7 +37,7 @@ export const FLOW_MOCK_FILES = Object.freeze({
   ],
 });
 
-const MOCK_DATA_VERSION = "20260722-native-assets";
+const MOCK_DATA_VERSION = "20260724-native-usd";
 const EVM_ADDRESS_PATTERN = /^0x[0-9a-fA-F]{40}$/;
 const RAW_AMOUNT_PATTERN = /^\d+$/;
 
@@ -118,14 +118,16 @@ export function buildAddressProfile(records, address) {
     if (transfer.tag) labels.add(transfer.tag);
   }
 
+  const profileLabels = [...labels];
   const riskTags = inferRiskTags(transfers, counterparties.size);
   return {
     address,
-    labels: [...labels],
+    labels: profileLabels,
     transfers,
     inbound,
     outbound,
     counterparties: [...counterparties.values()],
+    identity: inferIdentity(profileLabels),
     totalAmount: formatTransferTotal(transfers),
     riskTags,
     role: inferRole(inbound.length, outbound.length),
@@ -226,6 +228,20 @@ function inferRole(inboundCount, outboundCount) {
   if (inboundCount) return "资金接收账户";
   if (outboundCount) return "资金发送账户";
   return "暂无交易画像";
+}
+
+function inferIdentity(labels) {
+  const text = labels.join(" ").toLowerCase();
+  if (/binance|币安|exchange|demo exchange|hot wallet/.test(text)) {
+    return "币安 Binance";
+  }
+  if (/bridge/.test(text)) return "跨链桥";
+  if (/treasury|deposit|custody/.test(text)) return "资金托管/金库";
+  if (/market maker/.test(text)) return "做市商";
+  if (/router|dex|defi/.test(text)) return "DeFi 协议";
+  if (/mixer/.test(text)) return "混币交互账户";
+  if (/fresh/.test(text)) return "新建钱包";
+  return "未识别账户";
 }
 
 function inferRiskTags(transfers, counterpartyCount) {

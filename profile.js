@@ -8,7 +8,7 @@ import {
   loadFlowRecords,
   shortAddress,
   shortHash,
-} from "./flow-demo-data.js?v=20260722-native-assets";
+} from "./flow-demo-data.js?v=20260724-native-usd";
 
 const elements = {
   form: document.getElementById("profile-form"),
@@ -65,8 +65,8 @@ function renderProfileHtml(chain, profile) {
           <span>${escapeHtml(FLOW_CHAINS[chain].label)}</span>
         </div>
         <article>
-          <span>账户属性</span>
-          <strong>${escapeHtml(profile.role)}</strong>
+          <span>所属身份</span>
+          <strong>${escapeHtml(profile.identity)}</strong>
         </article>
         <article>
           <span>交易行为</span>

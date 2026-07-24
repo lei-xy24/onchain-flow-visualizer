@@ -20,10 +20,10 @@
       "time": "2026-07-10T02:10:16Z",
       "rawAmount": "920000000000000000000",
       "decimals": 18,
-      "asset": "USDT",
-      "assetAddress": "0xB5C5000000000000000000000000000000000005",
+      "asset": "BNB",
+      "assetAddress": null,
       "txHash": "0xb2aa000200000000000000000000000000000000000000000000000000000002",
-      "tag": "BEP20 stablecoin source"
+      "tag": "BNB treasury source"
     },
     {
       "id": "bsc-router-input-3",
@@ -55,8 +55,8 @@
       "time": "2026-07-10T02:29:27Z",
       "rawAmount": "875000000000000000000",
       "decimals": 18,
-      "asset": "USDT",
-      "assetAddress": "0xB5C5000000000000000000000000000000000005",
+      "asset": "BNB",
+      "assetAddress": null,
       "txHash": "0xb2bb000200000000000000000000000000000000000000000000000000000005",
       "tag": "BSC receiver"
     },

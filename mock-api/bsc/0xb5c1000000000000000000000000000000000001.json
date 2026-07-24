@@ -20,10 +20,10 @@
       "time": "2026-07-10T00:52:26Z",
       "rawAmount": "1500000000000000000000",
       "decimals": 18,
-      "asset": "USDT",
-      "assetAddress": "0xB5C5000000000000000000000000000000000005",
+      "asset": "BNB",
+      "assetAddress": null,
       "txHash": "0xb1aa000200000000000000000000000000000000000000000000000000000002",
-      "tag": "Stablecoin desk"
+      "tag": "BNB liquidity desk"
     },
     {
       "id": "bsc-exchange-input-3",
@@ -66,10 +66,10 @@
       "time": "2026-07-10T01:31:43Z",
       "rawAmount": "1200000000000000000000",
       "decimals": 18,
-      "asset": "USDT",
-      "assetAddress": "0xB5C5000000000000000000000000000000000005",
+      "asset": "BNB",
+      "assetAddress": null,
       "txHash": "0xb1bb000300000000000000000000000000000000000000000000000000000006",
-      "tag": "BEP20 stablecoin source"
+      "tag": "BNB treasury source"
     }
   ]
 }

@@ -160,6 +160,7 @@
 
       .search-row button,
       .quick-examples button,
+      .header-actions button,
       .account-node,
       .table-address {
         cursor: pointer;
@@ -193,6 +194,7 @@
       }
 
       .quick-examples button,
+      .header-actions button,
       .header-actions a,
       .back-link {
         background: #ffffff;
@@ -205,6 +207,7 @@
       }
 
       .quick-examples button:hover,
+      .header-actions button:hover,
       .header-actions a:hover,
       .back-link:hover {
         border-color: var(--teal);
@@ -240,6 +243,20 @@
         gap: 8px;
         justify-content: flex-end;
         max-width: 440px;
+      }
+
+      .unit-toggle-button[aria-pressed="true"] {
+        background: var(--teal);
+        border-color: var(--teal);
+        color: #ffffff;
+      }
+
+      .unit-note {
+        color: var(--muted);
+        display: block;
+        font-size: 0.74rem;
+        line-height: 1.45;
+        margin-top: 6px;
       }
 
       .summary-strip {
@@ -852,15 +869,21 @@
     <script>
       // Set this to the real endpoint, for example: https://api.example.com/flow
       const BACKEND_API_URL = "";
-      const MOCK_DATA_VERSION = "20260722-native-assets";
+      const MOCK_DATA_VERSION = "20260724-native-usd";
       let flowData = null;
       let currentRequest = null;
+      let amountDisplayMode = "native";
 
       const chainOptions = [
         { id: "eth", label: "ETH" },
         { id: "bsc", label: "BSC" },
         { id: "polygon", label: "Polygon" },
       ];
+      const demoUsdRates = Object.freeze({
+        BNB: 600,
+        ETH: 3500,
+        POL: 0.5,
+      });
       const EVM_ADDRESS_PATTERN = /^0x[0-9a-fA-F]{40}$/;
       const TX_HASH_PATTERN = /^0x[0-9a-fA-F]{64}$/;
       const RAW_AMOUNT_PATTERN = /^\d+$/;
@@ -1158,6 +1181,7 @@
                 <h1>资金流分析结果</h1>
               </div>
               <div class="header-actions" aria-label="示例地址快捷入口">
+                ${renderUnitToggle()}
                 ${getKnownAddresses(chainKey)
                   .map(
                     (item) => `
@@ -1176,10 +1200,12 @@
               <div>
                 <span>流入合计</span>
                 <strong>${formatTransferTotal(flow.input)}</strong>
+                ${renderUnitNote()}
               </div>
               <div>
                 <span>流出合计</span>
                 <strong>${formatTransferTotal(flow.output)}</strong>
+                ${renderUnitNote()}
               </div>
               <div>
                 <span>关联账户</span>
@@ -1318,6 +1344,14 @@
             renderResult(chainKey, flow.address);
           });
         });
+        const unitToggleButton = document.getElementById("unit-toggle-button");
+        if (unitToggleButton) {
+          unitToggleButton.addEventListener("click", () => {
+            amountDisplayMode =
+              amountDisplayMode === "native" ? "usd" : "native";
+            renderResult(chainKey, flow.address);
+          });
+        }
         document.querySelectorAll("[data-recenter-address]").forEach((button) => {
           button.addEventListener("click", () => {
             selectedAddress = "";
@@ -1360,6 +1394,26 @@
             <code>${shortHash(transfer.txHash)}</code>
           </button>
         `;
+      }
+
+      function renderUnitToggle() {
+        const isUsdMode = amountDisplayMode === "usd";
+        return `
+          <button
+            class="unit-toggle-button"
+            id="unit-toggle-button"
+            type="button"
+            aria-pressed="${isUsdMode ? "true" : "false"}"
+          >
+            ${isUsdMode ? "显示原币种" : "单位转换：美元"}
+          </button>
+        `;
+      }
+
+      function renderUnitNote() {
+        return amountDisplayMode === "usd"
+          ? `<span class="unit-note">按固定演示汇率估算</span>`
+          : "";
       }
 
       function showTransactionDetail(chain, flow, transactionId) {
@@ -1836,11 +1890,19 @@
       }
 
       function formatAmount(transfer) {
+        if (amountDisplayMode === "usd") return formatTransferUsd(transfer);
         return `${formatRawAmount(transfer.rawAmount, transfer.decimals)} ${escapeHtml(transfer.asset)}`;
       }
 
       function formatTransferTotal(transfers) {
         if (!transfers.length) return "0";
+        if (amountDisplayMode === "usd") {
+          const totalUsd = transfers.reduce(
+            (sum, transfer) => sum + transferUsdValue(transfer),
+            0,
+          );
+          return formatUsd(totalUsd);
+        }
         const totals = new Map();
         transfers.forEach((transfer) => {
           const key = assetKey(transfer);
@@ -1890,6 +1952,43 @@
 
       function addRawAmounts(left, right) {
         return (BigInt(left) + BigInt(right)).toString();
+      }
+
+      function formatTransferUsd(transfer) {
+        return formatUsd(transferUsdValue(transfer));
+      }
+
+      function transferUsdValue(transfer) {
+        const rate = demoUsdRates[transfer.asset] || 0;
+        return rawAmountToNumber(transfer.rawAmount, transfer.decimals) * rate;
+      }
+
+      function rawAmountToNumber(rawAmount, decimals) {
+        if (!RAW_AMOUNT_PATTERN.test(rawAmount) || !Number.isInteger(decimals)) {
+          return 0;
+        }
+        const normalized = rawAmount.replace(/^0+(?=\d)/, "");
+        if (decimals === 0) return Number(normalized);
+        const padded = normalized.padStart(decimals + 1, "0");
+        const integer = padded.slice(0, -decimals);
+        const fraction = padded.slice(-decimals).slice(0, 8);
+        return Number(`${integer}.${fraction}`);
+      }
+
+      function formatUsd(value) {
+        if (!Number.isFinite(value) || value <= 0) return "$0";
+        if (value >= 1_000_000_000) return `$${trimFixed(value / 1_000_000_000)}B`;
+        if (value >= 1_000_000) return `$${trimFixed(value / 1_000_000)}M`;
+        if (value >= 1_000) return `$${trimFixed(value / 1_000)}K`;
+        return new Intl.NumberFormat("en-US", {
+          currency: "USD",
+          maximumFractionDigits: value < 10 ? 2 : 0,
+          style: "currency",
+        }).format(value);
+      }
+
+      function trimFixed(value) {
+        return value.toFixed(2).replace(/\.?0+$/, "");
       }
 
       function formatRawAmount(rawAmount, decimals) {

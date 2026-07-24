@@ -8,7 +8,7 @@ import {
   loadFlowRecords,
   shortAddress,
   shortHash,
-} from "./flow-demo-data.js?v=20260722-native-assets";
+} from "./flow-demo-data.js?v=20260724-native-usd";
 
 const elements = {
   form: document.getElementById("relation-form"),
