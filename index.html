@@ -40,11 +40,70 @@
         font: inherit;
       }
 
+      .site-header {
+        align-items: center;
+        background: rgba(255, 255, 255, 0.94);
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        justify-content: space-between;
+        min-height: 66px;
+        padding: 0 34px;
+        position: relative;
+        z-index: 20;
+      }
+
+      .site-brand {
+        align-items: center;
+        color: var(--foreground);
+        display: inline-flex;
+        font-size: 0.95rem;
+        font-weight: 800;
+        gap: 10px;
+        text-decoration: none;
+      }
+
+      .site-brand-mark {
+        align-items: center;
+        background: var(--foreground);
+        border-radius: 6px;
+        color: #ffffff;
+        display: inline-flex;
+        font-size: 0.76rem;
+        height: 32px;
+        justify-content: center;
+        width: 32px;
+      }
+
+      .tool-nav {
+        align-items: center;
+        display: flex;
+        gap: 4px;
+      }
+
+      .tool-nav a {
+        border-radius: 6px;
+        color: #526064;
+        font-size: 0.9rem;
+        font-weight: 700;
+        padding: 9px 12px;
+        text-decoration: none;
+      }
+
+      .tool-nav a:hover {
+        background: #edf2f2;
+        color: var(--foreground);
+      }
+
+      .tool-nav a[aria-current="page"] {
+        background: var(--foreground);
+        color: #ffffff;
+      }
+
       .home-shell {
         align-items: center;
         display: flex;
         justify-content: center;
-        min-height: 100vh;
+        min-height: calc(100vh - 66px);
         padding: 32px 18px;
       }
 
@@ -52,19 +111,6 @@
         max-width: 920px;
         text-align: center;
         width: 100%;
-      }
-
-      .brand-mark {
-        align-items: center;
-        background: #142024;
-        border-radius: 8px;
-        color: #ffffff;
-        display: inline-flex;
-        font-weight: 800;
-        height: 48px;
-        justify-content: center;
-        margin-bottom: 22px;
-        width: 48px;
       }
 
       .eyebrow {
@@ -186,34 +232,22 @@
         color: var(--teal-dark);
       }
 
-      .feature-links {
-        align-items: center;
-        display: flex;
-        flex-wrap: wrap;
-        gap: 16px;
-        justify-content: center;
-        margin-top: 28px;
-      }
-
-      .live-feature-link {
-        align-items: center;
-        color: var(--teal-dark);
-        display: inline-flex;
-        font-size: 0.92rem;
-        font-weight: 800;
-        gap: 8px;
-        text-decoration: none;
-      }
-
-      .live-feature-link:hover {
-        color: var(--teal);
-      }
-
-      .live-feature-link span {
-        font-size: 1.2rem;
-      }
-
       @media (max-width: 760px) {
+        .site-header {
+          align-items: flex-start;
+          gap: 14px;
+          padding: 13px 16px;
+        }
+
+        .site-brand > span:last-child {
+          display: none;
+        }
+
+        .tool-nav a {
+          font-size: 0.78rem;
+          padding: 8px 9px;
+        }
+
         .home-shell {
           padding: 18px;
         }
@@ -225,9 +259,21 @@
     </style>
   </head>
   <body>
+    <header class="site-header">
+      <a class="site-brand" href="./index.html" aria-label="DF Flow Tracker 首页">
+        <span class="site-brand-mark" aria-hidden="true">DF</span>
+        <span>Flow Tracker</span>
+      </a>
+      <nav class="tool-nav" aria-label="分析工具">
+        <a href="./index.html" aria-current="page">地址追踪</a>
+        <a href="./live.html">实时交易</a>
+        <a href="./profile.html">用户画像</a>
+        <a href="./relation.html">地址关联</a>
+      </nav>
+    </header>
+
     <main class="home-shell">
       <section class="home-hero" aria-labelledby="home-title">
-        <div class="brand-mark" aria-hidden="true">DF</div>
         <p class="eyebrow">区块链与数字金融服务安全测试平台</p>
         <h1 id="home-title">地址资金流追踪</h1>
         <p class="hero-copy">
@@ -276,18 +322,6 @@
           >
             Polygon 0x900000...000001
           </button>
-        </div>
-
-        <div class="feature-links" aria-label="其他分析页面">
-          <a class="live-feature-link" href="./live.html">
-            实时交易图谱 <span aria-hidden="true">→</span>
-          </a>
-          <a class="live-feature-link" href="./profile.html">
-            用户画像原型 <span aria-hidden="true">→</span>
-          </a>
-          <a class="live-feature-link" href="./relation.html">
-            地址关联查询 <span aria-hidden="true">→</span>
-          </a>
         </div>
       </section>
     </main>
