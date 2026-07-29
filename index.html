@@ -475,8 +475,6 @@
 
       async function loadOverview() {
         let overview = DEMO_OVERVIEW;
-        let noteText = "当前为演示数据。后端上线后会替换为实时数据。";
-
         if (liveMode) {
           try {
             const response = await fetch(BACKEND_API_URL, {
