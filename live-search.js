@@ -1,43 +1,26 @@
-const LIVE_CHAIN_ALIASES = new Map([
-  ["eth", "eth"],
-  ["ethereum", "eth"],
-  ["以太坊", "eth"],
-  ["bnb", "bsc"],
-  ["bsc", "bsc"],
-  ["bnb smart chain", "bsc"],
-  ["binance smart chain", "bsc"],
-  ["币安智能链", "bsc"],
-  ["pol", "polygon"],
-  ["matic", "polygon"],
-  ["polygon", "polygon"],
-  ["polygon pos", "polygon"],
-]);
+const LIVE_CHAINS = new Set(["eth", "bsc", "polygon"]);
 
 const liveSearchForm = document.getElementById("live-search-form");
-const liveSearchInput = document.getElementById("asset-search-input");
+const liveChainSelect = document.getElementById("live-chain-select");
 const liveSearchError = document.getElementById("live-search-error");
 
 liveSearchForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  const chain = normalizeLiveChain(liveSearchInput.value);
-  if (!chain) {
-    showLiveSearchError("目前支持 ETH、BNB/BSC 和 POL/Polygon。");
+  const chain = liveChainSelect.value;
+  if (!LIVE_CHAINS.has(chain)) {
+    showLiveSearchError("请选择 ETH、BSC 或 Polygon。");
     return;
   }
   openLiveResult(chain);
 });
 
-liveSearchInput.addEventListener("input", () => {
+liveChainSelect.addEventListener("change", () => {
   liveSearchError.hidden = true;
 });
 
 document.querySelectorAll("[data-chain]").forEach((button) => {
   button.addEventListener("click", () => openLiveResult(button.dataset.chain));
 });
-
-function normalizeLiveChain(value) {
-  return LIVE_CHAIN_ALIASES.get(value.trim().toLowerCase()) || null;
-}
 
 function openLiveResult(chain) {
   const resultUrl = new URL("./live-result.html", location.href);

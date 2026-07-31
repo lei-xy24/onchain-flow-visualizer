@@ -5,11 +5,15 @@
 - `index.html`：首页，展示各链基础数据，右上角是四个功能入口。
 - `track.html`：显示地址搜索框与本机搜索历史，不读取资金流 JSON。
 - `search-history.js`：管理最近 10 条搜索记录、筛选、复用和清除操作。
+- `address-history.js`：让用户画像和地址关联共用同一份地址搜索历史。
 - `result.html`：接收链和地址，向后端请求该地址的数据并显示结果。
 - `mock-api/`：后端尚未完成时使用的逐地址模拟响应。
-- `live.html`：搜索 ETH、BNB/BSC 或 POL/Polygon。
+- `live.html`：通过选择框进入 ETH、BSC 或 Polygon 实时图谱。
 - `live-result.html`：每 10 秒请求一次最近 10 秒交易并绘制动态图谱。
 - `mock-live/`：ETH、BSC 和 Polygon 各五批、共 50 秒的实时交易演示数据。
+- `profile.html` / `profile.js`：生成账户画像。
+- `relation.html` / `relation.js`：查询两个地址的直接关联交易。
+- `analysis-loading.js`：用户画像与地址关联共用的全屏加载过渡页。
 
 页面流程：
 
@@ -305,6 +309,12 @@ Accept: application/json
 
 资金追踪结果页默认只按查询链的原生币种显示样例资金，例如 ETH 链只显示 ETH，BSC 只显示 BNB，Polygon 只显示 POL。页面上的“单位转换：美元”按钮使用前端固定演示汇率估算，不请求行情接口；后端仍只需要返回链上原始金额字段。
 
+## 用户画像与地址关联
+
+用户画像和地址关联的地址输入框会读取与地址追踪相同的最近 10 条搜索记录。用户画像选择一条历史后会直接重新生成画像；地址关联的两个输入框分别可以从历史中选择地址。三处历史都只保存在当前浏览器中，支持单条删除和全部清空。
+
+两页读取数据期间会显示与资金追踪一致的全屏过渡页，展示当前网络、地址和处理阶段。请求超过 12 秒会自动结束加载并显示超时提示；读取失败时会显示重新生成或重新查询按钮，不会继续停留在“正在生成”状态。
+
 ## CORS
 
 GitHub Pages 是纯静态网站，不能自己运行后端。如果后端使用另一个域名，后端需要允许 GitHub Pages 域名跨域访问，例如：
@@ -338,6 +348,7 @@ http://localhost:8000/live.html
 index.html
 track.html
 search-history.js
+address-history.js
 result.html
 mock-api/
 live.html
@@ -346,6 +357,12 @@ live.css
 live-search.js
 live-core.js
 live-result.js
+profile.html
+profile.js
+relation.html
+relation.js
+flow-demo-data.js
+analysis-loading.js
 mock-live/
 ```
 
@@ -355,6 +372,7 @@ mock-live/
 index.html
 track.html
 search-history.js
+address-history.js
 result.html
 live.html
 live-result.html
@@ -362,6 +380,12 @@ live.css
 live-search.js
 live-core.js
 live-result.js
+profile.html
+profile.js
+relation.html
+relation.js
+flow-demo-data.js
+analysis-loading.js
 ```
 
 `README.md` 可选。

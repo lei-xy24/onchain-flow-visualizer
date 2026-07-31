@@ -49,13 +49,14 @@ export function isEvmAddress(address) {
   return EVM_ADDRESS_PATTERN.test(String(address || "").trim());
 }
 
-export async function loadFlowRecords(chain) {
+export async function loadFlowRecords(chain, { signal } = {}) {
   const files = FLOW_MOCK_FILES[chain] || [];
   const records = await Promise.all(
     files.map(async (file) => {
       const response = await fetch(`./${file}?v=${MOCK_DATA_VERSION}`, {
         cache: "no-store",
         headers: { Accept: "application/json" },
+        signal,
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}: ${file}`);
       return response.json();

@@ -8,8 +8,8 @@
       name="description"
       content="选择区块链网络，查看最近 10 秒的账户间资金流动"
     />
-    <link rel="stylesheet" href="./live.css?v=20260730-sync-copy" />
-    <script src="./live-search.js" defer></script>
+    <link rel="stylesheet" href="./live.css?v=20260731-unified-search" />
+    <script src="./live-search.js?v=20260731-unified-search" defer></script>
   </head>
   <body class="live-home-body">
     <header class="site-header">
@@ -34,23 +34,15 @@
         </p>
 
         <form class="asset-search" id="live-search-form">
-          <label for="asset-search-input">搜索币种或网络</label>
+          <label for="live-chain-select">选择网络</label>
           <div class="asset-search-row">
-            <input
-              id="asset-search-input"
-              list="asset-options"
-              autocomplete="off"
-              spellcheck="false"
-              value="ETH"
-              placeholder="例如 ETH、BNB 或 POL"
-            />
+            <select id="live-chain-select" aria-label="选择网络">
+              <option value="eth">ETH</option>
+              <option value="bsc">BSC</option>
+              <option value="polygon">Polygon</option>
+            </select>
             <button type="submit">进入图谱</button>
           </div>
-          <datalist id="asset-options">
-            <option value="ETH">Ethereum</option>
-            <option value="BNB">BNB Smart Chain</option>
-            <option value="POL">Polygon PoS</option>
-          </datalist>
           <p class="form-error" id="live-search-error" aria-live="polite" hidden></p>
         </form>
       </section>

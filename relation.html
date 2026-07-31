@@ -8,8 +8,8 @@
       name="description"
       content="给定两个链上地址，查询示例资金流数据中的直接关联交易"
     />
-    <link rel="stylesheet" href="./live.css?v=20260730-sync-copy" />
-    <script type="module" src="./relation.js?v=20260724-native-usd"></script>
+    <link rel="stylesheet" href="./live.css?v=20260731-unified-search" />
+    <script type="module" src="./relation.js?v=20260731-unified-search"></script>
   </head>
   <body class="analysis-body">
     <header class="site-header">
@@ -42,9 +42,55 @@
               <option value="bsc">BNB Smart Chain</option>
               <option value="polygon">Polygon PoS</option>
             </select>
-            <input id="relation-address-a" autocomplete="off" spellcheck="false" />
-            <input id="relation-address-b" autocomplete="off" spellcheck="false" />
-            <button type="submit">查询关联</button>
+            <div class="analysis-history-field">
+              <input
+                id="relation-address-a"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="地址 A"
+              />
+              <div
+                class="search-history"
+                id="relation-search-history-a"
+                role="dialog"
+                aria-label="地址 A 搜索历史"
+                hidden
+              >
+                <div class="history-header">
+                  <strong>搜索历史</strong>
+                  <button class="history-clear" data-history-clear type="button">
+                    全部清空
+                  </button>
+                </div>
+                <ul class="history-list" data-history-list></ul>
+                <p class="history-empty" data-history-empty hidden></p>
+              </div>
+            </div>
+            <div class="analysis-history-field history-align-end">
+              <input
+                id="relation-address-b"
+                autocomplete="off"
+                spellcheck="false"
+                placeholder="地址 B"
+              />
+              <div
+                class="search-history"
+                id="relation-search-history-b"
+                role="dialog"
+                aria-label="地址 B 搜索历史"
+                hidden
+              >
+                <div class="history-header">
+                  <strong>搜索历史</strong>
+                  <button class="history-clear" data-history-clear type="button">
+                    全部清空
+                  </button>
+                </div>
+                <ul class="history-list" data-history-list></ul>
+                <p class="history-empty" data-history-empty hidden></p>
+              </div>
+            </div>
+            <button class="analysis-submit" type="submit">查询关联</button>
           </div>
           <p class="form-error" id="relation-error" hidden></p>
         </form>

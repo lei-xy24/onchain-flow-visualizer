@@ -8,7 +8,12 @@ import {
   loadFlowRecords,
   shortAddress,
   shortHash,
-} from "./flow-demo-data.js?v=20260724-native-usd";
+} from "./flow-demo-data.js?v=20260731-unified-search";
+import {
+  createAddressHistory,
+  rememberAddressSearch,
+} from "./address-history.js?v=20260731";
+import { createAnalysisLoading } from "./analysis-loading.js?v=20260731";
 
 const elements = {
   form: document.getElementById("relation-form"),
@@ -17,27 +22,67 @@ const elements = {
   addressB: document.getElementById("relation-address-b"),
   error: document.getElementById("relation-error"),
   output: document.getElementById("relation-output"),
+  submit: document.querySelector("#relation-form .analysis-submit"),
 };
 
+const REQUEST_TIMEOUT_MS = 12_000;
+let activeRelationController = null;
+let relationRequestId = 0;
+
+const relationLoading = createAnalysisLoading({
+  title: "正在查询地址关联",
+  description: "正在读取资金流，并核对两个地址之间的直接转账路径。",
+  onCancel: cancelRelationLoading,
+  steps: [
+    { title: "连接资金流数据", detail: "读取当前网络的账户与转账记录" },
+    { title: "筛选双向转账", detail: "匹配地址 A 与地址 B 的直接路径" },
+    { title: "生成关联结果", detail: "整理关联次数、方向和交易明细" },
+  ],
+});
+
+const addressAHistory = createAddressHistory({
+  input: elements.addressA,
+  chainSelect: elements.chain,
+  panel: document.getElementById("relation-search-history-a"),
+  onSelect: hideError,
+});
+
+const addressBHistory = createAddressHistory({
+  input: elements.addressB,
+  chainSelect: elements.chain,
+  panel: document.getElementById("relation-search-history-b"),
+  onSelect: hideError,
+});
+
 initializeRelation();
+
+function cancelRelationLoading() {
+  relationRequestId += 1;
+  activeRelationController?.abort();
+  activeRelationController = null;
+  elements.submit.disabled = false;
+  relationLoading.hide();
+}
 
 function initializeRelation() {
   setSampleAddresses();
   elements.chain.addEventListener("change", () => {
     setSampleAddresses();
+    addressAHistory.resetInputState();
+    addressBHistory.resetInputState();
     hideError();
-    renderRelation();
+    renderRelation({ rememberSearch: false });
   });
   elements.addressA.addEventListener("input", hideError);
   elements.addressB.addEventListener("input", hideError);
   elements.form.addEventListener("submit", (event) => {
     event.preventDefault();
-    renderRelation();
+    renderRelation({ rememberSearch: true });
   });
-  renderRelation();
+  renderRelation({ rememberSearch: false });
 }
 
-async function renderRelation() {
+async function renderRelation({ rememberSearch = false } = {}) {
   const chain = elements.chain.value;
   const addressA = elements.addressA.value.trim();
   const addressB = elements.addressB.value.trim();
@@ -50,14 +95,69 @@ async function renderRelation() {
     return;
   }
 
-  elements.output.innerHTML = `<div class="analysis-state">正在查询关联交易...</div>`;
+  hideError();
+  addressAHistory.close();
+  addressBHistory.close();
+  if (rememberSearch) {
+    rememberAddressSearch(chain, addressB);
+    rememberAddressSearch(chain, addressA);
+    addressAHistory.refresh();
+    addressBHistory.refresh();
+  }
+
+  activeRelationController?.abort();
+  const requestId = ++relationRequestId;
+  const controller = new AbortController();
+  activeRelationController = controller;
+  let timedOut = false;
+  const timeoutId = window.setTimeout(() => {
+    timedOut = true;
+    controller.abort();
+  }, REQUEST_TIMEOUT_MS);
+
+  elements.submit.disabled = true;
+  relationLoading.show([
+    { label: "网络", value: FLOW_CHAINS[chain].label },
+    { label: "地址 A", value: addressA },
+    { label: "地址 B", value: addressB },
+  ]);
+
   try {
-    const records = await loadFlowRecords(chain);
+    const records = await loadFlowRecords(chain, { signal: controller.signal });
+    if (requestId !== relationRequestId) return;
+    relationLoading.setStep(2);
     const relations = findAddressRelations(records, addressA, addressB);
+    relationLoading.setStep(3);
     elements.output.innerHTML = renderRelationHtml(chain, addressA, addressB, relations);
   } catch (error) {
-    showError(error instanceof Error ? error.message : "读取示例数据失败。");
+    if (requestId !== relationRequestId) return;
+    const message = timedOut
+      ? "数据请求超时，请检查后端连接后重试。"
+      : error instanceof Error
+        ? error.message
+        : "读取数据失败，请稍后重试。";
+    showError(message);
+    renderRelationRequestError(message);
+  } finally {
+    window.clearTimeout(timeoutId);
+    if (requestId === relationRequestId) {
+      activeRelationController = null;
+      elements.submit.disabled = false;
+      relationLoading.hide();
+    }
   }
+}
+
+function renderRelationRequestError(message) {
+  elements.output.innerHTML = `
+    <div class="analysis-request-error">
+      <h2>地址关联查询失败</h2>
+      <p>${escapeHtml(message)}</p>
+      <button id="retry-relation" type="button">重新查询</button>
+    </div>`;
+  document.getElementById("retry-relation").addEventListener("click", () => {
+    renderRelation({ rememberSearch: false });
+  });
 }
 
 function renderRelationHtml(chain, addressA, addressB, relations) {
