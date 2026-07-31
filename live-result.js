@@ -3,18 +3,16 @@ import {
   LIVE_CHAINS,
   buildGraphModel,
   formatRawAmount,
-  formatTransferAmount,
-  formatTransferTotal,
+  formatUsd,
   parseLiveResponse,
   shortAddress,
   shortHash,
-} from "./live-core.js?v=20260724-native-usd";
+} from "./live-core.js";
 
 // Set this to the real HTTPS endpoint after the backend is available.
 const BACKEND_API_URL = "";
-const MOCK_DATA_VERSION = "20260724-native-usd";
 const POLL_INTERVAL_MS = 10_000;
-const MOCK_BATCH_COUNTS = Object.freeze({ eth: 5, bsc: 5, polygon: 5 });
+const MOCK_BATCH_COUNTS = Object.freeze({ eth: 2, bsc: 2, polygon: 2 });
 
 const elements = {
   chainSelect: document.getElementById("live-chain-select"),
@@ -29,10 +27,6 @@ const elements = {
   totalValue: document.getElementById("total-value"),
   graphCanvas: document.getElementById("graph-canvas"),
   flowGraph: document.getElementById("flow-graph"),
-  zoomIn: document.getElementById("zoom-in"),
-  zoomOut: document.getElementById("zoom-out"),
-  zoomReset: document.getElementById("zoom-reset"),
-  zoomLabel: document.getElementById("zoom-label"),
   edgeLayer: document.getElementById("edge-layer"),
   nodeLayer: document.getElementById("node-layer"),
   graphMessage: document.getElementById("graph-message"),
@@ -59,7 +53,6 @@ const state = {
   selectedAddress: null,
   selectedTransferId: null,
   resizeTimer: null,
-  zoom: 1,
 };
 
 initialize();
@@ -102,19 +95,6 @@ function bindEvents() {
     refreshData({ manual: true });
   });
 
-  elements.zoomIn.addEventListener("click", () => setZoom(state.zoom + 0.2));
-  elements.zoomOut.addEventListener("click", () => setZoom(state.zoom - 0.2));
-  elements.zoomReset.addEventListener("click", () => setZoom(1));
-  elements.graphCanvas.addEventListener(
-    "wheel",
-    (event) => {
-      if (!event.ctrlKey && !event.metaKey) return;
-      event.preventDefault();
-      setZoom(state.zoom + (event.deltaY < 0 ? 0.14 : -0.14));
-    },
-    { passive: false },
-  );
-
   elements.closeInspector.addEventListener("click", () => {
     state.selectedAddress = null;
     state.selectedTransferId = null;
@@ -133,12 +113,7 @@ function bindEvents() {
       if (!state.response) return;
       const size = getGraphSize();
       if (state.graph.width === size.width && state.graph.height === size.height) return;
-      state.graph = buildGraphModel(
-        state.response,
-        size.width,
-        size.height,
-        state.graph,
-      );
+      state.graph = buildGraphModel(state.response, size.width, size.height);
       renderResponse();
     }, 160);
   });
@@ -150,9 +125,6 @@ async function refreshData({ manual }) {
   setStatus("正在查询", manual ? "手动刷新" : "请求最近 10 秒", "loading");
 
   try {
-    const mockBatchNumber = BACKEND_API_URL.trim()
-      ? null
-      : state.mockBatchIndex + 1;
     const requestUrl = buildRequestUrl();
     const response = await fetch(requestUrl, {
       cache: "no-store",
@@ -165,12 +137,7 @@ async function refreshData({ manual }) {
     const parsed = parseLiveResponse(await response.json(), state.chain);
     state.response = parsed;
     const graphSize = getGraphSize();
-    state.graph = buildGraphModel(
-      parsed,
-      graphSize.width,
-      graphSize.height,
-      state.graph,
-    );
+    state.graph = buildGraphModel(parsed, graphSize.width, graphSize.height);
     state.nextPollAt = Date.now() + POLL_INTERVAL_MS;
     if (!BACKEND_API_URL.trim()) {
       state.mockBatchIndex =
@@ -195,9 +162,7 @@ async function refreshData({ manual }) {
       setStatus("已暂停", "手动刷新完成", "paused");
     } else {
       setStatus(
-        BACKEND_API_URL.trim()
-          ? "实时连接"
-          : `演示数据 ${mockBatchNumber}/${MOCK_BATCH_COUNTS[state.chain]}`,
+        BACKEND_API_URL.trim() ? "实时连接" : "演示数据",
         "10 秒后更新",
         "ready",
       );
@@ -229,17 +194,21 @@ function buildRequestUrl() {
     return requestUrl.href;
   }
 
-  return `./mock-live/${state.chain}/batch-${state.mockBatchIndex + 1}.json?v=${MOCK_DATA_VERSION}`;
+  return `./mock-live/${state.chain}/batch-${state.mockBatchIndex + 1}.json`;
 }
 
 function renderResponse() {
   const chain = LIVE_CHAINS[state.chain];
+  const totalUsd = state.response.transfers.reduce(
+    (sum, transfer) => sum + transfer.valueUsd,
+    0,
+  );
   elements.windowLabel.textContent = `${formatWindow(state.response.window)} · ${chain.label}`;
   elements.transactionCount.textContent = String(state.response.transfers.length);
   elements.accountCount.textContent = String(state.graph.nodes.length);
-  elements.totalValue.textContent = formatTransferTotal(state.response.transfers);
+  elements.totalValue.textContent = formatUsd(totalUsd);
 
-  if (state.graph.nodes.length === 0) {
+  if (state.response.transfers.length === 0) {
     elements.edgeLayer.replaceChildren();
     elements.nodeLayer.replaceChildren();
     elements.transactionList.innerHTML =
@@ -251,22 +220,20 @@ function renderResponse() {
 
   hideGraphMessage();
   renderGraph(chain);
-  if (state.response.transfers.length === 0) {
-    elements.transactionList.innerHTML =
-      '<p class="transaction-empty">这个 10 秒窗口没有收到转账记录，历史账户节点继续保留。</p>';
-  } else {
-    renderTransactionList();
-  }
+  renderTransactionList();
   bindGraphEvents();
   applySelection();
 }
 
 function renderGraph(chain) {
-  updateGraphViewport();
+  elements.flowGraph.setAttribute(
+    "viewBox",
+    `0 0 ${state.graph.width} ${state.graph.height}`,
+  );
   elements.edgeLayer.innerHTML = state.graph.edges
     .map((edge) => {
-      const amount = formatTransferAmount(edge);
-      const description = `${edge.fromLabel || shortAddress(edge.from)} 到 ${edge.toLabel || shortAddress(edge.to)}，${amount}`;
+      const amount = `${formatRawAmount(edge.rawAmount, edge.decimals)} ${edge.asset}`;
+      const description = `${edge.fromLabel || shortAddress(edge.from)} 到 ${edge.toLabel || shortAddress(edge.to)}，${amount}，${formatUsd(edge.valueUsd)}`;
       return `<g
         class="flow-edge-group"
         data-transfer-id="${escapeHtml(edge.id)}"
@@ -291,10 +258,9 @@ function renderGraph(chain) {
     .map((node) => {
       const palette = getNodePalette(node.address);
       const label = truncateLabel(node.label, 18);
-      const activityClass = node.active ? "is-active" : "is-inactive";
-      const ariaLabel = `${node.label}，本窗口 ${node.currentTransactionCount} 笔，累计 ${node.transactionCount} 笔交易`;
+      const ariaLabel = `${node.label}，${node.transactionCount} 笔交易，总额 ${formatUsd(node.totalUsd)}`;
       return `<g
-        class="account-node ${activityClass}"
+        class="account-node"
         data-node-address="${escapeHtml(node.key)}"
         transform="translate(${node.x} ${node.y})"
         role="button"
@@ -333,7 +299,7 @@ function renderTransactionList() {
       >
         <span class="transaction-row-top">
           <span class="transaction-asset">${escapeHtml(amount)}</span>
-          <span class="transaction-value">等级 ${transfer.density.level}/5</span>
+          <span class="transaction-value">${escapeHtml(formatUsd(transfer.valueUsd))}</span>
         </span>
         <span class="transaction-route">
           <code>${escapeHtml(from)}</code><span aria-hidden="true">→</span><code>${escapeHtml(to)}</code>
@@ -359,10 +325,9 @@ function bindGraphEvents() {
     });
     nodeElement.addEventListener("pointerenter", (event) => {
       const node = state.graph.nodes.find((item) => item.key === address);
-      const activity = node.active ? "本窗口活跃" : "历史账户 · 本窗口无交易";
       showTooltip(
         event,
-        `<strong>${escapeHtml(node.label)}</strong><span>${escapeHtml(shortAddress(node.address))}</span><span>${escapeHtml(activity)}</span><span>本窗口 ${node.currentTransactionCount} 笔 · 累计 ${node.transactionCount} 笔</span>`,
+        `<strong>${escapeHtml(node.label)}</strong><span>${escapeHtml(shortAddress(node.address))}</span><span>${node.transactionCount} 笔 · ${escapeHtml(formatUsd(node.totalUsd))}</span>`,
       );
     });
     nodeElement.addEventListener("pointermove", moveTooltip);
@@ -374,10 +339,10 @@ function bindGraphEvents() {
     edgeElement.addEventListener("click", () => selectTransfer(id));
     edgeElement.addEventListener("pointerenter", (event) => {
       const transfer = state.graph.edges.find((edge) => edge.id === id);
-      const amount = formatTransferAmount(transfer);
+      const amount = `${formatRawAmount(transfer.rawAmount, transfer.decimals)} ${transfer.asset}`;
       showTooltip(
         event,
-        `<strong>${escapeHtml(amount)}</strong><span>${escapeHtml(shortAddress(transfer.from))} → ${escapeHtml(shortAddress(transfer.to))}</span><span>交易量等级 ${transfer.density.level}/5</span>`,
+        `<strong>${escapeHtml(amount)} · ${escapeHtml(formatUsd(transfer.valueUsd))}</strong><span>${escapeHtml(shortAddress(transfer.from))} → ${escapeHtml(shortAddress(transfer.to))}</span><span>密度 ${transfer.density.level}/5</span>`,
       );
     });
     edgeElement.addEventListener("pointermove", moveTooltip);
@@ -462,40 +427,20 @@ function renderInspector() {
   elements.inspector.hidden = false;
   elements.inspectorLabel.textContent = node.label;
   elements.inspectorAddress.textContent = node.address;
-  elements.inspectorIn.textContent = `等级 ${Math.max(1, Math.min(5, Math.round(node.inAmountWeight)))}/5`;
-  elements.inspectorOut.textContent = `等级 ${Math.max(1, Math.min(5, Math.round(node.outAmountWeight)))}/5`;
+  elements.inspectorIn.textContent = formatUsd(node.inUsd);
+  elements.inspectorOut.textContent = formatUsd(node.outUsd);
   elements.inspectorCount.textContent = String(node.transactionCount);
 }
 
 function renderDensityLegend() {
   elements.densityLegend.innerHTML = [
-    "<strong>点密度（按交易量）</strong>",
+    "<strong>点密度（按 USD）</strong>",
     ...DENSITY_RULES.map((rule) => {
       const dotCount = rule.level + 1;
       const dots = Array.from({ length: dotCount }, () => "<i></i>").join("");
       return `<span class="density-item"><span class="density-dots" style="--legend-gap: ${Math.max(2, 8 - rule.level)}px">${dots}</span>${escapeHtml(rule.label)}</span>`;
     }),
   ].join("");
-}
-
-function setZoom(nextZoom) {
-  state.zoom = Math.max(0.6, Math.min(2.4, Number(nextZoom.toFixed(2))));
-  updateGraphViewport();
-}
-
-function updateGraphViewport() {
-  if (!state.graph) return;
-  const viewWidth = state.graph.width / state.zoom;
-  const viewHeight = state.graph.height / state.zoom;
-  const viewX = (state.graph.width - viewWidth) / 2;
-  const viewY = (state.graph.height - viewHeight) / 2;
-  elements.flowGraph.setAttribute(
-    "viewBox",
-    `${roundViewBox(viewX)} ${roundViewBox(viewY)} ${roundViewBox(viewWidth)} ${roundViewBox(viewHeight)}`,
-  );
-  elements.zoomLabel.textContent = `${Math.round(state.zoom * 100)}%`;
-  elements.zoomOut.disabled = state.zoom <= 0.61;
-  elements.zoomIn.disabled = state.zoom >= 2.39;
 }
 
 function updateCountdown() {
@@ -582,10 +527,6 @@ function formatClock(time) {
     second: "2-digit",
     hour12: false,
   }).format(new Date(time));
-}
-
-function roundViewBox(value) {
-  return Number(value).toFixed(2).replace(/\.?0+$/, "");
 }
 
 function getInitials(label, address) {
