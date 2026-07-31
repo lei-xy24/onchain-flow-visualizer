@@ -3,7 +3,8 @@
 静态版包含两套独立功能：
 
 - `index.html`：首页，展示各链基础数据，右上角是四个功能入口。
-- `track.html`：只显示搜索框，不读取资金流 JSON。
+- `track.html`：显示地址搜索框与本机搜索历史，不读取资金流 JSON。
+- `search-history.js`：管理最近 10 条搜索记录、筛选、复用和清除操作。
 - `result.html`：接收链和地址，向后端请求该地址的数据并显示结果。
 - `mock-api/`：后端尚未完成时使用的逐地址模拟响应。
 - `live.html`：搜索 ETH、BNB/BSC 或 POL/Polygon。
@@ -101,7 +102,10 @@ Etherscan V2 统一接口为 `https://api.etherscan.io/v2/api?chainid={id}`，et
 `track.html` 不执行 `fetch()`，只负责：
 
 1. 校验链和 EVM 地址。
-2. 跳转到独立结果页。
+2. 将最近 10 条有效搜索保存到当前浏览器的 `localStorage`。
+3. 跳转到独立结果页。
+
+搜索框获得焦点时会展开历史记录。记录按最近使用时间排序，同一条链上的同一地址会自动去重；用户可以点击再次搜索、删除单条记录或全部清空。历史数据只保存在当前浏览器，不会随查询发送给后端。
 
 示例跳转地址：
 
@@ -131,6 +135,8 @@ Accept: application/json
 ```
 
 每次搜索只发送一次请求，只读取被搜索地址的数据，不会下载其他账户的数据。
+
+请求期间，结果页会显示独立加载界面，并依次反馈“连接数据接口、读取响应数据、校验并生成图谱”三个阶段。后端返回成功后自动切换到结果图谱，请求失败时仍保留重新读取入口。
 
 如果 `BACKEND_API_URL` 为空，结果页会使用本地 mock：
 
@@ -331,6 +337,7 @@ http://localhost:8000/live.html
 ```text
 index.html
 track.html
+search-history.js
 result.html
 mock-api/
 live.html
@@ -347,6 +354,7 @@ mock-live/
 ```text
 index.html
 track.html
+search-history.js
 result.html
 live.html
 live-result.html

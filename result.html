@@ -111,6 +111,387 @@
         max-width: 620px;
       }
 
+      .loading-shell {
+        background:
+          radial-gradient(circle at 8% 12%, rgba(15, 139, 141, 0.1), transparent 32%),
+          radial-gradient(circle at 92% 88%, rgba(37, 99, 235, 0.08), transparent 32%),
+          var(--background);
+        min-height: 100vh;
+        padding: 24px;
+      }
+
+      .loading-topbar {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        margin: 0 auto;
+        max-width: 1180px;
+      }
+
+      .loading-back {
+        color: #425155;
+        font-size: 0.88rem;
+        font-weight: 750;
+      }
+
+      .loading-back:hover {
+        color: var(--teal-dark);
+      }
+
+      .loading-security {
+        align-items: center;
+        color: #5f6f73;
+        display: inline-flex;
+        font-size: 0.78rem;
+        font-weight: 700;
+        gap: 8px;
+      }
+
+      .loading-security::before {
+        background: var(--green);
+        border-radius: 50%;
+        box-shadow: 0 0 0 5px rgba(16, 147, 103, 0.12);
+        content: "";
+        height: 7px;
+        width: 7px;
+      }
+
+      .loading-layout {
+        align-items: center;
+        display: grid;
+        gap: clamp(28px, 6vw, 74px);
+        grid-template-columns: minmax(0, 0.92fr) minmax(420px, 1.08fr);
+        margin: 0 auto;
+        max-width: 1180px;
+        min-height: calc(100vh - 78px);
+        padding: 48px 0 72px;
+      }
+
+      .loading-copy-panel {
+        min-width: 0;
+      }
+
+      .loading-heading {
+        align-items: center;
+        display: grid;
+        gap: 18px;
+        grid-template-columns: 62px minmax(0, 1fr);
+        margin-top: 12px;
+      }
+
+      .loading-heading h1 {
+        color: #10191c;
+        font-size: clamp(2rem, 4.5vw, 4.2rem);
+        letter-spacing: -0.045em;
+        line-height: 0.98;
+        margin: 0;
+      }
+
+      .loading-heading p {
+        color: var(--muted);
+        line-height: 1.7;
+        margin: 12px 0 0;
+      }
+
+      .loading-orbit {
+        animation: loading-spin 1.15s linear infinite;
+        border: 3px solid rgba(15, 139, 141, 0.16);
+        border-radius: 50%;
+        border-top-color: var(--teal);
+        height: 58px;
+        position: relative;
+        width: 58px;
+      }
+
+      .loading-orbit::before,
+      .loading-orbit::after {
+        border-radius: 50%;
+        content: "";
+        left: 50%;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      }
+
+      .loading-orbit::before {
+        border: 1px solid rgba(15, 139, 141, 0.3);
+        height: 34px;
+        width: 34px;
+      }
+
+      .loading-orbit::after {
+        background: var(--teal);
+        box-shadow: 0 0 0 7px rgba(15, 139, 141, 0.12);
+        height: 8px;
+        width: 8px;
+      }
+
+      .loading-query {
+        align-items: center;
+        background: rgba(255, 255, 255, 0.82);
+        border: 1px solid #d7e1e3;
+        border-radius: 10px;
+        display: grid;
+        gap: 10px;
+        grid-template-columns: auto minmax(0, 1fr);
+        margin-top: 28px;
+        padding: 12px 14px;
+      }
+
+      .loading-query code {
+        background: transparent;
+        border: 0;
+        color: #344347;
+        min-width: 0;
+        overflow: hidden;
+        padding: 0;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .loading-chain {
+        background: #dff2f1;
+        border-radius: 999px;
+        color: var(--teal-dark);
+        font-size: 0.72rem;
+        font-weight: 850;
+        padding: 6px 10px;
+      }
+
+      .loading-steps {
+        display: grid;
+        gap: 0;
+        list-style: none;
+        margin: 26px 0 0;
+        padding: 0;
+      }
+
+      .loading-step {
+        align-items: flex-start;
+        color: #899497;
+        display: grid;
+        gap: 12px;
+        grid-template-columns: 28px minmax(0, 1fr);
+        min-height: 58px;
+        position: relative;
+      }
+
+      .loading-step:not(:last-child)::after {
+        background: #d6e0e2;
+        content: "";
+        height: 30px;
+        left: 13px;
+        position: absolute;
+        top: 28px;
+        width: 1px;
+      }
+
+      .loading-step > span {
+        align-items: center;
+        background: #eef2f3;
+        border: 1px solid #d7e0e2;
+        border-radius: 50%;
+        display: inline-flex;
+        font-size: 0.72rem;
+        font-weight: 850;
+        height: 28px;
+        justify-content: center;
+        position: relative;
+        width: 28px;
+        z-index: 1;
+      }
+
+      .loading-step strong,
+      .loading-step small {
+        display: block;
+      }
+
+      .loading-step strong {
+        color: inherit;
+        font-size: 0.88rem;
+        margin-top: 1px;
+      }
+
+      .loading-step small {
+        font-size: 0.76rem;
+        line-height: 1.5;
+        margin-top: 3px;
+      }
+
+      .loading-step.is-active {
+        color: #17383a;
+      }
+
+      .loading-step.is-active > span {
+        animation: loading-step-pulse 1.2s ease-in-out infinite;
+        background: var(--teal);
+        border-color: var(--teal);
+        box-shadow: 0 0 0 5px rgba(15, 139, 141, 0.12);
+        color: #ffffff;
+      }
+
+      .loading-step.is-done {
+        color: #4e5f62;
+      }
+
+      .loading-step.is-done > span {
+        background: #dff2ed;
+        border-color: #b9dfd3;
+        color: #087052;
+      }
+
+      .loading-preview {
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid rgba(208, 220, 223, 0.95);
+        border-radius: 18px;
+        box-shadow: 0 32px 80px rgba(20, 32, 36, 0.14);
+        min-width: 0;
+        overflow: hidden;
+        transform: rotate(1.3deg);
+      }
+
+      .loading-preview-bar {
+        align-items: center;
+        border-bottom: 1px solid #e3e9eb;
+        display: flex;
+        gap: 6px;
+        height: 44px;
+        padding: 0 15px;
+      }
+
+      .loading-preview-bar span {
+        background: #d7e1e3;
+        border-radius: 50%;
+        height: 7px;
+        width: 7px;
+      }
+
+      .loading-preview-body {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: minmax(0, 1fr) 124px;
+        padding: 18px;
+      }
+
+      .loading-skeleton {
+        background: linear-gradient(
+          100deg,
+          #edf2f3 24%,
+          #f9fbfb 42%,
+          #edf2f3 60%
+        );
+        background-size: 240% 100%;
+        border-radius: 7px;
+        animation: loading-shimmer 1.65s ease-in-out infinite;
+      }
+
+      .loading-skeleton-title {
+        height: 20px;
+        margin-bottom: 14px;
+        width: 48%;
+      }
+
+      .loading-skeleton-graph {
+        align-items: center;
+        display: grid;
+        gap: 20px;
+        grid-template-columns: 1fr 1.05fr 1fr;
+        height: 260px;
+        padding: 20px;
+      }
+
+      .loading-node-stack {
+        display: grid;
+        gap: 15px;
+      }
+
+      .loading-node {
+        background: rgba(255, 255, 255, 0.62);
+        border: 1px solid #dfe7e9;
+        border-radius: 9px;
+        height: 52px;
+        position: relative;
+      }
+
+      .loading-node::before,
+      .loading-node::after {
+        background: #dce5e7;
+        border-radius: 999px;
+        content: "";
+        height: 6px;
+        left: 10px;
+        position: absolute;
+      }
+
+      .loading-node::before {
+        top: 13px;
+        width: 58%;
+      }
+
+      .loading-node::after {
+        top: 28px;
+        width: 78%;
+      }
+
+      .loading-center-node {
+        background: #233337;
+        border-radius: 12px;
+        height: 104px;
+        position: relative;
+      }
+
+      .loading-center-node::before,
+      .loading-center-node::after {
+        background: rgba(255, 255, 255, 0.23);
+        border-radius: 999px;
+        content: "";
+        height: 7px;
+        left: 18%;
+        position: absolute;
+        width: 64%;
+      }
+
+      .loading-center-node::before {
+        top: 37px;
+      }
+
+      .loading-center-node::after {
+        top: 54px;
+        width: 48%;
+      }
+
+      .loading-skeleton-side {
+        display: grid;
+        gap: 10px;
+        grid-template-rows: 40px repeat(4, 1fr);
+      }
+
+      .loading-skeleton-side span {
+        background: #eef3f4;
+        border-radius: 8px;
+      }
+
+      @keyframes loading-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes loading-step-pulse {
+        50% {
+          box-shadow: 0 0 0 9px rgba(15, 139, 141, 0.04);
+        }
+      }
+
+      @keyframes loading-shimmer {
+        0% {
+          background-position: 100% 0;
+        }
+        100% {
+          background-position: -100% 0;
+        }
+      }
+
       .search-panel {
         background: var(--panel);
         border: 1px solid var(--line);
@@ -799,6 +1180,15 @@
       }
 
       @media (max-width: 1040px) {
+        .loading-layout {
+          grid-template-columns: 1fr;
+          max-width: 760px;
+        }
+
+        .loading-preview {
+          transform: none;
+        }
+
         .result-header,
         .workspace-grid {
           grid-template-columns: 1fr;
@@ -825,6 +1215,44 @@
       }
 
       @media (max-width: 760px) {
+        .loading-shell {
+          padding: 18px;
+        }
+
+        .loading-layout {
+          min-height: auto;
+          padding: 56px 0;
+        }
+
+        .loading-heading {
+          align-items: flex-start;
+          grid-template-columns: 48px minmax(0, 1fr);
+        }
+
+        .loading-orbit {
+          height: 44px;
+          width: 44px;
+        }
+
+        .loading-orbit::before {
+          height: 26px;
+          width: 26px;
+        }
+
+        .loading-preview-body {
+          grid-template-columns: 1fr;
+        }
+
+        .loading-skeleton-side {
+          display: none;
+        }
+
+        .loading-skeleton-graph {
+          gap: 10px;
+          height: 210px;
+          padding: 12px;
+        }
+
         .home-shell,
         .result-shell {
           padding: 18px;
@@ -862,6 +1290,14 @@
           font-size: 1.1rem;
         }
       }
+
+      @media (prefers-reduced-motion: reduce) {
+        .loading-orbit,
+        .loading-skeleton,
+        .loading-step.is-active > span {
+          animation: none;
+        }
+      }
     </style>
   </head>
   <body>
@@ -893,10 +1329,7 @@
 
       async function loadFlowData(chain, address) {
         currentRequest = { chain, address };
-        renderDataState(
-          "正在查询资金流数据",
-          `正在向后端查询 ${chain.toUpperCase()} 地址 ${shortAddress(address)}。`,
-        );
+        renderLoadingState(chain, address);
 
         try {
           const response = await fetch(buildFlowRequestUrl(chain, address), {
@@ -912,11 +1345,10 @@
             throw new Error("HTTP " + response.status);
           }
 
-          flowData = validateFlowResponse(
-            await response.json(),
-            chain,
-            address,
-          );
+          setLoadingStep(2);
+          const responseData = await response.json();
+          setLoadingStep(3);
+          flowData = validateFlowResponse(responseData, chain, address);
           renderResult(chain, address);
         } catch (error) {
           console.error("Failed to load flow data:", error);
@@ -926,6 +1358,90 @@
               : "后端请求失败，或返回的 JSON 不符合约定格式。";
           renderDataState("JSON 读取失败", message, true);
         }
+      }
+
+      function renderLoadingState(chain, address) {
+        const chainLabel =
+          chainOptions.find((item) => item.id === chain)?.label ||
+          String(chain || "").toUpperCase();
+        document.getElementById("app").innerHTML = `
+          <main class="loading-shell" aria-busy="true">
+            <header class="loading-topbar">
+              <a class="loading-back" href="./track.html">← 返回搜索</a>
+              <span class="loading-security">安全查询通道</span>
+            </header>
+            <section class="loading-layout" role="status" aria-live="polite">
+              <div class="loading-copy-panel">
+                <p class="eyebrow">Onchain flow analysis</p>
+                <div class="loading-heading">
+                  <div class="loading-orbit" aria-hidden="true"></div>
+                  <div>
+                    <h1>正在读取资金流</h1>
+                    <p>数据返回后会自动生成关系图和交易明细，请稍候。</p>
+                  </div>
+                </div>
+                <div class="loading-query">
+                  <span class="loading-chain">${escapeHtml(chainLabel)}</span>
+                  <code title="${escapeHtml(address)}">${escapeHtml(address)}</code>
+                </div>
+                <ol class="loading-steps" aria-label="数据加载进度">
+                  <li class="loading-step is-active" data-loading-step="1">
+                    <span>1</span>
+                    <div>
+                      <strong>连接数据接口</strong>
+                      <small>正在发送地址与网络查询条件</small>
+                    </div>
+                  </li>
+                  <li class="loading-step" data-loading-step="2">
+                    <span>2</span>
+                    <div>
+                      <strong>读取响应数据</strong>
+                      <small>接收账户、交易与资产信息</small>
+                    </div>
+                  </li>
+                  <li class="loading-step" data-loading-step="3">
+                    <span>3</span>
+                    <div>
+                      <strong>校验并生成图谱</strong>
+                      <small>核对链、地址和交易数据格式</small>
+                    </div>
+                  </li>
+                </ol>
+              </div>
+              <div class="loading-preview" aria-hidden="true">
+                <div class="loading-preview-bar"><span></span><span></span><span></span></div>
+                <div class="loading-preview-body">
+                  <div>
+                    <div class="loading-skeleton loading-skeleton-title"></div>
+                    <div class="loading-skeleton loading-skeleton-graph">
+                      <div class="loading-node-stack">
+                        <div class="loading-node"></div>
+                        <div class="loading-node"></div>
+                        <div class="loading-node"></div>
+                      </div>
+                      <div class="loading-center-node"></div>
+                      <div class="loading-node-stack">
+                        <div class="loading-node"></div>
+                        <div class="loading-node"></div>
+                        <div class="loading-node"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="loading-skeleton-side">
+                    <span></span><span></span><span></span><span></span><span></span>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </main>`;
+      }
+
+      function setLoadingStep(stepNumber) {
+        document.querySelectorAll("[data-loading-step]").forEach((item) => {
+          const itemStep = Number(item.dataset.loadingStep);
+          item.classList.toggle("is-active", itemStep === stepNumber);
+          item.classList.toggle("is-done", itemStep < stepNumber);
+        });
       }
 
       function createEmptyFlowResponse(chain, address) {
