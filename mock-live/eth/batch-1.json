@@ -16,7 +16,6 @@
       "decimals": 18,
       "asset": "ETH",
       "assetAddress": null,
-      "valueUsd": 17500,
       "txHash": "0x7d3d2f8b7d7d5e9d01a6b2073d2a531d74fb8f93d6b18d26c2b2d4f93a3d4812"
     },
     {
@@ -30,7 +29,6 @@
       "decimals": 18,
       "asset": "ETH",
       "assetAddress": null,
-      "valueUsd": 630,
       "txHash": "0x1db129cb8f0e4509b57166ac2a7fd2f06e0d22f5b52c8a6e7223da310fbb9e20"
     },
     {
@@ -44,7 +42,6 @@
       "decimals": 18,
       "asset": "ETH",
       "assetAddress": null,
-      "valueUsd": 147000,
       "txHash": "0x9c8829c5dd8e524dfe65a745fa129e0a33b93997a8bb5ff2d3148b1f7500a223"
     },
     {
@@ -54,11 +51,10 @@
       "fromLabel": "Treasury",
       "toLabel": "DeFi Router",
       "time": "2026-07-16T08:00:06Z",
-      "rawAmount": "350000000",
-      "decimals": 6,
-      "asset": "USDC",
-      "assetAddress": "0xA0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
-      "valueUsd": 350,
+      "rawAmount": "350000000000000000000",
+      "decimals": 18,
+      "asset": "ETH",
+      "assetAddress": null,
       "txHash": "0x8759df9f62ac553d41031ad353af3b75850edc368ef9468881cfb70b76507dc7"
     },
     {
@@ -72,7 +68,6 @@
       "decimals": 18,
       "asset": "ETH",
       "assetAddress": null,
-      "valueUsd": 5250,
       "txHash": "0xd730c11824962d856ebad077bce0f5624ae4484d8da33048967bb2189ccb04e2"
     },
     {
@@ -86,7 +81,6 @@
       "decimals": 18,
       "asset": "ETH",
       "assetAddress": null,
-      "valueUsd": 1400000,
       "txHash": "0xa0f10ce3b888d01c7943e2ff720044d83a8037366adce349d6fdc1f36b2a42f5"
     }
   ]

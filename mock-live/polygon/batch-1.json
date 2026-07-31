@@ -16,7 +16,6 @@
       "decimals": 18,
       "asset": "POL",
       "assetAddress": null,
-      "valueUsd": 9000,
       "txHash": "0x900aa00100000000000000000000000000000000000000000000000000000001"
     },
     {
@@ -30,7 +29,6 @@
       "decimals": 18,
       "asset": "POL",
       "assetAddress": null,
-      "valueUsd": 375,
       "txHash": "0x900aa00200000000000000000000000000000000000000000000000000000002"
     },
     {
@@ -44,7 +42,6 @@
       "decimals": 18,
       "asset": "POL",
       "assetAddress": null,
-      "valueUsd": 150000,
       "txHash": "0x900bb00100000000000000000000000000000000000000000000000000000003"
     },
     {
@@ -54,11 +51,10 @@
       "fromLabel": "Treasury",
       "toLabel": "DeFi Router",
       "time": "2026-07-16T08:02:06Z",
-      "rawAmount": "24000000000",
-      "decimals": 6,
-      "asset": "USDC",
-      "assetAddress": "0x3c499c542cEF5E3811e1192ce70d8cC03d5c3359",
-      "valueUsd": 24000,
+      "rawAmount": "24000000000000000000000",
+      "decimals": 18,
+      "asset": "POL",
+      "assetAddress": null,
       "txHash": "0x900bb00200000000000000000000000000000000000000000000000000000004"
     },
     {
@@ -72,7 +68,6 @@
       "decimals": 18,
       "asset": "POL",
       "assetAddress": null,
-      "valueUsd": 1500000,
       "txHash": "0x900cc00100000000000000000000000000000000000000000000000000000005"
     },
     {
@@ -86,7 +81,6 @@
       "decimals": 18,
       "asset": "POL",
       "assetAddress": null,
-      "valueUsd": 55000,
       "txHash": "0x900cc00200000000000000000000000000000000000000000000000000000006"
     }
   ]
