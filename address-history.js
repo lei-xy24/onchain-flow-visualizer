@@ -17,6 +17,7 @@ export function createAddressHistory({
   const empty = panel.querySelector("[data-history-empty]");
   const clearButton = panel.querySelector("[data-history-clear]");
   let inputHasChanged = false;
+  let resizeFrame = 0;
 
   input.setAttribute("aria-controls", panel.id);
   input.setAttribute("aria-expanded", "false");
@@ -78,6 +79,12 @@ export function createAddressHistory({
     window.setTimeout(() => {
       if (!panel.parentElement.contains(document.activeElement)) setOpen(false);
     }, 0);
+  });
+
+  window.addEventListener("resize", () => {
+    if (panel.hidden) return;
+    window.cancelAnimationFrame(resizeFrame);
+    resizeFrame = window.requestAnimationFrame(positionWithinViewport);
   });
 
   function render(filterValue = "") {
@@ -165,6 +172,23 @@ export function createAddressHistory({
   function setOpen(isOpen) {
     panel.hidden = !isOpen;
     input.setAttribute("aria-expanded", String(isOpen));
+    if (isOpen) positionWithinViewport();
+  }
+
+  function positionWithinViewport() {
+    const viewportPadding = 12;
+    const viewportWidth = document.documentElement.clientWidth;
+    panel.style.setProperty("--history-offset-x", "0px");
+
+    const panelRect = panel.getBoundingClientRect();
+    let offsetX = 0;
+    if (panelRect.right > viewportWidth - viewportPadding) {
+      offsetX -= panelRect.right - (viewportWidth - viewportPadding);
+    }
+    if (panelRect.left + offsetX < viewportPadding) {
+      offsetX += viewportPadding - (panelRect.left + offsetX);
+    }
+    panel.style.setProperty("--history-offset-x", `${offsetX}px`);
   }
 
   return {

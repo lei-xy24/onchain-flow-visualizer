@@ -434,6 +434,7 @@ a {
   overflow: hidden;
   position: absolute;
   top: calc(100% + 10px);
+  transform: translateX(var(--history-offset-x, 0px));
   width: min(520px, calc(100vw - 36px));
   z-index: 60;
 }

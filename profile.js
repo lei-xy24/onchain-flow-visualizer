@@ -12,7 +12,7 @@ import {
 import {
   createAddressHistory,
   rememberAddressSearch,
-} from "./address-history.js?v=20260731";
+} from "./address-history.js?v=20260731-history-boundary";
 import { createAnalysisLoading } from "./analysis-loading.js?v=20260731";
 
 const elements = {
