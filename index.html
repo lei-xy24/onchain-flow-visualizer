@@ -233,6 +233,17 @@
         font-size: 0.76rem;
       }
 
+      .transfer-meta a,
+      .protocol-type a {
+        color: var(--teal-dark);
+        text-decoration: none;
+      }
+
+      .transfer-meta a:hover,
+      .protocol-type a:hover {
+        text-decoration: underline;
+      }
+
       .transfer-amount {
         font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
         font-size: 0.9rem;
@@ -475,6 +486,7 @@
 
       async function loadOverview() {
         let overview = DEMO_OVERVIEW;
+        let noteText = "当前显示演示数据。";
         if (liveMode) {
           try {
             const response = await fetch(BACKEND_API_URL, {
@@ -584,21 +596,23 @@
 
           const route = document.createElement("div");
           route.className = "transfer-route";
-          const routeText = shortAddress(tx.from) + " 转给 " + shortAddress(tx.to);
-          if (liveMode && tx.hash && !tx.hash.startsWith("0x000000")) {
-            const link = document.createElement("a");
-            link.href = "https://etherscan.io/tx/" + tx.hash;
-            link.target = "_blank";
-            link.rel = "noreferrer";
-            link.textContent = routeText;
-            route.append(link);
-          } else {
-            route.textContent = routeText;
-          }
+          route.append(
+            createAddressTrackingLink(tx.from, "eth"),
+            document.createTextNode(" 转给 "),
+            createAddressTrackingLink(tx.to, "eth"),
+          );
 
           const meta = document.createElement("div");
           meta.className = "transfer-meta";
           meta.textContent = timeAgo(Number(tx.timeStamp));
+          if (liveMode && tx.hash && !tx.hash.startsWith("0x000000")) {
+            const transactionLink = document.createElement("a");
+            transactionLink.href = "https://etherscan.io/tx/" + tx.hash;
+            transactionLink.target = "_blank";
+            transactionLink.rel = "noreferrer";
+            transactionLink.textContent = "查看交易";
+            meta.append(document.createTextNode(" · "), transactionLink);
+          }
 
           const amount = document.createElement("div");
           amount.className = "transfer-amount";
@@ -624,10 +638,12 @@
           name.textContent = protocol.name;
           const type = document.createElement("div");
           type.className = "protocol-type";
-          type.textContent =
-            (PROTOCOL_TYPE_NAMES[protocol.type] || protocol.type) +
-            " · " +
-            shortAddress(protocol.address);
+          type.append(
+            document.createTextNode(
+              (PROTOCOL_TYPE_NAMES[protocol.type] || protocol.type) + " · ",
+            ),
+            createAddressTrackingLink(protocol.address, "eth"),
+          );
           left.append(name, type);
 
           const count = document.createElement("div");
@@ -654,6 +670,21 @@
       function shortAddress(address) {
         if (!address || address.length < 12) return address || "";
         return address.slice(0, 8) + "..." + address.slice(-4);
+      }
+
+      function createAddressTrackingLink(address, chain) {
+        const link = document.createElement("a");
+        const resultUrl = new URL("./result.html", location.href);
+        resultUrl.searchParams.set("chain", chain);
+        resultUrl.searchParams.set("address", address);
+        link.href = resultUrl.href;
+        link.textContent = shortAddress(address);
+        link.title = address;
+        link.setAttribute(
+          "aria-label",
+          `追踪 ${chain.toUpperCase()} 地址 ${address}`,
+        );
+        return link;
       }
 
       function timeAgo(timestampSec) {
