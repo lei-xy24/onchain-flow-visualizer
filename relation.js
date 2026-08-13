@@ -66,6 +66,7 @@ function cancelRelationLoading() {
 
 function initializeRelation() {
   setSampleAddresses();
+  applyInitialQuery();
   elements.chain.addEventListener("change", () => {
     setSampleAddresses();
     addressAHistory.resetInputState();
@@ -80,6 +81,24 @@ function initializeRelation() {
     renderRelation({ rememberSearch: true });
   });
   renderRelation({ rememberSearch: false });
+}
+
+function applyInitialQuery() {
+  const params = new URLSearchParams(window.location.search);
+  const chain = params.get("chain");
+  const addressA = params.get("addressA");
+  const addressB = params.get("addressB");
+  if (
+    !FLOW_CHAINS[chain] ||
+    !isEvmAddress(addressA) ||
+    !isEvmAddress(addressB) ||
+    addressA.toLowerCase() === addressB.toLowerCase()
+  ) {
+    return;
+  }
+  elements.chain.value = chain;
+  elements.addressA.value = addressA;
+  elements.addressB.value = addressB;
 }
 
 async function renderRelation({ rememberSearch = false } = {}) {

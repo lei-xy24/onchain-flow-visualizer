@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>热点人物关注雷达 · 链上观察</title>
+    <meta
+      name="description"
+      content="从公开社交关注关系发现区块链相关对象，并追踪经过核验的链上实体"
+    />
+    <link rel="stylesheet" href="./hot-topic.css?v=20260813-v2" />
+    <script src="./hot-topic.js?v=20260813-v2" defer></script>
+  </head>
+  <body>
+    <header class="radar-header">
+      <a class="radar-brand" href="./index.html">
+        <span class="brand-mark" aria-hidden="true">◎</span>
+        <span>
+          <strong>区块链安全监控平台</strong>
+          <small>Social intelligence</small>
+        </span>
+      </a>
+      <nav class="radar-nav" aria-label="分析工具">
+        <a href="./index.html">链上概览</a>
+        <a href="./track.html">地址追踪</a>
+        <a href="./profile.html">用户画像</a>
+        <a href="./relation.html">地址关联</a>
+      </nav>
+    </header>
+
+    <main class="radar-shell">
+      <section class="radar-hero" aria-labelledby="radar-title">
+        <div class="hero-copy">
+          <p class="eyebrow">Public figure social watch</p>
+          <h1 id="radar-title">热点人物关注雷达</h1>
+          <p>
+            观察公众人物的公开社交关注变化，识别其中与区块链有关的账号，
+            再把经过来源核验的项目合约、金库或公开地址接入链上追踪。
+          </p>
+          <div class="hero-pills" aria-label="产品能力">
+            <span>多人物监控</span>
+            <span>关注变化检测</span>
+            <span>链上实体核验</span>
+          </div>
+        </div>
+
+        <aside class="source-card" aria-labelledby="source-title">
+          <div class="source-card-top">
+            <span class="source-signal is-demo" id="source-signal" aria-hidden="true"></span>
+            <div>
+              <p>Data source</p>
+              <h2 id="source-title">正在读取数据状态</h2>
+            </div>
+          </div>
+          <p id="source-description">正在连接人物关注数据源。</p>
+          <dl class="source-meta">
+            <div><dt>数据模式</dt><dd id="source-mode">—</dd></div>
+            <div><dt>最近同步</dt><dd id="source-time">—</dd></div>
+            <div><dt>建议频率</dt><dd id="source-cadence">—</dd></div>
+          </dl>
+          <button class="refresh-button" id="refresh-data" type="button">
+            <span aria-hidden="true">↻</span> 刷新关注数据
+          </button>
+        </aside>
+      </section>
+
+      <section class="method-strip" aria-label="追踪方法">
+        <article><span>01</span><div><strong>选择人物</strong><small>读取已核验的官方社交账号</small></div></article>
+        <i aria-hidden="true">→</i>
+        <article><span>02</span><div><strong>比较关注快照</strong><small>发现新增、取消及基线关注</small></div></article>
+        <i aria-hidden="true">→</i>
+        <article><span>03</span><div><strong>识别链上对象</strong><small>项目、协议、合约与公开地址</small></div></article>
+        <i aria-hidden="true">→</i>
+        <article><span>04</span><div><strong>一键追踪</strong><small>仅开放经过证据核验的目标</small></div></article>
+      </section>
+
+      <section class="people-section" aria-labelledby="people-title">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Monitored figures</p>
+            <h2 id="people-title">选择观察人物</h2>
+          </div>
+          <p id="people-summary">正在加载人物配置…</p>
+        </div>
+        <div class="people-list" id="people-list" aria-live="polite">
+          <div class="person-skeleton"></div>
+          <div class="person-skeleton"></div>
+          <div class="person-skeleton"></div>
+          <div class="person-skeleton"></div>
+        </div>
+      </section>
+
+      <section class="watch-workspace" aria-label="人物关注详情">
+        <div class="follow-panel">
+          <header class="selected-figure" id="selected-figure"></header>
+
+          <div class="follow-toolbar">
+            <div class="filter-tabs" id="filter-tabs" role="tablist" aria-label="关注对象筛选">
+              <button class="is-active" type="button" data-filter="recent" role="tab" aria-selected="true">
+                最近变化 <span id="count-recent">0</span>
+              </button>
+              <button type="button" data-filter="crypto" role="tab" aria-selected="false">
+                区块链相关 <span id="count-crypto">0</span>
+              </button>
+              <button type="button" data-filter="trackable" role="tab" aria-selected="false">
+                可链上追踪 <span id="count-trackable">0</span>
+              </button>
+              <button type="button" data-filter="all" role="tab" aria-selected="false">
+                全部关注 <span id="count-all">0</span>
+              </button>
+            </div>
+            <label class="follow-search">
+              <span aria-hidden="true">⌕</span>
+              <span class="sr-only">搜索关注对象</span>
+              <input id="follow-search" type="search" placeholder="搜索名称、账号或类型" autocomplete="off" />
+            </label>
+          </div>
+
+          <div class="follow-list-heading">
+            <span>关注对象</span>
+            <span>检测状态</span>
+            <span>链上映射</span>
+          </div>
+          <div class="follow-list" id="follow-list" aria-live="polite"></div>
+        </div>
+
+        <aside class="evidence-panel" id="evidence-panel" aria-live="polite">
+          <div class="empty-detail">
+            <span aria-hidden="true">⌖</span>
+            <h2>选择一个关注对象</h2>
+            <p>查看社交关系状态、区块链相关性和链上实体核验证据。</p>
+          </div>
+        </aside>
+      </section>
+
+      <section class="boundary-note" aria-label="数据边界说明">
+        <strong>数据边界</strong>
+        <p>
+          “关注”只表示公开社交账号关系，不代表投资、合作、背书或持仓；
+          社交账号也不会自动等于钱包。只有完成来源核验的链上实体才开放追踪。
+        </p>
+      </section>
+    </main>
+
+    <div class="sync-overlay" id="sync-overlay" hidden>
+      <div class="sync-dialog" role="status" aria-live="assertive">
+        <div class="sync-radar" aria-hidden="true"><i></i><i></i><i></i></div>
+        <p>Social data sync</p>
+        <h2 id="sync-title">正在同步关注列表</h2>
+        <span id="sync-detail">正在读取人物与社交账号配置</span>
+        <ol class="sync-steps" id="sync-steps">
+          <li class="is-active">获取关注快照</li>
+          <li>比较关注变化</li>
+          <li>匹配链上实体</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="toast" id="radar-toast" role="status" aria-live="polite" hidden></div>
+  </body>
+</html>

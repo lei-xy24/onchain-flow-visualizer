@@ -1,0 +1,399 @@
+{
+  "meta": {
+    "mode": "demo-cache",
+    "modeLabel": "演示缓存",
+    "title": "未连接社交平台实时接口",
+    "description": "当前展示用于验证产品流程的缓存样例；接入 X 官方 API 后，后端可按相同结构返回准实时关注快照。",
+    "syncedAt": "2026-08-13T11:36:00+08:00",
+    "cadence": "5–15 分钟",
+    "source": "X API 适配结构",
+    "isLive": false
+  },
+  "figures": [
+    {
+      "id": "donald-trump",
+      "name": "Donald Trump",
+      "nameZh": "唐纳德·特朗普",
+      "initials": "DT",
+      "role": "政治人物",
+      "avatar": "./assets/trump-chainwatch-editorial.png",
+      "colors": ["#31547c", "#b94545"],
+      "accounts": [
+        { "platform": "X", "handle": "@realDonaldTrump", "verified": true },
+        { "platform": "Truth Social", "handle": "@realDonaldTrump", "verified": true, "manual": true }
+      ],
+      "followingCount": 57,
+      "newCount": 2,
+      "lastSuccessAt": "2026-08-13T11:36:00+08:00",
+      "follows": [
+        {
+          "id": "trump-wlfi",
+          "name": "World Liberty Financial",
+          "handle": "@worldlibertyfi",
+          "initials": "WL",
+          "colors": ["#20395c", "#bf983d"],
+          "bio": "去中心化金融项目官方账号",
+          "platform": "X",
+          "verified": true,
+          "status": "new",
+          "detectedAt": "2026-08-13T10:45:00+08:00",
+          "window": "10:30–10:45",
+          "crypto": true,
+          "categories": ["DeFi", "项目官方账号"],
+          "confidence": "A",
+          "relationEvidence": "演示关注快照差异",
+          "targets": [
+            {
+              "name": "WLFI 演示追踪目标",
+              "chain": "eth",
+              "network": "Ethereum",
+              "address": "0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97",
+              "type": "项目公开地址",
+              "evidence": "演示核验记录 · 官方来源待后端替换",
+              "verifiedAt": "2026-08-13",
+              "action": "追踪项目公开地址"
+            }
+          ]
+        },
+        {
+          "id": "trump-coinbase",
+          "name": "Coinbase",
+          "handle": "@coinbase",
+          "initials": "CB",
+          "colors": ["#1155c7", "#3f82ff"],
+          "bio": "数字资产交易与托管服务平台",
+          "platform": "X",
+          "verified": true,
+          "status": "new",
+          "detectedAt": "2026-08-13T09:20:00+08:00",
+          "window": "09:05–09:20",
+          "crypto": true,
+          "categories": ["交易平台", "托管服务"],
+          "confidence": "B",
+          "relationEvidence": "演示关注快照差异",
+          "targets": [
+            {
+              "name": "Coinbase 标注服务地址",
+              "chain": "eth",
+              "network": "Ethereum",
+              "address": "0x5e34cb1aef9e5b0e0e6c23d27d087f23e8bd3c70",
+              "type": "交易平台服务地址",
+              "evidence": "演示标签库 · 上线前需连接正式标签源",
+              "verifiedAt": "2026-08-12",
+              "action": "追踪交易平台地址"
+            }
+          ]
+        },
+        {
+          "id": "trump-truth",
+          "name": "Truth Social",
+          "handle": "@truthsocial",
+          "initials": "TS",
+          "colors": ["#45516e", "#7792d5"],
+          "bio": "社交媒体平台官方账号",
+          "platform": "X",
+          "verified": true,
+          "status": "baseline",
+          "detectedAt": "2026-08-12T09:00:00+08:00",
+          "window": "首次基线",
+          "crypto": false,
+          "categories": ["社交媒体"],
+          "confidence": null,
+          "relationEvidence": "演示基线快照",
+          "targets": []
+        },
+        {
+          "id": "trump-opensea",
+          "name": "OpenSea",
+          "handle": "@opensea",
+          "initials": "OS",
+          "colors": ["#1868b7", "#29a8df"],
+          "bio": "NFT 市场与数字藏品基础设施",
+          "platform": "X",
+          "verified": true,
+          "status": "removed",
+          "detectedAt": "2026-08-12T18:15:00+08:00",
+          "window": "18:00–18:15",
+          "crypto": true,
+          "categories": ["NFT", "市场"],
+          "confidence": "A",
+          "relationEvidence": "演示取消关注差异",
+          "targets": [
+            {
+              "name": "OpenSea 协议合约样例",
+              "chain": "eth",
+              "network": "Ethereum",
+              "address": "0xA91c7F2b2f32E7d42A61A0C4A53e80B3d8D7C91A",
+              "type": "协议合约",
+              "evidence": "演示映射 · 上线前需替换为官方合约",
+              "verifiedAt": "2026-08-11",
+              "action": "追踪协议合约"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "elon-musk",
+      "name": "Elon Musk",
+      "nameZh": "埃隆·马斯克",
+      "initials": "EM",
+      "role": "科技企业家",
+      "avatar": "./assets/elon-musk-chainwatch-editorial.png",
+      "colors": ["#25313a", "#617481"],
+      "accounts": [{ "platform": "X", "handle": "@elonmusk", "verified": true }],
+      "followingCount": 824,
+      "newCount": 1,
+      "lastSuccessAt": "2026-08-13T11:31:00+08:00",
+      "follows": [
+        {
+          "id": "elon-dogecoin",
+          "name": "Dogecoin",
+          "handle": "@dogecoin",
+          "initials": "Ð",
+          "colors": ["#9d781a", "#dfbd54"],
+          "bio": "开源点对点数字货币社区账号",
+          "platform": "X",
+          "verified": true,
+          "status": "new",
+          "detectedAt": "2026-08-13T11:10:00+08:00",
+          "window": "10:55–11:10",
+          "crypto": true,
+          "categories": ["公链资产", "社区"],
+          "confidence": null,
+          "relationEvidence": "演示关注快照差异",
+          "targets": []
+        },
+        {
+          "id": "elon-kraken",
+          "name": "Kraken Exchange",
+          "handle": "@krakenfx",
+          "initials": "KR",
+          "colors": ["#4f2a93", "#7a5dd4"],
+          "bio": "数字资产交易平台官方账号",
+          "platform": "X",
+          "verified": true,
+          "status": "baseline",
+          "detectedAt": "2026-08-12T09:00:00+08:00",
+          "window": "首次基线",
+          "crypto": true,
+          "categories": ["交易平台"],
+          "confidence": "B",
+          "relationEvidence": "演示基线快照",
+          "targets": [
+            {
+              "name": "Kraken 服务地址样例",
+              "chain": "eth",
+              "network": "Ethereum",
+              "address": "0xA91c7F2b2f32E7d42A61A0C4A53e80B3d8D7C91A",
+              "type": "交易平台服务地址",
+              "evidence": "演示标签库 · 待正式标签源核验",
+              "verifiedAt": "2026-08-10",
+              "action": "追踪交易平台地址"
+            }
+          ]
+        },
+        {
+          "id": "elon-spacex",
+          "name": "SpaceX",
+          "handle": "@SpaceX",
+          "initials": "SX",
+          "colors": ["#2c3c52", "#5d7696"],
+          "bio": "航天与空间技术公司官方账号",
+          "platform": "X",
+          "verified": true,
+          "status": "baseline",
+          "detectedAt": "2026-08-12T09:00:00+08:00",
+          "window": "首次基线",
+          "crypto": false,
+          "categories": ["航天科技"],
+          "confidence": null,
+          "relationEvidence": "演示基线快照",
+          "targets": []
+        }
+      ]
+    },
+    {
+      "id": "vitalik-buterin",
+      "name": "Vitalik Buterin",
+      "nameZh": "维塔利克·布特林",
+      "initials": "VB",
+      "role": "区块链研究者",
+      "avatar": "./assets/vitalik-buterin-chainwatch-editorial.png",
+      "colors": ["#4e5a7f", "#8f9cce"],
+      "accounts": [{ "platform": "X", "handle": "@VitalikButerin", "verified": true }],
+      "followingCount": 349,
+      "newCount": 1,
+      "lastSuccessAt": "2026-08-13T11:29:00+08:00",
+      "follows": [
+        {
+          "id": "vitalik-scroll",
+          "name": "Scroll",
+          "handle": "@Scroll_ZKP",
+          "initials": "SC",
+          "colors": ["#b9905f", "#f0d4aa"],
+          "bio": "Ethereum zkEVM Layer 2 项目",
+          "platform": "X",
+          "verified": true,
+          "status": "new",
+          "detectedAt": "2026-08-13T08:35:00+08:00",
+          "window": "08:20–08:35",
+          "crypto": true,
+          "categories": ["Layer 2", "zkEVM"],
+          "confidence": "A",
+          "relationEvidence": "演示关注快照差异",
+          "targets": [
+            {
+              "name": "Scroll Bridge 演示合约",
+              "chain": "eth",
+              "network": "Ethereum",
+              "address": "0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97",
+              "type": "跨链桥合约",
+              "evidence": "演示官方文档映射 · 上线前替换",
+              "verifiedAt": "2026-08-12",
+              "action": "追踪跨链桥合约"
+            }
+          ]
+        },
+        {
+          "id": "vitalik-aave",
+          "name": "Aave",
+          "handle": "@aave",
+          "initials": "AA",
+          "colors": ["#6656a4", "#8ec4cb"],
+          "bio": "去中心化借贷协议官方账号",
+          "platform": "X",
+          "verified": true,
+          "status": "baseline",
+          "detectedAt": "2026-08-12T09:00:00+08:00",
+          "window": "首次基线",
+          "crypto": true,
+          "categories": ["DeFi", "借贷协议"],
+          "confidence": "A",
+          "relationEvidence": "演示基线快照",
+          "targets": [
+            {
+              "name": "Aave V3 演示地址",
+              "chain": "polygon",
+              "network": "Polygon",
+              "address": "0x9000000000000000000000000000000000000001",
+              "type": "协议合约",
+              "evidence": "演示映射 · 上线前使用官方地址库",
+              "verifiedAt": "2026-08-12",
+              "action": "追踪协议合约"
+            }
+          ]
+        },
+        {
+          "id": "vitalik-research",
+          "name": "Ethereum Research",
+          "handle": "@ethresearchbot",
+          "initials": "ER",
+          "colors": ["#425a76", "#77a8c6"],
+          "bio": "Ethereum 研究内容聚合账号",
+          "platform": "X",
+          "verified": false,
+          "status": "baseline",
+          "detectedAt": "2026-08-12T09:00:00+08:00",
+          "window": "首次基线",
+          "crypto": true,
+          "categories": ["研究机构"],
+          "confidence": null,
+          "relationEvidence": "演示基线快照",
+          "targets": []
+        }
+      ]
+    },
+    {
+      "id": "changpeng-zhao",
+      "name": "Changpeng Zhao",
+      "nameZh": "赵长鹏",
+      "initials": "CZ",
+      "role": "区块链企业家",
+      "avatar": "./assets/changpeng-zhao-chainwatch-editorial.png",
+      "colors": ["#8d6c0d", "#e3b93f"],
+      "accounts": [{ "platform": "X", "handle": "@cz_binance", "verified": true }],
+      "followingCount": 1724,
+      "newCount": 1,
+      "lastSuccessAt": "2026-08-13T11:27:00+08:00",
+      "follows": [
+        {
+          "id": "cz-pancakeswap",
+          "name": "PancakeSwap",
+          "handle": "@PancakeSwap",
+          "initials": "PS",
+          "colors": ["#6c4ba0", "#d7a7e2"],
+          "bio": "多链去中心化交易协议官方账号",
+          "platform": "X",
+          "verified": true,
+          "status": "new",
+          "detectedAt": "2026-08-13T07:50:00+08:00",
+          "window": "07:35–07:50",
+          "crypto": true,
+          "categories": ["DEX", "DeFi"],
+          "confidence": "A",
+          "relationEvidence": "演示关注快照差异",
+          "targets": [
+            {
+              "name": "PancakeSwap 演示合约",
+              "chain": "bsc",
+              "network": "BNB Smart Chain",
+              "address": "0xB5C0000000000000000000000000000000000001",
+              "type": "协议合约",
+              "evidence": "演示官方文档映射 · 上线前替换",
+              "verifiedAt": "2026-08-12",
+              "action": "追踪协议合约"
+            }
+          ]
+        },
+        {
+          "id": "cz-bnbchain",
+          "name": "BNB Chain",
+          "handle": "@BNBCHAIN",
+          "initials": "BNB",
+          "colors": ["#9b7310", "#f0ba2d"],
+          "bio": "BNB Chain 生态官方账号",
+          "platform": "X",
+          "verified": true,
+          "status": "baseline",
+          "detectedAt": "2026-08-12T09:00:00+08:00",
+          "window": "首次基线",
+          "crypto": true,
+          "categories": ["公链生态"],
+          "confidence": "A",
+          "relationEvidence": "演示基线快照",
+          "targets": [
+            {
+              "name": "BNB Chain 生态地址样例",
+              "chain": "bsc",
+              "network": "BNB Smart Chain",
+              "address": "0xB5C3000000000000000000000000000000000003",
+              "type": "生态公开地址",
+              "evidence": "演示映射 · 上线前使用官方来源",
+              "verifiedAt": "2026-08-11",
+              "action": "追踪生态地址"
+            }
+          ]
+        },
+        {
+          "id": "cz-ai",
+          "name": "Open Source AI Lab",
+          "handle": "@OpenAILabDemo",
+          "initials": "AI",
+          "colors": ["#475e67", "#88a5aa"],
+          "bio": "开源人工智能研究社区",
+          "platform": "X",
+          "verified": false,
+          "status": "baseline",
+          "detectedAt": "2026-08-12T09:00:00+08:00",
+          "window": "首次基线",
+          "crypto": false,
+          "categories": ["人工智能"],
+          "confidence": null,
+          "relationEvidence": "演示基线快照",
+          "targets": []
+        }
+      ]
+    }
+  ]
+}

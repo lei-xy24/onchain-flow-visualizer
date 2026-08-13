@@ -60,6 +60,7 @@ function cancelProfileLoading() {
 }
 
 function initializeProfile() {
+  applyInitialQuery();
   elements.chain.addEventListener("change", () => {
     elements.address.value = FLOW_CHAINS[elements.chain.value].sampleA;
     profileHistory.resetInputState();
@@ -72,6 +73,15 @@ function initializeProfile() {
     renderProfile({ rememberSearch: true });
   });
   renderProfile({ rememberSearch: false });
+}
+
+function applyInitialQuery() {
+  const params = new URLSearchParams(window.location.search);
+  const chain = params.get("chain");
+  const address = params.get("address");
+  if (!FLOW_CHAINS[chain] || !isEvmAddress(address)) return;
+  elements.chain.value = chain;
+  elements.address.value = address;
 }
 
 async function renderProfile({ rememberSearch = false } = {}) {
