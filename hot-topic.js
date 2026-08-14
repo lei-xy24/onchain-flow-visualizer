@@ -1,550 +1,170 @@
 (function () {
   "use strict";
 
-  const API_URL = "";
-  const DEMO_URL = "./mock-social-radar.json?v=20260813-v2";
-  const state = {
-    data: null,
-    activeFigureId: null,
-    activeFollowId: null,
-    filter: "recent",
-    query: "",
-    toastTimer: null,
-  };
-
+  const state = { index: null, data: null, activeFigureId: null, activeThemeId: null, toastTimer: null };
   const elements = {
-    sourceSignal: document.getElementById("source-signal"),
-    sourceTitle: document.getElementById("source-title"),
-    sourceDescription: document.getElementById("source-description"),
-    sourceMode: document.getElementById("source-mode"),
-    sourceTime: document.getElementById("source-time"),
-    sourceCadence: document.getElementById("source-cadence"),
-    refresh: document.getElementById("refresh-data"),
-    peopleSummary: document.getElementById("people-summary"),
-    peopleList: document.getElementById("people-list"),
-    selectedFigure: document.getElementById("selected-figure"),
-    filterTabs: document.getElementById("filter-tabs"),
-    followSearch: document.getElementById("follow-search"),
-    followList: document.getElementById("follow-list"),
-    evidencePanel: document.getElementById("evidence-panel"),
-    countRecent: document.getElementById("count-recent"),
-    countCrypto: document.getElementById("count-crypto"),
-    countTrackable: document.getElementById("count-trackable"),
-    countAll: document.getElementById("count-all"),
-    syncOverlay: document.getElementById("sync-overlay"),
-    syncTitle: document.getElementById("sync-title"),
-    syncDetail: document.getElementById("sync-detail"),
-    syncSteps: document.getElementById("sync-steps"),
+    sourceSignal: document.getElementById("source-signal"), sourceTitle: document.getElementById("source-title"),
+    sourceDescription: document.getElementById("source-description"), sourceMode: document.getElementById("source-mode"),
+    sourceTime: document.getElementById("source-time"), sourceCadence: document.getElementById("source-cadence"),
+    snapshotVersion: document.getElementById("snapshot-version"),
+    refresh: document.getElementById("refresh-data"), peopleSummary: document.getElementById("people-summary"),
+    peopleList: document.getElementById("people-list"), selectedFigure: document.getElementById("selected-figure"),
+    themeList: document.getElementById("theme-list"), evidencePanel: document.getElementById("evidence-panel"),
+    boundaryCopy: document.getElementById("boundary-copy"), syncOverlay: document.getElementById("sync-overlay"),
+    syncDetail: document.getElementById("sync-detail"), syncSteps: document.getElementById("sync-steps"),
     toast: document.getElementById("radar-toast"),
   };
 
-  initialize();
+  elements.refresh.addEventListener("click", () => loadData(true, "latest"));
+  elements.snapshotVersion.addEventListener("change", () => loadData(true, elements.snapshotVersion.value));
+  loadData(false, new URLSearchParams(location.search).get("snapshot"));
 
-  function initialize() {
-    bindControls();
-    loadRadarData({ showLoading: false });
-  }
-
-  function bindControls() {
-    elements.refresh.addEventListener("click", () => loadRadarData({ showLoading: true }));
-    elements.filterTabs.addEventListener("click", (event) => {
-      const button = event.target.closest("[data-filter]");
-      if (!button) return;
-      state.filter = button.dataset.filter;
-      elements.filterTabs.querySelectorAll("[data-filter]").forEach((item) => {
-        const active = item === button;
-        item.classList.toggle("is-active", active);
-        item.setAttribute("aria-selected", String(active));
-      });
-      state.activeFollowId = null;
-      renderFollowList();
-    });
-    elements.followSearch.addEventListener("input", () => {
-      state.query = elements.followSearch.value.trim().toLowerCase();
-      state.activeFollowId = null;
-      renderFollowList();
-    });
-  }
-
-  async function loadRadarData({ showLoading }) {
+  async function loadData(showLoading, requestedId) {
     elements.refresh.disabled = true;
-    if (showLoading) openSyncOverlay();
+    if (showLoading) openLoading();
     try {
-      const response = await fetch(API_URL || DEMO_URL, {
-        cache: "no-store",
-        headers: { Accept: "application/json" },
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      if (showLoading) await advanceSync(1, "正在比较最新快照与上一份有效记录");
-      const payload = await response.json();
-      validatePayload(payload);
-      if (showLoading) await advanceSync(2, "正在核对社交账号与已审核链上实体");
+      state.index = await window.SocialRadarSnapshots.loadIndex();
+      if (showLoading) await advanceLoading(1, "正在确认最近一份校验通过的三小时快照");
+      const payload = await window.SocialRadarSnapshots.loadSnapshot(state.index, requestedId === "latest" ? state.index.latest : requestedId);
+      if (!Array.isArray(payload.figures) || !payload.figures.length) throw new Error("人物兴趣快照结构不完整");
+      if (showLoading) await advanceLoading(2, "正在装载主题、证据与数据故事");
       state.data = payload;
-      if (!payload.figures.some((item) => item.id === state.activeFigureId)) {
-        state.activeFigureId = payload.figures[0].id;
-      }
-      state.activeFollowId = null;
+      if (!payload.figures.some((item) => item.id === state.activeFigureId)) state.activeFigureId = payload.figures[0].id;
+      state.activeThemeId = activeFigure().themes[0]?.id || null;
+      window.SocialRadarSnapshots.populateVersionSelect(elements.snapshotVersion, state.index, payload.snapshotId);
+      const nextUrl = new URL(location.href); nextUrl.searchParams.set("snapshot", payload.snapshotId); history.replaceState(null, "", nextUrl);
       renderAll();
-      if (showLoading) {
-        await wait(260);
-        showToast(
-          payload.meta.isLive
-            ? "关注数据已更新。"
-            : "已重新读取演示缓存；接入 X 官方 API 后才会获取最新关注数据。"
-        );
-      }
+      if (showLoading) showToast(payload.snapshotId === state.index.latest ? "已读取最近一份成功快照。" : "已切换到历史分析版本。");
     } catch (error) {
-      renderLoadError(error);
+      renderError(error);
     } finally {
       elements.refresh.disabled = false;
-      closeSyncOverlay();
-    }
-  }
-
-  function validatePayload(payload) {
-    if (!payload || !payload.meta || !Array.isArray(payload.figures) || !payload.figures.length) {
-      throw new Error("人物关注数据结构不完整");
+      closeLoading();
     }
   }
 
   function renderAll() {
-    renderSourceStatus();
-    renderPeople();
-    renderSelectedFigure();
-    renderCounts();
-    renderFollowList();
+    renderSource(); renderPeople(); renderFigure(); renderThemes();
+    elements.boundaryCopy.textContent = state.data.disclaimer;
   }
 
-  function renderSourceStatus() {
-    const meta = state.data.meta;
-    elements.sourceTitle.textContent = meta.title;
-    elements.sourceDescription.textContent = meta.description;
-    elements.sourceMode.textContent = meta.modeLabel;
-    elements.sourceMode.title = meta.source;
-    elements.sourceTime.textContent = formatRelativeTime(meta.syncedAt);
-    elements.sourceTime.title = formatFullTime(meta.syncedAt);
-    elements.sourceCadence.textContent = meta.cadence;
-    elements.sourceSignal.classList.toggle("is-demo", !meta.isLive);
+  function renderSource() {
+    const snapshot = state.data;
+    elements.sourceTitle.textContent = snapshot.title; elements.sourceDescription.textContent = snapshot.description;
+    elements.sourceMode.textContent = snapshot.modeLabel; elements.sourceTime.textContent = formatTime(snapshot.generatedAt);
+    elements.sourceCadence.textContent = "每 3 小时"; elements.sourceSignal.classList.toggle("is-demo", !snapshot.isLive);
   }
 
   function renderPeople() {
     const figures = state.data.figures;
-    const monitoredAccounts = figures.reduce((total, figure) => total + figure.accounts.length, 0);
-    elements.peopleSummary.textContent = `${figures.length} 位人物 · ${monitoredAccounts} 个已核验社交账号 · 数据由后端配置`;
+    const signals = figures.reduce((total, figure) => total + figure.sourceCount, 0);
+    elements.peopleSummary.textContent = `${figures.length} 位人物 · ${signals.toLocaleString("zh-CN")} 条近 7 天公开动态 · ${figures.reduce((t, f) => t + f.themes.length, 0)} 个讨论主题`;
     elements.peopleList.replaceChildren();
     figures.forEach((figure) => {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "person-card";
-      button.classList.toggle("is-active", figure.id === state.activeFigureId);
-      button.setAttribute("aria-pressed", String(figure.id === state.activeFigureId));
-      button.style.setProperty("--avatar-a", figure.colors[0]);
-      button.style.setProperty("--avatar-b", figure.colors[1]);
-
-      button.append(
-        createAvatar("person-avatar", figure.initials, figure.avatar, `${figure.nameZh}头像`),
-        createPersonCardCopy(figure),
-        createElement("strong", null, figure.newCount ? `+${figure.newCount}` : "—")
-      );
-      button.addEventListener("click", () => selectFigure(figure.id));
-      elements.peopleList.appendChild(button);
+      const button = document.createElement("button"); button.type = "button"; button.className = "person-card";
+      button.classList.toggle("is-active", figure.id === state.activeFigureId); button.setAttribute("aria-pressed", String(figure.id === state.activeFigureId));
+      button.append(createAvatar("person-avatar", figure), createPersonCopy(figure), createElement("strong", "person-score", `${figure.themes[0].score}`));
+      button.addEventListener("click", () => selectFigure(figure.id)); elements.peopleList.appendChild(button);
     });
   }
 
-  function createPersonCardCopy(figure) {
-    const wrapper = document.createElement("div");
-    const title = createElement("h3", null, figure.nameZh);
-    title.title = figure.name;
-    const role = createElement("p", null, `${figure.name} · ${figure.role}`);
-    const meta = document.createElement("div");
-    meta.className = "person-meta";
-    meta.append(
-      createElement("span", null, figure.accounts.map((item) => item.platform).join(" / ")),
-      createElement("span", null, `可追踪 ${trackableCount(figure)} 项`)
-    );
-    wrapper.append(title, role, meta);
-    return wrapper;
+  function createPersonCopy(figure) {
+    const copy = document.createElement("div");
+    copy.append(createElement("h3", null, figure.nameZh), createElement("p", null, `${figure.name} · ${figure.role}`));
+    const meta = createElement("div", "person-meta");
+    meta.append(createElement("span", null, `Top：${figure.themes[0].name}`), createElement("span", null, `${figure.postsAnalyzed} 条动态`)); copy.appendChild(meta);
+    return copy;
   }
 
-  function selectFigure(figureId) {
-    state.activeFigureId = figureId;
-    state.activeFollowId = null;
-    state.query = "";
-    elements.followSearch.value = "";
-    renderPeople();
-    renderSelectedFigure();
-    renderCounts();
-    renderFollowList();
+  function selectFigure(id) {
+    state.activeFigureId = id; state.activeThemeId = activeFigure().themes[0]?.id || null;
+    renderPeople(); renderFigure(); renderThemes();
   }
 
-  function renderSelectedFigure() {
-    const figure = getActiveFigure();
-    elements.selectedFigure.replaceChildren();
-    elements.selectedFigure.style.setProperty("--avatar-a", figure.colors[0]);
-    elements.selectedFigure.style.setProperty("--avatar-b", figure.colors[1]);
-
+  function renderFigure() {
+    const figure = activeFigure(); elements.selectedFigure.replaceChildren();
     const identity = document.createElement("div");
-    const heading = createElement("h2", null, figure.nameZh);
-    const role = createElement("p", null, `${figure.name} · ${figure.role} · 最近成功同步 ${formatRelativeTime(figure.lastSuccessAt)}`);
-    const accounts = document.createElement("div");
-    accounts.className = "verified-account";
-    figure.accounts.forEach((account) => {
-      const suffix = account.manual ? " · 人工来源" : "";
-      accounts.appendChild(createElement("span", null, `${account.platform} ${account.handle}${suffix}`));
+    const accounts = createElement("div", "verified-account");
+    figure.accounts.forEach((account) => accounts.appendChild(createElement("span", null, `${account.platform} ${account.handle}${account.manual ? " · 人工采集" : ""}`)));
+    identity.append(createElement("h2", null, figure.nameZh), createElement("p", null, `${figure.name} · ${figure.role} · ${figure.analysisWindow}兴趣分析`), accounts);
+    const metrics = createElement("dl", "figure-metrics");
+    metrics.append(createMetric("分析动态", figure.postsAnalyzed), createMetric("覆盖天数", activePostDays(figure)), createMetric("讨论主题", figure.themes.length));
+    elements.selectedFigure.append(createAvatar("selected-avatar", figure), identity, metrics);
+  }
+
+  function renderThemes() {
+    const figure = activeFigure(); elements.themeList.replaceChildren();
+    figure.themes.forEach((theme, index) => {
+      const button = document.createElement("button"); button.type = "button"; button.className = "theme-card";
+      button.classList.toggle("is-active", theme.id === state.activeThemeId); button.setAttribute("aria-pressed", String(theme.id === state.activeThemeId));
+      const rank = createElement("span", "theme-rank", String(index + 1).padStart(2, "0"));
+      const copy = createElement("div", "theme-copy");
+      const change = theme.change > 0 ? `+${theme.change}` : String(theme.change);
+      const top = createElement("div", "theme-title-row"); top.append(createElement("h3", null, theme.name), createElement("span", `trend ${theme.change >= 10 ? "hot" : ""}`, `${theme.trend} ${change}`));
+      const keywords = createElement("div", "keyword-row"); theme.keywords.slice(0, 4).forEach((word) => keywords.appendChild(createElement("span", null, word)));
+      copy.append(top, createElement("p", null, theme.summary), keywords);
+      const score = createElement("div", "theme-score"); score.append(createElement("strong", null, String(theme.score)), createElement("small", null, "关注度"));
+      const bar = createElement("i", "score-bar"); bar.style.setProperty("--score", `${theme.score}%`); score.appendChild(bar);
+      button.append(rank, copy, score); button.addEventListener("click", () => { state.activeThemeId = theme.id; renderThemes(); });
+      elements.themeList.appendChild(button);
     });
-    identity.append(heading, role, accounts);
-
-    const metrics = document.createElement("dl");
-    metrics.className = "figure-metrics";
-    metrics.append(
-      createMetric("公开关注", formatCompactNumber(figure.followingCount)),
-      createMetric("近期变化", countRecent(figure)),
-      createMetric("可追踪", trackableCount(figure))
-    );
-    elements.selectedFigure.append(
-      createAvatar("selected-avatar", figure.initials, figure.avatar, `${figure.nameZh}头像`),
-      identity,
-      metrics
-    );
+    renderEvidence(activeTheme());
   }
 
-  function renderCounts() {
-    const figure = getActiveFigure();
-    elements.countRecent.textContent = countRecent(figure);
-    elements.countCrypto.textContent = figure.follows.filter((item) => item.crypto).length;
-    elements.countTrackable.textContent = trackableCount(figure);
-    elements.countAll.textContent = figure.follows.length;
-  }
-
-  function renderFollowList() {
-    const figure = getActiveFigure();
-    if (!figure) return;
-    const visible = figure.follows.filter(matchesCurrentView);
-    elements.followList.replaceChildren();
-
-    if (!visible.length) {
-      const empty = document.createElement("div");
-      empty.className = "follow-empty";
-      empty.textContent = state.query
-        ? "没有找到匹配的关注对象。"
-        : "当前筛选下没有记录；这不代表接口异常。";
-      elements.followList.appendChild(empty);
-      renderEmptyEvidence();
-      return;
-    }
-
-    if (!visible.some((item) => item.id === state.activeFollowId)) {
-      state.activeFollowId = visible[0].id;
-    }
-
-    visible.forEach((follow) => {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "follow-row";
-      button.classList.toggle("is-active", follow.id === state.activeFollowId);
-      button.setAttribute("aria-pressed", String(follow.id === state.activeFollowId));
-      button.append(createAccountSummary(follow), createChangeStatus(follow), createMappingSummary(follow));
-      button.addEventListener("click", () => {
-        state.activeFollowId = follow.id;
-        renderFollowList();
-      });
-      elements.followList.appendChild(button);
-    });
-    renderEvidence(visible.find((item) => item.id === state.activeFollowId));
-  }
-
-  function matchesCurrentView(follow) {
-    const matchesFilter =
-      state.filter === "all" ||
-      (state.filter === "recent" && follow.status !== "baseline") ||
-      (state.filter === "crypto" && follow.crypto) ||
-      (state.filter === "trackable" && follow.targets.length > 0);
-    if (!matchesFilter) return false;
-    if (!state.query) return true;
-    const searchable = [follow.name, follow.handle, follow.bio, follow.platform, ...follow.categories]
-      .join(" ")
-      .toLowerCase();
-    return searchable.includes(state.query);
-  }
-
-  function createAccountSummary(follow) {
-    const wrapper = document.createElement("div");
-    wrapper.className = "account-summary";
-    wrapper.style.setProperty("--avatar-a", follow.colors[0]);
-    wrapper.style.setProperty("--avatar-b", follow.colors[1]);
-    const copy = document.createElement("div");
-    copy.className = "account-copy";
-    const name = createElement("h3", null, `${follow.name}${follow.verified ? " ✓" : ""}`);
-    const bio = createElement("p", null, `${follow.platform} ${follow.handle} · ${follow.bio}`);
-    const tags = document.createElement("div");
-    tags.className = "account-tags";
-    follow.categories.slice(0, 2).forEach((tag) => tags.appendChild(createElement("span", null, tag)));
-    copy.append(name, bio, tags);
-    wrapper.append(createAvatar("account-avatar", follow.initials), copy);
-    return wrapper;
-  }
-
-  function createChangeStatus(follow) {
-    const wrapper = document.createElement("div");
-    wrapper.className = "change-status";
-    const labels = {
-      new: ["新增关注", "new"],
-      removed: ["检测到取消", "removed"],
-      baseline: ["首次基线", "baseline"],
-    };
-    const [label, className] = labels[follow.status] || labels.baseline;
-    wrapper.append(
-      createElement("span", `status-chip ${className}`, label),
-      createElement("small", null, `${follow.window} · ${formatRelativeTime(follow.detectedAt)}`)
-    );
-    return wrapper;
-  }
-
-  function createMappingSummary(follow) {
-    const wrapper = document.createElement("div");
-    wrapper.className = "mapping-summary";
-    if (follow.targets.length) {
-      wrapper.append(
-        createElement("span", "mapping-chip trackable", `${follow.targets.length} 个已核验目标`),
-        createElement("strong", null, follow.targets[0].type),
-        createElement("small", null, `${follow.targets[0].network} · 可信度 ${follow.confidence}`)
-      );
-    } else {
-      wrapper.append(
-        createElement("span", "mapping-chip", follow.crypto ? "待核验映射" : "非区块链对象"),
-        createElement("strong", null, follow.crypto ? "暂不开放追踪" : "无需链上追踪"),
-        createElement("small", null, follow.crypto ? "未找到可靠地址证据" : "仅保留社交关系记录")
-      );
-    }
-    return wrapper;
-  }
-
-  function renderEvidence(follow) {
-    if (!follow) {
-      renderEmptyEvidence();
-      return;
-    }
+  function renderEvidence(theme) {
+    if (!theme) return;
     elements.evidencePanel.replaceChildren();
+    const header = createElement("header", "evidence-header");
+    const headerTop = createElement("div", "evidence-header-top");
+    const title = createElement("div"); title.append(createElement("p", "eyebrow", theme.category), createElement("h2", null, theme.name));
+    headerTop.append(title, createElement("span", "confidence-badge", `${theme.confidence}置信度`));
+    header.append(headerTop, createElement("p", "evidence-about", theme.why));
 
-    const header = document.createElement("header");
-    header.className = "evidence-header";
-    const top = document.createElement("div");
-    top.className = "evidence-header-top";
-    const account = document.createElement("div");
-    account.className = "evidence-account";
-    account.style.setProperty("--avatar-a", follow.colors[0]);
-    account.style.setProperty("--avatar-b", follow.colors[1]);
-    const copy = document.createElement("div");
-    copy.append(createElement("h2", null, follow.name), createElement("p", null, `${follow.platform} ${follow.handle}`));
-    account.append(createAvatar("account-avatar", follow.initials), copy);
-    top.append(account);
-    if (follow.confidence) top.appendChild(createElement("span", "confidence-badge", `核验等级 ${follow.confidence}`));
-    header.append(top, createElement("p", "evidence-about", follow.bio));
-
-    const body = document.createElement("div");
-    body.className = "evidence-body";
-    body.append(createSocialEvidenceSection(follow), createTargetsSection(follow));
-    elements.evidencePanel.append(header, body);
+    const body = createElement("div", "evidence-body");
+    const scores = createElement("section", "evidence-section"); scores.appendChild(createElement("h3", null, "主题评分依据"));
+    const scoreGrid = createElement("div", "score-grid");
+    scoreGrid.append(createScore("出现频率", theme.scoreBreakdown.frequency), createScore("时间新鲜度", theme.scoreBreakdown.freshness), createScore("跨日连续性", theme.scoreBreakdown.continuity)); scores.appendChild(scoreGrid);
+    const keywords = createElement("section", "evidence-section"); keywords.appendChild(createElement("h3", null, "提取关键词"));
+    const keywordCloud = createElement("div", "keyword-cloud"); theme.keywords.forEach((word, index) => keywordCloud.appendChild(createElement("span", index < 2 ? "is-strong" : null, word))); keywords.appendChild(keywordCloud);
+    const proofs = createElement("section", "evidence-section");
+    const proofTitle = createElement("div", "proof-title"); proofTitle.append(createElement("h3", null, "公开动态证据"), createElement("span", null, evidenceLabel(theme.evidenceBreakdown))); proofs.appendChild(proofTitle);
+    const list = createElement("div", "proof-list"); theme.evidence.forEach((item) => list.appendChild(createProof(item))); proofs.appendChild(list);
+    const action = createElement("a", "story-button", "进入主题数据故事"); action.href = buildStoryUrl(theme); action.appendChild(createElement("span", null, "→"));
+    body.append(scores, keywords, proofs, action); elements.evidencePanel.append(header, body);
   }
 
-  function createSocialEvidenceSection(follow) {
-    const section = document.createElement("section");
-    section.className = "evidence-section";
-    section.appendChild(createElement("h3", null, "社交关系证据"));
-    const grid = document.createElement("div");
-    grid.className = "social-proof";
-    grid.append(
-      createProof("数据平台", follow.platform),
-      createProof("关系状态", statusLabel(follow.status)),
-      createProof("检测窗口", follow.window),
-      createProof("证据类型", follow.relationEvidence)
-    );
-    section.appendChild(grid);
-    return section;
+  function createScore(label, value) {
+    const item = createElement("div", "score-item"); item.append(createElement("span", null, label), createElement("strong", null, String(value)));
+    const track = createElement("i"); track.style.setProperty("--value", `${value}%`); item.appendChild(track); return item;
   }
 
-  function createTargetsSection(follow) {
-    const section = document.createElement("section");
-    section.className = "evidence-section";
-    section.appendChild(createElement("h3", null, "可追踪链上实体"));
-    if (!follow.targets.length) {
-      section.appendChild(
-        createElement(
-          "div",
-          "unmapped-note",
-          follow.crypto
-            ? "已识别为区块链相关账号，但当前没有经过来源核验的链上地址，因此不提供一键追踪。"
-            : "该账号目前未被识别为区块链相关对象，仅展示公开社交关注关系。"
-        )
-      );
-      return section;
-    }
-    const list = document.createElement("div");
-    list.className = "target-list";
-    follow.targets.forEach((target) => list.appendChild(createTargetCard(target)));
-    section.appendChild(list);
-    return section;
+  function createProof(item) {
+    const article = createElement("article", "proof-card");
+    const kindLabel = ({ original: "原创动态", quote: "引用动态", reply: "回复动态" })[item.kind] || "公开动态";
+    const top = createElement("div", "proof-top"); top.append(createElement("span", `source-type ${item.kind || "original"}`, kindLabel), createElement("time", null, formatDateTime(item.time)));
+    const words = createElement("div", "proof-keywords"); item.keywords.forEach((word) => words.appendChild(createElement("span", null, word)));
+    article.append(top, createElement("h4", null, item.title), createElement("p", null, item.summary), words); return article;
   }
 
-  function createTargetCard(target) {
-    const card = document.createElement("article");
-    card.className = "target-card";
-    const top = document.createElement("div");
-    top.className = "target-top";
-    top.append(createElement("strong", null, target.name), createElement("span", null, target.type));
-    const address = createElement("code", "target-address", target.address);
-    const evidence = document.createElement("div");
-    evidence.className = "target-evidence";
-    evidence.append(
-      createElement("span", null, target.evidence),
-      createElement("span", null, `核验于 ${target.verifiedAt}`)
-    );
-    const action = createElement("a", "track-button", target.action);
-    action.href = `./result.html?chain=${encodeURIComponent(target.chain)}&address=${encodeURIComponent(target.address)}`;
-    action.appendChild(createElement("span", null, "→"));
-    card.append(top, address, evidence, action);
-    return card;
+  function buildStoryUrl(theme) {
+    const figure = activeFigure();
+    return `./event-explorer.html?${new URLSearchParams({ figureId: figure.id, theme: theme.storyId, snapshot: state.data.snapshotId }).toString()}`;
   }
 
-  function renderEmptyEvidence() {
-    elements.evidencePanel.innerHTML = `
-      <div class="empty-detail">
-        <span aria-hidden="true">⌖</span>
-        <h2>没有可展示的对象</h2>
-        <p>调整筛选条件或搜索内容后，可在这里查看链上映射与证据。</p>
-      </div>`;
-  }
-
-  function renderLoadError(error) {
-    const message = error instanceof Error ? error.message : "未知错误";
-    elements.peopleSummary.textContent = "人物关注数据暂时不可用";
-    elements.peopleList.innerHTML = `<div class="follow-empty">数据读取失败：${escapeHtml(message)}</div>`;
-    elements.followList.innerHTML = `<div class="follow-empty">请检查后端或演示数据文件后重试。</div>`;
-    elements.sourceTitle.textContent = "数据连接失败";
-    elements.sourceDescription.textContent = "当前无法读取关注快照，页面不会使用猜测数据代替。";
-    showToast("关注数据读取失败，请稍后重试。", 4200);
-  }
-
-  function openSyncOverlay() {
-    elements.syncOverlay.hidden = false;
-    elements.syncTitle.textContent = "正在同步关注列表";
-    elements.syncDetail.textContent = "正在读取人物与社交账号配置";
-    setSyncStep(0);
-  }
-
-  function closeSyncOverlay() {
-    elements.syncOverlay.hidden = true;
-  }
-
-  async function advanceSync(step, detail) {
-    await wait(320);
-    setSyncStep(step);
-    elements.syncDetail.textContent = detail;
-  }
-
-  function setSyncStep(activeIndex) {
-    [...elements.syncSteps.children].forEach((item, index) => {
-      item.classList.toggle("is-active", index === activeIndex);
-      item.classList.toggle("is-done", index < activeIndex);
-    });
-  }
-
-  function showToast(message, duration = 3200) {
-    window.clearTimeout(state.toastTimer);
-    elements.toast.textContent = message;
-    elements.toast.hidden = false;
-    state.toastTimer = window.setTimeout(() => {
-      elements.toast.hidden = true;
-    }, duration);
-  }
-
-  function getActiveFigure() {
-    return state.data?.figures.find((item) => item.id === state.activeFigureId) || null;
-  }
-
-  function countRecent(figure) {
-    return figure.follows.filter((item) => item.status !== "baseline").length;
-  }
-
-  function trackableCount(figure) {
-    return figure.follows.filter((item) => item.targets.length > 0).length;
-  }
-
-  function createMetric(label, value) {
-    const item = document.createElement("div");
-    item.append(createElement("dt", null, label), createElement("dd", null, String(value)));
-    return item;
-  }
-
-  function createProof(label, value) {
-    const item = document.createElement("div");
-    item.append(createElement("span", null, label), createElement("strong", null, value));
-    return item;
-  }
-
-  function createAvatar(className, initials, imageUrl, alt) {
-    const avatar = document.createElement("span");
-    avatar.className = className;
-    if (imageUrl) {
-      const image = document.createElement("img");
-      image.src = imageUrl;
-      image.alt = alt || "";
-      avatar.appendChild(image);
-    } else {
-      avatar.textContent = initials;
-    }
-    return avatar;
-  }
-
-  function createElement(tag, className, text) {
-    const element = document.createElement(tag);
-    if (className) element.className = className;
-    if (text !== undefined && text !== null) element.textContent = text;
-    return element;
-  }
-
-  function statusLabel(status) {
-    return ({ new: "系统检测到新增关注", removed: "系统检测到取消关注", baseline: "首次同步基线" })[status] || "未知";
-  }
-
-  function formatRelativeTime(dateValue) {
-    const date = new Date(dateValue);
-    if (Number.isNaN(date.getTime())) return "时间未知";
-    const minutes = Math.max(0, Math.round((Date.now() - date.getTime()) / 60000));
-    if (minutes < 1) return "刚刚";
-    if (minutes < 60) return `${minutes} 分钟前`;
-    const hours = Math.round(minutes / 60);
-    if (hours < 24) return `${hours} 小时前`;
-    return new Intl.DateTimeFormat("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }).format(date);
-  }
-
-  function formatFullTime(dateValue) {
-    const date = new Date(dateValue);
-    if (Number.isNaN(date.getTime())) return "时间未知";
-    return new Intl.DateTimeFormat("zh-CN", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    }).format(date);
-  }
-
-  function formatCompactNumber(value) {
-    return new Intl.NumberFormat("zh-CN", { notation: value >= 1000 ? "compact" : "standard", maximumFractionDigits: 1 }).format(value);
-  }
-
-  function escapeHtml(value) {
-    return String(value)
-      .replaceAll("&", "&amp;")
-      .replaceAll("<", "&lt;")
-      .replaceAll(">", "&gt;")
-      .replaceAll('"', "&quot;")
-      .replaceAll("'", "&#039;");
-  }
-
-  function wait(milliseconds) {
-    return new Promise((resolve) => window.setTimeout(resolve, milliseconds));
-  }
+  function activeFigure() { return state.data?.figures.find((item) => item.id === state.activeFigureId) || null; }
+  function activeTheme() { return activeFigure()?.themes.find((item) => item.id === state.activeThemeId) || null; }
+  function activePostDays(figure) { return new Set(figure.themes.flatMap((theme) => theme.evidence.map((item) => String(item.time).slice(0, 10)))).size; }
+  function evidenceLabel(breakdown) { return `${breakdown.originals || 0} 条原创 · ${breakdown.quotes || 0} 条引用 · ${breakdown.replies || 0} 条回复`; }
+  function createMetric(label, value) { const div = document.createElement("div"); div.append(createElement("dt", null, label), createElement("dd", null, String(value))); return div; }
+  function createAvatar(className, figure) { const wrapper = createElement("span", className); if (figure.avatar) { const image = document.createElement("img"); image.src = figure.avatar; image.alt = `${figure.nameZh}头像`; wrapper.appendChild(image); } else wrapper.textContent = figure.initials; return wrapper; }
+  function createElement(tag, className, text) { const element = document.createElement(tag); if (className) element.className = className; if (text !== undefined) element.textContent = text; return element; }
+  function formatTime(value) { const date = new Date(value); return Number.isNaN(date.getTime()) ? "—" : new Intl.DateTimeFormat("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false }).format(date); }
+  function formatDateTime(value) { return formatTime(value); }
+  function openLoading() { elements.syncOverlay.hidden = false; elements.syncDetail.textContent = "正在读取已发布快照索引"; setLoadingStep(0); }
+  function closeLoading() { elements.syncOverlay.hidden = true; }
+  async function advanceLoading(step, detail) { await new Promise((resolve) => window.setTimeout(resolve, 320)); setLoadingStep(step); elements.syncDetail.textContent = detail; }
+  function setLoadingStep(step) { [...elements.syncSteps.children].forEach((item, index) => { item.classList.toggle("is-active", index === step); item.classList.toggle("is-done", index < step); }); }
+  function showToast(message) { window.clearTimeout(state.toastTimer); elements.toast.textContent = message; elements.toast.hidden = false; state.toastTimer = window.setTimeout(() => { elements.toast.hidden = true; }, 3400); }
+  function renderError(error) { elements.peopleSummary.textContent = "兴趣数据暂时不可用"; elements.peopleList.innerHTML = `<div class="load-error">读取失败：${escapeHtml(error.message || "未知错误")}</div>`; elements.sourceTitle.textContent = "数据连接失败"; elements.sourceDescription.textContent = "页面不会使用临时猜测结果替代。"; }
+  function escapeHtml(value) { return String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;"); }
 })();

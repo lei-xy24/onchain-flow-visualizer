@@ -10,8 +10,8 @@ import {
   shortHash,
 } from "./live-core.js?v=20260724-native-usd";
 
-// Set this to the real HTTPS endpoint after the backend is available.
-const BACKEND_API_URL = "";
+// 后端团队提供接口后，只修改 runtime-config.js，不在前端放密钥。
+const BACKEND_API_URL = globalThis.ONCHAIN_API_CONFIG?.liveTransfers || "";
 const MOCK_DATA_VERSION = "20260724-native-usd";
 const POLL_INTERVAL_MS = 10_000;
 const MOCK_BATCH_COUNTS = Object.freeze({ eth: 5, bsc: 5, polygon: 5 });

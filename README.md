@@ -3,6 +3,7 @@
 静态版包含两套独立功能：
 
 - `index.html`：首页，展示各链基础数据，右上角是四个功能入口。
+- `runtime-config.js`：统一配置后端团队提供的公开接口地址；留空时使用演示数据。
 - `track.html`：显示地址搜索框与本机搜索历史，不读取资金流 JSON。
 - `search-history.js`：管理最近 10 条搜索记录、筛选、复用和清除操作。
 - `address-history.js`：让用户画像和地址关联共用同一份地址搜索历史。
@@ -14,6 +15,9 @@
 - `profile.html` / `profile.js`：生成账户画像。
 - `relation.html` / `relation.js`：查询两个地址的直接关联交易。
 - `analysis-loading.js`：用户画像与地址关联共用的全屏加载过渡页。
+- `hot-topic.html`：人物兴趣雷达，分析人物近期公开动态并归纳兴趣主题。
+- `event-explorer.html`：从人物兴趣主题进入的数据故事页，展示主题规模、趋势、排名与观察结论。
+- `data/`：最近成功快照、历史版本索引和按三小时保存的快照文件。
 
 页面流程：
 
@@ -30,7 +34,7 @@ track.html
 
 `index.html` 是首页，展示四块内容：核心指标条、多链运行状态、稳定币大额转账、重点协议活动。
 
-首页不直接调用 Etherscan。它只向自己的后端请求一个概览 JSON，由后端去调 Etherscan 再汇总返回。首页里的 `BACKEND_API_URL` 为空时显示内置演示数据；填入后端地址后请求真实数据，请求失败时回退到演示数据。这样 Etherscan 的 key 只存在后端，不会暴露在静态页面里。
+首页不直接调用 Etherscan。它只向 `runtime-config.js` 中配置的 `overview` 地址请求概览 JSON，由后端团队负责数据源与汇总。接口未配置或请求失败时页面会明确提示并回退到演示数据；任何供应商密钥都不应出现在静态页面里。
 
 稳定币大额转账和重点协议中显示的地址均可点击，点击后会携带 ETH 网络和完整地址进入地址追踪结果页。
 
@@ -121,16 +125,14 @@ result.html?chain=eth&address=0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97
 
 ## 后端请求
 
-真实后端地址定义在 `result.html`：
+所有公开后端地址统一定义在 `runtime-config.js`：
 
 ```js
-const BACKEND_API_URL = "";
-```
-
-后端上线后改成：
-
-```js
-const BACKEND_API_URL = "https://api.example.com/flow";
+window.ONCHAIN_API_CONFIG = Object.freeze({
+  overview: "https://api.example.com/overview",
+  flow: "https://api.example.com/flow",
+  liveTransfers: "https://api.example.com/live-transfers",
+});
 ```
 
 结果页会发送：
@@ -221,10 +223,10 @@ live.html
 
 账户节点在当前页面会话中只增不减。某个账户在后续 10 秒没有新交易时，节点仍保留在原位置并显示为历史账户；只有当前窗口的交易线会更新。新增账户优先放在其交易对手附近的空闲位置，已有节点保持原坐标。节点持续增加导致空间不足时，布局只围绕画布中心做等比例压缩，不重新排序。
 
-真实后端地址在 `live-result.js` 中配置：
+实时交易同样读取 `runtime-config.js`：
 
 ```js
-const BACKEND_API_URL = "https://api.example.com/live-transfers";
+liveTransfers: "https://api.example.com/live-transfers"
 ```
 
 前端会每 10 秒发送：
@@ -317,6 +319,42 @@ Accept: application/json
 
 两页读取数据期间会显示与资金追踪一致的全屏过渡页，展示当前网络、地址和处理阶段。请求超过 12 秒会自动结束加载并显示超时提示；读取失败时会显示重新生成或重新查询按钮，不会继续停留在“正在生成”状态。
 
+## 人物兴趣与主题数据故事
+
+`hot-topic.html` 不在浏览器内调用大模型，而是读取 `data/snapshot-index.json` 指向的最近一份成功快照。快照由根目录的 `scripts/generate-social-radar-snapshot.mjs` 生成：它只读取人物最近 7 天的公开动态，对模型返回的证据引用、主题类型、市场指标和故事章节进行程序校验，通过后才原子发布。某次生成失败时不会覆盖上一份成功结果。
+
+页面顶部可以切换历史三小时版本。进入 `event-explorer.html` 时，人物、主题和快照 id 会一起写入 URL，主题页从同一份快照读取指标、趋势、排名和故事，不再分别读取两份写死的 mock 文件。
+
+点击兴趣主题后进入 `event-explorer.html`。主题故事分为四章：
+
+1. 说明兴趣主题是如何从多条公开信号中归纳出来的。
+2. 展示该主题的核心规模或长期趋势。
+3. 展示网络、板块、项目方向或应用场景的排名和结构。
+4. 收束成三条值得持续跟踪的数据问题。
+
+不同主题使用不同的数据口径。例如稳定币侧重市场规模与网络分布，公链侧重用户与应用生态，DeFi 侧重流动性与资本效率，隐私技术侧重研发与采用。仓库内已发布三份演示快照，用于验证版本切换；其中的社交信号和市场指标明确标记为演示输入，不代表人物的真实实时行为。
+
+### 三小时自动生成
+
+本地生成演示快照：
+
+```bash
+npm run radar:demo
+```
+
+真实生成需要在任务环境中提供 `X_BEARER_TOKEN` 和 `DEEPSEEK_API_KEY`。X 采集器会维护 `data/social-input/x-state.json` 中的 `since_id`，每三小时只请求新增动态，再与本地缓存合并成滚动 7 天输入；市场适配器默认从 CoinGecko 公共接口生成实时市值、成交量、趋势估算与排名。可先复制 `.env.example` 查看环境变量名；密钥不能放到 `static-site/`。
+
+`.github/workflows/social-radar-snapshot.yml` 已配置每三小时运行一次：
+
+1. 使用 X API `GET /2/users/{id}/tweets` 增量读取动态，排除转发；原创与引用权重为 1，回复权重为 0.5。
+2. 调用 DeepSeek JSON Output，归纳主题并生成四章故事；默认使用关闭思考模式的 `deepseek-v4-flash` 控制成本。
+3. 校验来源 id、证据数量、允许的主题、市场指标和故事结构。
+4. 只在全部通过后更新 `static-site/data/` 并提交快照。
+
+人物最近 7 天不足两条动态时，不会为了凑主题而让模型生成结论；该人物本期不进入分析。所有人物都不足两条时，本次任务不发布，页面继续展示上一份成功快照。
+
+工作流必须配置的 GitHub Secrets 是 `X_BEARER_TOKEN` 和 `DEEPSEEK_API_KEY`。`MARKET_INPUT_URL` 可选；未配置时使用内置 CoinGecko 市场适配器，接口需要鉴权时再配置 `MARKET_INPUT_BEARER_TOKEN`。`DEEPSEEK_MODEL`、`DEEPSEEK_BASE_URL` 和 `X_API_BASE_URL` 可以作为仓库 Variable 覆盖默认配置。服务器部署则使用 `deploy/systemd/` 中的 service 与 timer，具体见 `deploy/README.md`。
+
 ## CORS
 
 GitHub Pages 是纯静态网站，不能自己运行后端。如果后端使用另一个域名，后端需要允许 GitHub Pages 域名跨域访问，例如：
@@ -340,6 +378,8 @@ python3 -m http.server 8000 --directory static-site
 http://localhost:8000/index.html
 http://localhost:8000/track.html
 http://localhost:8000/live.html
+http://localhost:8000/hot-topic.html
+http://localhost:8000/event-explorer.html
 ```
 
 ## GitHub Pages 上传内容
@@ -348,6 +388,7 @@ http://localhost:8000/live.html
 
 ```text
 index.html
+runtime-config.js
 track.html
 search-history.js
 address-history.js
@@ -366,9 +407,20 @@ relation.js
 flow-demo-data.js
 analysis-loading.js
 mock-live/
+hot-topic.html
+hot-topic.css
+hot-topic.js
+snapshot-store.js
+data/latest-snapshot.json
+data/snapshot-index.json
+data/snapshots/
+event-explorer.html
+event-explorer.css
+event-explorer.js
+assets/
 ```
 
-两个后端都上线并配置对应的 `BACKEND_API_URL` 后，可以删除 `mock-api/` 和 `mock-live/`，但仍需上传所有 HTML、CSS 和 JS 文件。
+后端接口上线并在 `runtime-config.js` 配置对应地址后，可以选择删除 `mock-api/` 和 `mock-live/`；保留它们则方便无后端环境演示。发布时仍需上传所有 HTML、CSS 和 JS 文件。
 
 ```text
 index.html
@@ -388,6 +440,15 @@ relation.html
 relation.js
 flow-demo-data.js
 analysis-loading.js
+hot-topic.html
+hot-topic.css
+hot-topic.js
+event-explorer.html
+event-explorer.css
+event-explorer.js
+snapshot-store.js
+data/
+assets/
 ```
 
 `README.md` 可选。

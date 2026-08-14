@@ -658,10 +658,6 @@ function groupDigits(value) {
   return value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
-function trimFixed(value) {
-  return value.toFixed(value >= 100 ? 0 : value >= 10 ? 1 : 2).replace(/\.0+$/, "");
-}
-
 function hashString(value) {
   let hash = 2166136261;
   for (let index = 0; index < value.length; index += 1) {

@@ -142,7 +142,7 @@ async function renderRelation({ rememberSearch = false } = {}) {
   ]);
 
   try {
-    const records = await loadFlowRecords(chain, { signal: controller.signal });
+    const records = await loadFlowRecords(chain, { signal: controller.signal, addresses: [addressA, addressB] });
     if (requestId !== relationRequestId) return;
     relationLoading.setStep(2);
     const relations = findAddressRelations(records, addressA, addressB);
@@ -200,7 +200,7 @@ function renderRelationHtml(chain, addressA, addressB, relations) {
         ? `<div class="relation-table">
             ${relations.map(renderRelationRow).join("")}
           </div>`
-        : `<div class="analysis-empty">当前资金流追踪示例数据中，没有找到这两个地址之间的直接转账。</div>`
+        : `<div class="analysis-empty">当前查询范围内，没有找到这两个地址之间的直接转账。</div>`
     }
   `;
 }

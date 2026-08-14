@@ -1299,12 +1299,13 @@
         }
       }
     </style>
+    <script src="./runtime-config.js?v=20260815-frontend-only"></script>
   </head>
   <body>
     <div id="app"></div>
     <script>
-      // Set this to the real endpoint, for example: https://api.example.com/flow
-      const BACKEND_API_URL = "";
+      // 后端团队提供接口后，只修改 runtime-config.js，不在页面中放密钥。
+      const BACKEND_API_URL = globalThis.ONCHAIN_API_CONFIG?.flow || "";
       const MOCK_DATA_VERSION = "20260724-native-usd";
       let flowData = null;
       let currentRequest = null;

@@ -116,7 +116,7 @@ async function renderProfile({ rememberSearch = false } = {}) {
   ]);
 
   try {
-    const records = await loadFlowRecords(chain, { signal: controller.signal });
+    const records = await loadFlowRecords(chain, { signal: controller.signal, addresses: [address] });
     if (requestId !== profileRequestId) return;
     profileLoading.setStep(2);
     const profile = buildAddressProfile(records, address);
@@ -221,7 +221,7 @@ function renderProfileHtml(chain, profile) {
             ? `<div class="relation-table compact">
                 ${latestTransfers.map(renderTransfer).join("")}
               </div>`
-            : `<p class="analysis-empty">当前示例数据中没有发现该账户的资金流记录。</p>`
+            : `<p class="analysis-empty">当前查询范围内没有发现该账户的资金流记录。</p>`
         }
       </section>
     </div>

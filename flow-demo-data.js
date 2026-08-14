@@ -38,6 +38,7 @@ export const FLOW_MOCK_FILES = Object.freeze({
 });
 
 const MOCK_DATA_VERSION = "20260724-native-usd";
+const FLOW_API_URL = globalThis.ONCHAIN_API_CONFIG?.flow || "";
 const EVM_ADDRESS_PATTERN = /^0x[0-9a-fA-F]{40}$/;
 const RAW_AMOUNT_PATTERN = /^\d+$/;
 
@@ -49,7 +50,21 @@ export function isEvmAddress(address) {
   return EVM_ADDRESS_PATTERN.test(String(address || "").trim());
 }
 
-export async function loadFlowRecords(chain, { signal } = {}) {
+export async function loadFlowRecords(chain, { signal, addresses = [] } = {}) {
+  const requestedAddresses = [...new Set(addresses.map((item) => String(item || "").trim()).filter(isEvmAddress))];
+  if (requestedAddresses.length && FLOW_API_URL.trim()) {
+    return Promise.all(requestedAddresses.map(async (address) => {
+      const url = new URL(FLOW_API_URL, location.href);
+      url.searchParams.set("chain", chain);
+      url.searchParams.set("address", address);
+      const response = await fetch(url, { cache: "no-store", headers: { Accept: "application/json" }, signal });
+      if (!response.ok) throw new Error(`链上数据接口返回 HTTP ${response.status}`);
+      const record = await response.json();
+      if (record.chain !== chain || normalizeAddress(record.address) !== normalizeAddress(address)) throw new Error("链上数据接口返回了不匹配的地址");
+      return record;
+    }));
+  }
+
   const files = FLOW_MOCK_FILES[chain] || [];
   const records = await Promise.all(
     files.map(async (file) => {
@@ -66,7 +81,7 @@ export async function loadFlowRecords(chain, { signal } = {}) {
 }
 
 export function flattenFlowTransfers(records) {
-  return records.flatMap((record) => [
+  const transfers = records.flatMap((record) => [
     ...record.input.map((transfer) =>
       normalizeTransfer(record, transfer, "input"),
     ),
@@ -74,6 +89,12 @@ export function flattenFlowTransfers(records) {
       normalizeTransfer(record, transfer, "output"),
     ),
   ]);
+  const seen = new Map();
+  for (const transfer of transfers) {
+    const key = [transfer.txHash, transfer.assetAddress || "native", normalizeAddress(transfer.from), normalizeAddress(transfer.to), transfer.rawAmount].join(":");
+    if (!seen.has(key)) seen.set(key, transfer);
+  }
+  return [...seen.values()];
 }
 
 export function findAddressRelations(records, leftAddress, rightAddress) {

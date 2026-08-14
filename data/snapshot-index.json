@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "latest": "20260813T120000Z",
+  "generatedAt": "2026-08-13T12:06:00.000Z",
+  "snapshots": [
+    {
+      "id": "20260813T120000Z",
+      "file": "./data/snapshots/20260813T120000Z.json",
+      "generatedAt": "2026-08-13T12:06:00.000Z",
+      "slotStart": "2026-08-13T12:00:00.000Z",
+      "windowStart": "2026-08-06T10:00:00.000Z",
+      "windowEnd": "2026-08-13T10:00:00.000Z",
+      "status": "published",
+      "modeLabel": "DeepSeek 演示快照",
+      "digest": "28bc3abf7da7921a"
+    },
+    {
+      "id": "20260813T090000Z",
+      "file": "./data/snapshots/20260813T090000Z.json",
+      "generatedAt": "2026-08-13T09:06:00.000Z",
+      "slotStart": "2026-08-13T09:00:00.000Z",
+      "windowStart": "2026-08-06T10:00:00.000Z",
+      "windowEnd": "2026-08-13T10:00:00.000Z",
+      "status": "published",
+      "modeLabel": "DeepSeek 演示快照",
+      "digest": "c92c0a7bc57c01c8"
+    },
+    {
+      "id": "20260813T060000Z",
+      "file": "./data/snapshots/20260813T060000Z.json",
+      "generatedAt": "2026-08-13T06:06:00.000Z",
+      "slotStart": "2026-08-13T06:00:00.000Z",
+      "windowStart": "2026-08-06T10:00:00.000Z",
+      "windowEnd": "2026-08-13T10:00:00.000Z",
+      "status": "published",
+      "modeLabel": "DeepSeek 演示快照",
+      "digest": "b6567431e8c26d88"
+    }
+  ]
+}

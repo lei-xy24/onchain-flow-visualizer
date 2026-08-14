@@ -498,6 +498,7 @@
         }
       }
     </style>
+    <script src="./runtime-config.js?v=20260815-frontend-only"></script>
   </head>
   <body>
     <header class="site-header">
@@ -530,19 +531,20 @@
         </div>
         <div class="hot-topic-copy">
           <p class="hot-topic-kicker">Social intelligence · Demo cache</p>
-          <h2 id="hot-topic-title">热点人物关注雷达</h2>
+          <h2 id="hot-topic-title">人物兴趣雷达</h2>
           <p>
-            观察多位公众人物的公开社交关注变化，识别区块链相关对象，并追踪经过来源核验的链上实体。
+            分析多位公众人物最近 7 天的公开动态，提取关键词，归纳他们近期反复讨论的区块链技术与市场主题。
           </p>
           <div class="hot-topic-tags" aria-label="专题看点">
             <span>4 位可配置人物</span>
-            <span>关注变化检测</span>
-            <span>链上映射证据</span>
+            <span>公开动态分析</span>
+            <span>兴趣主题归纳</span>
+            <span>主题数据故事</span>
           </div>
         </div>
         <div class="hot-topic-action">
-          <a href="./hot-topic.html">查看人物关注雷达 →</a>
-          <small>当前为演示缓存；关注不代表投资、背书或钱包归属</small>
+          <a href="./hot-topic.html">查看人物兴趣雷达 →</a>
+          <small>读取最近一份校验通过的三小时快照；主题归纳不代表人物立场、投资或背书</small>
         </div>
       </section>
 
@@ -574,9 +576,8 @@
     </main>
 
     <script>
-      // 后端上线后填入概览接口地址，例如 "https://api.example.com/overview"。
-      // 为空时使用下面的演示数据。响应格式见 README 的"首页后端接口"一节。
-      const BACKEND_API_URL = "";
+      // 后端团队提供接口后，只修改 runtime-config.js，不在页面中放密钥。
+      const BACKEND_API_URL = globalThis.ONCHAIN_API_CONFIG?.overview || "";
 
       const LARGE_TRANSFER_MIN = 1000000;
 
@@ -710,19 +711,19 @@
       function renderMetrics(metrics) {
         const strip = document.getElementById("metric-strip");
         strip.textContent = "";
-        addMetric(strip, "最新区块（以太坊）", formatNumber(hexToNumber(metrics.blockNumber)), "");
+        addMetric(strip, "最新区块（以太坊）", formatMaybeNumber(hexToNumber(metrics.blockNumber)), "");
         addMetric(
           strip,
           "燃料费价格",
-          metrics.gasOracle.ProposeGasPrice + " Gwei",
-          "低速 " + metrics.gasOracle.SafeGasPrice + " / 快速 " + metrics.gasOracle.FastGasPrice
+          displayValue(metrics.gasOracle?.ProposeGasPrice, " Gwei"),
+          "低速 " + displayValue(metrics.gasOracle?.SafeGasPrice) + " / 快速 " + displayValue(metrics.gasOracle?.FastGasPrice)
         );
-        addMetric(strip, "以太币价格", "$" + formatNumber(Number(metrics.ethPrice.ethusd).toFixed(2)), "");
-        addMetric(strip, "每日交易数", formatNumber(metrics.dailyTx.transactionCount), "");
+        addMetric(strip, "以太币价格", currencyValue(metrics.ethPrice?.ethusd), "");
+        addMetric(strip, "每日交易数", formatMaybeNumber(metrics.dailyTx?.transactionCount), "暂未返回时显示 —");
         addMetric(
           strip,
           "网络利用率",
-          (Number(metrics.networkUtilization.networkUtilization) * 100).toFixed(1) + "%",
+          percentValue(metrics.networkUtilization?.networkUtilization),
           ""
         );
       }
@@ -864,6 +865,25 @@
 
       function formatNumber(value) {
         return Number(value).toLocaleString("en-US");
+      }
+
+      function formatMaybeNumber(value) {
+        const number = Number(value);
+        return Number.isFinite(number) ? number.toLocaleString("en-US") : "—";
+      }
+
+      function displayValue(value, suffix = "") {
+        return value === undefined || value === null || value === "" || value === "—" ? "—" : String(value) + suffix;
+      }
+
+      function currencyValue(value) {
+        const number = Number(value);
+        return Number.isFinite(number) && number > 0 ? "$" + number.toLocaleString("en-US", { maximumFractionDigits: 2 }) : "—";
+      }
+
+      function percentValue(value) {
+        const number = Number(value);
+        return Number.isFinite(number) ? (number * 100).toFixed(1) + "%" : "—";
       }
 
       function shortAddress(address) {
