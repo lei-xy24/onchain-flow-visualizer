@@ -1,4 +1,4 @@
-# 人物兴趣雷达三小时任务
+# 人物兴趣雷达每周任务
 
 这里仅部署“人物兴趣雷达”，不提供链上概览、地址追踪、用户画像、地址关联或实时交易接口。
 
@@ -84,7 +84,7 @@ sudoedit /etc/onchain-radar.env
 ```env
 X_BEARER_TOKEN="替换为真实 Bearer Token"
 DEEPSEEK_API_KEY="替换为真实 DeepSeek Key"
-DEEPSEEK_MODEL="deepseek-v4-flash"
+DEEPSEEK_MODEL="deepseek-v4-pro"
 TRUMP_FM_BASE_URL="https://trump.fm"
 
 SOCIAL_INPUT_FILE="/var/lib/onchain-radar/social-input/latest.json"
@@ -115,18 +115,18 @@ sudo journalctl -u onchain-radar-snapshot.service -n 150 --no-pager
 - 日志最后出现 `"delivery":"github"` 和发布成功信息。
 - GitHub `main` 出现一条 `Update social radar snapshot ...` 提交。
 - 该提交只修改根目录和 `static-site/` 下的 `data/latest-snapshot.json`、`data/snapshot-index.json`、`data/snapshots/*.json`。
-- GitHub Pages 的人物兴趣雷达显示新三小时版本。
+- GitHub Pages 的人物兴趣雷达显示新的每周版本。
 
 任何一步失败都不要启用 timer。常见状态：X `401/403` 是 Token 或权限问题，`402/429` 通常是额度或频率问题；DeepSeek 报余额或限额时应先处理账户余额。
 
-## 6. 启用三小时任务
+## 6. 启用每周任务
 
 ```bash
 sudo systemctl enable --now onchain-radar-snapshot.timer
 systemctl list-timers onchain-radar-snapshot.timer --all
 ```
 
-timer 在北京时间 0、3、6、9、12、15、18、21 点触发，并加入最多 45 秒随机延迟。某次采集、模型、校验或 GitHub 推送失败时，任务退出失败并保留网站上一份成功快照。
+timer 在北京时间每周一 08:00 触发，并加入最多 45 秒随机延迟。某次采集、模型、校验或 GitHub 推送失败时，任务退出失败并保留网站上一份成功快照。
 
 ## 更新服务器代码
 

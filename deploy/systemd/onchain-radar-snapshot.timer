@@ -1,8 +1,8 @@
 [Unit]
-Description=Run social radar every three hours
+Description=Run social radar every Monday morning
 
 [Timer]
-OnCalendar=*-*-* 00/3:00:00 Asia/Shanghai
+OnCalendar=Mon *-*-* 08:00:00 Asia/Shanghai
 Persistent=true
 RandomizedDelaySec=45
 Unit=onchain-radar-snapshot.service

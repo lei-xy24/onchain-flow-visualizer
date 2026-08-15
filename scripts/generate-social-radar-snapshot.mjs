@@ -5,7 +5,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   buildPublishedSnapshot,
-  floorToThreeHourSlot,
+  floorToPublishSlot,
   groundModelOutput,
   marketMetricCatalog,
   publishSnapshot,
@@ -22,12 +22,12 @@ import { radarOutputSchema } from "./social-radar-schema.mjs";
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const args = parseArgs(process.argv.slice(2));
 const config = await readJson(path.join(root, "social-radar.config.json"));
-const socialFile = resolveFile(args.input || process.env.SOCIAL_INPUT_FILE || config.sourceFile);
-const marketFile = resolveFile(args.market || process.env.MARKET_INPUT_FILE || config.marketFile);
+const socialFile = resolveFile(args.input || process.env.SOCIAL_INPUT_FILE || (args.demo ? "scripts/demo-social-radar-input.json" : config.sourceFile));
+const marketFile = resolveFile(args.market || process.env.MARKET_INPUT_FILE || (args.demo ? "scripts/demo-market-input.json" : config.marketFile));
 const outputDirectory = resolveFile(config.outputDirectory);
 const latestFile = resolveFile(config.publicLatestFile);
 const indexFile = resolveFile(config.publicIndexFile);
-const slot = args.slot ? new Date(args.slot) : floorToThreeHourSlot(new Date());
+const slot = args.slot ? new Date(args.slot) : floorToPublishSlot(new Date(), config.schedule);
 
 if (Number.isNaN(slot.getTime())) throw new Error(`无效的 --slot：${args.slot}`);
 

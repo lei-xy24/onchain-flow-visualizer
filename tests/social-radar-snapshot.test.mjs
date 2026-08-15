@@ -2,20 +2,20 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildPublishedSnapshot, floorToThreeHourSlot, groundModelOutput, requireHttpsBaseUrl, requireHttpsUrl, snapshotIdFor, readJson, validateModelOutput, validateSnapshot } from "../scripts/social-radar-lib.mjs";
+import { buildPublishedSnapshot, floorToPublishSlot, groundModelOutput, requireHttpsBaseUrl, requireHttpsUrl, snapshotIdFor, readJson, validateModelOutput, validateSnapshot } from "../scripts/social-radar-lib.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const [config, socialInput, marketInput, modelOutput] = await Promise.all([
   readJson(path.join(root, "social-radar.config.json")),
-  readJson(path.join(root, "data/social-input/latest.json")),
-  readJson(path.join(root, "data/market-input/latest.json")),
+  readJson(path.join(root, "scripts/demo-social-radar-input.json")),
+  readJson(path.join(root, "scripts/demo-market-input.json")),
   readJson(path.join(root, "scripts/demo-social-radar-output.json")),
 ]);
 
-test("三小时区间使用 UTC 整点并生成稳定 id", () => {
-  const slot = floorToThreeHourSlot(new Date("2026-08-13T14:47:12Z"));
-  assert.equal(slot.toISOString(), "2026-08-13T12:00:00.000Z");
-  assert.equal(snapshotIdFor(slot), "20260813T120000Z");
+test("每周发布区间使用周一 UTC 整点并生成稳定 id", () => {
+  const slot = floorToPublishSlot(new Date("2026-08-13T14:47:12Z"), config.schedule);
+  assert.equal(slot.toISOString(), "2026-08-10T00:00:00.000Z");
+  assert.equal(snapshotIdFor(slot), "20260810T000000Z");
 });
 
 test("携带密钥的外部接口只允许无账号信息的 HTTPS 地址", () => {
@@ -86,6 +86,8 @@ test("发布快照包含人物、故事和完整四章", () => {
   assert.equal(snapshot.figures[0].themes[0].story.chapters.length, 4);
   assert.equal(snapshot.status, "published");
   assert.equal(snapshot.modelProvider, "deepseek");
+  assert.equal(snapshot.nextScheduledAt, "2026-08-17T00:00:00.000Z");
+  assert.match(snapshot.description, /每周一北京时间 08:00/);
   assert.equal("followingCount" in snapshot.figures[0], false);
   assert.ok(snapshot.figures.flatMap((figure) => figure.themes).flatMap((theme) => theme.evidence).every((item) => item.type === "post"));
 });

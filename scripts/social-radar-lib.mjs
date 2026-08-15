@@ -76,8 +76,14 @@ export async function writeJsonAtomic(filePath, value) {
   await rename(temporaryPath, filePath);
 }
 
-export function floorToThreeHourSlot(date = new Date()) {
+export function floorToPublishSlot(date = new Date(), schedule = "0 */3 * * *") {
   const slot = new Date(date);
+  if (schedule === "0 0 * * 1") {
+    const daysSinceMonday = (slot.getUTCDay() + 6) % 7;
+    slot.setUTCDate(slot.getUTCDate() - daysSinceMonday);
+    slot.setUTCHours(0, 0, 0, 0);
+    return slot;
+  }
   slot.setUTCMinutes(0, 0, 0);
   slot.setUTCHours(Math.floor(slot.getUTCHours() / 3) * 3);
   return slot;
@@ -253,7 +259,7 @@ export function buildPublishedSnapshot({ config, socialInput, marketInput, model
     windowStart: socialInput.windowStart,
     windowEnd: socialInput.windowEnd,
     generatedAt,
-    nextScheduledAt: new Date(slot.getTime() + config.publishIntervalHours * 36e5).toISOString(),
+    nextScheduledAt: calculateNextScheduledAt(slot, config),
     model: modelName,
     modelProvider: config.provider || "deepseek",
     promptVersion: config.promptVersion,
@@ -267,12 +273,29 @@ export function buildPublishedSnapshot({ config, socialInput, marketInput, model
     marketMode: marketInput.mode,
     isLive: !isDemo && ["x-posts-api", "mixed-social-api"].includes(socialInput.mode),
     title: isDemo ? "最近一份已发布的 DeepSeek 演示快照" : "最近一份已发布的 DeepSeek 分析快照",
-    description: `每 ${config.publishIntervalHours} 小时生成一次；本页只读取最近一份校验通过并发布的结果。`,
+    description: `${formatPublishCadence(config.publishIntervalHours)}；本页只读取最近一份校验通过并发布的结果。`,
     disclaimer: "兴趣主题只来自人物最近 7 天的公开动态，不代表人物立场、投资、合作或背书，也不会推断其钱包或链上地址。故事中的数值必须来自随快照保存的数据源。",
     figures,
   };
   snapshot.digest = digestSnapshot(snapshot);
   return snapshot;
+}
+
+function formatPublishCadence(intervalHours) {
+  if (intervalHours === 168) return "每周一北京时间 08:00 生成一次";
+  if (intervalHours === 24) return "每天生成一次";
+  return `每 ${intervalHours} 小时生成一次`;
+}
+
+function calculateNextScheduledAt(slot, config) {
+  if (config.schedule === "0 0 * * 1") {
+    const next = new Date(slot);
+    const daysUntilMonday = ((1 - next.getUTCDay() + 7) % 7) || 7;
+    next.setUTCDate(next.getUTCDate() + daysUntilMonday);
+    next.setUTCHours(0, 0, 0, 0);
+    return next.toISOString();
+  }
+  return new Date(slot.getTime() + config.publishIntervalHours * 36e5).toISOString();
 }
 
 export function validateModelOutput(modelOutput, socialInput, marketInput, config) {

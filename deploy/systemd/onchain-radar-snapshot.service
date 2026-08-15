@@ -1,5 +1,5 @@
 [Unit]
-Description=Generate the three-hour social radar snapshot
+Description=Generate the weekly social radar snapshot
 After=network-online.target
 Wants=network-online.target
 

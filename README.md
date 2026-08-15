@@ -2,12 +2,12 @@
 
 本仓库以 `static-site/` 前端为交付主体。链上概览、地址追踪、用户画像、地址关联和实时交易只消费后端团队提供的 HTTP 接口，本仓库不实现这些业务后端；接口地址统一配置在 `static-site/runtime-config.js`，留空时使用内置演示数据。
 
-“人物兴趣雷达”由 GitHub Actions 每三小时运行：从 `trump.fm` 读取特朗普的 Truth Social 归档，并通过 X API 读取马斯克、Vitalik 和 CZ 的公开动态；随后补充公开市场指标，调用 DeepSeek 生成经过程序校验的关键词与数据故事。`deploy/` 保留阿里云 systemd 作为可选的自托管替代方案。
+“人物兴趣雷达”由 GitHub Actions 每周一北京时间 08:00 运行：从 `trump.fm` 读取特朗普的 Truth Social 归档，并通过 X API 读取马斯克、Vitalik 和 CZ 的公开动态；随后补充公开市场指标，调用 DeepSeek V4 Pro 生成经过程序校验的关键词与数据故事。`deploy/` 保留阿里云 systemd 作为可选的自托管替代方案。
 
 仓库结构：
 
 - `static-site/`：GitHub Pages 的完整前端，也是当前业务交付主体。
-- `scripts/`、`data/`：人物兴趣雷达的采集、市场数据和三小时快照生成逻辑。
+- `scripts/`、`data/`：人物兴趣雷达的采集、市场数据和每周快照生成逻辑。
 - `deploy/`：人物雷达可选的自托管 systemd 模板；当前线上定时任务使用 GitHub Actions。
 - `app/`、`worker/`：保留的 Sites/Cloudflare 构建入口，用于另一套地址追踪原型和构建验证，不是链上业务后端。
 - `data/example-flow.json`、`lib/flow-data.ts`：Sites 原型使用的演示数据读取层。
@@ -71,7 +71,7 @@ npm run typecheck
 - 可以提交源代码、演示 JSON、人物插画、测试、部署模板和 `.env.example`。
 - 不要提交 `.env`、真实 API Key、X Token、服务器地址与登录信息、SSH 私钥、日志或本地增量状态文件。
 - `.gitignore` 已覆盖常见环境文件、证书、私钥、日志，以及 `data/social-input/*-state.json`。
-- `.github/workflows/social-radar-snapshot.yml` 每三小时运行，也保留手动验收入口。工作流通过 Repository Secrets 读取 X 与 DeepSeek 密钥，并用路径白名单发布根目录和 `static-site/` 两份公开快照；网页前端和提交内容都不会包含密钥。
+- `.github/workflows/social-radar-snapshot.yml` 每周一北京时间 08:00 运行，也保留手动验收入口。工作流通过 Repository Secrets 读取 X 与 DeepSeek 密钥，并用路径白名单发布根目录和 `static-site/` 两份公开快照；网页前端和提交内容都不会包含密钥。
 - `.openai/hosting.json` 只包含 Sites 项目标识和逻辑绑定，不包含访问凭证。
 
 GitHub 仓库应上传整个项目。当前 GitHub Pages 从 `main` 根目录发布，因此人物雷达成功后会把 `static-site/data/` 原子同步到根目录 `data/`；两个目录必须指向同一快照版本。真实密钥只保存在 GitHub Repository Secrets，不会回写到仓库。
