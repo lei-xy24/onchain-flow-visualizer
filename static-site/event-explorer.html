@@ -1,0 +1,91 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>主题数据故事 · 区块链安全监控平台</title>
+    <meta name="description" content="从人物兴趣主题出发，通过市场规模、趋势、排名和观察结论讲述数据故事" />
+    <link rel="stylesheet" href="./event-explorer.css?v=20260813-v2" />
+    <script src="./snapshot-store.js?v=20260813-v1" defer></script>
+    <script src="./event-explorer.js?v=20260813-v3" defer></script>
+  </head>
+  <body>
+    <header class="story-header">
+      <a class="story-brand" href="./index.html"><span class="brand-mark" aria-hidden="true">◎</span><span><strong>区块链安全监控平台</strong><small>Topic intelligence</small></span></a>
+      <nav class="story-nav" aria-label="分析工具"><a class="is-active" href="./hot-topic.html">人物兴趣雷达</a><a href="./track.html">地址追踪</a><a href="./profile.html">用户画像</a><a href="./relation.html">地址关联</a></nav>
+    </header>
+
+    <main class="story-shell">
+      <nav class="breadcrumb" aria-label="面包屑"><a href="./hot-topic.html">人物兴趣雷达</a><span>/</span><span>主题数据故事</span></nav>
+
+      <section class="story-hero" aria-labelledby="story-title">
+        <div class="story-identity">
+          <span class="figure-avatar" id="figure-avatar" aria-hidden="true"></span>
+          <div><p class="eyebrow" id="story-category">Topic story</p><h1 id="story-title">正在加载主题故事</h1><p id="story-lead">正在读取人物兴趣信号与主题数据。</p></div>
+        </div>
+        <aside class="interest-origin">
+          <div class="origin-top"><span class="demo-badge" id="data-mode">演示数据故事</span><strong id="interest-score">—</strong></div>
+          <p id="origin-copy">—</p>
+          <div class="origin-path"><span>原创动态</span><i>+</i><span>引用与回复</span><i>→</i><strong id="origin-theme">讨论主题</strong></div>
+          <label class="story-version"><span>分析版本</span><select id="snapshot-version" aria-label="切换历史分析版本"></select></label>
+        </aside>
+      </section>
+
+      <section class="boundary-banner" aria-label="数据边界"><strong id="boundary-label">数据边界</strong><p id="boundary-copy">主题结论仅归纳公开动态，不代表人物立场、投资、合作或背书。</p></section>
+
+      <section class="snapshot-grid" id="snapshot-grid" aria-label="主题概览"></section>
+
+      <section class="story-toolbar" aria-label="故事播放控制">
+        <div><p class="eyebrow">Guided story</p><h2>四步讲清这个主题为什么值得关注</h2></div>
+        <div class="story-controls"><button id="previous-chapter" type="button" aria-label="上一章">←</button><button class="play-button" id="play-story" type="button"><span aria-hidden="true">▶</span><span>播放数据故事</span></button><button id="next-chapter" type="button" aria-label="下一章">→</button><span id="story-progress">1 / 4</span></div>
+      </section>
+
+      <section class="story-workspace" aria-label="交互式主题数据故事">
+        <nav class="chapter-list" id="chapter-list" aria-label="故事章节"></nav>
+
+        <article class="story-stage">
+          <header class="stage-heading"><div><p class="eyebrow" id="chapter-kicker">人物兴趣信号</p><h2 id="chapter-title">—</h2></div><span id="chapter-number">01</span></header>
+          <p class="chapter-body" id="chapter-body">—</p>
+
+          <div class="visual-card signal-view" id="signal-view" hidden>
+            <div class="visual-heading"><div><small>Interest evidence</small><strong>为什么归纳为这个主题？</strong></div><span id="signal-count">—</span></div>
+            <div class="signal-keywords" id="signal-keywords"></div>
+            <div class="signal-evidence" id="signal-evidence"></div>
+          </div>
+
+          <div class="visual-card trend-view" id="trend-view" hidden>
+            <div class="visual-heading"><div><small>Market trend</small><strong id="trend-title">—</strong></div><span id="trend-mode-label">快照指标</span></div>
+            <svg id="trend-chart" viewBox="0 0 880 340" role="img" aria-labelledby="trend-chart-title trend-chart-desc"><title id="trend-chart-title">主题趋势图</title><desc id="trend-chart-desc">展示主题快照中保存的核心指标变化曲线。</desc></svg>
+          </div>
+
+          <div class="visual-card ranking-view" id="ranking-view" hidden>
+            <div class="visual-heading"><div><small>Market landscape</small><strong id="ranking-title">—</strong></div><span>点击项目查看解释</span></div>
+            <div class="ranking-list" id="ranking-list"></div>
+            <div class="ranking-detail" id="ranking-detail">选择一个项目查看其在当前主题中的位置。</div>
+          </div>
+
+          <div class="visual-card watch-view" id="watch-view" hidden>
+            <div class="visual-heading"><div><small>What to watch</small><strong>接下来值得持续追踪的三条线</strong></div><span>观察框架</span></div>
+            <div class="watch-grid" id="watch-grid"></div>
+          </div>
+        </article>
+
+        <aside class="narrator-panel">
+          <p class="eyebrow">Narrator notes</p><h2>演示时这样讲</h2>
+          <div class="narrator-quote" id="narrator-quote">先说明兴趣结论来自哪些公开信号，再进入市场数据。</div>
+          <dl><div><dt>人物</dt><dd id="note-figure">—</dd></div><div><dt>主题</dt><dd id="note-theme">—</dd></div><div><dt>兴趣强度</dt><dd id="note-score">—</dd></div><div><dt>结论置信度</dt><dd id="note-confidence">—</dd></div></dl>
+          <a href="./hot-topic.html">返回查看其他人物或主题</a>
+        </aside>
+      </section>
+
+      <section class="ending-card">
+        <div><p class="eyebrow">From signal to insight</p><h2>人物只是故事入口，主题数据才是可持续探索的主体</h2></div>
+        <p>正式接入后，每个主题可以使用不同的数据模板：稳定币讲规模与链分布，公链讲用户与生态，DeFi 讲流动性与风险，隐私技术讲研发与采用。</p>
+      </section>
+    </main>
+
+    <div class="loading-overlay" id="loading-overlay">
+      <div class="loading-dialog" role="status" aria-live="polite"><div class="loading-orbit" aria-hidden="true"><i></i><i></i><i></i></div><p>Topic story builder</p><h2 id="loading-title">正在构建主题数据故事</h2><span id="loading-detail">正在读取人物兴趣结论</span><ol id="loading-steps"><li class="is-active">读取兴趣证据</li><li>加载主题指标</li><li>生成故事章节</li></ol></div>
+    </div>
+  </body>
+</html>

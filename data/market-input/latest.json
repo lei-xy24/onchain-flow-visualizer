@@ -1,0 +1,62 @@
+{
+  "collectedAt": "2026-08-13T18:00:00+08:00",
+  "mode": "demo-input",
+  "topics": {
+    "stablecoin": {
+      "category": "支付基础设施",
+      "accent": "#42d6c7",
+      "metrics": [{"label":"演示流通市值","value":"$238B","change":"+4.8% / 30d"},{"label":"月度结算额","value":"$1.6T","change":"+12.4%"},{"label":"活跃网络","value":"18","change":"Top 5 占 86%"}],
+      "trend": {"label":"稳定币总规模（演示）","unit":"$B","points":[{"label":"3月","value":198},{"label":"4月","value":204},{"label":"5月","value":211},{"label":"6月","value":219},{"label":"7月","value":227},{"label":"8月","value":238}]},
+      "ranking": {"label":"按稳定币供应量的网络分布（演示）","items":[{"name":"Ethereum","value":118,"display":"$118B"},{"name":"Tron","value":61,"display":"$61B"},{"name":"Solana","value":15,"display":"$15B"},{"name":"BNB Chain","value":10,"display":"$10B"},{"name":"Base","value":8,"display":"$8B"}]}
+    },
+    "bitcoin": {
+      "category": "数字资产",
+      "accent": "#f0b45a",
+      "metrics": [{"label":"演示市值","value":"$2.3T","change":"+6.2% / 30d"},{"label":"长期持有占比","value":"71%","change":"+1.8pp"},{"label":"网络算力指数","value":"924","change":"+9.1%"}],
+      "trend": {"label":"长期持有供给占比（演示）","unit":"%","points":[{"label":"3月","value":64},{"label":"4月","value":66},{"label":"5月","value":65},{"label":"6月","value":68},{"label":"7月","value":69},{"label":"8月","value":71}]},
+      "ranking": {"label":"持有主体结构（演示指数）","items":[{"name":"长期个人持有","value":71,"display":"71%"},{"name":"基金与机构产品","value":16,"display":"16%"},{"name":"交易平台余额","value":9,"display":"9%"},{"name":"其他公开主体","value":4,"display":"4%"}]}
+    },
+    "ai_crypto": {
+      "category": "技术叙事",
+      "accent": "#9b87e8",
+      "metrics": [{"label":"演示项目样本","value":"126","change":"+18 / 30d"},{"label":"计算网络规模","value":"$14.2B","change":"+21.6%"},{"label":"Agent 交易指数","value":"186","change":"+34.2%"}],
+      "trend": {"label":"Agent 链上交互指数（演示）","unit":"Index","points":[{"label":"3月","value":72},{"label":"4月","value":86},{"label":"5月","value":103},{"label":"6月","value":119},{"label":"7月","value":148},{"label":"8月","value":186}]},
+      "ranking": {"label":"AI × Crypto 应用方向（演示热度）","items":[{"name":"去中心化计算","value":92,"display":"92"},{"name":"AI Agent 支付","value":84,"display":"84"},{"name":"数据与模型市场","value":71,"display":"71"},{"name":"可验证推理","value":64,"display":"64"},{"name":"链上身份","value":58,"display":"58"}]}
+    },
+    "payments": {
+      "category": "支付技术",
+      "accent": "#58bde8",
+      "metrics": [{"label":"月度支付笔数","value":"482M","change":"+17.8%"},{"label":"中位结算成本","value":"$0.03","change":"−22%"},{"label":"覆盖市场","value":"42","change":"+6"}],
+      "trend": {"label":"链上支付活跃指数（演示）","unit":"Index","points":[{"label":"3月","value":96},{"label":"4月","value":103},{"label":"5月","value":118},{"label":"6月","value":126},{"label":"7月","value":145},{"label":"8月","value":171}]},
+      "ranking": {"label":"支付场景贡献（演示指数）","items":[{"name":"跨境结算","value":88,"display":"88"},{"name":"平台内微支付","value":76,"display":"76"},{"name":"商户收款","value":63,"display":"63"},{"name":"创作者收入","value":48,"display":"48"},{"name":"机器支付","value":41,"display":"41"}]}
+    },
+    "layer2": {
+      "category": "区块链基础设施",
+      "accent": "#7e9eea",
+      "metrics": [{"label":"日均交易量","value":"18.6M","change":"+14.2%"},{"label":"平均成本","value":"$0.018","change":"−31%"},{"label":"锁定价值","value":"$48B","change":"+7.5%"}],
+      "trend": {"label":"Layer 2 日均交易量（演示）","unit":"M","points":[{"label":"3月","value":10.2},{"label":"4月","value":11.8},{"label":"5月","value":13.1},{"label":"6月","value":15.7},{"label":"7月","value":17},{"label":"8月","value":18.6}]},
+      "ranking": {"label":"Layer 2 活跃度排名（演示指数）","items":[{"name":"Arbitrum","value":96,"display":"96"},{"name":"Base","value":91,"display":"91"},{"name":"Optimism","value":77,"display":"77"},{"name":"zkSync","value":64,"display":"64"},{"name":"Scroll","value":58,"display":"58"}]}
+    },
+    "privacy": {
+      "category": "密码学应用",
+      "accent": "#b487e8",
+      "metrics": [{"label":"演示研发项目","value":"84","change":"+11"},{"label":"证明生成成本","value":"−37%","change":"6 个月"},{"label":"身份试点","value":"29","change":"+8"}],
+      "trend": {"label":"隐私技术开发活跃度（演示）","unit":"Index","points":[{"label":"3月","value":68},{"label":"4月","value":75},{"label":"5月","value":79},{"label":"6月","value":94},{"label":"7月","value":108},{"label":"8月","value":126}]},
+      "ranking": {"label":"隐私技术方向（演示热度）","items":[{"name":"零知识证明基础设施","value":94,"display":"94"},{"name":"选择性披露身份","value":82,"display":"82"},{"name":"隐私池","value":69,"display":"69"},{"name":"机密计算","value":61,"display":"61"},{"name":"合规证明","value":55,"display":"55"}]}
+    },
+    "chain_ecosystem": {
+      "category": "公链生态",
+      "accent": "#e4b943",
+      "metrics": [{"label":"日活跃地址","value":"2.1M","change":"+8.4%"},{"label":"生态 TVL","value":"$8.7B","change":"+5.1%"},{"label":"月活跃应用","value":"386","change":"+22"}],
+      "trend": {"label":"日活跃地址（演示，M）","unit":"M","points":[{"label":"3月","value":1.4},{"label":"4月","value":1.5},{"label":"5月","value":1.7},{"label":"6月","value":1.8},{"label":"7月","value":1.9},{"label":"8月","value":2.1}]},
+      "ranking": {"label":"生态应用板块（演示活跃度）","items":[{"name":"DEX","value":95,"display":"95"},{"name":"游戏与社交","value":78,"display":"78"},{"name":"借贷","value":69,"display":"69"},{"name":"稳定币支付","value":61,"display":"61"},{"name":"衍生品","value":52,"display":"52"}]}
+    },
+    "defi": {
+      "category": "金融协议",
+      "accent": "#55d69e",
+      "metrics": [{"label":"演示总 TVL","value":"$168B","change":"+9.7%"},{"label":"月交易量","value":"$312B","change":"+14.1%"},{"label":"借贷利用率","value":"68%","change":"+3.2pp"}],
+      "trend": {"label":"DeFi 总 TVL（演示）","unit":"$B","points":[{"label":"3月","value":124},{"label":"4月","value":132},{"label":"5月","value":139},{"label":"6月","value":147},{"label":"7月","value":155},{"label":"8月","value":168}]},
+      "ranking": {"label":"DeFi 板块规模（演示指数）","items":[{"name":"DEX","value":96,"display":"96"},{"name":"借贷","value":87,"display":"87"},{"name":"流动性质押","value":78,"display":"78"},{"name":"衍生品","value":66,"display":"66"},{"name":"收益聚合","value":48,"display":"48"}]}
+    }
+  }
+}

@@ -1,0 +1,495 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>地址资金流追踪</title>
+    <meta
+      name="description"
+      content="搜索链上账户地址并进入独立资金流分析页面"
+    />
+    <script src="./search-history.js?v=20260731" defer></script>
+    <style>
+      :root {
+        --background: #f3f6f8;
+        --foreground: #142024;
+        --muted: #647174;
+        --panel: #ffffff;
+        --line: #d8e0e2;
+        --teal: #0f8b8d;
+        --teal-dark: #0b5c61;
+        --shadow: 0 18px 55px rgba(20, 32, 36, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scrollbar-gutter: stable;
+      }
+
+      body {
+        background: var(--background);
+        color: var(--foreground);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        margin: 0;
+        min-height: 100vh;
+      }
+
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      .site-header {
+        align-items: center;
+        background: rgba(255, 255, 255, 0.94);
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        justify-content: space-between;
+        min-height: 66px;
+        padding: 0 34px;
+        position: relative;
+        z-index: 20;
+      }
+
+      .site-brand {
+        align-items: center;
+        color: var(--foreground);
+        display: inline-flex;
+        font-size: 0.95rem;
+        font-weight: 800;
+        gap: 10px;
+        text-decoration: none;
+      }
+
+      .tool-nav {
+        align-items: center;
+        display: flex;
+        gap: 4px;
+      }
+
+      .tool-nav a {
+        border-radius: 6px;
+        color: #526064;
+        font-size: 0.9rem;
+        font-weight: 700;
+        padding: 9px 12px;
+        text-decoration: none;
+      }
+
+      .tool-nav a:hover {
+        background: #edf2f2;
+        color: var(--foreground);
+      }
+
+      .tool-nav a[aria-current="page"] {
+        background: var(--foreground);
+        color: #ffffff;
+      }
+
+      .home-shell {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        min-height: calc(100vh - 66px);
+        padding: 32px 18px;
+      }
+
+      .home-hero {
+        max-width: 920px;
+        text-align: center;
+        width: 100%;
+      }
+
+      .eyebrow {
+        color: var(--teal-dark);
+        font-size: 0.78rem;
+        font-weight: 700;
+        letter-spacing: 0;
+        margin: 0 0 8px;
+        text-transform: uppercase;
+      }
+
+      h1 {
+        color: #10191c;
+        font-size: clamp(2.3rem, 8vw, 5.4rem);
+        letter-spacing: 0;
+        line-height: 0.96;
+        margin: 0;
+      }
+
+      .hero-copy {
+        color: var(--muted);
+        font-size: 1.08rem;
+        line-height: 1.75;
+        margin: 22px auto 0;
+        max-width: 620px;
+      }
+
+      .search-panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+        margin: 34px auto 0;
+        max-width: 780px;
+        padding: 14px;
+        text-align: left;
+      }
+
+      .field-label {
+        color: #405055;
+        display: block;
+        font-size: 0.86rem;
+        font-weight: 700;
+        margin: 2px 0 10px;
+      }
+
+      .search-row {
+        display: grid;
+        gap: 10px;
+        grid-template-columns: 128px minmax(0, 1fr) 104px;
+      }
+
+      .chain-select,
+      .search-row input {
+        background: #f8fafb;
+        border: 1px solid #cfdadd;
+        border-radius: 7px;
+        color: var(--foreground);
+        min-height: 52px;
+        outline: none;
+        padding: 0 14px;
+      }
+
+      .search-field {
+        min-width: 0;
+        position: relative;
+      }
+
+      .search-row input {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        min-width: 0;
+        width: 100%;
+      }
+
+      .chain-select:focus,
+      .search-row input:focus {
+        border-color: var(--teal);
+        box-shadow: 0 0 0 3px rgba(15, 139, 141, 0.16);
+      }
+
+      .search-submit,
+      .quick-examples button {
+        cursor: pointer;
+      }
+
+      .search-submit {
+        background: var(--teal);
+        border: 0;
+        border-radius: 7px;
+        color: white;
+        font-weight: 800;
+        min-height: 52px;
+      }
+
+      .search-submit:hover {
+        background: var(--teal-dark);
+      }
+
+      .search-submit:focus-visible,
+      .history-clear:focus-visible,
+      .history-query:focus-visible,
+      .history-remove:focus-visible {
+        outline: 3px solid rgba(15, 139, 141, 0.24);
+        outline-offset: 2px;
+      }
+
+      .form-error {
+        color: #b42318;
+        font-size: 0.9rem;
+        margin: 10px 2px 0;
+      }
+
+      .search-history {
+        background: #ffffff;
+        border: 1px solid #d9e2e4;
+        border-radius: 12px;
+        box-shadow: 0 22px 60px rgba(20, 32, 36, 0.18);
+        left: 0;
+        overflow: hidden;
+        position: absolute;
+        top: calc(100% + 10px);
+        width: min(560px, calc(100vw - 36px));
+        z-index: 40;
+      }
+
+      .history-header {
+        align-items: center;
+        display: flex;
+        justify-content: space-between;
+        padding: 14px 16px 10px;
+      }
+
+      .history-header strong {
+        color: #1d2b2f;
+        font-size: 0.92rem;
+      }
+
+      .history-clear,
+      .history-remove,
+      .history-query {
+        border: 0;
+        cursor: pointer;
+      }
+
+      .history-clear {
+        background: transparent;
+        color: #788588;
+        font-size: 0.8rem;
+        padding: 5px 0 5px 10px;
+      }
+
+      .history-clear:hover {
+        color: #b42318;
+      }
+
+      .history-list {
+        list-style: none;
+        margin: 0;
+        max-height: 336px;
+        overflow-y: auto;
+        padding: 0 8px 8px;
+      }
+
+      .history-item {
+        align-items: center;
+        border-top: 1px solid #eef2f3;
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 36px;
+      }
+
+      .history-query {
+        align-items: center;
+        background: transparent;
+        color: var(--foreground);
+        display: grid;
+        gap: 2px 10px;
+        grid-template-columns: auto minmax(0, 1fr) auto;
+        min-width: 0;
+        padding: 12px 8px;
+        text-align: left;
+      }
+
+      .history-query:hover,
+      .history-query:focus-visible {
+        background: #f3f8f8;
+      }
+
+      .history-chain {
+        background: #e7f5f4;
+        border-radius: 999px;
+        color: var(--teal-dark);
+        font-size: 0.7rem;
+        font-weight: 800;
+        grid-row: 1 / span 2;
+        min-width: 58px;
+        padding: 5px 8px;
+        text-align: center;
+      }
+
+      .history-address {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.84rem;
+        font-weight: 700;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .history-time {
+        color: #8a9699;
+        font-size: 0.72rem;
+        grid-column: 2;
+      }
+
+      .history-reuse {
+        color: #7d898c;
+        font-size: 0.72rem;
+        grid-column: 3;
+        grid-row: 1 / span 2;
+      }
+
+      .history-remove {
+        align-items: center;
+        background: transparent;
+        border-radius: 50%;
+        color: #8a9699;
+        display: inline-flex;
+        font-size: 1.2rem;
+        height: 30px;
+        justify-content: center;
+        line-height: 1;
+        padding: 0;
+        width: 30px;
+      }
+
+      .history-remove:hover {
+        background: #fff0ee;
+        color: #b42318;
+      }
+
+      .history-empty {
+        color: #7a878a;
+        font-size: 0.84rem;
+        line-height: 1.6;
+        margin: 0;
+        padding: 18px 16px 22px;
+        text-align: center;
+      }
+
+      .quick-examples {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 20px;
+      }
+
+      .quick-examples button {
+        background: #ffffff;
+        border: 1px solid var(--line);
+        border-radius: 7px;
+        color: #233236;
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.86rem;
+        padding: 9px 12px;
+      }
+
+      .quick-examples button:hover {
+        border-color: var(--teal);
+        color: var(--teal-dark);
+      }
+
+      @media (max-width: 760px) {
+        .site-header {
+          align-items: flex-start;
+          flex-wrap: wrap;
+          gap: 14px;
+          padding: 13px 16px;
+        }
+
+        .site-brand {
+          font-size: 0.85rem;
+        }
+
+        .tool-nav a {
+          font-size: 0.78rem;
+          padding: 8px 9px;
+        }
+
+        .home-shell {
+          padding: 18px;
+        }
+
+        .search-row {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="site-brand" href="./index.html" aria-label="区块链与数字金融服务安全监控平台首页">
+        <span>区块链与数字金融服务安全监控平台</span>
+      </a>
+      <nav class="tool-nav" aria-label="分析工具">
+        <a href="./index.html">首页</a>
+        <a href="./track.html" aria-current="page">地址追踪</a>
+        <a href="./live.html">实时交易</a>
+        <a href="./profile.html">用户画像</a>
+        <a href="./relation.html">地址关联</a>
+      </nav>
+    </header>
+
+    <main class="home-shell">
+      <section class="home-hero" aria-labelledby="home-title">
+        <h1 id="home-title">地址资金流追踪</h1>
+        <p class="hero-copy">
+          输入链上账户地址，系统会进入独立结果页并向后端查询该地址的资金流。
+        </p>
+
+        <form class="search-panel" id="search-form">
+          <label class="field-label" for="address-search">搜索地址</label>
+          <div class="search-row">
+            <select aria-label="选择链" class="chain-select" id="chain-select">
+              <option value="eth">ETH</option>
+              <option value="bsc">BSC</option>
+              <option value="polygon">Polygon</option>
+            </select>
+            <div class="search-field">
+              <input
+                id="address-search"
+                autocomplete="off"
+                spellcheck="false"
+                value="0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97"
+                placeholder="0x..."
+                aria-controls="search-history"
+                aria-expanded="false"
+                aria-haspopup="dialog"
+              />
+              <div
+                class="search-history"
+                id="search-history"
+                role="dialog"
+                aria-label="搜索历史"
+                hidden
+              >
+                <div class="history-header">
+                  <strong>搜索历史</strong>
+                  <button class="history-clear" id="clear-history" type="button">
+                    全部清空
+                  </button>
+                </div>
+                <ul class="history-list" id="history-list"></ul>
+                <p class="history-empty" id="history-empty" hidden></p>
+              </div>
+            </div>
+            <button class="search-submit" type="submit">搜索</button>
+          </div>
+          <p class="form-error" id="form-error" aria-live="polite" hidden></p>
+        </form>
+
+        <div class="quick-examples" aria-label="示例地址">
+          <button
+            type="button"
+            data-chain="eth"
+            data-address="0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97"
+          >
+            ETH 0x4838B1...AD5f97
+          </button>
+          <button
+            type="button"
+            data-chain="bsc"
+            data-address="0xB5C0000000000000000000000000000000000001"
+          >
+            BSC PancakeSwap Router
+          </button>
+          <button
+            type="button"
+            data-chain="polygon"
+            data-address="0x9000000000000000000000000000000000000001"
+          >
+            Polygon QuickSwap Router
+          </button>
+        </div>
+      </section>
+    </main>
+
+  </body>
+</html>

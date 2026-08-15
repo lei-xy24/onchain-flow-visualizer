@@ -1,0 +1,28 @@
+[Unit]
+Description=Generate the three-hour social radar snapshot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=onchain-radar
+Group=onchain-radar
+WorkingDirectory=/opt/onchain-radar-worker
+EnvironmentFile=/etc/onchain-radar.env
+Environment="GIT_SSH_COMMAND=/usr/bin/ssh -i /etc/onchain-radar/github_deploy_key -o IdentitiesOnly=yes -o UserKnownHostsFile=/etc/onchain-radar/known_hosts -o StrictHostKeyChecking=yes"
+ExecStart=/usr/bin/node /opt/onchain-radar-worker/scripts/run-social-radar-cycle.mjs
+Nice=10
+UMask=0027
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+ReadWritePaths=/var/lib/onchain-radar /opt/onchain-radar-worker/data /opt/onchain-radar-worker/static-site/data /opt/onchain-radar-worker/work /opt/onchain-radar-worker/.git
+
+[Install]
+WantedBy=multi-user.target

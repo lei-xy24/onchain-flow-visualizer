@@ -1,0 +1,373 @@
+import { createHash } from "node:crypto";
+import { readFile, writeFile, mkdir, rename, rm } from "node:fs/promises";
+import path from "node:path";
+
+export const TOPIC_TYPES = ["stablecoin", "bitcoin", "ai_crypto", "payments", "layer2", "privacy", "chain_ecosystem", "defi", "other"];
+export const VIEWS = ["signal", "trend", "ranking", "watch"];
+export const TONES = ["teal", "amber", "violet"];
+const MARKET_TOPIC_TYPES = TOPIC_TYPES.filter((topicType) => topicType !== "other");
+
+export async function readJson(filePath) {
+  return JSON.parse(await readFile(filePath, "utf8"));
+}
+
+export function requireHttpsUrl(value, label = "接口地址") {
+  let url;
+  try {
+    url = new URL(String(value || ""));
+  } catch {
+    throw new Error(`${label} 不是有效 URL`);
+  }
+  if (url.protocol !== "https:") throw new Error(`${label} 必须使用 HTTPS`);
+  if (url.username || url.password) throw new Error(`${label} 不能包含用户名或密码`);
+  return url;
+}
+
+export function requireHttpsBaseUrl(value, label = "接口地址") {
+  return requireHttpsUrl(value, label).toString().replace(/\/$/, "");
+}
+
+export function validateMarketInput(input) {
+  const errors = [];
+  if (!input || typeof input !== "object" || Array.isArray(input)) return ["市场输入必须是对象"];
+  if (!input.topics || typeof input.topics !== "object" || Array.isArray(input.topics)) return ["市场输入缺少 topics 对象"];
+  for (const topicType of MARKET_TOPIC_TYPES) {
+    const market = input.topics[topicType];
+    if (!market || typeof market !== "object" || Array.isArray(market)) {
+      errors.push(`市场输入缺少 ${topicType}`);
+      continue;
+    }
+    if (!isNonEmptyString(market.category)) errors.push(`${topicType}.category 无效`);
+    if (!/^#[0-9a-f]{6}$/i.test(String(market.accent || ""))) errors.push(`${topicType}.accent 必须是六位十六进制颜色`);
+    if (!Array.isArray(market.metrics) || !market.metrics.length) errors.push(`${topicType}.metrics 不能为空`);
+    for (const [index, metric] of (Array.isArray(market.metrics) ? market.metrics : []).entries()) {
+      if (!isNonEmptyString(metric?.label) || !isNonEmptyString(metric?.value) || !isNonEmptyString(metric?.change)) {
+        errors.push(`${topicType}.metrics[${index}] 结构无效`);
+      }
+    }
+    const points = market.trend?.points;
+    if (!isNonEmptyString(market.trend?.label) || !isNonEmptyString(market.trend?.unit) || !Array.isArray(points) || points.length < 2) {
+      errors.push(`${topicType}.trend 结构无效`);
+    }
+    for (const [index, point] of (Array.isArray(points) ? points : []).entries()) {
+      if (!isNonEmptyString(point?.label) || !Number.isFinite(Number(point?.value))) errors.push(`${topicType}.trend.points[${index}] 无效`);
+    }
+    const rankingItems = market.ranking?.items;
+    if (!isNonEmptyString(market.ranking?.label) || !Array.isArray(rankingItems) || !rankingItems.length) {
+      errors.push(`${topicType}.ranking 结构无效`);
+    }
+    for (const [index, item] of (Array.isArray(rankingItems) ? rankingItems : []).entries()) {
+      if (!isNonEmptyString(item?.name) || !isNonEmptyString(item?.display) || !Number.isFinite(Number(item?.value)) || Number(item.value) <= 0) {
+        errors.push(`${topicType}.ranking.items[${index}] 无效`);
+      }
+    }
+  }
+  return errors;
+}
+
+export async function writeJsonAtomic(filePath, value) {
+  await mkdir(path.dirname(filePath), { recursive: true });
+  const temporaryPath = `${filePath}.${process.pid}.${Date.now()}.tmp`;
+  await writeFile(temporaryPath, `${JSON.stringify(value, null, 2)}\n`, "utf8");
+  await rename(temporaryPath, filePath);
+}
+
+export function floorToThreeHourSlot(date = new Date()) {
+  const slot = new Date(date);
+  slot.setUTCMinutes(0, 0, 0);
+  slot.setUTCHours(Math.floor(slot.getUTCHours() / 3) * 3);
+  return slot;
+}
+
+export function snapshotIdFor(date) {
+  return date.toISOString().replace(/[-:]/g, "").replace(".000Z", "Z").replace("T", "T");
+}
+
+export function calculateTopicScores(figure, topics, windowEnd, analysisWindowHours) {
+  const sourceMap = new Map(figure.sources.map((source) => [source.id, source]));
+  const scored = topics.map((topic) => {
+    const sources = [...new Set(topic.sourceIds)].map((id) => sourceMap.get(id)).filter(Boolean);
+    const originals = sources.filter((source) => (source.kind || "original") === "original").length;
+    const quotes = sources.filter((source) => source.kind === "quote").length;
+    const replies = sources.filter((source) => source.kind === "reply").length;
+    const weightedCount = sources.reduce((sum, source) => sum + (source.weight ?? (source.kind === "reply" ? 0.5 : 1)), 0);
+    const frequency = clamp(Math.round(30 + weightedCount * 16 + Math.min(topic.keywords.length, 6) * 3), 0, 100);
+    const freshnessValues = sources.map((source) => {
+      const ageHours = Math.max(0, (windowEnd.getTime() - new Date(source.publishedAt).getTime()) / 36e5);
+      return { value: Math.max(0, 1 - ageHours / analysisWindowHours), weight: source.weight ?? (source.kind === "reply" ? 0.5 : 1) };
+    });
+    const freshnessWeight = freshnessValues.reduce((sum, item) => sum + item.weight, 0);
+    const freshness = clamp(Math.round((freshnessValues.reduce((sum, item) => sum + item.value * item.weight, 0) / Math.max(1, freshnessWeight)) * 100), 0, 100);
+    const activeDays = new Set(sources.map((source) => new Date(source.publishedAt).toISOString().slice(0, 10))).size;
+    const postKinds = new Set(sources.map((source) => source.kind || "original")).size;
+    const continuity = clamp(Math.round(28 + Math.min(activeDays, 4) * 16 + Math.min(postKinds, 3) * 6), 0, 100);
+    const score = clamp(Math.round(frequency * 0.42 + freshness * 0.35 + continuity * 0.23), 0, 100);
+    return {
+      ...topic,
+      sourceIds: sources.map((source) => source.id),
+      score,
+      scoreBreakdown: { frequency, freshness, continuity },
+      evidenceBreakdown: { posts: sources.length, originals, quotes, replies, weightedCount },
+    };
+  });
+  return scored.sort((left, right) => right.score - left.score);
+}
+
+export function deriveTrend(score, previousScore) {
+  if (!Number.isFinite(previousScore)) return { change: 0, trend: "新出现" };
+  const change = score - previousScore;
+  if (change >= 12) return { change, trend: "快速升温" };
+  if (change >= 4) return { change, trend: "升温" };
+  if (change <= -12) return { change, trend: "明显降温" };
+  if (change <= -4) return { change, trend: "降温" };
+  return { change, trend: "平稳" };
+}
+
+export function buildPublishedSnapshot({ config, socialInput, marketInput, modelOutput, previousSnapshot, slot, generatedAt, modelName, isDemo }) {
+  const previousFigures = new Map((previousSnapshot?.figures || []).map((figure) => [figure.id, figure]));
+  const figures = socialInput.figures.map((figure) => {
+    const aiFigure = modelOutput.figures.find((item) => item.figureId === figure.id);
+    if (!aiFigure) throw new Error(`模型结果缺少人物 ${figure.id}`);
+    const scoredTopics = calculateTopicScores(figure, aiFigure.topics, new Date(socialInput.windowEnd), config.analysisWindowHours)
+      .filter((topic) => topic.sourceIds.length >= config.minEvidencePerTopic)
+      .slice(0, config.maxTopicsPerFigure);
+    const previousTopics = new Map((previousFigures.get(figure.id)?.themes || []).map((theme) => [theme.topicType, theme]));
+    const themes = scoredTopics.map((topic) => {
+      const market = marketInput.topics[topic.topicType];
+      if (!market) throw new Error(`主题 ${topic.topicType} 缺少市场数据`);
+      const trend = deriveTrend(topic.score, previousTopics.get(topic.topicType)?.score);
+      return {
+        id: slugify(`${topic.topicType}-${topic.name}`),
+        topicType: topic.topicType,
+        storyId: topic.topicType,
+        name: topic.name,
+        category: market.category || topic.category,
+        score: topic.score,
+        change: trend.change,
+        trend: trend.trend,
+        confidence: topic.confidence,
+        summary: topic.summary,
+        why: topic.why,
+        keywords: topic.keywords,
+        sourceIds: topic.sourceIds,
+        evidenceBreakdown: topic.evidenceBreakdown,
+        scoreBreakdown: topic.scoreBreakdown,
+        evidence: topic.sourceIds.map((sourceId) => {
+          const source = figure.sources.find((item) => item.id === sourceId);
+          return {
+            id: source.id,
+            type: source.type,
+            kind: source.kind || "original",
+            weight: source.weight ?? 1,
+            platform: source.platform,
+            provider: source.provider || null,
+            time: source.publishedAt,
+            title: source.title,
+            summary: topic.evidenceSummaries.find((item) => item.sourceId === sourceId)?.summary || source.text,
+            keywords: topic.evidenceSummaries.find((item) => item.sourceId === sourceId)?.keywords || [],
+            url: source.url,
+          };
+        }),
+        story: {
+          name: topic.name,
+          category: market.category || topic.category,
+          headline: topic.story.headline,
+          lead: topic.story.lead,
+          accent: market.accent,
+          snapshot: market.metrics,
+          trend: market.trend,
+          ranking: market.ranking,
+          watch: topic.story.watch,
+          chapters: topic.story.chapters,
+        },
+      };
+    });
+    return {
+      id: figure.id,
+      name: figure.name,
+      nameZh: figure.nameZh,
+      initials: figure.initials,
+      role: figure.role,
+      avatar: figure.avatar,
+      colors: figure.colors,
+      accounts: figure.accounts,
+      postsAnalyzed: figure.sources.length,
+      sourceCount: figure.sources.length,
+      analysisWindow: `近 ${Math.round(config.analysisWindowHours / 24)} 天`,
+      lastSuccessAt: generatedAt,
+      themes,
+    };
+  });
+
+  const snapshot = {
+    schemaVersion: 1,
+    snapshotId: snapshotIdFor(slot),
+    status: "published",
+    slotStart: slot.toISOString(),
+    windowStart: socialInput.windowStart,
+    windowEnd: socialInput.windowEnd,
+    generatedAt,
+    nextScheduledAt: new Date(slot.getTime() + config.publishIntervalHours * 36e5).toISOString(),
+    model: modelName,
+    modelProvider: config.provider || "deepseek",
+    promptVersion: config.promptVersion,
+    mode: isDemo ? "demo-ai-snapshot" : "ai-snapshot",
+    modeLabel: isDemo
+      ? "DeepSeek 演示快照"
+      : marketInput.mode === "live-api"
+        ? "DeepSeek 定时快照 · Truth Social + X · 实时市场指标"
+        : "DeepSeek 定时快照 · Truth Social + X · 非实时市场指标",
+    sourceMode: socialInput.mode,
+    marketMode: marketInput.mode,
+    isLive: !isDemo && ["x-posts-api", "mixed-social-api"].includes(socialInput.mode),
+    title: isDemo ? "最近一份已发布的 DeepSeek 演示快照" : "最近一份已发布的 DeepSeek 分析快照",
+    description: `每 ${config.publishIntervalHours} 小时生成一次；本页只读取最近一份校验通过并发布的结果。`,
+    disclaimer: "兴趣主题只来自人物最近 7 天的公开动态，不代表人物立场、投资、合作或背书，也不会推断其钱包或链上地址。故事中的数值必须来自随快照保存的数据源。",
+    figures,
+  };
+  snapshot.digest = digestSnapshot(snapshot);
+  return snapshot;
+}
+
+export function validateModelOutput(modelOutput, socialInput, marketInput, config) {
+  const errors = [];
+  if (!modelOutput || !Array.isArray(modelOutput.figures)) return ["模型输出缺少 figures"];
+  const expectedTopicProperties = ["topicType", "name", "category", "confidence", "summary", "why", "keywords", "sourceIds", "evidenceSummaries", "story"];
+  const figureIds = new Set(socialInput.figures.map((figure) => figure.id));
+  for (const inputFigure of socialInput.figures) {
+    for (const source of inputFigure.sources || []) {
+      if (source.type !== "post") errors.push(`${inputFigure.id} 包含非动态来源 ${source.id}`);
+      if (source.kind === "retweet") errors.push(`${inputFigure.id} 包含已排除的转发 ${source.id}`);
+    }
+  }
+  const seenFigures = new Set();
+  for (const figure of modelOutput.figures) {
+    if (!figure || typeof figure !== "object") {
+      errors.push("人物结果必须是对象");
+      continue;
+    }
+    if (!figureIds.has(figure.figureId)) errors.push(`未知人物 ${figure.figureId}`);
+    if (seenFigures.has(figure.figureId)) errors.push(`重复人物 ${figure.figureId}`);
+    seenFigures.add(figure.figureId);
+    const sourceIds = new Set(socialInput.figures.find((item) => item.id === figure.figureId)?.sources.map((source) => source.id) || []);
+    if (!Array.isArray(figure.topics) || !figure.topics.length) errors.push(`${figure.figureId} 没有主题`);
+    if (Array.isArray(figure.topics) && figure.topics.length > config.maxTopicsPerFigure) errors.push(`${figure.figureId} 主题数量超过上限`);
+    for (const topic of figure.topics || []) {
+      if (!topic || typeof topic !== "object") {
+        errors.push(`${figure.figureId} 的主题必须是对象`);
+        continue;
+      }
+      for (const property of expectedTopicProperties) if (topic[property] === undefined) errors.push(`${figure.figureId} 的主题缺少 ${property}`);
+      if (!TOPIC_TYPES.includes(topic.topicType)) errors.push(`${figure.figureId} 使用未知主题类型 ${topic.topicType}`);
+      if (topic.topicType === "other") errors.push(`${figure.figureId} 的 ${topic.name} 暂无数据模板，不能发布`);
+      if (!marketInput.topics[topic.topicType]) errors.push(`${topic.topicType} 缺少市场数据`);
+      if (!isNonEmptyString(topic.name) || !isNonEmptyString(topic.category) || !isNonEmptyString(topic.summary) || !isNonEmptyString(topic.why)) errors.push(`${figure.figureId} 的主题文案不完整`);
+      if (!["高", "中", "低"].includes(topic.confidence)) errors.push(`${figure.figureId}/${topic.name} 置信度无效`);
+      if (!Array.isArray(topic.keywords) || topic.keywords.length < 3 || topic.keywords.length > 8 || topic.keywords.some((item) => !isNonEmptyString(item))) errors.push(`${figure.figureId}/${topic.name} 关键词无效`);
+      const topicSourceIds = Array.isArray(topic.sourceIds) ? topic.sourceIds : [];
+      if (new Set(topicSourceIds).size < config.minEvidencePerTopic) errors.push(`${figure.figureId}/${topic.name} 独立证据不足`);
+      if (topicSourceIds.length > 8 || topicSourceIds.some((item) => !isNonEmptyString(item))) errors.push(`${figure.figureId}/${topic.name} 证据 id 无效`);
+      for (const id of topicSourceIds) if (!sourceIds.has(id)) errors.push(`${figure.figureId}/${topic.name} 引用了不存在的证据 ${id}`);
+      const summaryIds = new Set();
+      if (!Array.isArray(topic.evidenceSummaries)) errors.push(`${figure.figureId}/${topic.name} 证据摘要必须是数组`);
+      for (const evidence of Array.isArray(topic.evidenceSummaries) ? topic.evidenceSummaries : []) {
+        if (!evidence || typeof evidence !== "object" || Array.isArray(evidence)) {
+          errors.push(`${figure.figureId}/${topic.name} 证据摘要必须是对象`);
+          continue;
+        }
+        if (!sourceIds.has(evidence.sourceId)) errors.push(`${figure.figureId}/${topic.name} 摘要引用不存在的证据 ${evidence.sourceId}`);
+        if (!topicSourceIds.includes(evidence.sourceId)) errors.push(`${figure.figureId}/${topic.name} 摘要 ${evidence.sourceId} 不在主题证据中`);
+        if (summaryIds.has(evidence.sourceId)) errors.push(`${figure.figureId}/${topic.name} 重复摘要 ${evidence.sourceId}`);
+        if (!isNonEmptyString(evidence.summary) || !Array.isArray(evidence.keywords) || !evidence.keywords.length || evidence.keywords.length > 5 || evidence.keywords.some((item) => !isNonEmptyString(item))) errors.push(`${figure.figureId}/${topic.name} 摘要 ${evidence.sourceId} 内容无效`);
+        summaryIds.add(evidence.sourceId);
+      }
+      for (const id of topicSourceIds) if (!summaryIds.has(id)) errors.push(`${figure.figureId}/${topic.name} 缺少证据摘要 ${id}`);
+      const chapters = Array.isArray(topic.story?.chapters) ? topic.story.chapters : [];
+      const watchItems = Array.isArray(topic.story?.watch) ? topic.story.watch : [];
+      if (!isNonEmptyString(topic.story?.headline) || !isNonEmptyString(topic.story?.lead)) errors.push(`${figure.figureId}/${topic.name} 故事标题或导语无效`);
+      if (chapters.length !== 4) errors.push(`${figure.figureId}/${topic.name} 必须返回四章故事`);
+      const views = chapters.map((chapter) => chapter?.view);
+      if (views.join(",") !== VIEWS.join(",")) errors.push(`${figure.figureId}/${topic.name} 章节顺序必须为 ${VIEWS.join(" → ")}`);
+      if (chapters.some((chapter) => !isNonEmptyString(chapter?.title) || !isNonEmptyString(chapter?.kicker) || !isNonEmptyString(chapter?.body))) errors.push(`${figure.figureId}/${topic.name} 章节文案不完整`);
+      if (watchItems.length !== 3) errors.push(`${figure.figureId}/${topic.name} 必须返回三个观察点`);
+      const allowedMetrics = marketMetricStrings(marketInput.topics[topic.topicType]);
+      for (const watch of watchItems) {
+        if (!isNonEmptyString(watch?.title) || !isNonEmptyString(watch?.metric) || !isNonEmptyString(watch?.detail) || !TONES.includes(watch?.tone)) errors.push(`${figure.figureId}/${topic.name} 观察点结构无效`);
+        if (/\d/.test(watch?.metric || "") && !allowedMetrics.has(watch.metric)) errors.push(`${figure.figureId}/${topic.name} 使用了市场输入中不存在的指标 ${watch.metric}`);
+      }
+    }
+  }
+  for (const id of figureIds) if (!seenFigures.has(id)) errors.push(`模型输出遗漏人物 ${id}`);
+  return errors;
+}
+
+export function validateSnapshot(snapshot) {
+  const errors = [];
+  if (snapshot.status !== "published") errors.push("快照状态必须为 published");
+  if (!snapshot.snapshotId || !snapshot.generatedAt || !snapshot.slotStart) errors.push("快照元数据不完整");
+  if (!Array.isArray(snapshot.figures) || !snapshot.figures.length) errors.push("快照没有人物");
+  for (const figure of snapshot.figures || []) {
+    if (!figure.themes?.length) errors.push(`${figure.id} 没有可发布主题`);
+    for (const theme of figure.themes || []) {
+      if (theme.evidence.length < 2) errors.push(`${figure.id}/${theme.id} 证据不足`);
+      if (theme.story.chapters.length !== 4 || theme.story.watch.length !== 3) errors.push(`${figure.id}/${theme.id} 故事结构不完整`);
+      if (!theme.story.trend.points.length || !theme.story.ranking.items.length) errors.push(`${figure.id}/${theme.id} 缺少数据图表`);
+    }
+  }
+  return errors;
+}
+
+export async function publishSnapshot({ snapshot, outputDirectory, publicLatestFile, publicIndexFile, keep = 40 }) {
+  const snapshotFile = path.join(outputDirectory, `${snapshot.snapshotId}.json`);
+  await writeJsonAtomic(snapshotFile, snapshot);
+  let index = { schemaVersion: 1, latest: null, snapshots: [] };
+  try { index = await readJson(publicIndexFile); } catch {}
+  const entry = {
+    id: snapshot.snapshotId,
+    file: `./data/snapshots/${snapshot.snapshotId}.json`,
+    generatedAt: snapshot.generatedAt,
+    slotStart: snapshot.slotStart,
+    windowStart: snapshot.windowStart,
+    windowEnd: snapshot.windowEnd,
+    status: snapshot.status,
+    modeLabel: snapshot.modeLabel,
+    digest: snapshot.digest,
+  };
+  const snapshots = [entry, ...(index.snapshots || []).filter((item) => item.id !== entry.id)]
+    .sort((left, right) => new Date(right.slotStart) - new Date(left.slotStart))
+    .slice(0, keep);
+  await writeJsonAtomic(publicLatestFile, snapshot);
+  await writeJsonAtomic(publicIndexFile, { schemaVersion: 1, latest: entry.id, generatedAt: snapshot.generatedAt, snapshots });
+  return { snapshotFile, indexCount: snapshots.length };
+}
+
+export async function removeFileIfExists(filePath) {
+  await rm(filePath, { force: true });
+}
+
+function digestSnapshot(snapshot) {
+  const clone = structuredClone(snapshot);
+  delete clone.digest;
+  return createHash("sha256").update(JSON.stringify(clone)).digest("hex").slice(0, 16);
+}
+
+function slugify(value) {
+  return value.toLowerCase().replace(/[^a-z0-9\u4e00-\u9fff]+/g, "-").replace(/^-|-$/g, "").slice(0, 72);
+}
+
+function clamp(value, minimum, maximum) {
+  return Math.max(minimum, Math.min(maximum, value));
+}
+
+function marketMetricStrings(market) {
+  if (!market) return new Set();
+  return new Set([
+    ...(market.metrics || []).flatMap((item) => [item.value, item.change]),
+    ...(market.ranking?.items || []).map((item) => item.display),
+    ...(market.trend?.points || []).map((item) => String(item.value)),
+  ].filter(Boolean).map(String));
+}
+
+function isNonEmptyString(value) {
+  return typeof value === "string" && value.trim().length > 0;
+}

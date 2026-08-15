@@ -1,0 +1,260 @@
+{
+  "figures": [
+    {
+      "figureId": "donald-trump",
+      "topics": [
+        {
+          "topicType": "stablecoin",
+          "name": "稳定币与数字美元",
+          "category": "支付基础设施",
+          "confidence": "高",
+          "summary": "最近 7 天多条公开动态中的美元锚定资产、支付、储备与监管词汇形成最强主题簇。",
+          "why": "多条动态共同命中，且发布时间跨越多个自然日。",
+          "keywords": ["稳定币", "数字美元", "支付", "储备", "监管"],
+          "sourceIds": ["trump-post-digital-finance", "trump-post-dollar-payment", "trump-post-reserve"],
+          "evidenceSummaries": [
+            { "sourceId": "trump-post-digital-finance", "summary": "动态同时出现美元锚定资产、支付轨道和储备透明度。", "keywords": ["稳定币", "支付", "储备"] },
+            { "sourceId": "trump-post-dollar-payment", "summary": "动态围绕数字美元、支付基础设施和监管框架展开。", "keywords": ["数字美元", "支付", "监管"] },
+            { "sourceId": "trump-post-reserve", "summary": "动态讨论储备资产和美元流动性，强化了主题一致性。", "keywords": ["储备", "美元流动性"] }
+          ],
+          "story": {
+            "headline": "稳定币正在从交易工具，走向全球数字美元基础设施",
+            "lead": "从规模、网络分布和应用场景三个角度，看稳定币为什么值得持续关注。",
+            "chapters": [
+              { "title": "为什么是稳定币？", "kicker": "人物动态信号", "body": "最近 7 天的多条公开动态共同出现数字美元、支付、储备和监管等词汇。结论停留在宽泛主题，不寻找人物钱包。", "view": "signal" },
+              { "title": "规模正在继续扩大", "kicker": "市场变化", "body": "随快照保存的演示曲线显示稳定币总规模连续数月上升，重点是它正在成为可编程美元基础层。", "view": "trend" },
+              { "title": "增长分布在哪些网络？", "kicker": "竞争格局", "body": "供应并不平均分布。头部网络承担主要规模，新网络则通过低成本支付和应用生态争夺增量。", "view": "ranking" },
+              { "title": "接下来值得盯什么？", "kicker": "观察结论", "body": "支付采用、资产集中度和跨链流动性，把兴趣主题转成可持续跟踪的数据问题。", "view": "watch" }
+            ],
+            "watch": [
+              { "title": "支付采用成为增长主线", "metric": "$1.6T", "detail": "演示样例中非交易型转账占比持续上升。", "tone": "teal" },
+              { "title": "供应仍高度集中", "metric": "$238B", "detail": "头部资产占据大部分供应，集中度值得持续观察。", "tone": "amber" },
+              { "title": "跨链流动性更关键", "metric": "18", "detail": "多网络分布让桥接和统一流动性成为体验关键。", "tone": "violet" }
+            ]
+          }
+        },
+        {
+          "topicType": "bitcoin",
+          "name": "比特币与长期配置",
+          "category": "数字资产",
+          "confidence": "中",
+          "summary": "比特币、储备资产和机构配置构成次级主题。",
+          "why": "相关动态持续出现，但独立关注来源少于稳定币主题。",
+          "keywords": ["比特币", "储备资产", "机构配置", "挖矿"],
+          "sourceIds": ["trump-post-reserve", "trump-post-bitcoin"],
+          "evidenceSummaries": [
+            { "sourceId": "trump-post-reserve", "summary": "动态涉及储备资产与机构进入数字市场。", "keywords": ["储备资产", "机构配置"] },
+            { "sourceId": "trump-post-bitcoin", "summary": "动态明确讨论比特币、配置与矿业能力。", "keywords": ["比特币", "机构配置", "挖矿"] }
+          ],
+          "story": {
+            "headline": "比特币的故事，正在从价格扩展到长期持有与宏观配置",
+            "lead": "把讨论从短期行情拉回持有结构、网络安全和机构参与。",
+            "chapters": [
+              { "title": "为什么是比特币配置？", "kicker": "人物兴趣信号", "body": "公开动态反复出现比特币、储备资产和机构配置，但不据此推断人物是否持币。", "view": "signal" },
+              { "title": "持有结构比价格更能讲故事", "kicker": "市场变化", "body": "长期持有占比的演示曲线持续抬升，让叙事从价格扩展到供给结构。", "view": "trend" },
+              { "title": "谁在持有？", "kicker": "结构拆解", "body": "个人长期持有仍居首，机构产品提供新入口，交易平台余额则是流动性温度计。", "view": "ranking" },
+              { "title": "下一步看三条线", "kicker": "观察结论", "body": "交易平台余额、机构入口和网络安全预算可以组成更稳定的观察框架。", "view": "watch" }
+            ],
+            "watch": [
+              { "title": "交易平台余额下降", "metric": "71%", "detail": "演示余额指数下降，更多资产可能转向长期保管。", "tone": "teal" },
+              { "title": "机构入口继续扩大", "metric": "16%", "detail": "机构产品在演示持有结构中的权重上升。", "tone": "amber" },
+              { "title": "网络安全预算增长", "metric": "924", "detail": "算力增长提供一条不依赖价格的观察线。", "tone": "violet" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "figureId": "elon-musk",
+      "topics": [
+        {
+          "topicType": "ai_crypto",
+          "name": "AI × Crypto",
+          "category": "技术叙事",
+          "confidence": "高",
+          "summary": "AI Agent、去中心化计算与机器支付形成连续的跨技术主题簇。",
+          "why": "关注对象与多条动态分别覆盖计算、身份、协作和支付。",
+          "keywords": ["AI Agent", "去中心化计算", "机器支付", "身份"],
+          "sourceIds": ["elon-post-agent", "elon-post-compute", "elon-post-machine-payment"],
+          "evidenceSummaries": [
+            { "sourceId": "elon-post-agent", "summary": "动态涉及 Agent 自主协作和可验证身份。", "keywords": ["AI Agent", "身份"] },
+            { "sourceId": "elon-post-compute", "summary": "引用动态聚焦可验证计算与分布式 GPU 网络。", "keywords": ["去中心化计算", "GPU 网络"] },
+            { "sourceId": "elon-post-machine-payment", "summary": "动态讨论软件代理之间的低成本结算。", "keywords": ["机器支付", "微支付"] }
+          ],
+          "story": {
+            "headline": "当 AI Agent 开始交易、支付和协作，区块链可能成为可信执行层",
+            "lead": "从计算资源、机器支付和可验证身份观察 AI 与 Crypto 的交叉点。",
+            "chapters": [
+              { "title": "为什么是 AI × Crypto？", "kicker": "人物动态信号", "body": "近期多条公开动态同时出现 AI Agent、去中心化计算和机器支付。", "view": "signal" },
+              { "title": "Agent 交互正在升温", "kicker": "市场变化", "body": "随快照保存的演示指数显示机器参与的链上交互增长明显。", "view": "trend" },
+              { "title": "热度集中在哪些方向？", "kicker": "技术版图", "body": "计算、支付和数据市场居前，身份与可验证推理决定系统能否可信运行。", "view": "ranking" },
+              { "title": "热度之后要验证采用", "kicker": "观察结论", "body": "下一步需要区分真实机器付费、资源供需和概念炒作。", "view": "watch" }
+            ],
+            "watch": [
+              { "title": "机器支付成为新入口", "metric": "186", "detail": "Agent 交互指数增长最快，但真实付费场景仍需验证。", "tone": "teal" },
+              { "title": "计算供给先于需求", "metric": "$14.2B", "detail": "演示供给指数高于使用指数，需警惕叙事领先于采用。", "tone": "amber" },
+              { "title": "身份与权限是缺口", "metric": "58", "detail": "Agent 自主交易需要身份、授权和追责体系。", "tone": "violet" }
+            ]
+          }
+        },
+        {
+          "topicType": "payments",
+          "name": "链上支付网络",
+          "category": "支付技术",
+          "confidence": "中",
+          "summary": "低成本、微支付与全球结算在多条动态中持续共现。",
+          "why": "动态信号较强，并得到机器支付主题的交叉印证。",
+          "keywords": ["支付", "微支付", "低手续费", "全球结算"],
+          "sourceIds": ["elon-post-machine-payment", "elon-post-global-payment"],
+          "evidenceSummaries": [
+            { "sourceId": "elon-post-machine-payment", "summary": "内容聚焦代理之间的小额结算。", "keywords": ["机器支付", "微支付"] },
+            { "sourceId": "elon-post-global-payment", "summary": "内容聚焦全球支付、创作者收入与低手续费。", "keywords": ["全球支付", "低手续费"] }
+          ],
+          "story": {
+            "headline": "链上支付的竞争，正在转向是否足够便宜和自然",
+            "lead": "观察结算速度、成本、用户场景和网络分布。",
+            "chapters": [
+              { "title": "为什么是链上支付？", "kicker": "人物兴趣信号", "body": "支付、微支付和全球结算在动态中持续共现。", "view": "signal" },
+              { "title": "使用量增长、成本下降", "kicker": "市场变化", "body": "演示指标体现支付活动上升与单笔成本下降。", "view": "trend" },
+              { "title": "谁在真正使用？", "kicker": "场景结构", "body": "跨境和平台内微支付领先，商户、创作者与机器支付构成后续增量。", "view": "ranking" },
+              { "title": "观察体验而不是口号", "kicker": "观察结论", "body": "后续重点是结算成本、失败率和真实用户留存。", "view": "watch" }
+            ],
+            "watch": [
+              { "title": "成本继续下降", "metric": "$0.03", "detail": "低成本网络让小额支付变成可行产品。", "tone": "teal" },
+              { "title": "跨境仍是最大场景", "metric": "88", "detail": "速度和全天候结算仍是最清晰价值。", "tone": "amber" },
+              { "title": "机器支付刚刚开始", "metric": "41", "detail": "当前体量较小，但可能形成新增长曲线。", "tone": "violet" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "figureId": "vitalik-buterin",
+      "topics": [
+        {
+          "topicType": "layer2",
+          "name": "Ethereum 扩容与 Layer 2",
+          "category": "区块链基础设施",
+          "confidence": "高",
+          "summary": "Rollup、Blob、证明系统和跨层互操作构成最稳定的技术主题。",
+          "why": "多条技术动态在扩容主题上高度一致。",
+          "keywords": ["Rollup", "Blob", "zkVM", "互操作", "数据可用性"],
+          "sourceIds": ["vitalik-post-zkevm", "vitalik-post-blob", "vitalik-post-interop"],
+          "evidenceSummaries": [
+            { "sourceId": "vitalik-post-zkevm", "summary": "技术动态聚焦 Rollup、zkVM 与扩容。", "keywords": ["Rollup", "zkVM"] },
+            { "sourceId": "vitalik-post-blob", "summary": "动态讨论 Blob 容量、数据可用性和成本。", "keywords": ["Blob", "数据可用性"] },
+            { "sourceId": "vitalik-post-interop", "summary": "动态涉及跨 Rollup 消息和统一体验。", "keywords": ["互操作", "跨层消息"] }
+          ],
+          "story": {
+            "headline": "Layer 2 的下一阶段，不只是更便宜，而是更统一的 Ethereum 体验",
+            "lead": "从吞吐、成本、用户与跨层互操作观察扩容技术。",
+            "chapters": [
+              { "title": "为什么是 Ethereum 扩容？", "kicker": "人物兴趣信号", "body": "Rollup、Blob、证明系统和互操作在公开信号中稳定共现。", "view": "signal" },
+              { "title": "交易增长，成本下降", "kicker": "技术变化", "body": "演示曲线显示交易量持续增长，同时单位成本下降。", "view": "trend" },
+              { "title": "生态竞争已经分层", "kicker": "竞争格局", "body": "头部网络拥有用户和流动性优势，竞争逐步转向互操作与证明效率。", "view": "ranking" },
+              { "title": "下一阶段是统一体验", "kicker": "观察结论", "body": "值得追踪的不只是 TPS，而是资产、消息和身份能否自然跨层流动。", "view": "watch" }
+            ],
+            "watch": [
+              { "title": "成本优势正在普及", "metric": "−31%", "detail": "Blob 与证明效率改善共同压低演示平均成本。", "tone": "teal" },
+              { "title": "流动性仍然碎片化", "metric": "$48B", "detail": "跨层体验是用户增长后的关键问题。", "tone": "amber" },
+              { "title": "证明系统持续演进", "metric": "96", "detail": "不同架构在安全、成本与兼容性之间取舍。", "tone": "violet" }
+            ]
+          }
+        },
+        {
+          "topicType": "privacy",
+          "name": "隐私增强技术",
+          "category": "密码学应用",
+          "confidence": "中",
+          "summary": "隐私池、零知识证明和选择性披露形成正在升温的次级主题。",
+          "why": "隐私动态与 zkEVM 研究关注形成跨来源印证。",
+          "keywords": ["隐私池", "零知识证明", "选择性披露", "身份"],
+          "sourceIds": ["vitalik-post-zkevm", "vitalik-post-privacy"],
+          "evidenceSummaries": [
+            { "sourceId": "vitalik-post-zkevm", "summary": "技术动态包含零知识证明系统相关内容。", "keywords": ["零知识证明"] },
+            { "sourceId": "vitalik-post-privacy", "summary": "动态讨论隐私池、选择性披露和身份。", "keywords": ["隐私池", "选择性披露", "身份"] }
+          ],
+          "story": {
+            "headline": "链上隐私正在从完全隐藏，转向可证明、可选择地披露",
+            "lead": "观察零知识证明、隐私身份和合规边界如何共同演化。",
+            "chapters": [
+              { "title": "为什么是隐私增强技术？", "kicker": "人物兴趣信号", "body": "隐私池、零知识证明和选择性披露在研究动态中连续出现。", "view": "signal" },
+              { "title": "研发活跃度正在上升", "kicker": "技术变化", "body": "演示开发指数增长，同时证明成本下降。", "view": "trend" },
+              { "title": "热点从隐藏转向证明", "kicker": "技术版图", "body": "零知识基础设施居首，身份与合规证明把隐私能力带向具体场景。", "view": "ranking" },
+              { "title": "关键是可控披露", "kicker": "观察结论", "body": "下一阶段需要同时看性能、体验和规则设计。", "view": "watch" }
+            ],
+            "watch": [
+              { "title": "证明成本持续下降", "metric": "−37%", "detail": "成本下降让隐私技术更接近普通应用。", "tone": "teal" },
+              { "title": "身份成为落地入口", "metric": "29", "detail": "选择性披露连接隐私、合规和体验。", "tone": "amber" },
+              { "title": "规则设计同样重要", "metric": "55", "detail": "技术可用不等于社会可用。", "tone": "violet" }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "figureId": "changpeng-zhao",
+      "topics": [
+        {
+          "topicType": "chain_ecosystem",
+          "name": "BNB Chain 生态",
+          "category": "公链生态",
+          "confidence": "高",
+          "summary": "生态项目、开发者增长、DEX 和链上用户构成最强主题簇。",
+          "why": "多条动态覆盖生态多个层面，且时间分布连续。",
+          "keywords": ["BNB Chain", "开发者", "DEX", "用户增长", "生态项目"],
+          "sourceIds": ["cz-post-bnb-defi", "cz-post-developers", "cz-post-adoption"],
+          "evidenceSummaries": [
+            { "sourceId": "cz-post-bnb-defi", "summary": "动态覆盖 BNB Chain、DEX 与流动性。", "keywords": ["BNB Chain", "DEX"] },
+            { "sourceId": "cz-post-developers", "summary": "动态讨论开发者、项目和用户增长。", "keywords": ["开发者", "生态增长"] },
+            { "sourceId": "cz-post-adoption", "summary": "动态涉及链上应用、支付和用户留存。", "keywords": ["链上应用", "用户采用"] }
+          ],
+          "story": {
+            "headline": "观察一条公链，用户、应用、流动性和集中度比币价更重要",
+            "lead": "用生态视角拆解 BNB Chain 的活跃度与结构。",
+            "chapters": [
+              { "title": "为什么是 BNB Chain 生态？", "kicker": "人物动态信号", "body": "开发者、DEX、用户增长和生态项目在多条动态中一致出现。", "view": "signal" },
+              { "title": "用户活跃度继续增长", "kicker": "生态变化", "body": "演示曲线显示活跃地址稳步上升，重点是增长能否转化为持续使用。", "view": "trend" },
+              { "title": "应用结构是否健康？", "kicker": "生态版图", "body": "DEX 是活动中心，游戏、借贷和支付提供生态多样性。", "view": "ranking" },
+              { "title": "下一步看增长质量", "kicker": "观察结论", "body": "需要同时跟踪真实用户、应用留存、流动性和头部集中度。", "view": "watch" }
+            ],
+            "watch": [
+              { "title": "用户增长仍然强劲", "metric": "2.1M", "detail": "活跃地址增长为应用提供基础流量。", "tone": "teal" },
+              { "title": "DEX 占据流量中心", "metric": "95", "detail": "头部集中度要与生态多样性一起观察。", "tone": "amber" },
+              { "title": "支付成为新增长点", "metric": "61", "detail": "稳定币支付可能带来不同于交易的新用户。", "tone": "violet" }
+            ]
+          }
+        },
+        {
+          "topicType": "defi",
+          "name": "DeFi 与链上流动性",
+          "category": "金融协议",
+          "confidence": "高",
+          "summary": "DEX、借贷、流动性和 TVL 在近期信号中集中出现。",
+          "why": "关注对象与原创动态分别覆盖协议类型和资金使用。",
+          "keywords": ["DEX", "借贷", "流动性", "TVL", "链上收益"],
+          "sourceIds": ["cz-post-bnb-defi", "cz-post-liquidity"],
+          "evidenceSummaries": [
+            { "sourceId": "cz-post-bnb-defi", "summary": "公开动态涉及 DEX 与流动性。", "keywords": ["DEX", "流动性"] },
+            { "sourceId": "cz-post-liquidity", "summary": "动态明确讨论交易量、借贷流动性和 TVL。", "keywords": ["借贷", "TVL", "流动性"] }
+          ],
+          "story": {
+            "headline": "DeFi 的下一轮竞争，是谁能更有效地使用流动性",
+            "lead": "从规模、资本效率和协议结构观察链上金融。",
+            "chapters": [
+              { "title": "为什么是 DeFi？", "kicker": "人物兴趣信号", "body": "DEX、借贷、流动性和链上收益在公开信号中集中出现。", "view": "signal" },
+              { "title": "规模重新增长", "kicker": "市场变化", "body": "演示 TVL 曲线回升，但只看规模会错过资本效率。", "view": "trend" },
+              { "title": "资金分布在哪些板块？", "kicker": "市场结构", "body": "DEX 与借贷仍是核心，流动性质押和衍生品构成第二层。", "view": "ranking" },
+              { "title": "从规模转向效率与风险", "kicker": "观察结论", "body": "下一步应追踪利用率、真实费用、清算压力和风险传播。", "view": "watch" }
+            ],
+            "watch": [
+              { "title": "规模恢复但结构变化", "metric": "$168B", "detail": "资金回升同时更集中于有真实使用的协议。", "tone": "teal" },
+              { "title": "资本效率成为分水岭", "metric": "68%", "detail": "同样的 TVL，利用率与费用产出可能完全不同。", "tone": "amber" },
+              { "title": "风险跨协议传递", "metric": "48", "detail": "组合性带来效率，也让清算风险更容易扩散。", "tone": "violet" }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
