@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "collectedAt": "2026-08-15T12:19:12.631Z",
+  "collectedAt": "2026-08-15T12:29:27.483Z",
   "mode": "live-api",
   "provider": "CoinGecko Public API",
   "methodology": "市值、成交量、价格与排名来自定时市场快照；趋势为依据当前市值与 24 小时变化率推导的近 24 小时等距估算。",
@@ -12,18 +12,18 @@
       "metrics": [
         {
           "label": "稳定币市场规模",
-          "value": "$296.68B",
+          "value": "$296.67B",
           "change": "+0.03% / 24h"
         },
         {
           "label": "24 小时成交量",
-          "value": "$32.61B",
+          "value": "$32.54B",
           "change": "25 个样本资产"
         },
         {
           "label": "最大资产",
           "value": "Tether",
-          "change": "USDT · $183.02B"
+          "change": "USDT · $183.01B"
         }
       ],
       "trend": {
@@ -32,27 +32,27 @@
         "points": [
           {
             "label": "-20h",
-            "value": 296.579
+            "value": 296.577
           },
           {
             "label": "-16h",
-            "value": 296.599
+            "value": 296.597
           },
           {
             "label": "-12h",
-            "value": 296.618
+            "value": 296.616
           },
           {
             "label": "-8h",
-            "value": 296.637
+            "value": 296.635
           },
           {
             "label": "-4h",
-            "value": 296.657
+            "value": 296.654
           },
           {
             "label": "现在",
-            "value": 296.676
+            "value": 296.673
           }
         ]
       },
@@ -61,27 +61,27 @@
         "items": [
           {
             "name": "Tether",
-            "value": 183015904889,
-            "display": "$183.02B"
+            "value": 183014065460,
+            "display": "$183.01B"
           },
           {
             "name": "USDC",
-            "value": 71855694041,
-            "display": "$71.86B"
+            "value": 71854752569,
+            "display": "$71.85B"
           },
           {
             "name": "USDS",
-            "value": 9801550750,
+            "value": 9801450120,
             "display": "$9.8B"
           },
           {
             "name": "Dai",
-            "value": 4586148304,
+            "value": 4586126697,
             "display": "$4.59B"
           },
           {
             "name": "USD1",
-            "value": 4006519487,
+            "value": 4006609780,
             "display": "$4.01B"
           }
         ]
@@ -95,11 +95,11 @@
         {
           "label": "比特币市场规模",
           "value": "$1.26T",
-          "change": "+0.51% / 24h"
+          "change": "+0.39% / 24h"
         },
         {
           "label": "24 小时成交量",
-          "value": "$16.27B",
+          "value": "$16.22B",
           "change": "1 个样本资产"
         },
         {
@@ -114,27 +114,27 @@
         "points": [
           {
             "label": "-20h",
-            "value": 1256.507
+            "value": 1258.038
           },
           {
             "label": "-16h",
-            "value": 1257.797
+            "value": 1259.026
           },
           {
             "label": "-12h",
-            "value": 1259.087
+            "value": 1260.014
           },
           {
             "label": "-8h",
-            "value": 1260.377
+            "value": 1261.002
           },
           {
             "label": "-4h",
-            "value": 1261.667
+            "value": 1261.991
           },
           {
             "label": "现在",
-            "value": 1262.957
+            "value": 1262.979
           }
         ]
       },
@@ -143,7 +143,7 @@
         "items": [
           {
             "name": "Bitcoin",
-            "value": 1262957251889,
+            "value": 1262978714091,
             "display": "$1.26T"
           }
         ]
@@ -156,8 +156,8 @@
       "metrics": [
         {
           "label": "AI × Crypto 市场规模",
-          "value": "$18.42B",
-          "change": "+3.28% / 24h"
+          "value": "$18.47B",
+          "change": "+3.67% / 24h"
         },
         {
           "label": "24 小时成交量",
@@ -167,7 +167,7 @@
         {
           "label": "最大资产",
           "value": "Chainlink",
-          "change": "LINK · $6.98B"
+          "change": "LINK · $7.02B"
         }
       ],
       "trend": {
@@ -176,27 +176,27 @@
         "points": [
           {
             "label": "-20h",
-            "value": 17.838
+            "value": 17.816
           },
           {
             "label": "-16h",
-            "value": 17.955
+            "value": 17.947
           },
           {
             "label": "-12h",
-            "value": 18.072
+            "value": 18.078
           },
           {
             "label": "-8h",
-            "value": 18.189
+            "value": 18.208
           },
           {
             "label": "-4h",
-            "value": 18.306
+            "value": 18.339
           },
           {
             "label": "现在",
-            "value": 18.423
+            "value": 18.47
           }
         ]
       },
@@ -205,27 +205,27 @@
         "items": [
           {
             "name": "Chainlink",
-            "value": 6978147711,
-            "display": "$6.98B"
+            "value": 7023453084,
+            "display": "$7.02B"
           },
           {
             "name": "NEAR Protocol",
-            "value": 2131262693,
+            "value": 2132528248,
             "display": "$2.13B"
           },
           {
             "name": "Bittensor",
-            "value": 1889108271,
+            "value": 1888780724,
             "display": "$1.89B"
           },
           {
             "name": "Staked TAO (Root)",
-            "value": 1352624536,
+            "value": 1353071827,
             "display": "$1.35B"
           },
           {
             "name": "Internet Computer",
-            "value": 1254983904,
+            "value": 1253582649,
             "display": "$1.25B"
           }
         ]
@@ -238,18 +238,18 @@
       "metrics": [
         {
           "label": "数字支付资产规模",
-          "value": "$296.68B",
+          "value": "$296.67B",
           "change": "+0.03% / 24h"
         },
         {
           "label": "24 小时成交量",
-          "value": "$32.61B",
+          "value": "$32.54B",
           "change": "25 个样本资产"
         },
         {
           "label": "最大资产",
           "value": "Tether",
-          "change": "USDT · $183.02B"
+          "change": "USDT · $183.01B"
         }
       ],
       "trend": {
@@ -258,27 +258,27 @@
         "points": [
           {
             "label": "-20h",
-            "value": 296.579
+            "value": 296.577
           },
           {
             "label": "-16h",
-            "value": 296.599
+            "value": 296.597
           },
           {
             "label": "-12h",
-            "value": 296.618
+            "value": 296.616
           },
           {
             "label": "-8h",
-            "value": 296.637
+            "value": 296.635
           },
           {
             "label": "-4h",
-            "value": 296.657
+            "value": 296.654
           },
           {
             "label": "现在",
-            "value": 296.676
+            "value": 296.673
           }
         ]
       },
@@ -287,27 +287,27 @@
         "items": [
           {
             "name": "Tether",
-            "value": 183015904889,
-            "display": "$183.02B"
+            "value": 183014065460,
+            "display": "$183.01B"
           },
           {
             "name": "USDC",
-            "value": 71855694041,
-            "display": "$71.86B"
+            "value": 71854752569,
+            "display": "$71.85B"
           },
           {
             "name": "USDS",
-            "value": 9801550750,
+            "value": 9801450120,
             "display": "$9.8B"
           },
           {
             "name": "Dai",
-            "value": 4586148304,
+            "value": 4586126697,
             "display": "$4.59B"
           },
           {
             "name": "USD1",
-            "value": 4006519487,
+            "value": 4006609780,
             "display": "$4.01B"
           }
         ]
@@ -321,17 +321,17 @@
         {
           "label": "Layer 2 市场规模",
           "value": "$6.77B",
-          "change": "+1.74% / 24h"
+          "change": "+1.81% / 24h"
         },
         {
           "label": "24 小时成交量",
-          "value": "$254.56M",
+          "value": "$253.44M",
           "change": "25 个样本资产"
         },
         {
           "label": "最大资产",
           "value": "OKB",
-          "change": "OKB · $2.26B"
+          "change": "OKB · $2.27B"
         }
       ],
       "trend": {
@@ -340,15 +340,15 @@
         "points": [
           {
             "label": "-20h",
-            "value": 6.652
+            "value": 6.65
           },
           {
             "label": "-16h",
-            "value": 6.675
+            "value": 6.674
           },
           {
             "label": "-12h",
-            "value": 6.699
+            "value": 6.698
           },
           {
             "label": "-8h",
@@ -356,11 +356,11 @@
           },
           {
             "label": "-4h",
-            "value": 6.745
+            "value": 6.746
           },
           {
             "label": "现在",
-            "value": 6.768
+            "value": 6.77
           }
         ]
       },
@@ -369,28 +369,28 @@
         "items": [
           {
             "name": "OKB",
-            "value": 2263606560,
-            "display": "$2.26B"
+            "value": 2268431933,
+            "display": "$2.27B"
           },
           {
             "name": "Mantle",
-            "value": 1443940054,
+            "value": 1441368643,
             "display": "$1.44B"
           },
           {
             "name": "POL (ex-MATIC)",
-            "value": 804206839,
-            "display": "$804.21M"
+            "value": 804644037,
+            "display": "$804.64M"
           },
           {
             "name": "Arbitrum",
-            "value": 491119076,
-            "display": "$491.12M"
+            "value": 491173895,
+            "display": "$491.17M"
           },
           {
             "name": "Mantle Bridged WETH (Mantle)",
-            "value": 299362800,
-            "display": "$299.36M"
+            "value": 299348600,
+            "display": "$299.35M"
           }
         ]
       }
@@ -402,18 +402,18 @@
       "metrics": [
         {
           "label": "隐私资产市场规模",
-          "value": "$16.23B",
-          "change": "+1.26% / 24h"
+          "value": "$16.21B",
+          "change": "+1.18% / 24h"
         },
         {
           "label": "24 小时成交量",
-          "value": "$189.91M",
+          "value": "$189.68M",
           "change": "25 个样本资产"
         },
         {
           "label": "最大资产",
           "value": "Zcash",
-          "change": "ZEC · $8.29B"
+          "change": "ZEC · $8.28B"
         }
       ],
       "trend": {
@@ -422,27 +422,27 @@
         "points": [
           {
             "label": "-20h",
-            "value": 16.032
+            "value": 16.02
           },
           {
             "label": "-16h",
-            "value": 16.073
+            "value": 16.058
           },
           {
             "label": "-12h",
-            "value": 16.113
+            "value": 16.096
           },
           {
             "label": "-8h",
-            "value": 16.153
+            "value": 16.134
           },
           {
             "label": "-4h",
-            "value": 16.193
+            "value": 16.171
           },
           {
             "label": "现在",
-            "value": 16.234
+            "value": 16.209
           }
         ]
       },
@@ -451,28 +451,28 @@
         "items": [
           {
             "name": "Zcash",
-            "value": 8293322886,
-            "display": "$8.29B"
+            "value": 8279074954,
+            "display": "$8.28B"
           },
           {
             "name": "Monero",
-            "value": 7584653850,
-            "display": "$7.58B"
+            "value": 7574989196,
+            "display": "$7.57B"
           },
           {
             "name": "Decred",
-            "value": 211563790,
-            "display": "$211.56M"
+            "value": 211538801,
+            "display": "$211.54M"
           },
           {
             "name": "Pirate Chain",
-            "value": 41303823,
-            "display": "$41.3M"
+            "value": 41171063,
+            "display": "$41.17M"
           },
           {
             "name": "Verge",
-            "value": 33999316,
-            "display": "$34M"
+            "value": 33964026,
+            "display": "$33.96M"
           }
         ]
       }
@@ -485,11 +485,11 @@
         {
           "label": "公链资产市场规模",
           "value": "$1.8T",
-          "change": "+0.5% / 24h"
+          "change": "+0.36% / 24h"
         },
         {
           "label": "24 小时成交量",
-          "value": "$24.77B",
+          "value": "$24.67B",
           "change": "25 个样本资产"
         },
         {
@@ -504,27 +504,27 @@
         "points": [
           {
             "label": "-20h",
-            "value": 1786.212
+            "value": 1788.629
           },
           {
             "label": "-16h",
-            "value": 1787.988
+            "value": 1789.905
           },
           {
             "label": "-12h",
-            "value": 1789.764
+            "value": 1791.182
           },
           {
             "label": "-8h",
-            "value": 1791.54
+            "value": 1792.458
           },
           {
             "label": "-4h",
-            "value": 1793.316
+            "value": 1793.734
           },
           {
             "label": "现在",
-            "value": 1795.092
+            "value": 1795.01
           }
         ]
       },
@@ -533,27 +533,27 @@
         "items": [
           {
             "name": "Bitcoin",
-            "value": 1262957251889,
+            "value": 1262969134193,
             "display": "$1.26T"
           },
           {
             "name": "Ethereum",
-            "value": 226488037542,
-            "display": "$226.49B"
+            "value": 226512863674,
+            "display": "$226.51B"
           },
           {
             "name": "BNB",
-            "value": 81456542224,
-            "display": "$81.46B"
+            "value": 81373171574,
+            "display": "$81.37B"
           },
           {
             "name": "XRP",
-            "value": 62775581968,
-            "display": "$62.78B"
+            "value": 62770973080,
+            "display": "$62.77B"
           },
           {
             "name": "Solana",
-            "value": 43801884576,
+            "value": 43804553718,
             "display": "$43.8B"
           }
         ]
@@ -566,12 +566,12 @@
       "metrics": [
         {
           "label": "DeFi 市场规模",
-          "value": "$78.61B",
-          "change": "+0.86% / 24h"
+          "value": "$78.66B",
+          "change": "+0.88% / 24h"
         },
         {
           "label": "24 小时成交量",
-          "value": "$1.58B",
+          "value": "$1.57B",
           "change": "25 个样本资产"
         },
         {
@@ -586,27 +586,27 @@
         "points": [
           {
             "label": "-20h",
-            "value": 77.934
+            "value": 77.976
           },
           {
             "label": "-16h",
-            "value": 78.068
+            "value": 78.113
           },
           {
             "label": "-12h",
-            "value": 78.202
+            "value": 78.25
           },
           {
             "label": "-8h",
-            "value": 78.337
+            "value": 78.386
           },
           {
             "label": "-4h",
-            "value": 78.471
+            "value": 78.523
           },
           {
             "label": "现在",
-            "value": 78.605
+            "value": 78.66
           }
         ]
       },
@@ -615,28 +615,28 @@
         "items": [
           {
             "name": "Lido Staked Ether",
-            "value": 17865737231,
+            "value": 17866190454,
             "display": "$17.87B"
           },
           {
             "name": "Hyperliquid",
-            "value": 12439410760,
+            "value": 12441616739,
             "display": "$12.44B"
           },
           {
             "name": "Rain",
-            "value": 9142210278,
+            "value": 9142705785,
             "display": "$9.14B"
           },
           {
             "name": "Wrapped stETH",
-            "value": 8689835714,
+            "value": 8691722871,
             "display": "$8.69B"
           },
           {
             "name": "Chainlink",
-            "value": 6980705967,
-            "display": "$6.98B"
+            "value": 7039493444,
+            "display": "$7.04B"
           }
         ]
       }

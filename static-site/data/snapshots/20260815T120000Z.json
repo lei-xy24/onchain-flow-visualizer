@@ -3,9 +3,9 @@
   "snapshotId": "20260815T120000Z",
   "status": "published",
   "slotStart": "2026-08-15T12:00:00.000Z",
-  "windowStart": "2026-08-08T12:17:25.235Z",
-  "windowEnd": "2026-08-15T12:17:25.235Z",
-  "generatedAt": "2026-08-15T12:19:12.694Z",
+  "windowStart": "2026-08-08T12:27:26.739Z",
+  "windowEnd": "2026-08-15T12:27:26.739Z",
+  "generatedAt": "2026-08-15T12:29:27.543Z",
   "nextScheduledAt": "2026-08-15T15:00:00.000Z",
   "model": "deepseek-v4-flash",
   "modelProvider": "deepseek",
@@ -41,7 +41,7 @@
       "postsAnalyzed": 80,
       "sourceCount": 80,
       "analysisWindow": "近 7 天",
-      "lastSuccessAt": "2026-08-15T12:19:12.694Z",
+      "lastSuccessAt": "2026-08-15T12:29:27.543Z",
       "themes": [
         {
           "id": "bitcoin-比特币与数字资产",
@@ -49,20 +49,20 @@
           "storyId": "bitcoin",
           "name": "比特币与数字资产",
           "category": "数字资产",
-          "score": 72,
-          "change": 7,
-          "trend": "升温",
+          "score": 74,
+          "change": 2,
+          "trend": "平稳",
           "confidence": "低",
-          "summary": "特朗普近期公开动态中未直接提及比特币或数字资产，但多次强调美国能源主导和关税政策，可能间接影响加密市场。",
-          "why": "特朗普的公开动态主要聚焦政治、选举和国家安全，未直接讨论比特币，但能源和贸易政策可能对加密市场产生间接影响。",
+          "summary": "特朗普近期公开动态中未直接提及比特币或数字资产，但多次强调经济政策、关税和能源主导，与比特币作为数字资产的市场叙事无直接关联。",
+          "why": "尽管特朗普的公开动态聚焦于政治、经济和国家安全，未涉及比特币，但作为公众人物，其政策可能间接影响市场情绪。",
           "keywords": [
-            "能源",
-            "关税",
-            "经济"
+            "比特币",
+            "数字资产",
+            "经济政策"
           ],
           "sourceIds": [
             "trump-fm-117089653850664292",
-            "trump-fm-117091934703272898"
+            "trump-fm-117095033823167533"
           ],
           "evidenceBreakdown": {
             "posts": 2,
@@ -73,7 +73,7 @@
           },
           "scoreBreakdown": {
             "frequency": 71,
-            "freshness": 78,
+            "freshness": 82,
             "continuity": 66
           },
           "evidence": [
@@ -86,45 +86,45 @@
               "provider": "trump.fm",
               "time": "2026-08-13T18:38:49.507Z",
               "title": "BIG WIN today at the U.S. Court of…",
-              "summary": "特朗普宣布关闭“de minimis”关税漏洞，称此举将增加关税收入，并强调美国优先贸易政策。",
+              "summary": "特朗普宣布关闭“de minimis”关税漏洞，称此举将增加关税收入，用于军事和减税，体现其经济政策导向。",
               "keywords": [
                 "关税",
-                "贸易"
+                "经济"
               ],
               "url": "https://trump.fm/post/ts_117089653850664292"
             },
             {
-              "id": "trump-fm-117091934703272898",
+              "id": "trump-fm-117095033823167533",
               "type": "post",
               "kind": "original",
               "weight": 1,
               "platform": "Truth Social",
               "provider": "trump.fm",
-              "time": "2026-08-14T04:18:52.556Z",
-              "title": "White House report details ‘Great …",
-              "summary": "特朗普分享白宫报告，揭露“大转运骗局”导致数十亿美元关税逃避，强调贸易执法。",
+              "time": "2026-08-14T17:27:01.373Z",
+              "title": "Trump admin marks 15 straight mont…",
+              "summary": "特朗普分享边境安全成果，强调15个月零边境释放，逮捕率下降94%，展示其政策成效。",
               "keywords": [
-                "关税",
-                "转运"
+                "边境",
+                "政策"
               ],
-              "url": "https://trump.fm/post/ts_117091934703272898"
+              "url": "https://trump.fm/post/ts_117095033823167533"
             }
           ],
           "story": {
             "name": "比特币与数字资产",
             "category": "数字资产",
-            "headline": "特朗普的贸易政策与比特币市场的间接关联",
-            "lead": "尽管特朗普未直接提及比特币，但其关税和能源政策可能影响市场情绪。",
+            "headline": "特朗普经济政策与比特币市场的潜在关联",
+            "lead": "尽管特朗普未直接提及比特币，但其经济政策可能影响市场情绪。",
             "accent": "#f0b45a",
             "snapshot": [
               {
                 "label": "比特币市场规模",
                 "value": "$1.26T",
-                "change": "+0.51% / 24h"
+                "change": "+0.39% / 24h"
               },
               {
                 "label": "24 小时成交量",
-                "value": "$16.27B",
+                "value": "$16.22B",
                 "change": "1 个样本资产"
               },
               {
@@ -139,27 +139,27 @@
               "points": [
                 {
                   "label": "-20h",
-                  "value": 1256.507
+                  "value": 1258.038
                 },
                 {
                   "label": "-16h",
-                  "value": 1257.797
+                  "value": 1259.026
                 },
                 {
                   "label": "-12h",
-                  "value": 1259.087
+                  "value": 1260.014
                 },
                 {
                   "label": "-8h",
-                  "value": 1260.377
+                  "value": 1261.002
                 },
                 {
                   "label": "-4h",
-                  "value": 1261.667
+                  "value": 1261.991
                 },
                 {
                   "label": "现在",
-                  "value": 1262.957
+                  "value": 1262.979
                 }
               ]
             },
@@ -168,7 +168,7 @@
               "items": [
                 {
                   "name": "Bitcoin",
-                  "value": 1262957251889,
+                  "value": 1262978714091,
                   "display": "$1.26T"
                 }
               ]
@@ -177,7 +177,7 @@
               {
                 "title": "比特币市场规模",
                 "metricRef": "metric-0-value",
-                "detail": "当前比特币市场规模为1.26万亿美元，反映市场整体价值。",
+                "detail": "比特币市场规模当前为1.26万亿美元，反映数字资产整体价值。",
                 "tone": "teal",
                 "metric": "$1.26T",
                 "metricLabel": "比特币市场规模"
@@ -185,15 +185,15 @@
               {
                 "title": "比特币市场规模变化",
                 "metricRef": "metric-0-change",
-                "detail": "24小时变化为+0.51%，显示市场小幅上涨。",
+                "detail": "比特币市场规模24小时变化为+0.39%，显示市场小幅波动。",
                 "tone": "amber",
-                "metric": "+0.51% / 24h",
+                "metric": "+0.39% / 24h",
                 "metricLabel": "比特币市场规模变化"
               },
               {
-                "title": "比特币排名",
+                "title": "比特币市值排名",
                 "metricRef": "ranking-0-display",
-                "detail": "比特币在公链资产中排名第一，市值1.26万亿美元。",
+                "detail": "比特币以1.26万亿美元市值位居数字资产首位。",
                 "tone": "violet",
                 "metric": "$1.26T",
                 "metricLabel": "按实时市值排名 · Bitcoin"
@@ -201,27 +201,27 @@
             ],
             "chapters": [
               {
-                "title": "关税政策收紧",
-                "kicker": "信号",
-                "body": "特朗普宣布关闭“de minimis”关税漏洞，并强调美国优先贸易政策，这可能影响跨境支付和数字资产的使用。",
+                "title": "信号：经济政策聚焦",
+                "kicker": "signal",
+                "body": "特朗普近期动态强调关税改革和边境安全，未涉及比特币，但政策导向可能影响投资者信心。",
                 "view": "signal"
               },
               {
-                "title": "贸易执法加强",
-                "kicker": "趋势",
-                "body": "白宫报告揭露“大转运骗局”，显示特朗普政府加强贸易执法，可能影响全球供应链和加密市场。",
+                "title": "趋势：市场情绪观察",
+                "kicker": "trend",
+                "body": "比特币市场规模近24小时呈上升趋势，但特朗普动态未直接驱动，需关注宏观政策影响。",
                 "view": "trend"
               },
               {
-                "title": "比特币市场表现",
-                "kicker": "排名",
-                "body": "比特币市场规模为1.26万亿美元，24小时上涨0.51%，市场情绪稳定。",
+                "title": "排名：比特币主导",
+                "kicker": "ranking",
+                "body": "比特币作为最大数字资产，市值达1.26万亿美元，特朗普政策可能间接影响其市场表现。",
                 "view": "ranking"
               },
               {
-                "title": "关注点",
-                "kicker": "观察",
-                "body": "特朗普的贸易政策可能间接影响比特币市场，需关注后续政策动向。",
+                "title": "关注：政策与市场",
+                "kicker": "watch",
+                "body": "关注特朗普经济政策对比特币市场的潜在影响，尤其是关税和税收政策。",
                 "view": "watch"
               }
             ]
@@ -250,7 +250,7 @@
       "postsAnalyzed": 185,
       "sourceCount": 185,
       "analysisWindow": "近 7 天",
-      "lastSuccessAt": "2026-08-15T12:19:12.694Z",
+      "lastSuccessAt": "2026-08-15T12:29:27.543Z",
       "themes": [
         {
           "id": "ai-crypto-ai与加密融合",
@@ -258,87 +258,51 @@
           "storyId": "ai_crypto",
           "name": "AI与加密融合",
           "category": "技术叙事",
-          "score": 89,
-          "change": 2,
-          "trend": "平稳",
+          "score": 69,
+          "change": -20,
+          "trend": "明显降温",
           "confidence": "高",
-          "summary": "马斯克频繁发布关于Grok 4.6的进展，强调其性能、效率和多模态能力，并提及AI代理流量将远超人类，与加密AI叙事相关。",
-          "why": "马斯克作为AI领域的关键人物，其关于Grok的言论直接影响AI与加密市场的叙事和投资情绪。",
+          "summary": "马斯克近期频繁发布关于Grok 4.6的更新，强调其在智能、速度和成本上的优势，并提及AI代理流量将远超人类，与AI×Crypto市场叙事高度相关。",
+          "why": "马斯克作为AI和加密领域的关键人物，其Grok模型发布和AI基础设施言论直接映射AI×Crypto市场。",
           "keywords": [
             "Grok",
             "AI",
-            "模型",
-            "效率",
-            "多模态"
+            "加密",
+            "智能"
           ],
           "sourceIds": [
-            "x-2088484972965298489",
-            "x-2088138697002668110",
-            "x-2088100521261359218",
-            "x-2087586063682596905"
+            "x-2087565020158992709",
+            "x-2087586063682596905",
+            "x-2086554608348873008"
           ],
           "evidenceBreakdown": {
-            "posts": 4,
+            "posts": 3,
             "originals": 0,
-            "quotes": 4,
+            "quotes": 3,
             "replies": 0,
-            "weightedCount": 4
+            "weightedCount": 3
           },
           "scoreBreakdown": {
-            "frequency": 100,
-            "freshness": 79,
-            "continuity": 82
+            "frequency": 90,
+            "freshness": 46,
+            "continuity": 66
           },
           "evidence": [
             {
-              "id": "x-2088484972965298489",
+              "id": "x-2087565020158992709",
               "type": "post",
               "kind": "quote",
               "weight": 1,
               "platform": "X",
               "provider": "x-api",
-              "time": "2026-08-15T04:36:34.000Z",
-              "title": "Grok 4.6 runs The Gauntlet",
-              "summary": "马斯克分享Grok 4.6运行The Gauntlet的测试，强调其性能。",
+              "time": "2026-08-12T15:41:00.000Z",
+              "title": "Grok 4.6 is now out 🚀🚀🚀 Smart, …",
+              "summary": "马斯克宣布Grok 4.6发布，强调其智能、快速和高性价比。",
               "keywords": [
                 "Grok 4.6",
-                "性能"
+                "发布"
               ],
-              "url": "https://x.com/elonmusk/status/2088484972965298489"
-            },
-            {
-              "id": "x-2088138697002668110",
-              "type": "post",
-              "kind": "quote",
-              "weight": 1,
-              "platform": "X",
-              "provider": "x-api",
-              "time": "2026-08-14T05:40:35.000Z",
-              "title": "Grok 4.6 ranks #1 on CursorBench f…",
-              "summary": "马斯克称Grok 4.6在CursorBench上排名第一，用于真实世界编码。",
-              "keywords": [
-                "Grok 4.6",
-                "编码",
-                "排名"
-              ],
-              "url": "https://x.com/elonmusk/status/2088138697002668110"
-            },
-            {
-              "id": "x-2088100521261359218",
-              "type": "post",
-              "kind": "quote",
-              "weight": 1,
-              "platform": "X",
-              "provider": "x-api",
-              "time": "2026-08-14T03:08:53.000Z",
-              "title": "Grok 4.6 will work best with the G…",
-              "summary": "马斯克表示Grok 4.6与Grok Build harness配合最佳，强调评估环境。",
-              "keywords": [
-                "Grok 4.6",
-                "Build",
-                "评估"
-              ],
-              "url": "https://x.com/elonmusk/status/2088100521261359218"
+              "url": "https://x.com/elonmusk/status/2087565020158992709"
             },
             {
               "id": "x-2087586063682596905",
@@ -352,23 +316,38 @@
               "summary": "马斯克称Grok 4.6在智能、速度和成本方面客观排名第一。",
               "keywords": [
                 "Grok 4.6",
-                "智能",
-                "成本"
+                "排名"
               ],
               "url": "https://x.com/elonmusk/status/2087586063682596905"
+            },
+            {
+              "id": "x-2086554608348873008",
+              "type": "post",
+              "kind": "quote",
+              "weight": 1,
+              "platform": "X",
+              "provider": "x-api",
+              "time": "2026-08-09T20:45:59.000Z",
+              "title": "AI agentic Internet traffic will o…",
+              "summary": "马斯克表示AI代理流量将远超人类，并引用Cloudflare预测。",
+              "keywords": [
+                "AI代理",
+                "流量"
+              ],
+              "url": "https://x.com/elonmusk/status/2086554608348873008"
             }
           ],
           "story": {
             "name": "AI与加密融合",
             "category": "技术叙事",
-            "headline": "Grok 4.6发布：AI与加密市场的催化剂",
-            "lead": "马斯克密集宣传Grok 4.6，强调其性能和多模态能力，可能推动AI相关加密资产上涨。",
+            "headline": "Grok 4.6发布与AI×Crypto市场升温",
+            "lead": "马斯克密集推广Grok 4.6，强调其性能优势，同时预测AI代理流量激增，与AI×Crypto市场增长趋势吻合。",
             "accent": "#9b87e8",
             "snapshot": [
               {
                 "label": "AI × Crypto 市场规模",
-                "value": "$18.42B",
-                "change": "+3.28% / 24h"
+                "value": "$18.47B",
+                "change": "+3.67% / 24h"
               },
               {
                 "label": "24 小时成交量",
@@ -378,7 +357,7 @@
               {
                 "label": "最大资产",
                 "value": "Chainlink",
-                "change": "LINK · $6.98B"
+                "change": "LINK · $7.02B"
               }
             ],
             "trend": {
@@ -387,27 +366,27 @@
               "points": [
                 {
                   "label": "-20h",
-                  "value": 17.838
+                  "value": 17.816
                 },
                 {
                   "label": "-16h",
-                  "value": 17.955
+                  "value": 17.947
                 },
                 {
                   "label": "-12h",
-                  "value": 18.072
+                  "value": 18.078
                 },
                 {
                   "label": "-8h",
-                  "value": 18.189
+                  "value": 18.208
                 },
                 {
                   "label": "-4h",
-                  "value": 18.306
+                  "value": 18.339
                 },
                 {
                   "label": "现在",
-                  "value": 18.423
+                  "value": 18.47
                 }
               ]
             },
@@ -416,27 +395,27 @@
               "items": [
                 {
                   "name": "Chainlink",
-                  "value": 6978147711,
-                  "display": "$6.98B"
+                  "value": 7023453084,
+                  "display": "$7.02B"
                 },
                 {
                   "name": "NEAR Protocol",
-                  "value": 2131262693,
+                  "value": 2132528248,
                   "display": "$2.13B"
                 },
                 {
                   "name": "Bittensor",
-                  "value": 1889108271,
+                  "value": 1888780724,
                   "display": "$1.89B"
                 },
                 {
                   "name": "Staked TAO (Root)",
-                  "value": 1352624536,
+                  "value": 1353071827,
                   "display": "$1.35B"
                 },
                 {
                   "name": "Internet Computer",
-                  "value": 1254983904,
+                  "value": 1253582649,
                   "display": "$1.25B"
                 }
               ]
@@ -445,110 +424,105 @@
               {
                 "title": "AI×Crypto市场规模",
                 "metricRef": "metric-0-value",
-                "detail": "当前AI×Crypto市场规模为18.42亿美元，反映该领域整体价值。",
+                "detail": "AI×Crypto市场规模当前为184.7亿美元，反映AI与加密融合资产的总价值。",
                 "tone": "teal",
-                "metric": "$18.42B",
+                "metric": "$18.47B",
                 "metricLabel": "AI × Crypto 市场规模"
               },
               {
                 "title": "AI×Crypto市场规模变化",
                 "metricRef": "metric-0-change",
-                "detail": "24小时变化为+3.28%，显示市场快速增长。",
+                "detail": "AI×Crypto市场规模24小时变化为+3.67%，显示市场活跃增长。",
                 "tone": "amber",
-                "metric": "+3.28% / 24h",
+                "metric": "+3.67% / 24h",
                 "metricLabel": "AI × Crypto 市场规模变化"
               },
               {
-                "title": "AI×Crypto排名",
+                "title": "AI×Crypto市值排名",
                 "metricRef": "ranking-0-display",
-                "detail": "Chainlink在AI×Crypto资产中排名第一，市值6.98亿美元。",
+                "detail": "Chainlink以70.2亿美元市值位居AI×Crypto市场首位。",
                 "tone": "violet",
-                "metric": "$6.98B",
+                "metric": "$7.02B",
                 "metricLabel": "按实时市值排名 · Chainlink"
               }
             ],
             "chapters": [
               {
-                "title": "Grok 4.6发布",
-                "kicker": "信号",
-                "body": "马斯克宣布Grok 4.6发布，并强调其智能、速度和成本优势，引发市场关注。",
+                "title": "信号：Grok 4.6发布",
+                "kicker": "signal",
+                "body": "马斯克宣布Grok 4.6发布，并强调其在智能、速度和成本上的优势，引发市场关注。",
                 "view": "signal"
               },
               {
-                "title": "性能排名领先",
-                "kicker": "趋势",
-                "body": "Grok 4.6在多个基准测试中排名第一，包括CursorBench和Databricks，显示其竞争力。",
+                "title": "趋势：AI代理流量增长",
+                "kicker": "trend",
+                "body": "马斯克预测AI代理流量将远超人类，推动AI×Crypto市场规模上升。",
                 "view": "trend"
               },
               {
-                "title": "AI加密市场表现",
-                "kicker": "排名",
-                "body": "AI×Crypto市场规模为18.42亿美元，24小时上涨3.28%，Chainlink领跑。",
+                "title": "排名：Chainlink领跑",
+                "kicker": "ranking",
+                "body": "AI×Crypto市场中，Chainlink以70.2亿美元市值排名第一，NEAR Protocol和Bittensor紧随其后。",
                 "view": "ranking"
               },
               {
-                "title": "关注点",
-                "kicker": "观察",
-                "body": "Grok 4.6的发布可能带动AI相关加密资产，需关注后续采用情况。",
+                "title": "关注：Grok性能与市场",
+                "kicker": "watch",
+                "body": "关注Grok 4.6的市场表现及其对AI×Crypto市场的潜在影响。",
                 "view": "watch"
               }
             ]
           }
         },
         {
-          "id": "chain-ecosystem-starlink与太空计算",
+          "id": "chain-ecosystem-公链生态与基础设施",
           "topicType": "chain_ecosystem",
           "storyId": "chain_ecosystem",
-          "name": "Starlink与太空计算",
+          "name": "公链生态与基础设施",
           "category": "公链生态",
-          "score": 69,
-          "change": 0,
-          "trend": "新出现",
+          "score": 46,
+          "change": -23,
+          "trend": "明显降温",
           "confidence": "中",
-          "summary": "马斯克多次提及Starlink将承载未来AI和机器人流量，并预测轨道计算将成为AI扩展的唯一途径，这与去中心化基础设施叙事相关。",
-          "why": "马斯克关于Starlink和轨道计算的言论可能影响去中心化物理基础设施网络（DePIN）和公链生态的叙事。",
+          "summary": "马斯克提及Starlink将处理超过90%的IP流量，并强调AI和机器人对带宽的需求，这与公链生态中基础设施的重要性相关。",
+          "why": "马斯克关于Starlink和带宽的言论，映射公链生态中网络基础设施的关键作用。",
           "keywords": [
             "Starlink",
-            "轨道计算",
-            "AI",
             "带宽",
-            "太空"
+            "基础设施"
           ],
           "sourceIds": [
-            "x-2088306926442430578",
-            "x-2086555531569676510",
-            "x-2086555958730182833",
-            "x-2086520726798922108"
+            "x-2086681154715804156",
+            "x-2086555531569676510"
           ],
           "evidenceBreakdown": {
-            "posts": 4,
+            "posts": 2,
             "originals": 0,
-            "quotes": 1,
-            "replies": 3,
-            "weightedCount": 2.5
+            "quotes": 0,
+            "replies": 2,
+            "weightedCount": 1
           },
           "scoreBreakdown": {
-            "frequency": 85,
-            "freshness": 47,
-            "continuity": 72
+            "frequency": 55,
+            "freshness": 22,
+            "continuity": 66
           },
           "evidence": [
             {
-              "id": "x-2088306926442430578",
+              "id": "x-2086681154715804156",
               "type": "post",
-              "kind": "quote",
-              "weight": 1,
+              "kind": "reply",
+              "weight": 0.5,
               "platform": "X",
               "provider": "x-api",
-              "time": "2026-08-14T16:49:04.000Z",
-              "title": "Orbital compute will be the only w…",
-              "summary": "马斯克称轨道计算将是2029年扩展AI的唯一方式，因地面电力和许可问题。",
+              "time": "2026-08-10T05:08:50.000Z",
+              "title": "It’s possible that Starlink may en…",
+              "summary": "马斯克表示Starlink可能处理超过90%的IP流量，即使竞争对手带宽增加10倍。",
               "keywords": [
-                "轨道计算",
-                "AI",
-                "2029"
+                "Starlink",
+                "IP流量"
               ],
-              "url": "https://x.com/elonmusk/status/2088306926442430578"
+              "url": "https://x.com/elonmusk/status/2086681154715804156"
             },
             {
               "id": "x-2086555531569676510",
@@ -559,64 +533,29 @@
               "provider": "x-api",
               "time": "2026-08-09T20:49:39.000Z",
               "title": "And the only system that can suppo…",
-              "summary": "马斯克表示Starlink是唯一能支持AI所需带宽增长的系统。",
+              "summary": "马斯克称Starlink是唯一能支持AI所需带宽增长的系统。",
               "keywords": [
                 "Starlink",
-                "带宽",
-                "AI"
+                "AI带宽"
               ],
               "url": "https://x.com/elonmusk/status/2086555531569676510"
-            },
-            {
-              "id": "x-2086555958730182833",
-              "type": "post",
-              "kind": "reply",
-              "weight": 0.5,
-              "platform": "X",
-              "provider": "x-api",
-              "time": "2026-08-09T20:51:21.000Z",
-              "title": "@aaronburnett All cars will have S…",
-              "summary": "马斯克称未来所有汽车都将配备Starlink，以获得超高带宽。",
-              "keywords": [
-                "Starlink",
-                "汽车",
-                "带宽"
-              ],
-              "url": "https://x.com/elonmusk/status/2086555958730182833"
-            },
-            {
-              "id": "x-2086520726798922108",
-              "type": "post",
-              "kind": "reply",
-              "weight": 0.5,
-              "platform": "X",
-              "provider": "x-api",
-              "time": "2026-08-09T18:31:21.000Z",
-              "title": "@SawyerMerritt @CathieDWood Yes, I…",
-              "summary": "马斯克预计Starlink星座规模将超过10万颗，未来卫星吞吐量可能超过V2的50倍。",
-              "keywords": [
-                "Starlink",
-                "星座",
-                "吞吐量"
-              ],
-              "url": "https://x.com/elonmusk/status/2086520726798922108"
             }
           ],
           "story": {
-            "name": "Starlink与太空计算",
+            "name": "公链生态与基础设施",
             "category": "公链生态",
-            "headline": "Starlink：未来AI基础设施的支柱",
-            "lead": "马斯克强调Starlink在AI和机器人时代的关键作用，可能推动去中心化网络和公链生态发展。",
+            "headline": "Starlink与公链生态基础设施",
+            "lead": "马斯克强调Starlink在带宽方面的主导地位，与公链生态中基础设施的重要性相呼应。",
             "accent": "#e4b943",
             "snapshot": [
               {
                 "label": "公链资产市场规模",
                 "value": "$1.8T",
-                "change": "+0.5% / 24h"
+                "change": "+0.36% / 24h"
               },
               {
                 "label": "24 小时成交量",
-                "value": "$24.77B",
+                "value": "$24.67B",
                 "change": "25 个样本资产"
               },
               {
@@ -631,27 +570,27 @@
               "points": [
                 {
                   "label": "-20h",
-                  "value": 1786.212
+                  "value": 1788.629
                 },
                 {
                   "label": "-16h",
-                  "value": 1787.988
+                  "value": 1789.905
                 },
                 {
                   "label": "-12h",
-                  "value": 1789.764
+                  "value": 1791.182
                 },
                 {
                   "label": "-8h",
-                  "value": 1791.54
+                  "value": 1792.458
                 },
                 {
                   "label": "-4h",
-                  "value": 1793.316
+                  "value": 1793.734
                 },
                 {
                   "label": "现在",
-                  "value": 1795.092
+                  "value": 1795.01
                 }
               ]
             },
@@ -660,27 +599,27 @@
               "items": [
                 {
                   "name": "Bitcoin",
-                  "value": 1262957251889,
+                  "value": 1262969134193,
                   "display": "$1.26T"
                 },
                 {
                   "name": "Ethereum",
-                  "value": 226488037542,
-                  "display": "$226.49B"
+                  "value": 226512863674,
+                  "display": "$226.51B"
                 },
                 {
                   "name": "BNB",
-                  "value": 81456542224,
-                  "display": "$81.46B"
+                  "value": 81373171574,
+                  "display": "$81.37B"
                 },
                 {
                   "name": "XRP",
-                  "value": 62775581968,
-                  "display": "$62.78B"
+                  "value": 62770973080,
+                  "display": "$62.77B"
                 },
                 {
                   "name": "Solana",
-                  "value": 43801884576,
+                  "value": 43804553718,
                   "display": "$43.8B"
                 }
               ]
@@ -689,7 +628,7 @@
               {
                 "title": "公链资产市场规模",
                 "metricRef": "metric-0-value",
-                "detail": "当前公链资产市场规模为1.8万亿美元，反映整体公链价值。",
+                "detail": "公链资产市场规模当前为1.8万亿美元，反映所有公链资产的总价值。",
                 "tone": "teal",
                 "metric": "$1.8T",
                 "metricLabel": "公链资产市场规模"
@@ -697,15 +636,15 @@
               {
                 "title": "公链资产市场规模变化",
                 "metricRef": "metric-0-change",
-                "detail": "24小时变化为+0.5%，显示市场稳定。",
+                "detail": "公链资产市场规模24小时变化为+0.36%，显示市场稳定。",
                 "tone": "amber",
-                "metric": "+0.5% / 24h",
+                "metric": "+0.36% / 24h",
                 "metricLabel": "公链资产市场规模变化"
               },
               {
-                "title": "公链资产排名",
+                "title": "公链市值排名",
                 "metricRef": "ranking-0-display",
-                "detail": "比特币在公链资产中排名第一，市值1.26万亿美元。",
+                "detail": "比特币以1.26万亿美元市值位居公链生态首位。",
                 "tone": "violet",
                 "metric": "$1.26T",
                 "metricLabel": "按实时市值排名 · Bitcoin"
@@ -713,27 +652,27 @@
             ],
             "chapters": [
               {
-                "title": "轨道计算需求",
-                "kicker": "信号",
-                "body": "马斯克预测轨道计算将成为AI扩展的唯一途径，因地面资源限制。",
+                "title": "信号：Starlink带宽主导",
+                "kicker": "signal",
+                "body": "马斯克预测Starlink将处理超过90%的IP流量，凸显其基础设施价值。",
                 "view": "signal"
               },
               {
-                "title": "Starlink带宽增长",
-                "kicker": "趋势",
-                "body": "马斯克表示Starlink将支持AI和机器人带来的巨大带宽需求，并扩大星座规模。",
+                "title": "趋势：AI带宽需求增长",
+                "kicker": "trend",
+                "body": "AI和机器人对带宽的需求将大幅增长，推动基础设施升级。",
                 "view": "trend"
               },
               {
-                "title": "公链生态市场",
-                "kicker": "排名",
-                "body": "公链资产市场规模为1.8万亿美元，比特币和以太坊领跑。",
+                "title": "排名：比特币主导公链",
+                "kicker": "ranking",
+                "body": "公链生态中，比特币以1.26万亿美元市值排名第一，以太坊和BNB紧随其后。",
                 "view": "ranking"
               },
               {
-                "title": "关注点",
-                "kicker": "观察",
-                "body": "Starlink的扩展可能影响去中心化基础设施项目，需关注相关代币表现。",
+                "title": "关注：基础设施投资",
+                "kicker": "watch",
+                "body": "关注Starlink等基础设施项目对公链生态的长期影响。",
                 "view": "watch"
               }
             ]
@@ -762,7 +701,7 @@
       "postsAnalyzed": 5,
       "sourceCount": 5,
       "analysisWindow": "近 7 天",
-      "lastSuccessAt": "2026-08-15T12:19:12.694Z",
+      "lastSuccessAt": "2026-08-15T12:29:27.543Z",
       "themes": [
         {
           "id": "layer2-以太坊路线图与layer-2",
@@ -770,17 +709,16 @@
           "storyId": "layer2",
           "name": "以太坊路线图与Layer 2",
           "category": "区块链基础设施",
-          "score": 60,
-          "change": -27,
-          "trend": "明显降温",
+          "score": 58,
+          "change": -2,
+          "trend": "平稳",
           "confidence": "高",
-          "summary": "Vitalik更新了2023年路线图，对比当前Strawmap，强调量子安全优先级提升，并提及Layer 2相关调整。",
-          "why": "Vitalik作为以太坊创始人，其路线图更新直接影响Layer 2和以太坊生态的发展方向。",
+          "summary": "Vitalik更新了2023年路线图，强调量子安全优先级提升，并提及部分项目被降级，这与Layer 2技术演进相关。",
+          "why": "Vitalik作为以太坊创始人，其路线图更新直接影响Layer 2发展。",
           "keywords": [
             "路线图",
             "量子安全",
-            "Layer 2",
-            "以太坊"
+            "Layer 2"
           ],
           "sourceIds": [
             "x-2086824673556467938",
@@ -794,7 +732,7 @@
             "weightedCount": 2
           },
           "scoreBreakdown": {
-            "frequency": 74,
+            "frequency": 71,
             "freshness": 38,
             "continuity": 66
           },
@@ -808,11 +746,10 @@
               "provider": "x-api",
               "time": "2026-08-10T14:39:08.000Z",
               "title": "I updated my 2023 roadmap diagram …",
-              "summary": "Vitalik更新了2023年路线图，指出量子安全被优先考虑，部分项目被降级。",
+              "summary": "Vitalik更新了2023年路线图，指出量子安全被优先，部分项目被降级。",
               "keywords": [
                 "路线图",
-                "量子安全",
-                "优先级"
+                "量子安全"
               ],
               "url": "https://x.com/VitalikButerin/status/2086824673556467938"
             },
@@ -825,11 +762,10 @@
               "provider": "x-api",
               "time": "2026-08-11T18:15:56.000Z",
               "title": "Impressive work! For comparison, a…",
-              "summary": "Vitalik评论H100运行Muse 30B的推理速度，涉及计算性能。",
+              "summary": "Vitalik评论H100的推理速度，涉及AI与区块链交叉技术。",
               "keywords": [
                 "H100",
-                "推理",
-                "性能"
+                "推理"
               ],
               "url": "https://x.com/VitalikButerin/status/2087241620618088674"
             }
@@ -837,24 +773,24 @@
           "story": {
             "name": "以太坊路线图与Layer 2",
             "category": "区块链基础设施",
-            "headline": "以太坊路线图更新：量子安全与Layer 2",
-            "lead": "Vitalik更新路线图，量子安全优先级提升，可能影响Layer 2和以太坊生态。",
+            "headline": "以太坊路线图更新与Layer 2演进",
+            "lead": "Vitalik更新路线图，量子安全优先级提升，Layer 2技术持续演进。",
             "accent": "#7e9eea",
             "snapshot": [
               {
                 "label": "Layer 2 市场规模",
                 "value": "$6.77B",
-                "change": "+1.74% / 24h"
+                "change": "+1.81% / 24h"
               },
               {
                 "label": "24 小时成交量",
-                "value": "$254.56M",
+                "value": "$253.44M",
                 "change": "25 个样本资产"
               },
               {
                 "label": "最大资产",
                 "value": "OKB",
-                "change": "OKB · $2.26B"
+                "change": "OKB · $2.27B"
               }
             ],
             "trend": {
@@ -863,15 +799,15 @@
               "points": [
                 {
                   "label": "-20h",
-                  "value": 6.652
+                  "value": 6.65
                 },
                 {
                   "label": "-16h",
-                  "value": 6.675
+                  "value": 6.674
                 },
                 {
                   "label": "-12h",
-                  "value": 6.699
+                  "value": 6.698
                 },
                 {
                   "label": "-8h",
@@ -879,11 +815,11 @@
                 },
                 {
                   "label": "-4h",
-                  "value": 6.745
+                  "value": 6.746
                 },
                 {
                   "label": "现在",
-                  "value": 6.768
+                  "value": 6.77
                 }
               ]
             },
@@ -892,28 +828,28 @@
               "items": [
                 {
                   "name": "OKB",
-                  "value": 2263606560,
-                  "display": "$2.26B"
+                  "value": 2268431933,
+                  "display": "$2.27B"
                 },
                 {
                   "name": "Mantle",
-                  "value": 1443940054,
+                  "value": 1441368643,
                   "display": "$1.44B"
                 },
                 {
                   "name": "POL (ex-MATIC)",
-                  "value": 804206839,
-                  "display": "$804.21M"
+                  "value": 804644037,
+                  "display": "$804.64M"
                 },
                 {
                   "name": "Arbitrum",
-                  "value": 491119076,
-                  "display": "$491.12M"
+                  "value": 491173895,
+                  "display": "$491.17M"
                 },
                 {
                   "name": "Mantle Bridged WETH (Mantle)",
-                  "value": 299362800,
-                  "display": "$299.36M"
+                  "value": 299348600,
+                  "display": "$299.35M"
                 }
               ]
             },
@@ -921,7 +857,7 @@
               {
                 "title": "Layer 2市场规模",
                 "metricRef": "metric-0-value",
-                "detail": "当前Layer 2市场规模为6.77亿美元，反映该领域整体价值。",
+                "detail": "Layer 2市场规模当前为67.7亿美元，反映Layer 2解决方案的总价值。",
                 "tone": "teal",
                 "metric": "$6.77B",
                 "metricLabel": "Layer 2 市场规模"
@@ -929,43 +865,43 @@
               {
                 "title": "Layer 2市场规模变化",
                 "metricRef": "metric-0-change",
-                "detail": "24小时变化为+1.74%，显示市场增长。",
+                "detail": "Layer 2市场规模24小时变化为+1.81%，显示市场增长。",
                 "tone": "amber",
-                "metric": "+1.74% / 24h",
+                "metric": "+1.81% / 24h",
                 "metricLabel": "Layer 2 市场规模变化"
               },
               {
-                "title": "Layer 2排名",
+                "title": "Layer 2市值排名",
                 "metricRef": "ranking-0-display",
-                "detail": "OKB在Layer 2资产中排名第一，市值2.26亿美元。",
+                "detail": "OKB以22.7亿美元市值位居Layer 2市场首位。",
                 "tone": "violet",
-                "metric": "$2.26B",
+                "metric": "$2.27B",
                 "metricLabel": "按实时市值排名 · OKB"
               }
             ],
             "chapters": [
               {
-                "title": "路线图更新",
-                "kicker": "信号",
-                "body": "Vitalik将2023年路线图与当前Strawmap对比，显示量子安全被优先考虑。",
+                "title": "信号：路线图更新",
+                "kicker": "signal",
+                "body": "Vitalik更新2023年路线图，量子安全被优先，部分项目被降级。",
                 "view": "signal"
               },
               {
-                "title": "量子安全优先级",
-                "kicker": "趋势",
-                "body": "量子安全在路线图中被上调，可能推动隐私和密码学相关技术发展。",
+                "title": "趋势：Layer 2市场增长",
+                "kicker": "trend",
+                "body": "Layer 2市场规模近24小时呈上升趋势，反映基础设施需求增加。",
                 "view": "trend"
               },
               {
-                "title": "Layer 2市场表现",
-                "kicker": "排名",
-                "body": "Layer 2市场规模为6.77亿美元，OKB领跑。",
+                "title": "排名：OKB领跑Layer 2",
+                "kicker": "ranking",
+                "body": "Layer 2市场中，OKB以22.7亿美元市值排名第一，Mantle和POL紧随其后。",
                 "view": "ranking"
               },
               {
-                "title": "关注点",
-                "kicker": "观察",
-                "body": "路线图更新可能影响Layer 2项目，需关注以太坊生态发展。",
+                "title": "关注：量子安全与Layer 2",
+                "kicker": "watch",
+                "body": "关注量子安全技术对Layer 2未来发展的影响。",
                 "view": "watch"
               }
             ]
@@ -994,7 +930,7 @@
       "postsAnalyzed": 17,
       "sourceCount": 17,
       "analysisWindow": "近 7 天",
-      "lastSuccessAt": "2026-08-15T12:19:12.694Z",
+      "lastSuccessAt": "2026-08-15T12:29:27.543Z",
       "themes": [
         {
           "id": "bitcoin-比特币稀缺性与价值",
@@ -1002,17 +938,16 @@
           "storyId": "bitcoin",
           "name": "比特币稀缺性与价值",
           "category": "数字资产",
-          "score": 75,
-          "change": 0,
-          "trend": "新出现",
+          "score": 74,
+          "change": -1,
+          "trend": "平稳",
           "confidence": "高",
-          "summary": "赵长鹏强调比特币已开采超过2007万枚，剩余供应仅4.4%，并估计10-20%的比特币已丢失，强化其通缩属性。",
-          "why": "赵长鹏作为币安创始人，其对比特币稀缺性的言论直接影响市场情绪和投资者预期。",
+          "summary": "赵长鹏近期强调比特币已开采超过2007万枚，仅剩4.4%供应，并估计10-20%的比特币丢失，凸显其通缩属性。",
+          "why": "赵长鹏作为币安CEO，其对比特币供应的评论直接影响市场情绪。",
           "keywords": [
             "比特币",
             "稀缺",
-            "通缩",
-            "供应"
+            "通缩"
           ],
           "sourceIds": [
             "x-2088545438328836149",
@@ -1026,7 +961,7 @@
             "weightedCount": 1.5
           },
           "scoreBreakdown": {
-            "frequency": 66,
+            "frequency": 63,
             "freshness": 98,
             "continuity": 56
           },
@@ -1040,11 +975,10 @@
               "provider": "x-api",
               "time": "2026-08-15T08:36:50.000Z",
               "title": "Bitcoin surpassed 20.07 million co…",
-              "summary": "赵长鹏指出比特币已开采超过2007万枚，剩余供应仅4.4%，并估计10-20%已丢失。",
+              "summary": "赵长鹏指出比特币已开采超过2007万枚，仅剩4.4%供应，估计10-20%丢失，强调通缩属性。",
               "keywords": [
                 "比特币",
-                "供应",
-                "丢失"
+                "供应"
               ],
               "url": "https://x.com/cz_binance/status/2088545438328836149"
             },
@@ -1057,11 +991,10 @@
               "provider": "x-api",
               "time": "2026-08-15T09:34:39.000Z",
               "title": "@QuintenFrancois Soon, millionaire…",
-              "summary": "赵长鹏评论称，很快百万富翁将无法负担1个完整比特币。",
+              "summary": "赵长鹏评论称百万富翁很快将无法负担1个完整比特币。",
               "keywords": [
                 "比特币",
-                "价值",
-                "百万富翁"
+                "价值"
               ],
               "url": "https://x.com/cz_binance/status/2088559989162217593"
             }
@@ -1069,18 +1002,18 @@
           "story": {
             "name": "比特币稀缺性与价值",
             "category": "数字资产",
-            "headline": "比特币稀缺性：赵长鹏强调通缩属性",
-            "lead": "赵长鹏指出比特币供应接近上限，丢失币进一步减少流通量，强化其作为价值储存的地位。",
+            "headline": "比特币稀缺性推动价值认知",
+            "lead": "赵长鹏强调比特币供应有限，丢失币增加稀缺性，强化其作为通缩资产的地位。",
             "accent": "#f0b45a",
             "snapshot": [
               {
                 "label": "比特币市场规模",
                 "value": "$1.26T",
-                "change": "+0.51% / 24h"
+                "change": "+0.39% / 24h"
               },
               {
                 "label": "24 小时成交量",
-                "value": "$16.27B",
+                "value": "$16.22B",
                 "change": "1 个样本资产"
               },
               {
@@ -1095,27 +1028,27 @@
               "points": [
                 {
                   "label": "-20h",
-                  "value": 1256.507
+                  "value": 1258.038
                 },
                 {
                   "label": "-16h",
-                  "value": 1257.797
+                  "value": 1259.026
                 },
                 {
                   "label": "-12h",
-                  "value": 1259.087
+                  "value": 1260.014
                 },
                 {
                   "label": "-8h",
-                  "value": 1260.377
+                  "value": 1261.002
                 },
                 {
                   "label": "-4h",
-                  "value": 1261.667
+                  "value": 1261.991
                 },
                 {
                   "label": "现在",
-                  "value": 1262.957
+                  "value": 1262.979
                 }
               ]
             },
@@ -1124,7 +1057,7 @@
               "items": [
                 {
                   "name": "Bitcoin",
-                  "value": 1262957251889,
+                  "value": 1262978714091,
                   "display": "$1.26T"
                 }
               ]
@@ -1133,7 +1066,7 @@
               {
                 "title": "比特币市场规模",
                 "metricRef": "metric-0-value",
-                "detail": "当前比特币市场规模为1.26万亿美元，反映市场整体价值。",
+                "detail": "比特币市场规模当前为1.26万亿美元，反映数字资产整体价值。",
                 "tone": "teal",
                 "metric": "$1.26T",
                 "metricLabel": "比特币市场规模"
@@ -1141,15 +1074,15 @@
               {
                 "title": "比特币市场规模变化",
                 "metricRef": "metric-0-change",
-                "detail": "24小时变化为+0.51%，显示市场小幅上涨。",
+                "detail": "比特币市场规模24小时变化为+0.39%，显示市场小幅波动。",
                 "tone": "amber",
-                "metric": "+0.51% / 24h",
+                "metric": "+0.39% / 24h",
                 "metricLabel": "比特币市场规模变化"
               },
               {
-                "title": "比特币排名",
+                "title": "比特币市值排名",
                 "metricRef": "ranking-0-display",
-                "detail": "比特币在公链资产中排名第一，市值1.26万亿美元。",
+                "detail": "比特币以1.26万亿美元市值位居数字资产首位。",
                 "tone": "violet",
                 "metric": "$1.26T",
                 "metricLabel": "按实时市值排名 · Bitcoin"
@@ -1157,49 +1090,48 @@
             ],
             "chapters": [
               {
-                "title": "供应接近上限",
-                "kicker": "信号",
-                "body": "比特币已开采超过2007万枚，剩余供应仅4.4%，稀缺性凸显。",
+                "title": "信号：供应数据发布",
+                "kicker": "signal",
+                "body": "赵长鹏发布比特币供应数据，强调仅剩4.4%供应，引发市场关注。",
                 "view": "signal"
               },
               {
-                "title": "丢失币影响",
-                "kicker": "趋势",
-                "body": "估计10-20%的比特币丢失或不可恢复，实际流通量更低。",
+                "title": "趋势：市场规模上升",
+                "kicker": "trend",
+                "body": "比特币市场规模近24小时呈上升趋势，反映稀缺性认知。",
                 "view": "trend"
               },
               {
-                "title": "比特币市场表现",
-                "kicker": "排名",
-                "body": "比特币市场规模为1.26万亿美元，24小时上涨0.51%。",
+                "title": "排名：比特币主导",
+                "kicker": "ranking",
+                "body": "比特币以1.26万亿美元市值位居数字资产首位。",
                 "view": "ranking"
               },
               {
-                "title": "关注点",
-                "kicker": "观察",
-                "body": "稀缺性言论可能推动比特币价格上涨，需关注市场反应。",
+                "title": "关注：供应与需求",
+                "kicker": "watch",
+                "body": "关注比特币供应减少对市场价格的长期影响。",
                 "view": "watch"
               }
             ]
           }
         },
         {
-          "id": "defi-钱包安全与用户保护",
-          "topicType": "defi",
-          "storyId": "defi",
-          "name": "钱包安全与用户保护",
-          "category": "金融协议",
-          "score": 70,
-          "change": -8,
-          "trend": "降温",
+          "id": "privacy-硬件钱包安全与隐私",
+          "topicType": "privacy",
+          "storyId": "privacy",
+          "name": "硬件钱包安全与隐私",
+          "category": "密码学应用",
+          "score": 69,
+          "change": 0,
+          "trend": "新出现",
           "confidence": "中",
-          "summary": "赵长鹏关注硬件钱包安全漏洞和地址投毒攻击，强调钱包应过滤恶意地址，保护用户资产。",
-          "why": "赵长鹏作为交易所领导者，其关于钱包安全的言论影响DeFi和用户资产安全认知。",
+          "summary": "赵长鹏提及Trezor硬件钱包泄露事件，强调用户隐私保护，与隐私资产市场相关。",
+          "why": "硬件钱包安全事件影响用户对隐私保护的信心，与隐私资产市场相关。",
           "keywords": [
-            "钱包",
-            "安全",
-            "漏洞",
-            "地址投毒"
+            "硬件钱包",
+            "隐私",
+            "安全"
           ],
           "sourceIds": [
             "x-2087971745190044010",
@@ -1213,8 +1145,8 @@
             "weightedCount": 2
           },
           "scoreBreakdown": {
-            "frequency": 74,
-            "freshness": 75,
+            "frequency": 71,
+            "freshness": 74,
             "continuity": 56
           },
           "evidence": [
@@ -1227,11 +1159,10 @@
               "provider": "x-api",
               "time": "2026-08-13T18:37:11.000Z",
               "title": "Not a great month for hardware wal…",
-              "summary": "赵长鹏评论Trezor硬件钱包供应商泄露事件，强调安全风险。",
+              "summary": "赵长鹏评论Trezor硬件钱包泄露事件，指出约1.37万客户受影响，但私钥未泄露。",
               "keywords": [
                 "Trezor",
-                "泄露",
-                "安全"
+                "泄露"
               ],
               "url": "https://x.com/cz_binance/status/2087971745190044010"
             },
@@ -1244,65 +1175,64 @@
               "provider": "x-api",
               "time": "2026-08-13T16:35:24.000Z",
               "title": "A good wallet should filter these …",
-              "summary": "赵长鹏表示好的钱包应过滤地址投毒攻击。",
+              "summary": "赵长鹏强调钱包应过滤毒地址，保护用户资产安全。",
               "keywords": [
                 "钱包",
-                "地址投毒",
-                "过滤"
+                "安全"
               ],
               "url": "https://x.com/cz_binance/status/2087941099793027110"
             }
           ],
           "story": {
-            "name": "钱包安全与用户保护",
-            "category": "金融协议",
-            "headline": "钱包安全：赵长鹏强调用户保护",
-            "lead": "赵长鹏关注硬件钱包泄露和地址投毒，强调钱包安全对DeFi生态的重要性。",
-            "accent": "#55d69e",
+            "name": "硬件钱包安全与隐私",
+            "category": "密码学应用",
+            "headline": "硬件钱包安全事件与隐私资产关注",
+            "lead": "赵长鹏关注硬件钱包安全，强调隐私保护，与隐私资产市场相关。",
+            "accent": "#b487e8",
             "snapshot": [
               {
-                "label": "DeFi 市场规模",
-                "value": "$78.61B",
-                "change": "+0.86% / 24h"
+                "label": "隐私资产市场规模",
+                "value": "$16.21B",
+                "change": "+1.18% / 24h"
               },
               {
                 "label": "24 小时成交量",
-                "value": "$1.58B",
+                "value": "$189.68M",
                 "change": "25 个样本资产"
               },
               {
                 "label": "最大资产",
-                "value": "Lido Staked Ether",
-                "change": "STETH · $17.87B"
+                "value": "Zcash",
+                "change": "ZEC · $8.28B"
               }
             ],
             "trend": {
-              "label": "DeFi 市场规模近 24 小时估算",
+              "label": "隐私资产市场规模近 24 小时估算",
               "unit": "$B",
               "points": [
                 {
                   "label": "-20h",
-                  "value": 77.934
+                  "value": 16.02
                 },
                 {
                   "label": "-16h",
-                  "value": 78.068
+                  "value": 16.058
                 },
                 {
                   "label": "-12h",
-                  "value": 78.202
+                  "value": 16.096
                 },
                 {
                   "label": "-8h",
-                  "value": 78.337
+                  "value": 16.134
                 },
                 {
                   "label": "-4h",
-                  "value": 78.471
+                  "value": 16.171
                 },
                 {
                   "label": "现在",
-                  "value": 78.605
+                  "value": 16.209
                 }
               ]
             },
@@ -1310,81 +1240,81 @@
               "label": "按实时市值排名",
               "items": [
                 {
-                  "name": "Lido Staked Ether",
-                  "value": 17865737231,
-                  "display": "$17.87B"
+                  "name": "Zcash",
+                  "value": 8279074954,
+                  "display": "$8.28B"
                 },
                 {
-                  "name": "Hyperliquid",
-                  "value": 12439410760,
-                  "display": "$12.44B"
+                  "name": "Monero",
+                  "value": 7574989196,
+                  "display": "$7.57B"
                 },
                 {
-                  "name": "Rain",
-                  "value": 9142210278,
-                  "display": "$9.14B"
+                  "name": "Decred",
+                  "value": 211538801,
+                  "display": "$211.54M"
                 },
                 {
-                  "name": "Wrapped stETH",
-                  "value": 8689835714,
-                  "display": "$8.69B"
+                  "name": "Pirate Chain",
+                  "value": 41171063,
+                  "display": "$41.17M"
                 },
                 {
-                  "name": "Chainlink",
-                  "value": 6980705967,
-                  "display": "$6.98B"
+                  "name": "Verge",
+                  "value": 33964026,
+                  "display": "$33.96M"
                 }
               ]
             },
             "watch": [
               {
-                "title": "DeFi市场规模",
+                "title": "隐私资产市场规模",
                 "metricRef": "metric-0-value",
-                "detail": "当前DeFi市场规模为78.61亿美元，反映该领域整体价值。",
+                "detail": "隐私资产市场规模当前为162.1亿美元，反映隐私保护资产的总价值。",
                 "tone": "teal",
-                "metric": "$78.61B",
-                "metricLabel": "DeFi 市场规模"
+                "metric": "$16.21B",
+                "metricLabel": "隐私资产市场规模"
               },
               {
-                "title": "DeFi市场规模变化",
+                "title": "隐私资产市场规模变化",
                 "metricRef": "metric-0-change",
-                "detail": "24小时变化为+0.86%，显示市场稳定增长。",
+                "detail": "隐私资产市场规模24小时变化为+1.18%，显示市场增长。",
                 "tone": "amber",
-                "metric": "+0.86% / 24h",
-                "metricLabel": "DeFi 市场规模变化"
+                "metric": "+1.18% / 24h",
+                "metricLabel": "隐私资产市场规模变化"
               },
               {
-                "title": "DeFi排名",
+                "title": "隐私资产市值排名",
                 "metricRef": "ranking-0-display",
-                "detail": "Lido Staked Ether在DeFi资产中排名第一，市值17.87亿美元。",
+                "detail": "Zcash以82.8亿美元市值位居隐私资产市场首位。",
                 "tone": "violet",
-                "metric": "$17.87B",
-                "metricLabel": "按实时市值排名 · Lido Staked Ether"
+                "metric": "$8.28B",
+                "metricLabel": "按实时市值排名 · Zcash"
               }
             ],
             "chapters": [
               {
-                "title": "硬件钱包泄露",
-                "kicker": "信号",
-                "body": "Trezor供应商泄露影响1.37万客户，赵长鹏指出安全风险。",
+                "title": "信号：安全事件曝光",
+                "kicker": "signal",
+                "body": "赵长鹏评论Trezor泄露事件，凸显硬件钱包安全风险。",
                 "view": "signal"
               },
               {
-                "title": "地址投毒攻击",
-                "kicker": "趋势",
-                "body": "赵长鹏呼吁钱包过滤恶意地址，提升用户资产安全。",
+                "title": "趋势：隐私资产市场稳定",
+                "kicker": "trend",
+                "body": "隐私资产市场规模近24小时呈上升趋势，反映安全关注。",
                 "view": "trend"
               },
               {
-                "title": "DeFi市场表现",
-                "kicker": "排名",
-                "body": "DeFi市场规模为78.61亿美元，Lido Staked Ether领跑。",
+                "title": "排名：Zcash领跑隐私",
+                "kicker": "ranking",
+                "body": "隐私资产市场中，Zcash以82.8亿美元市值排名第一，Monero紧随其后。",
                 "view": "ranking"
               },
               {
-                "title": "关注点",
-                "kicker": "观察",
-                "body": "钱包安全事件可能影响DeFi用户信心，需关注安全措施改进。",
+                "title": "关注：隐私保护",
+                "kicker": "watch",
+                "body": "关注硬件钱包安全事件对隐私资产市场的影响。",
                 "view": "watch"
               }
             ]
@@ -1393,5 +1323,5 @@
       ]
     }
   ],
-  "digest": "5c38308a95b6fa8f"
+  "digest": "87e03fb5353c648b"
 }
