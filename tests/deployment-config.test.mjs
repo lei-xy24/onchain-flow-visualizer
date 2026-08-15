@@ -71,6 +71,14 @@ test("GitHub 上传候选文件不包含真实凭证且本地状态被忽略", a
   }
 });
 
+test("GitHub Actions 每三小时生成快照且只通过 Secrets 注入密钥", async () => {
+  const workflow = await readFile(path.join(root, ".github/workflows/social-radar-snapshot.yml"), "utf8");
+  assert.match(workflow, /cron:\s*["']0 \*\/3 \* \* \*["']/);
+  assert.match(workflow, /DEEPSEEK_API_KEY:\s*\$\{\{\s*secrets\.DEEPSEEK_API_KEY\s*\}\}/);
+  assert.match(workflow, /X_BEARER_TOKEN:\s*\$\{\{\s*secrets\.X_BEARER_TOKEN\s*\}\}/);
+  assert.doesNotMatch(workflow, /SERVER_(?:HOST|USER|PASSWORD)|SSH_PRIVATE_KEY/);
+});
+
 test("静态页面引用的本地文件都存在", async () => {
   const htmlFiles = (await readdir(path.join(root, "static-site"))).filter((file) => file.endsWith(".html"));
   for (const htmlFile of htmlFiles) {
