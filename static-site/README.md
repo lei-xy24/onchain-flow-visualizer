@@ -344,16 +344,16 @@ npm run radar:demo
 
 真实生成需要在任务环境中提供 `X_BEARER_TOKEN` 和 `DEEPSEEK_API_KEY`。特朗普通过不需要密钥的 `trump.fm` API 读取 Truth Social 归档，并在 `data/social-input/trump-fm-state.json` 保存增量位置；马斯克、Vitalik 和 CZ 通过 X API 采集，并在 `data/social-input/x-state.json` 保存 `since_id`。两路数据合并为滚动 7 天输入；市场适配器默认从 CoinGecko 公共接口生成实时市值、成交量、趋势估算与排名。可先复制 `.env.example` 查看环境变量名；密钥不能放到 `static-site/`。
 
-服务器上的三小时任务依次执行：
+GitHub Actions 的三小时任务依次执行：
 
 1. 使用 `trump.fm` REST API 读取特朗普的 Truth Social 归档，使用 X API `GET /2/users/{id}/tweets` 读取另外三人；两路都排除转发，回复权重为 0.5。
 2. 调用 DeepSeek JSON Output，归纳主题并生成四章故事；默认使用关闭思考模式的 `deepseek-v4-flash` 控制成本。
 3. 校验来源 id、证据数量、允许的主题、市场指标和故事结构。
-4. 只在全部通过后更新 `static-site/data/` 并提交快照。
+4. 只在全部通过后更新 `static-site/data/`，再同步根目录 `data/` 并提交快照，供 GitHub Pages 读取。
 
 人物最近 7 天不足两条动态时，不会为了凑主题而让模型生成结论；该人物本期不进入分析。所有人物都不足两条时，本次任务不发布，页面继续展示上一份成功快照。
 
-三小时调度只使用 `deploy/systemd/` 中的服务器 service 与 timer，具体见 `deploy/README.md`。服务器必须显式设置 `RADAR_GITHUB_PUBLISH=1` 并使用仓库专用、允许写入的 Deploy Key；成功快照会同时同步到仓库根目录和 `static-site/data/`，再以路径白名单提交到 `main`。原始动态、市场输入、增量状态和密钥不会进入提交。GitHub 工作流目前只保留手动验收入口，避免与服务器重复运行。运行真实验收时需要 `X_BEARER_TOKEN` 和 `DEEPSEEK_API_KEY`；`TRUMP_FM_BASE_URL`、`DEEPSEEK_MODEL`、`DEEPSEEK_BASE_URL` 和 `X_API_BASE_URL` 可按需覆盖。
+三小时调度使用 `.github/workflows/social-radar-snapshot.yml`，并保留手动验收入口。运行时需要 Repository Secrets `X_BEARER_TOKEN` 和 `DEEPSEEK_API_KEY`；`TRUMP_FM_BASE_URL`、`DEEPSEEK_MODEL`、`DEEPSEEK_BASE_URL` 和 `X_API_BASE_URL` 可按需覆盖。成功快照通过 `scripts/publish-radar-to-github.mjs` 同步到根目录和 `static-site/data/`，再以路径白名单提交到 `main`。原始动态、增量状态和密钥不会进入提交。`deploy/systemd/` 只作为可选的自托管替代方案，不应与 GitHub Actions 同时启用。
 
 ## CORS
 
