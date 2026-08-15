@@ -1,0 +1,73 @@
+name: Social radar snapshot
+
+on:
+  workflow_dispatch:
+    inputs:
+      demo:
+        description: "使用仓库内演示输入（不调用 DeepSeek）"
+        type: boolean
+        default: false
+
+concurrency:
+  group: social-radar-snapshot
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  publish-snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+      DEEPSEEK_MODEL: ${{ vars.DEEPSEEK_MODEL }}
+      DEEPSEEK_BASE_URL: ${{ vars.DEEPSEEK_BASE_URL }}
+      X_BEARER_TOKEN: ${{ secrets.X_BEARER_TOKEN }}
+      X_API_BASE_URL: ${{ vars.X_API_BASE_URL }}
+      TRUMP_FM_BASE_URL: ${{ vars.TRUMP_FM_BASE_URL }}
+      MARKET_INPUT_URL: ${{ secrets.MARKET_INPUT_URL }}
+      MARKET_INPUT_BEARER_TOKEN: ${{ secrets.MARKET_INPUT_BEARER_TOKEN }}
+      DEMO_MODE: ${{ inputs.demo }}
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: 22
+          package-manager-cache: false
+      - name: Collect Trump archive and X posts
+        if: env.DEMO_MODE != 'true'
+        run: node scripts/collect-social-posts.mjs
+      - name: Persist collected public posts
+        if: env.DEMO_MODE != 'true'
+        run: |
+          git config user.name "social-radar-bot"
+          git config user.email "social-radar-bot@users.noreply.github.com"
+          git add data/social-input/latest.json
+          if git diff --cached --quiet; then
+            echo "No new social posts"
+          else
+            git commit -m "data: cache collected social posts"
+            git push
+          fi
+      - name: Refresh market input
+        if: env.DEMO_MODE != 'true'
+        run: node scripts/refresh-market-input.mjs
+      - name: Generate and validate snapshot
+        run: |
+          if [ "$DEMO_MODE" = "true" ]; then
+            node scripts/generate-social-radar-snapshot.mjs --demo
+          else
+            node scripts/generate-social-radar-snapshot.mjs
+          fi
+      - name: Publish snapshot files
+        run: |
+          git config user.name "social-radar-bot"
+          git config user.email "social-radar-bot@users.noreply.github.com"
+          git add data/market-input/latest.json static-site/data/latest-snapshot.json static-site/data/snapshot-index.json static-site/data/snapshots
+          if git diff --cached --quiet; then
+            echo "No snapshot changes"
+          else
+            git commit -m "data: publish social radar snapshot"
+            git push
+          fi

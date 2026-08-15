@@ -1,0 +1,21 @@
+[Unit]
+Description=Generate the three-hour social radar snapshot
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=www-data
+Group=www-data
+WorkingDirectory=/home/www/onchain-radar-worker
+EnvironmentFile=-/etc/onchain-radar.env
+ExecStart=/usr/bin/node /home/www/onchain-radar-worker/scripts/run-social-radar-cycle.mjs
+Nice=10
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadWritePaths=/home/www/onchain-radar-worker/data /home/www/onchain-radar-worker/static-site/data /home/www/onchain-radar-worker/work
+
+[Install]
+WantedBy=multi-user.target

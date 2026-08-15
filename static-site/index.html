@@ -1,0 +1,917 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>链上概览</title>
+    <meta name="description" content="展示各链基础数据，并进入各分析工具" />
+    <style>
+      :root {
+        --background: #f3f6f8;
+        --foreground: #142024;
+        --muted: #647174;
+        --panel: #ffffff;
+        --line: #d8e0e2;
+        --teal: #0f8b8d;
+        --teal-dark: #0b5c61;
+        --shadow: 0 18px 55px rgba(20, 32, 36, 0.12);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html {
+        scrollbar-gutter: stable;
+      }
+
+      body {
+        background: var(--background);
+        color: var(--foreground);
+        font-family:
+          Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", sans-serif;
+        margin: 0;
+        min-height: 100vh;
+      }
+
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      .site-header {
+        align-items: center;
+        background: rgba(255, 255, 255, 0.94);
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        justify-content: space-between;
+        min-height: 66px;
+        padding: 0 34px;
+        position: relative;
+        z-index: 20;
+      }
+
+      .site-brand {
+        align-items: center;
+        color: var(--foreground);
+        display: inline-flex;
+        font-size: 0.95rem;
+        font-weight: 800;
+        gap: 10px;
+        text-decoration: none;
+      }
+
+      .tool-nav {
+        align-items: center;
+        display: flex;
+        gap: 4px;
+      }
+
+      .tool-nav a {
+        border-radius: 6px;
+        color: #526064;
+        font-size: 0.9rem;
+        font-weight: 700;
+        padding: 9px 12px;
+        text-decoration: none;
+      }
+
+      .tool-nav a:hover {
+        background: #edf2f2;
+        color: var(--foreground);
+      }
+
+      .tool-nav a[aria-current="page"] {
+        background: var(--foreground);
+        color: #ffffff;
+      }
+
+      .home-shell {
+        margin: 0 auto;
+        max-width: 1120px;
+        padding: 36px 24px 60px;
+      }
+
+      .home-intro {
+        align-items: baseline;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px 18px;
+        justify-content: space-between;
+      }
+
+      h1 {
+        color: #10191c;
+        font-size: 1.7rem;
+        letter-spacing: 0;
+        line-height: 1.2;
+        margin: 0;
+      }
+
+      .data-note {
+        color: var(--muted);
+        font-size: 0.82rem;
+        margin: 0;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+        padding: 18px 20px;
+      }
+
+      .panel h2 {
+        font-size: 1rem;
+        margin: 0 0 14px;
+      }
+
+      .metric-strip {
+        display: grid;
+        gap: 14px;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        margin-top: 24px;
+      }
+
+      .metric {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        box-shadow: var(--shadow);
+        padding: 14px 16px;
+      }
+
+      .metric .label {
+        color: var(--muted);
+        font-size: 0.8rem;
+      }
+
+      .metric .value {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 1.15rem;
+        font-weight: 700;
+        margin-top: 6px;
+        overflow-wrap: anywhere;
+      }
+
+      .metric .sub {
+        color: var(--muted);
+        font-size: 0.74rem;
+        margin-top: 4px;
+      }
+
+      .section-gap {
+        margin-top: 20px;
+      }
+
+      .hot-topic-card {
+        background:
+          radial-gradient(circle at 78% 22%, rgba(15, 139, 141, 0.13), transparent 34%),
+          #111b1f;
+        border: 1px solid #253438;
+        border-radius: 14px;
+        box-shadow: 0 22px 64px rgba(20, 32, 36, 0.18);
+        color: #ffffff;
+        display: grid;
+        gap: 24px;
+        grid-template-columns: 132px minmax(0, 1fr) auto;
+        overflow: hidden;
+        padding: 22px;
+        position: relative;
+      }
+
+      .hot-topic-card::after {
+        border: 1px solid rgba(113, 226, 215, 0.15);
+        border-radius: 50%;
+        content: "";
+        height: 260px;
+        position: absolute;
+        right: -80px;
+        top: -138px;
+        width: 260px;
+      }
+
+      .hot-topic-people {
+        display: grid;
+        gap: 7px;
+        grid-template-columns: repeat(2, 1fr);
+        height: 132px;
+        width: 132px;
+      }
+
+      .hot-topic-people img,
+      .hot-topic-people span {
+        align-items: center;
+        border: 1px solid rgba(113, 226, 215, 0.28);
+        border-radius: 10px;
+        display: flex;
+        height: 62px;
+        justify-content: center;
+        object-fit: cover;
+        width: 62px;
+      }
+
+      .hot-topic-people span {
+        color: #ffffff;
+        font-size: 0.85rem;
+        font-weight: 800;
+      }
+
+      .hot-topic-people span:nth-child(2) {
+        background: linear-gradient(145deg, #25313a, #617481);
+      }
+
+      .hot-topic-people span:nth-child(3) {
+        background: linear-gradient(145deg, #4e5a7f, #8f9cce);
+      }
+
+      .hot-topic-people span:nth-child(4) {
+        background: linear-gradient(145deg, #8d6c0d, #e3b93f);
+      }
+
+      .hot-topic-copy {
+        min-width: 0;
+      }
+
+      .hot-topic-kicker {
+        color: #71e2d7;
+        font-size: 0.72rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        margin: 0 0 8px;
+        text-transform: uppercase;
+      }
+
+      .hot-topic-copy h2 {
+        font-size: clamp(1.4rem, 3vw, 2.1rem);
+        margin: 0;
+      }
+
+      .hot-topic-copy > p:not(.hot-topic-kicker) {
+        color: #b7c5c8;
+        font-size: 0.88rem;
+        line-height: 1.65;
+        margin: 10px 0 0;
+        max-width: 620px;
+      }
+
+      .hot-topic-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+        margin-top: 14px;
+      }
+
+      .hot-topic-tags span {
+        background: rgba(255, 255, 255, 0.07);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 999px;
+        color: #dce5e7;
+        font-size: 0.72rem;
+        padding: 6px 9px;
+      }
+
+      .hot-topic-action {
+        align-content: center;
+        display: grid;
+        gap: 9px;
+        min-width: 184px;
+        position: relative;
+        z-index: 1;
+      }
+
+      .hot-topic-action a {
+        background: #71e2d7;
+        border-radius: 8px;
+        color: #102023;
+        font-size: 0.88rem;
+        font-weight: 850;
+        padding: 13px 16px;
+        text-align: center;
+        text-decoration: none;
+      }
+
+      .hot-topic-action a:hover {
+        background: #a0f0e8;
+      }
+
+      .hot-topic-action small {
+        color: #91a1a5;
+        font-size: 0.68rem;
+        line-height: 1.45;
+        text-align: center;
+      }
+
+      .split {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      }
+
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      th,
+      td {
+        border-top: 1px solid #eef2f3;
+        font-size: 0.88rem;
+        padding: 10px 8px;
+        text-align: left;
+      }
+
+      thead th {
+        border-top: 0;
+        color: var(--muted);
+        font-size: 0.78rem;
+        font-weight: 700;
+      }
+
+      td.num,
+      th.num {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        text-align: right;
+      }
+
+      .transfer-list {
+        display: grid;
+        gap: 0;
+      }
+
+      .transfer-row {
+        align-items: center;
+        border-top: 1px solid #eef2f3;
+        display: grid;
+        gap: 4px 12px;
+        grid-template-columns: minmax(0, 1fr) auto;
+        padding: 10px 0;
+      }
+
+      .transfer-route {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.82rem;
+        overflow-wrap: anywhere;
+      }
+
+      .transfer-route a {
+        color: var(--teal-dark);
+        text-decoration: none;
+      }
+
+      .transfer-route a:hover {
+        text-decoration: underline;
+      }
+
+      .transfer-meta {
+        color: var(--muted);
+        font-size: 0.76rem;
+      }
+
+      .transfer-meta a,
+      .protocol-type a {
+        color: var(--teal-dark);
+        text-decoration: none;
+      }
+
+      .transfer-meta a:hover,
+      .protocol-type a:hover {
+        text-decoration: underline;
+      }
+
+      .transfer-amount {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.9rem;
+        font-weight: 700;
+        text-align: right;
+      }
+
+      .protocol-list {
+        display: grid;
+        gap: 0;
+      }
+
+      .protocol-row {
+        align-items: center;
+        border-top: 1px solid #eef2f3;
+        display: flex;
+        gap: 12px;
+        justify-content: space-between;
+        padding: 10px 0;
+      }
+
+      .protocol-name {
+        font-size: 0.9rem;
+        font-weight: 700;
+      }
+
+      .protocol-type {
+        color: var(--muted);
+        font-size: 0.76rem;
+      }
+
+      .protocol-count {
+        font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+        font-size: 0.9rem;
+        font-weight: 700;
+      }
+
+      .empty-hint {
+        border-top: 1px solid #eef2f3;
+        color: var(--muted);
+        font-size: 0.84rem;
+        padding: 12px 0 2px;
+      }
+
+      @media (max-width: 960px) {
+        .hot-topic-card {
+          grid-template-columns: 112px minmax(0, 1fr);
+        }
+
+        .hot-topic-people {
+          height: 112px;
+          width: 112px;
+        }
+
+        .hot-topic-people img,
+        .hot-topic-people span {
+          height: 52px;
+          width: 52px;
+        }
+
+        .hot-topic-action {
+          grid-column: 1 / -1;
+        }
+
+        .metric-strip {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .split {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .hot-topic-card {
+          grid-template-columns: 76px minmax(0, 1fr);
+          padding: 16px;
+        }
+
+        .hot-topic-people {
+          height: 76px;
+          width: 76px;
+        }
+
+        .hot-topic-people img,
+        .hot-topic-people span {
+          border-radius: 7px;
+          height: 35px;
+          width: 35px;
+        }
+
+        .site-header {
+          align-items: flex-start;
+          flex-wrap: wrap;
+          gap: 14px;
+          padding: 13px 16px;
+        }
+
+        .site-brand {
+          font-size: 0.85rem;
+        }
+
+        .tool-nav a {
+          font-size: 0.78rem;
+          padding: 8px 9px;
+        }
+
+        .home-shell {
+          padding: 24px 16px 40px;
+        }
+
+        .metric-strip {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+    <script src="./runtime-config.js?v=20260815-frontend-only"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="site-brand" href="./index.html" aria-label="区块链与数字金融服务安全监控平台首页">
+        <span>区块链与数字金融服务安全监控平台</span>
+      </a>
+      <nav class="tool-nav" aria-label="分析工具">
+        <a href="./index.html" aria-current="page">首页</a>
+        <a href="./track.html">地址追踪</a>
+        <a href="./live.html">实时交易</a>
+        <a href="./profile.html">用户画像</a>
+        <a href="./relation.html">地址关联</a>
+      </nav>
+    </header>
+
+    <main class="home-shell">
+      <section class="home-intro" aria-labelledby="home-title">
+        <h1 id="home-title">链上概览</h1>
+        <p class="data-note" id="data-note" aria-live="polite">正在加载数据。</p>
+      </section>
+
+      <section class="metric-strip" id="metric-strip" aria-label="核心指标"></section>
+
+      <section class="hot-topic-card section-gap" aria-labelledby="hot-topic-title">
+        <div class="hot-topic-people" aria-label="已配置观察人物：特朗普、马斯克、Vitalik 和赵长鹏">
+          <img src="./assets/trump-chainwatch-editorial.png" alt="特朗普编辑插画" />
+          <img src="./assets/elon-musk-chainwatch-editorial.png" alt="埃隆·马斯克编辑插画" />
+          <img src="./assets/vitalik-buterin-chainwatch-editorial.png" alt="维塔利克·布特林编辑插画" />
+          <img src="./assets/changpeng-zhao-chainwatch-editorial.png" alt="赵长鹏编辑插画" />
+        </div>
+        <div class="hot-topic-copy">
+          <p class="hot-topic-kicker">Social intelligence · Demo cache</p>
+          <h2 id="hot-topic-title">人物兴趣雷达</h2>
+          <p>
+            分析多位公众人物最近 7 天的公开动态，提取关键词，归纳他们近期反复讨论的区块链技术与市场主题。
+          </p>
+          <div class="hot-topic-tags" aria-label="专题看点">
+            <span>4 位可配置人物</span>
+            <span>公开动态分析</span>
+            <span>兴趣主题归纳</span>
+            <span>主题数据故事</span>
+          </div>
+        </div>
+        <div class="hot-topic-action">
+          <a href="./hot-topic.html">查看人物兴趣雷达 →</a>
+          <small>读取最近一份校验通过的三小时快照；主题归纳不代表人物立场、投资或背书</small>
+        </div>
+      </section>
+
+      <section class="panel section-gap" aria-labelledby="chain-title">
+        <h2 id="chain-title">多链运行状态</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>链</th>
+              <th class="num">最新区块</th>
+              <th class="num">平均出块时间</th>
+              <th class="num">最新区块燃料占用</th>
+            </tr>
+          </thead>
+          <tbody id="chain-rows"></tbody>
+        </table>
+      </section>
+
+      <section class="split section-gap">
+        <div class="panel" aria-labelledby="transfer-title">
+          <h2 id="transfer-title">稳定币大额转账（以太坊）</h2>
+          <div class="transfer-list" id="transfer-list"></div>
+        </div>
+        <div class="panel" aria-labelledby="protocol-title">
+          <h2 id="protocol-title">重点协议活动（以太坊）</h2>
+          <div class="protocol-list" id="protocol-list"></div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      // 后端团队提供接口后，只修改 runtime-config.js，不在页面中放密钥。
+      const BACKEND_API_URL = globalThis.ONCHAIN_API_CONFIG?.overview || "";
+
+      const LARGE_TRANSFER_MIN = 1000000;
+
+      const CHAIN_NAMES = {
+        eth: "以太坊",
+        bsc: "币安智能链",
+        polygon: "Polygon",
+      };
+
+      const PROTOCOL_TYPE_NAMES = {
+        dex: "去中心化交易所",
+        lending: "借贷协议",
+        bridge: "跨链桥",
+      };
+
+      // 演示数据。结构与后端概览接口的响应一致，
+      // 各字段与 Etherscan 接口的对应关系写在 README 里。
+      const DEMO_OVERVIEW = {
+        metrics: {
+          blockNumber: toHex(23467872),
+          gasOracle: {
+            SafeGasPrice: "4.2",
+            ProposeGasPrice: "5.1",
+            FastGasPrice: "6.8",
+            suggestBaseFee: "4.05",
+          },
+          ethPrice: { ethusd: "4482.16", ethbtc: "0.0392" },
+          dailyTx: { UTCDate: "", transactionCount: "1284530" },
+          networkUtilization: { UTCDate: "", networkUtilization: "0.5324" },
+        },
+        chains: [
+          demoChain("eth", 23467872, 0.62, "12.06"),
+          demoChain("bsc", 52233874, 0.48, "3.01"),
+          demoChain("polygon", 74098412, 0.71, "2.13"),
+        ],
+        largeTransfers: [
+          demoTransfer("USDT", "28600000", 2, "0x7be8a9d9c11e30a6b2073d2a531d74fb8f938fa1", "0x4f32c1aa9d01b6e2f8d20b3c67a1de9410aa7012"),
+          demoTransfer("USDC", "12400000", 6, "0xa32f00c1b7d24e8830a1f6b93b8125e50cb911d9", "0x9c71d1b2e3a94427d1b0cf5a8b3fe20cb14093ab"),
+          demoTransfer("USDT", "4200000", 9, "0x8bbd3219f01ea7b8cf1d2f30ab5f6c92d820aa88", "0x6fae91208d3cb1a67e402d918f5aa03bd0201200"),
+          demoTransfer("USDC", "1800000", 13, "0x11cd992ab6f0e83d5a11f30c2d9b04ea720373dc", "0x3a81b7c1ea5502f9dd0d5a6c1b8e93bd07d44e21"),
+        ],
+        protocols: [
+          {
+            name: "Uniswap V3 工厂",
+            type: "dex",
+            address: "0x1F98431c8aD98523631AE4a59f267346ea31F984",
+            eventCount: 24,
+          },
+          {
+            name: "Aave V3 资金池",
+            type: "lending",
+            address: "0x87870Bca3F3fD6335C3F4ce8392D69350B4fA4E2",
+            eventCount: 12,
+          },
+          {
+            name: "Polygon 跨链桥",
+            type: "bridge",
+            address: "0x40ec5B33f54e0E8A33A975908C5BA1c14e5BbbDf",
+            eventCount: 8,
+          },
+        ],
+      };
+
+      function demoChain(chain, blockNumber, fill, blockTimeSec) {
+        const gasLimit = 30000000;
+        return {
+          chain,
+          latestBlock: {
+            number: toHex(blockNumber),
+            gasUsed: toHex(Math.round(gasLimit * fill)),
+            gasLimit: toHex(gasLimit),
+          },
+          avgBlockTime: { UTCDate: "", blockTime_sec: blockTimeSec },
+        };
+      }
+
+      function demoTransfer(symbol, amount, minutesAgo, from, to) {
+        return {
+          hash: "0x" + "0".repeat(64),
+          from,
+          to,
+          value: amount + "000000",
+          tokenSymbol: symbol,
+          tokenDecimal: "6",
+          timeStamp: String(Math.floor(Date.now() / 1000) - minutesAgo * 60),
+        };
+      }
+
+      const note = document.getElementById("data-note");
+      const liveMode = BACKEND_API_URL !== "";
+      const REFRESH_INTERVAL_MS = 10000;
+      let loading = false;
+
+      init();
+      setInterval(init, REFRESH_INTERVAL_MS);
+
+      async function init() {
+        if (loading) return;
+        loading = true;
+        try {
+          await loadOverview();
+        } finally {
+          loading = false;
+        }
+      }
+
+      async function loadOverview() {
+        let overview = DEMO_OVERVIEW;
+        let noteText = "当前显示演示数据。";
+        if (liveMode) {
+          try {
+            const response = await fetch(BACKEND_API_URL, {
+              headers: { Accept: "application/json" },
+              cache: "no-store",
+            });
+            if (!response.ok) throw new Error("HTTP " + response.status);
+            overview = await response.json();
+            noteText = "数据来自后端接口。";
+          } catch (cause) {
+            noteText = "后端接口请求失败，暂时显示演示数据。";
+          }
+        }
+
+        renderMetrics(overview.metrics || DEMO_OVERVIEW.metrics);
+        renderChains(overview.chains || []);
+        renderTransfers(overview.largeTransfers || []);
+        renderProtocols(overview.protocols || []);
+        note.textContent = noteText;
+      }
+
+      function renderMetrics(metrics) {
+        const strip = document.getElementById("metric-strip");
+        strip.textContent = "";
+        addMetric(strip, "最新区块（以太坊）", formatMaybeNumber(hexToNumber(metrics.blockNumber)), "");
+        addMetric(
+          strip,
+          "燃料费价格",
+          displayValue(metrics.gasOracle?.ProposeGasPrice, " Gwei"),
+          "低速 " + displayValue(metrics.gasOracle?.SafeGasPrice) + " / 快速 " + displayValue(metrics.gasOracle?.FastGasPrice)
+        );
+        addMetric(strip, "以太币价格", currencyValue(metrics.ethPrice?.ethusd), "");
+        addMetric(strip, "每日交易数", formatMaybeNumber(metrics.dailyTx?.transactionCount), "暂未返回时显示 —");
+        addMetric(
+          strip,
+          "网络利用率",
+          percentValue(metrics.networkUtilization?.networkUtilization),
+          ""
+        );
+      }
+
+      function addMetric(strip, label, value, sub) {
+        const card = document.createElement("div");
+        card.className = "metric";
+        const labelEl = document.createElement("div");
+        labelEl.className = "label";
+        labelEl.textContent = label;
+        const valueEl = document.createElement("div");
+        valueEl.className = "value";
+        valueEl.textContent = value;
+        card.append(labelEl, valueEl);
+        if (sub) {
+          const subEl = document.createElement("div");
+          subEl.className = "sub";
+          subEl.textContent = sub;
+          card.append(subEl);
+        }
+        strip.append(card);
+      }
+
+      function renderChains(chains) {
+        const body = document.getElementById("chain-rows");
+        body.textContent = "";
+        chains.forEach((row) => {
+          const fill = hexToNumber(row.latestBlock.gasUsed) / hexToNumber(row.latestBlock.gasLimit);
+          const tr = document.createElement("tr");
+          tr.append(
+            cell(CHAIN_NAMES[row.chain] || row.chain),
+            cell(formatNumber(hexToNumber(row.latestBlock.number)), "num"),
+            cell(Number(row.avgBlockTime.blockTime_sec).toFixed(1) + " 秒", "num"),
+            cell((fill * 100).toFixed(0) + "%", "num")
+          );
+          body.append(tr);
+        });
+      }
+
+      function cell(text, className) {
+        const td = document.createElement("td");
+        if (className) td.className = className;
+        td.textContent = text;
+        return td;
+      }
+
+      function renderTransfers(transfers) {
+        const list = document.getElementById("transfer-list");
+        const large = transfers
+          .map((tx) => ({
+            ...tx,
+            amount: Number(tx.value) / Math.pow(10, Number(tx.tokenDecimal || 6)),
+          }))
+          .filter((tx) => tx.amount >= LARGE_TRANSFER_MIN)
+          .sort((a, b) => Number(b.timeStamp) - Number(a.timeStamp))
+          .slice(0, 8);
+
+        list.textContent = "";
+        if (large.length === 0) {
+          const hint = document.createElement("p");
+          hint.className = "empty-hint";
+          hint.textContent = "最近没有达到 100 万的转账记录。";
+          list.append(hint);
+          return;
+        }
+
+        large.forEach((tx) => {
+          const row = document.createElement("div");
+          row.className = "transfer-row";
+
+          const route = document.createElement("div");
+          route.className = "transfer-route";
+          route.append(
+            createAddressTrackingLink(tx.from, "eth"),
+            document.createTextNode(" 转给 "),
+            createAddressTrackingLink(tx.to, "eth"),
+          );
+
+          const meta = document.createElement("div");
+          meta.className = "transfer-meta";
+          meta.textContent = timeAgo(Number(tx.timeStamp));
+          if (liveMode && tx.hash && !tx.hash.startsWith("0x000000")) {
+            const transactionLink = document.createElement("a");
+            transactionLink.href = "https://etherscan.io/tx/" + tx.hash;
+            transactionLink.target = "_blank";
+            transactionLink.rel = "noreferrer";
+            transactionLink.textContent = "查看交易";
+            meta.append(document.createTextNode(" · "), transactionLink);
+          }
+
+          const amount = document.createElement("div");
+          amount.className = "transfer-amount";
+          amount.textContent = formatNumber(Math.round(tx.amount)) + " " + tx.tokenSymbol;
+
+          const left = document.createElement("div");
+          left.append(route, meta);
+          row.append(left, amount);
+          list.append(row);
+        });
+      }
+
+      function renderProtocols(protocols) {
+        const list = document.getElementById("protocol-list");
+        list.textContent = "";
+        protocols.forEach((protocol) => {
+          const item = document.createElement("div");
+          item.className = "protocol-row";
+
+          const left = document.createElement("div");
+          const name = document.createElement("div");
+          name.className = "protocol-name";
+          name.textContent = protocol.name;
+          const type = document.createElement("div");
+          type.className = "protocol-type";
+          type.append(
+            document.createTextNode(
+              (PROTOCOL_TYPE_NAMES[protocol.type] || protocol.type) + " · ",
+            ),
+            createAddressTrackingLink(protocol.address, "eth"),
+          );
+          left.append(name, type);
+
+          const count = document.createElement("div");
+          count.className = "protocol-count";
+          count.textContent = formatNumber(protocol.eventCount) + " 个事件";
+
+          item.append(left, count);
+          list.append(item);
+        });
+      }
+
+      function toHex(value) {
+        return "0x" + Number(value).toString(16);
+      }
+
+      function hexToNumber(hex) {
+        return parseInt(hex, 16);
+      }
+
+      function formatNumber(value) {
+        return Number(value).toLocaleString("en-US");
+      }
+
+      function formatMaybeNumber(value) {
+        const number = Number(value);
+        return Number.isFinite(number) ? number.toLocaleString("en-US") : "—";
+      }
+
+      function displayValue(value, suffix = "") {
+        return value === undefined || value === null || value === "" || value === "—" ? "—" : String(value) + suffix;
+      }
+
+      function currencyValue(value) {
+        const number = Number(value);
+        return Number.isFinite(number) && number > 0 ? "$" + number.toLocaleString("en-US", { maximumFractionDigits: 2 }) : "—";
+      }
+
+      function percentValue(value) {
+        const number = Number(value);
+        return Number.isFinite(number) ? (number * 100).toFixed(1) + "%" : "—";
+      }
+
+      function shortAddress(address) {
+        if (!address || address.length < 12) return address || "";
+        return address.slice(0, 8) + "..." + address.slice(-4);
+      }
+
+      function createAddressTrackingLink(address, chain) {
+        const link = document.createElement("a");
+        const resultUrl = new URL("./result.html", location.href);
+        resultUrl.searchParams.set("chain", chain);
+        resultUrl.searchParams.set("address", address);
+        link.href = resultUrl.href;
+        link.textContent = shortAddress(address);
+        link.title = address;
+        link.setAttribute(
+          "aria-label",
+          `追踪 ${chain.toUpperCase()} 地址 ${address}`,
+        );
+        return link;
+      }
+
+      function timeAgo(timestampSec) {
+        const diffMin = Math.max(0, Math.round((Date.now() / 1000 - timestampSec) / 60));
+        if (diffMin < 1) return "刚刚";
+        if (diffMin < 60) return diffMin + " 分钟前";
+        return Math.round(diffMin / 60) + " 小时前";
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+[Unit]
+Description=Run social radar every three hours
+
+[Timer]
+OnCalendar=*-*-* 00/3:00:00 Asia/Shanghai
+Persistent=true
+RandomizedDelaySec=45
+Unit=onchain-radar-snapshot.service
+
+[Install]
+WantedBy=timers.target
