@@ -1,3 +1,5 @@
+import { TOPIC_TYPES, WATCH_METRIC_REFS } from "./social-radar-lib.mjs";
+
 export const radarOutputSchema = {
   type: "object",
   additionalProperties: false,
@@ -20,7 +22,7 @@ export const radarOutputSchema = {
               additionalProperties: false,
               required: ["topicType", "name", "category", "confidence", "summary", "why", "keywords", "sourceIds", "evidenceSummaries", "story"],
               properties: {
-                topicType: { type: "string", enum: ["stablecoin", "bitcoin", "ai_crypto", "payments", "layer2", "privacy", "chain_ecosystem", "defi", "other"] },
+                topicType: { type: "string", enum: TOPIC_TYPES },
                 name: { type: "string" },
                 category: { type: "string" },
                 confidence: { type: "string", enum: ["高", "中", "低"] },
@@ -73,10 +75,10 @@ export const radarOutputSchema = {
                       items: {
                         type: "object",
                         additionalProperties: false,
-                        required: ["title", "metric", "detail", "tone"],
+                        required: ["title", "metricRef", "detail", "tone"],
                         properties: {
                           title: { type: "string" },
-                          metric: { type: "string" },
+                          metricRef: { type: "string", enum: WATCH_METRIC_REFS },
                           detail: { type: "string" },
                           tone: { type: "string", enum: ["teal", "amber", "violet"] }
                         }

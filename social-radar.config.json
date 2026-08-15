@@ -18,7 +18,7 @@
   "provider": "deepseek",
   "apiBaseUrl": "https://api.deepseek.com",
   "model": "deepseek-v4-flash",
-  "promptVersion": "interest-story-deepseek-v1",
+  "promptVersion": "interest-story-deepseek-v2-grounded-metrics",
   "sourceFile": "data/social-input/latest.json",
   "marketFile": "data/market-input/latest.json",
   "outputDirectory": "static-site/data/snapshots",

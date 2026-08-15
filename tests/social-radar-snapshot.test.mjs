@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { buildPublishedSnapshot, floorToThreeHourSlot, requireHttpsBaseUrl, requireHttpsUrl, snapshotIdFor, readJson, validateModelOutput, validateSnapshot } from "../scripts/social-radar-lib.mjs";
+import { buildPublishedSnapshot, floorToThreeHourSlot, groundModelOutput, requireHttpsBaseUrl, requireHttpsUrl, snapshotIdFor, readJson, validateModelOutput, validateSnapshot } from "../scripts/social-radar-lib.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const [config, socialInput, marketInput, modelOutput] = await Promise.all([
@@ -31,10 +31,31 @@ test("演示模型输出能通过证据和市场数据校验", () => {
 test("不存在的来源和市场指标会阻止发布", () => {
   const invalid = structuredClone(modelOutput);
   invalid.figures[0].topics[0].sourceIds[0] = "fabricated-source";
-  invalid.figures[0].topics[0].story.watch[0].metric = "$999T";
+  invalid.figures[0].topics[0].story.watch[0].metricRef = "metric-99-value";
   const errors = validateModelOutput(invalid, socialInput, marketInput, config);
   assert.ok(errors.some((error) => error.includes("不存在的证据")));
-  assert.ok(errors.some((error) => error.includes("不存在的指标")));
+  assert.ok(errors.some((error) => error.includes("不存在的指标引用")));
+});
+
+test("不支持主题会被忽略且模型自造数字会替换为市场指标引用", () => {
+  const candidate = structuredClone(modelOutput);
+  candidate.figures[0].topics.push({ ...structuredClone(candidate.figures[0].topics[0]), topicType: "other", name: "美国优先政策与选举动员" });
+  const watch = candidate.figures[1].topics[0].story.watch[0];
+  delete watch.metricRef;
+  watch.metric = "3–4 周";
+
+  const grounded = groundModelOutput(candidate, marketInput);
+  assert.equal(grounded.figures[0].topics.some((topic) => topic.topicType === "other"), false);
+  assert.equal(grounded.figures[1].topics[0].story.watch[0].metricRef, "metric-0-value");
+  assert.deepEqual(validateModelOutput(grounded, socialInput, marketInput, config), []);
+
+  const snapshot = buildPublishedSnapshot({
+    config, socialInput, marketInput, modelOutput: grounded, previousSnapshot: null,
+    slot: new Date("2026-08-13T12:00:00Z"), generatedAt: "2026-08-13T12:06:00.000Z",
+    modelName: config.model, isDemo: false,
+  });
+  assert.equal(snapshot.figures[1].themes[0].story.watch[0].metric, marketInput.topics.ai_crypto.metrics[0].value);
+  assert.notEqual(snapshot.figures[1].themes[0].story.watch[0].metric, "3–4 周");
 });
 
 test("DeepSeek 返回合法但缺字段的 JSON 时安全拒绝", () => {
