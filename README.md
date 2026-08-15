@@ -8,7 +8,7 @@
 
 - `static-site/`：GitHub Pages 的完整前端，也是当前业务交付主体。
 - `scripts/`、`data/`：人物兴趣雷达的采集、市场数据和三小时快照生成逻辑。
-- `deploy/`：以后启用人物雷达服务器任务时使用的 systemd 模板；当前不会自动运行。
+- `deploy/`：人物雷达服务器任务的 systemd 模板和 GitHub 快照发布说明；只有服务器显式配置密钥、Deploy Key 与发布开关后才会运行。
 - `app/`、`worker/`：保留的 Sites/Cloudflare 构建入口，用于另一套地址追踪原型和构建验证，不是链上业务后端。
 - `data/example-flow.json`、`lib/flow-data.ts`：Sites 原型使用的演示数据读取层。
 
@@ -71,7 +71,7 @@ npm run typecheck
 - 可以提交源代码、演示 JSON、人物插画、测试、部署模板和 `.env.example`。
 - 不要提交 `.env`、真实 API Key、X Token、服务器地址与登录信息、SSH 私钥、日志或本地增量状态文件。
 - `.gitignore` 已覆盖常见环境文件、证书、私钥、日志，以及 `data/social-input/*-state.json`。
-- `.github/workflows/social-radar-snapshot.yml` 只有手动入口，没有定时触发；未配置 Secret 时不会自动调用 X 或 DeepSeek。
+- `.github/workflows/social-radar-snapshot.yml` 只有手动入口，没有定时触发；三小时任务由服务器执行。服务器发布脚本只允许提交公开快照路径，不会提交原始 X 输入、增量状态或密钥。
 - `.openai/hosting.json` 只包含 Sites 项目标识和逻辑绑定，不包含访问凭证。
 
 GitHub 仓库应上传整个项目；如果只发布 GitHub Pages，发布产物必须以 `static-site/index.html` 为站点入口。GitHub Pages 的分支发布设置只支持分支根目录或 `/docs`，因此可使用 Pages 工作流上传 `static-site/`，或把该目录内容发布到专用分支根目录。人物雷达以后启用服务器任务时，真实密钥只保存在服务器环境文件中，不要回写到仓库。

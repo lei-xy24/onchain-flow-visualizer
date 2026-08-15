@@ -17,6 +17,8 @@
     "radar:collect:x": "node scripts/collect-x-posts.mjs",
     "radar:market": "node scripts/refresh-market-input.mjs",
     "radar:cycle": "node scripts/run-social-radar-cycle.mjs",
+    "radar:publish": "node scripts/publish-radar-to-github.mjs",
+    "radar:publish:check": "node scripts/publish-radar-to-github.mjs --check-only",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate"

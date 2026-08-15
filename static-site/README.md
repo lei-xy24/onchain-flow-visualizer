@@ -353,7 +353,7 @@ npm run radar:demo
 
 人物最近 7 天不足两条动态时，不会为了凑主题而让模型生成结论；该人物本期不进入分析。所有人物都不足两条时，本次任务不发布，页面继续展示上一份成功快照。
 
-三小时调度只使用 `deploy/systemd/` 中的服务器 service 与 timer，具体见 `deploy/README.md`。GitHub 工作流目前只保留手动验收入口，避免与服务器重复运行。运行真实验收时需要 `X_BEARER_TOKEN` 和 `DEEPSEEK_API_KEY`；`TRUMP_FM_BASE_URL`、`DEEPSEEK_MODEL`、`DEEPSEEK_BASE_URL` 和 `X_API_BASE_URL` 可按需覆盖。
+三小时调度只使用 `deploy/systemd/` 中的服务器 service 与 timer，具体见 `deploy/README.md`。服务器必须显式设置 `RADAR_GITHUB_PUBLISH=1` 并使用仓库专用、允许写入的 Deploy Key；成功快照会同时同步到仓库根目录和 `static-site/data/`，再以路径白名单提交到 `main`。原始动态、市场输入、增量状态和密钥不会进入提交。GitHub 工作流目前只保留手动验收入口，避免与服务器重复运行。运行真实验收时需要 `X_BEARER_TOKEN` 和 `DEEPSEEK_API_KEY`；`TRUMP_FM_BASE_URL`、`DEEPSEEK_MODEL`、`DEEPSEEK_BASE_URL` 和 `X_API_BASE_URL` 可按需覆盖。
 
 ## CORS
 
