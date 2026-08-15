@@ -1,0 +1,72 @@
+{
+  "collectedAt": "2026-08-13T18:00:00+08:00",
+  "windowStart": "2026-08-06T18:00:00+08:00",
+  "windowEnd": "2026-08-13T18:00:00+08:00",
+  "mode": "demo-input",
+  "figures": [
+    {
+      "id": "donald-trump",
+      "name": "Donald Trump",
+      "nameZh": "唐纳德·特朗普",
+      "initials": "DT",
+      "role": "政治人物",
+      "avatar": "./assets/trump-chainwatch-editorial.png",
+      "colors": ["#31547c", "#b94545"],
+      "accounts": [{ "platform": "Truth Social", "handle": "@realDonaldTrump", "provider": "trump.fm", "archiveUrl": "https://trump.fm/" }],
+      "sources": [
+        { "id": "trump-post-digital-finance", "type": "post", "kind": "original", "weight": 1, "platform": "Truth Social", "publishedAt": "2026-08-13T10:45:00+08:00", "title": "数字金融与支付基础设施", "text": "A demo public post covering dollar-backed digital assets, payment rails and reserve transparency.", "url": "https://example.com/demo/trump-post-digital-finance" },
+        { "id": "trump-post-dollar-payment", "type": "post", "kind": "original", "weight": 1, "platform": "Truth Social", "publishedAt": "2026-08-12T21:10:00+08:00", "title": "美元支付与数字资产规则", "text": "A demo public post discussing digital dollars, payment infrastructure, transparent reserves and a clear regulatory framework.", "url": "https://example.com/demo/trump-post-dollar-payment" },
+        { "id": "trump-post-reserve", "type": "post", "kind": "quote", "weight": 1, "platform": "Truth Social", "publishedAt": "2026-08-10T15:32:00+08:00", "title": "储备与美元流动性", "text": "A demo quote post about reserve assets, dollar liquidity and institutional access to digital markets.", "url": "https://example.com/demo/trump-post-reserve" },
+        { "id": "trump-post-bitcoin", "type": "post", "kind": "original", "weight": 1, "platform": "Truth Social", "publishedAt": "2026-08-09T19:10:00+08:00", "title": "比特币与长期配置", "text": "A demo public post discussing Bitcoin as a reserve asset, institutional allocation and domestic mining capacity.", "url": "https://example.com/demo/trump-post-bitcoin" }
+      ]
+    },
+    {
+      "id": "elon-musk",
+      "name": "Elon Musk",
+      "nameZh": "埃隆·马斯克",
+      "initials": "EM",
+      "role": "科技企业家",
+      "avatar": "./assets/elon-musk-chainwatch-editorial.png",
+      "colors": ["#25313a", "#617481"],
+      "accounts": [{ "platform": "X", "handle": "@elonmusk" }],
+      "sources": [
+        { "id": "elon-post-agent", "type": "post", "kind": "original", "weight": 1, "platform": "X", "publishedAt": "2026-08-13T11:10:00+08:00", "title": "AI Agent 自主协作", "text": "A demo post about autonomous AI agents, verifiable identity and machine-to-machine coordination.", "url": "https://example.com/demo/elon-post-agent" },
+        { "id": "elon-post-compute", "type": "post", "kind": "quote", "weight": 1, "platform": "X", "publishedAt": "2026-08-12T20:42:00+08:00", "title": "可验证计算与 GPU 网络", "text": "A demo quote post focused on verifiable compute, distributed GPU networks and model marketplaces.", "url": "https://example.com/demo/elon-post-compute" },
+        { "id": "elon-post-machine-payment", "type": "post", "kind": "reply", "weight": 0.5, "platform": "X", "publishedAt": "2026-08-11T09:15:00+08:00", "title": "机器之间的小额结算", "text": "A demo reply discussing low-cost micropayments between software agents and global settlement.", "url": "https://example.com/demo/elon-post-machine-payment" },
+        { "id": "elon-post-global-payment", "type": "post", "kind": "original", "weight": 1, "platform": "X", "publishedAt": "2026-08-09T17:36:00+08:00", "title": "低成本全球支付", "text": "A demo public post about instant global payments, creator payouts and low transaction fees.", "url": "https://example.com/demo/elon-post-global-payment" }
+      ]
+    },
+    {
+      "id": "vitalik-buterin",
+      "name": "Vitalik Buterin",
+      "nameZh": "维塔利克·布特林",
+      "initials": "VB",
+      "role": "区块链研究者",
+      "avatar": "./assets/vitalik-buterin-chainwatch-editorial.png",
+      "colors": ["#4e5a7f", "#8f9cce"],
+      "accounts": [{ "platform": "X", "handle": "@VitalikButerin" }],
+      "sources": [
+        { "id": "vitalik-post-zkevm", "type": "post", "kind": "original", "weight": 1, "platform": "X", "publishedAt": "2026-08-13T08:35:00+08:00", "title": "zkEVM 与证明系统", "text": "A demo technical post on rollups, zkVM proof systems, Ethereum scaling and interoperability.", "url": "https://example.com/demo/vitalik-post-zkevm" },
+        { "id": "vitalik-post-blob", "type": "post", "kind": "original", "weight": 1, "platform": "X", "publishedAt": "2026-08-12T14:12:00+08:00", "title": "Blob 容量与费用", "text": "A demo technical post about blob capacity, data availability costs and rollup throughput.", "url": "https://example.com/demo/vitalik-post-blob" },
+        { "id": "vitalik-post-interop", "type": "post", "kind": "quote", "weight": 1, "platform": "X", "publishedAt": "2026-08-10T18:06:00+08:00", "title": "跨 Rollup 互操作", "text": "A demo quote post about cross-rollup messages, asset movement and unified user experience.", "url": "https://example.com/demo/vitalik-post-interop" },
+        { "id": "vitalik-post-privacy", "type": "post", "kind": "original", "weight": 1, "platform": "X", "publishedAt": "2026-08-13T07:42:00+08:00", "title": "可合规的隐私设计", "text": "A demo post about privacy pools, selective disclosure and zero-knowledge identity.", "url": "https://example.com/demo/vitalik-post-privacy" }
+      ]
+    },
+    {
+      "id": "changpeng-zhao",
+      "name": "Changpeng Zhao",
+      "nameZh": "赵长鹏",
+      "initials": "CZ",
+      "role": "区块链创业者",
+      "avatar": "./assets/changpeng-zhao-chainwatch-editorial.png",
+      "colors": ["#6e5316", "#e0b63b"],
+      "accounts": [{ "platform": "X", "handle": "@cz_binance" }],
+      "sources": [
+        { "id": "cz-post-bnb-defi", "type": "post", "kind": "original", "weight": 1, "platform": "X", "publishedAt": "2026-08-13T07:50:00+08:00", "title": "BNB Chain 与 DeFi 生态", "text": "A demo public post covering BNB Chain, DEX liquidity and new developer projects.", "url": "https://example.com/demo/cz-post-bnb-defi" },
+        { "id": "cz-post-developers", "type": "post", "kind": "original", "weight": 1, "platform": "X", "publishedAt": "2026-08-12T16:44:00+08:00", "title": "开发者与生态增长", "text": "A demo post about developer adoption, ecosystem projects and user growth on BNB Chain.", "url": "https://example.com/demo/cz-post-developers" },
+        { "id": "cz-post-liquidity", "type": "post", "kind": "quote", "weight": 1, "platform": "X", "publishedAt": "2026-08-11T18:02:00+08:00", "title": "链上流动性增长", "text": "A demo quote post discussing DEX volume, lending liquidity, TVL and real protocol usage.", "url": "https://example.com/demo/cz-post-liquidity" },
+        { "id": "cz-post-adoption", "type": "post", "kind": "original", "weight": 1, "platform": "X", "publishedAt": "2026-08-10T12:30:00+08:00", "title": "链上应用采用", "text": "A demo post on onchain applications, active users, payments and ecosystem retention.", "url": "https://example.com/demo/cz-post-adoption" }
+      ]
+    }
+  ]
+}

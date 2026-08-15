@@ -71,14 +71,18 @@ test("GitHub 上传候选文件不包含真实凭证且本地状态被忽略", a
   }
 });
 
-test("GitHub Actions 每三小时生成快照且只通过 Secrets 注入密钥", async () => {
+test("GitHub Actions 每周一生成快照且只通过 Secrets 注入密钥", async () => {
   const workflow = await readFile(path.join(root, ".github/workflows/social-radar-snapshot.yml"), "utf8");
-  assert.match(workflow, /cron:\s*["']0 \*\/3 \* \* \*["']/);
+  const config = JSON.parse(await readFile(path.join(root, "social-radar.config.json"), "utf8"));
+  assert.match(workflow, /cron:\s*["']0 0 \* \* 1["']/);
   assert.match(workflow, /DEEPSEEK_API_KEY:\s*\$\{\{\s*secrets\.DEEPSEEK_API_KEY\s*\}\}/);
   assert.match(workflow, /X_BEARER_TOKEN:\s*\$\{\{\s*secrets\.X_BEARER_TOKEN\s*\}\}/);
   assert.match(workflow, /run:\s*node scripts\/publish-radar-to-github\.mjs/);
   assert.doesNotMatch(workflow, /git add data\/market-input\/latest\.json/);
   assert.doesNotMatch(workflow, /SERVER_(?:HOST|USER|PASSWORD)|SSH_PRIVATE_KEY/);
+  assert.equal(config.schedule, "0 0 * * 1");
+  assert.equal(config.publishIntervalHours, 168);
+  assert.equal(config.model, "deepseek-v4-pro");
 });
 
 test("静态页面引用的本地文件都存在", async () => {
@@ -104,7 +108,7 @@ test("人物采集边界是特朗普走 trump.fm、另外三人走 X", async () 
   assert.ok(others.every((figure) => figure.accounts.some((account) => account.platform === "X")));
 });
 
-test("没有 X Token 时三小时任务安全跳过且不覆盖快照", () => {
+test("没有 X Token 时每周任务安全跳过且不覆盖快照", () => {
   const result = spawnSync(process.execPath, ["scripts/run-social-radar-cycle.mjs"], {
     cwd: root,
     env: { PATH: process.env.PATH || "" },

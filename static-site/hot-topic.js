@@ -24,7 +24,7 @@
     if (showLoading) openLoading();
     try {
       state.index = await window.SocialRadarSnapshots.loadIndex();
-      if (showLoading) await advanceLoading(1, "正在确认最近一份校验通过的三小时快照");
+      if (showLoading) await advanceLoading(1, "正在确认最近一份校验通过的每周快照");
       const payload = await window.SocialRadarSnapshots.loadSnapshot(state.index, requestedId === "latest" ? state.index.latest : requestedId);
       if (!Array.isArray(payload.figures) || !payload.figures.length) throw new Error("人物兴趣快照结构不完整");
       if (showLoading) await advanceLoading(2, "正在装载主题、证据与数据故事");
@@ -50,9 +50,9 @@
 
   function renderSource() {
     const snapshot = state.data;
-    elements.sourceTitle.textContent = snapshot.title; elements.sourceDescription.textContent = snapshot.description;
+    elements.sourceTitle.textContent = snapshot.title; elements.sourceDescription.textContent = "每周一北京时间 08:00 自动更新；本页只读取最近一份校验通过并发布的结果。";
     elements.sourceMode.textContent = snapshot.modeLabel; elements.sourceTime.textContent = formatTime(snapshot.generatedAt);
-    elements.sourceCadence.textContent = "每 3 小时"; elements.sourceSignal.classList.toggle("is-demo", !snapshot.isLive);
+    elements.sourceCadence.textContent = "每周一 08:00"; elements.sourceSignal.classList.toggle("is-demo", !snapshot.isLive);
   }
 
   function renderPeople() {
