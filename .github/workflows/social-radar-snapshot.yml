@@ -1,6 +1,9 @@
 name: Social radar snapshot
 
 on:
+  schedule:
+    # GitHub Actions cron 使用 UTC；每 3 小时整点触发一次。
+    - cron: "0 */3 * * *"
   workflow_dispatch:
     inputs:
       demo:
