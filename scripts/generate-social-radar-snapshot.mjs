@@ -6,6 +6,8 @@ import { fileURLToPath } from "node:url";
 import {
   buildPublishedSnapshot,
   floorToThreeHourSlot,
+  groundModelOutput,
+  marketMetricCatalog,
   publishSnapshot,
   readJson,
   requireHttpsBaseUrl,
@@ -41,11 +43,22 @@ const generatedAt = args.generatedAt
     : new Date().toISOString();
 const modelName = process.env.DEEPSEEK_MODEL || config.model;
 
-const modelOutput = args.demo
-  ? await readJson(path.join(root, "scripts/demo-social-radar-output.json"))
-  : await generateWithDeepSeek({ modelName, socialInput, marketInput, config });
+let modelOutput = groundModelOutput(
+  args.demo
+    ? await readJson(path.join(root, "scripts/demo-social-radar-output.json"))
+    : await generateWithDeepSeek({ modelName, socialInput, marketInput, config }),
+  marketInput,
+);
 
-const modelErrors = validateModelOutput(modelOutput, socialInput, marketInput, config);
+let modelErrors = validateModelOutput(modelOutput, socialInput, marketInput, config);
+if (modelErrors.length && !args.demo) {
+  console.warn(`DeepSeek 首次候选未通过校验，正在自动修复一次：${modelErrors.join("；")}`);
+  modelOutput = groundModelOutput(
+    await generateWithDeepSeek({ modelName, socialInput, marketInput, config, validationErrors: modelErrors }),
+    marketInput,
+  );
+  modelErrors = validateModelOutput(modelOutput, socialInput, marketInput, config);
+}
 if (modelErrors.length) await rejectCandidate("model-output", modelOutput, modelErrors);
 
 const snapshot = buildPublishedSnapshot({
@@ -71,7 +84,7 @@ if (args.noPublish) {
   console.log(`已发布快照 ${snapshot.snapshotId}（${snapshot.figures.length} 位人物，历史版本 ${result.indexCount} 份）`);
 }
 
-async function generateWithDeepSeek({ modelName, socialInput, marketInput, config }) {
+async function generateWithDeepSeek({ modelName, socialInput, marketInput, config, validationErrors = [] }) {
   const apiKey = process.env.DEEPSEEK_API_KEY;
   if (!apiKey) throw new Error("缺少 DEEPSEEK_API_KEY；本地演示请使用 --demo");
   const baseUrl = requireHttpsBaseUrl(
@@ -95,10 +108,16 @@ async function generateWithDeepSeek({ modelName, socialInput, marketInput, confi
           {
             role: "user",
             content: JSON.stringify({
-              task: "仅根据每位人物最近 7 天的公开动态，归纳其近期反复讨论的宽泛技术或市场概念，并为每个概念组织四章数据故事，以 JSON 格式返回。",
+              task: validationErrors.length
+                ? "上一次候选没有通过事实校验。请根据校验反馈从原始输入重新生成完整结果，不要复述错误内容。"
+                : "仅根据每位人物最近 7 天的公开动态，归纳其近期反复讨论且能够映射到数据模板的宽泛技术或市场概念，并为每个概念组织四章数据故事，以 JSON 格式返回。",
+              validationFeedback: validationErrors,
               allowedTopicTypes: Object.keys(marketInput.topics),
               figures: socialInput.figures.map((figure) => ({ id: figure.id, name: figure.name, sources: figure.sources })),
-              marketContext: marketInput.topics,
+              marketContext: Object.fromEntries(Object.entries(marketInput.topics).map(([topicType, market]) => [
+                topicType,
+                { ...market, watchMetricOptions: marketMetricCatalog(market) },
+              ])),
             }),
           },
         ],
@@ -129,11 +148,12 @@ function buildInstructions(config) {
     "你是链上数据产品的事实编辑。输出语言为简体中文。",
     "只允许使用输入里出现的 figure id、source id 和 marketContext 数值，不得补充外部事实或猜测人物立场。",
     `每位人物输出 1 至 ${config.maxTopicsPerFigure} 个宽泛主题，每个主题至少引用 ${config.minEvidencePerTopic} 条独立证据。`,
-    "主题必须映射到 allowedTopicTypes；无法映射时使用 other，但 other 会被发布程序拒绝。",
+    "topicType 只能从 allowedTopicTypes 中选择；无法合理映射的主题必须省略，绝对不要输出 other 或自造类型。",
     "sourceIds 与 evidenceSummaries 必须一一对应，摘要只能归纳所引用文本。",
     "故事四章必须依次为 signal、trend、ranking、watch；指标、趋势和排名只解释 marketContext，不得自行生成数字。",
     "输入只包含公开动态。原创和引用动态权重较高，回复只能作为辅助证据；不得把发帖或引用表述成投资、合作、支持或背书。",
-    "watch 的 metric 可以使用 marketContext 已有数值，或使用不含虚构数字的状态词。",
+    "每个 watch 只能返回 title、metricRef、detail、tone；metricRef 必须逐字选择该 topicType 的 watchMetricOptions.ref，实际数值由程序注入，禁止输出 metric 字段。",
+    "watch 的 title 和 detail 只能解释所选 metricRef 对应的数据含义，不得加入 marketContext 与公开动态中都不存在的数字。",
   ].join("\n");
 }
 

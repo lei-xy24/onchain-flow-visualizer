@@ -2,10 +2,14 @@ import { createHash } from "node:crypto";
 import { readFile, writeFile, mkdir, rename, rm } from "node:fs/promises";
 import path from "node:path";
 
-export const TOPIC_TYPES = ["stablecoin", "bitcoin", "ai_crypto", "payments", "layer2", "privacy", "chain_ecosystem", "defi", "other"];
+export const TOPIC_TYPES = ["stablecoin", "bitcoin", "ai_crypto", "payments", "layer2", "privacy", "chain_ecosystem", "defi"];
 export const VIEWS = ["signal", "trend", "ranking", "watch"];
 export const TONES = ["teal", "amber", "violet"];
-const MARKET_TOPIC_TYPES = TOPIC_TYPES.filter((topicType) => topicType !== "other");
+export const WATCH_METRIC_REFS = [
+  ...Array.from({ length: 3 }, (_, index) => [`metric-${index}-value`, `metric-${index}-change`]).flat(),
+  ...Array.from({ length: 5 }, (_, index) => `ranking-${index}-display`),
+];
+const MARKET_TOPIC_TYPES = TOPIC_TYPES;
 
 export async function readJson(filePath) {
   return JSON.parse(await readFile(filePath, "utf8"));
@@ -39,7 +43,7 @@ export function validateMarketInput(input) {
     }
     if (!isNonEmptyString(market.category)) errors.push(`${topicType}.category 无效`);
     if (!/^#[0-9a-f]{6}$/i.test(String(market.accent || ""))) errors.push(`${topicType}.accent 必须是六位十六进制颜色`);
-    if (!Array.isArray(market.metrics) || !market.metrics.length) errors.push(`${topicType}.metrics 不能为空`);
+    if (!Array.isArray(market.metrics) || market.metrics.length < 3) errors.push(`${topicType}.metrics 至少需要三个指标`);
     for (const [index, metric] of (Array.isArray(market.metrics) ? market.metrics : []).entries()) {
       if (!isNonEmptyString(metric?.label) || !isNonEmptyString(metric?.value) || !isNonEmptyString(metric?.change)) {
         errors.push(`${topicType}.metrics[${index}] 结构无效`);
@@ -123,6 +127,45 @@ export function deriveTrend(score, previousScore) {
   return { change, trend: "平稳" };
 }
 
+export function marketMetricCatalog(market) {
+  if (!market || typeof market !== "object") return [];
+  const metrics = (market.metrics || []).slice(0, 3).flatMap((metric, index) => [
+    { ref: `metric-${index}-value`, label: metric?.label, value: metric?.value },
+    { ref: `metric-${index}-change`, label: `${metric?.label || "指标"}变化`, value: metric?.change },
+  ]);
+  const ranking = (market.ranking?.items || []).slice(0, 5).map((item, index) => ({
+    ref: `ranking-${index}-display`,
+    label: `${market.ranking?.label || "排名"} · ${item?.name || index + 1}`,
+    value: item?.display,
+  }));
+  return [...metrics, ...ranking].filter((item) => WATCH_METRIC_REFS.includes(item.ref) && isNonEmptyString(item.label) && isNonEmptyString(item.value));
+}
+
+export function groundModelOutput(modelOutput, marketInput) {
+  if (!modelOutput || !Array.isArray(modelOutput.figures)) return modelOutput;
+  const grounded = structuredClone(modelOutput);
+  for (const figure of grounded.figures) {
+    if (!Array.isArray(figure?.topics)) continue;
+    figure.topics = figure.topics
+      .filter((topic) => topic && marketInput?.topics?.[topic.topicType])
+      .map((topic) => {
+        const catalog = marketMetricCatalog(marketInput.topics[topic.topicType]);
+        if (!Array.isArray(topic.story?.watch) || !catalog.length) return topic;
+        topic.story.watch = topic.story.watch.map((watch, index) => {
+          if (!watch || typeof watch !== "object" || Array.isArray(watch)) return watch;
+          const selected = catalog.find((item) => item.ref === watch.metricRef)
+            || catalog.find((item) => item.value === watch.metric)
+            || catalog[index % catalog.length];
+          const groundedWatch = { ...watch, metricRef: selected.ref };
+          delete groundedWatch.metric;
+          return groundedWatch;
+        });
+        return topic;
+      });
+  }
+  return grounded;
+}
+
 export function buildPublishedSnapshot({ config, socialInput, marketInput, modelOutput, previousSnapshot, slot, generatedAt, modelName, isDemo }) {
   const previousFigures = new Map((previousSnapshot?.figures || []).map((figure) => [figure.id, figure]));
   const figures = socialInput.figures.map((figure) => {
@@ -177,7 +220,10 @@ export function buildPublishedSnapshot({ config, socialInput, marketInput, model
           snapshot: market.metrics,
           trend: market.trend,
           ranking: market.ranking,
-          watch: topic.story.watch,
+          watch: topic.story.watch.map((item) => {
+            const metric = marketMetricCatalog(market).find((candidate) => candidate.ref === item.metricRef);
+            return { ...item, metric: metric.value, metricLabel: metric.label };
+          }),
           chapters: topic.story.chapters,
         },
       };
@@ -259,7 +305,6 @@ export function validateModelOutput(modelOutput, socialInput, marketInput, confi
       }
       for (const property of expectedTopicProperties) if (topic[property] === undefined) errors.push(`${figure.figureId} 的主题缺少 ${property}`);
       if (!TOPIC_TYPES.includes(topic.topicType)) errors.push(`${figure.figureId} 使用未知主题类型 ${topic.topicType}`);
-      if (topic.topicType === "other") errors.push(`${figure.figureId} 的 ${topic.name} 暂无数据模板，不能发布`);
       if (!marketInput.topics[topic.topicType]) errors.push(`${topic.topicType} 缺少市场数据`);
       if (!isNonEmptyString(topic.name) || !isNonEmptyString(topic.category) || !isNonEmptyString(topic.summary) || !isNonEmptyString(topic.why)) errors.push(`${figure.figureId} 的主题文案不完整`);
       if (!["高", "中", "低"].includes(topic.confidence)) errors.push(`${figure.figureId}/${topic.name} 置信度无效`);
@@ -290,10 +335,9 @@ export function validateModelOutput(modelOutput, socialInput, marketInput, confi
       if (views.join(",") !== VIEWS.join(",")) errors.push(`${figure.figureId}/${topic.name} 章节顺序必须为 ${VIEWS.join(" → ")}`);
       if (chapters.some((chapter) => !isNonEmptyString(chapter?.title) || !isNonEmptyString(chapter?.kicker) || !isNonEmptyString(chapter?.body))) errors.push(`${figure.figureId}/${topic.name} 章节文案不完整`);
       if (watchItems.length !== 3) errors.push(`${figure.figureId}/${topic.name} 必须返回三个观察点`);
-      const allowedMetrics = marketMetricStrings(marketInput.topics[topic.topicType]);
       for (const watch of watchItems) {
-        if (!isNonEmptyString(watch?.title) || !isNonEmptyString(watch?.metric) || !isNonEmptyString(watch?.detail) || !TONES.includes(watch?.tone)) errors.push(`${figure.figureId}/${topic.name} 观察点结构无效`);
-        if (/\d/.test(watch?.metric || "") && !allowedMetrics.has(watch.metric)) errors.push(`${figure.figureId}/${topic.name} 使用了市场输入中不存在的指标 ${watch.metric}`);
+        if (!isNonEmptyString(watch?.title) || !isNonEmptyString(watch?.metricRef) || !isNonEmptyString(watch?.detail) || !TONES.includes(watch?.tone)) errors.push(`${figure.figureId}/${topic.name} 观察点结构无效`);
+        if (!marketMetricCatalog(marketInput.topics[topic.topicType]).some((item) => item.ref === watch?.metricRef)) errors.push(`${figure.figureId}/${topic.name} 使用了市场输入中不存在的指标引用 ${watch?.metricRef || "（空）"}`);
       }
     }
   }
@@ -357,15 +401,6 @@ function slugify(value) {
 
 function clamp(value, minimum, maximum) {
   return Math.max(minimum, Math.min(maximum, value));
-}
-
-function marketMetricStrings(market) {
-  if (!market) return new Set();
-  return new Set([
-    ...(market.metrics || []).flatMap((item) => [item.value, item.change]),
-    ...(market.ranking?.items || []).map((item) => item.display),
-    ...(market.trend?.points || []).map((item) => String(item.value)),
-  ].filter(Boolean).map(String));
 }
 
 function isNonEmptyString(value) {
