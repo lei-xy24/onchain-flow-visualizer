@@ -64,13 +64,4 @@ jobs:
             node scripts/generate-social-radar-snapshot.mjs
           fi
       - name: Publish snapshot files
-        run: |
-          git config user.name "social-radar-bot"
-          git config user.email "social-radar-bot@users.noreply.github.com"
-          git add data/market-input/latest.json static-site/data/latest-snapshot.json static-site/data/snapshot-index.json static-site/data/snapshots
-          if git diff --cached --quiet; then
-            echo "No snapshot changes"
-          else
-            git commit -m "data: publish social radar snapshot"
-            git push
-          fi
+        run: node scripts/publish-radar-to-github.mjs

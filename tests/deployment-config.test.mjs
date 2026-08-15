@@ -76,6 +76,8 @@ test("GitHub Actions 每三小时生成快照且只通过 Secrets 注入密钥",
   assert.match(workflow, /cron:\s*["']0 \*\/3 \* \* \*["']/);
   assert.match(workflow, /DEEPSEEK_API_KEY:\s*\$\{\{\s*secrets\.DEEPSEEK_API_KEY\s*\}\}/);
   assert.match(workflow, /X_BEARER_TOKEN:\s*\$\{\{\s*secrets\.X_BEARER_TOKEN\s*\}\}/);
+  assert.match(workflow, /run:\s*node scripts\/publish-radar-to-github\.mjs/);
+  assert.doesNotMatch(workflow, /git add data\/market-input\/latest\.json/);
   assert.doesNotMatch(workflow, /SERVER_(?:HOST|USER|PASSWORD)|SSH_PRIVATE_KEY/);
 });
 
