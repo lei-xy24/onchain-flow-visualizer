@@ -1,62 +1,645 @@
 {
-  "collectedAt": "2026-08-13T18:00:00+08:00",
-  "mode": "demo-input",
+  "schemaVersion": 1,
+  "collectedAt": "2026-08-15T12:19:12.631Z",
+  "mode": "live-api",
+  "provider": "CoinGecko Public API",
+  "methodology": "市值、成交量、价格与排名来自定时市场快照；趋势为依据当前市值与 24 小时变化率推导的近 24 小时等距估算。",
   "topics": {
     "stablecoin": {
       "category": "支付基础设施",
       "accent": "#42d6c7",
-      "metrics": [{"label":"演示流通市值","value":"$238B","change":"+4.8% / 30d"},{"label":"月度结算额","value":"$1.6T","change":"+12.4%"},{"label":"活跃网络","value":"18","change":"Top 5 占 86%"}],
-      "trend": {"label":"稳定币总规模（演示）","unit":"$B","points":[{"label":"3月","value":198},{"label":"4月","value":204},{"label":"5月","value":211},{"label":"6月","value":219},{"label":"7月","value":227},{"label":"8月","value":238}]},
-      "ranking": {"label":"按稳定币供应量的网络分布（演示）","items":[{"name":"Ethereum","value":118,"display":"$118B"},{"name":"Tron","value":61,"display":"$61B"},{"name":"Solana","value":15,"display":"$15B"},{"name":"BNB Chain","value":10,"display":"$10B"},{"name":"Base","value":8,"display":"$8B"}]}
+      "source": "CoinGecko Public API",
+      "metrics": [
+        {
+          "label": "稳定币市场规模",
+          "value": "$296.68B",
+          "change": "+0.03% / 24h"
+        },
+        {
+          "label": "24 小时成交量",
+          "value": "$32.61B",
+          "change": "25 个样本资产"
+        },
+        {
+          "label": "最大资产",
+          "value": "Tether",
+          "change": "USDT · $183.02B"
+        }
+      ],
+      "trend": {
+        "label": "稳定币市场规模近 24 小时估算",
+        "unit": "$B",
+        "points": [
+          {
+            "label": "-20h",
+            "value": 296.579
+          },
+          {
+            "label": "-16h",
+            "value": 296.599
+          },
+          {
+            "label": "-12h",
+            "value": 296.618
+          },
+          {
+            "label": "-8h",
+            "value": 296.637
+          },
+          {
+            "label": "-4h",
+            "value": 296.657
+          },
+          {
+            "label": "现在",
+            "value": 296.676
+          }
+        ]
+      },
+      "ranking": {
+        "label": "按实时市值排名",
+        "items": [
+          {
+            "name": "Tether",
+            "value": 183015904889,
+            "display": "$183.02B"
+          },
+          {
+            "name": "USDC",
+            "value": 71855694041,
+            "display": "$71.86B"
+          },
+          {
+            "name": "USDS",
+            "value": 9801550750,
+            "display": "$9.8B"
+          },
+          {
+            "name": "Dai",
+            "value": 4586148304,
+            "display": "$4.59B"
+          },
+          {
+            "name": "USD1",
+            "value": 4006519487,
+            "display": "$4.01B"
+          }
+        ]
+      }
     },
     "bitcoin": {
       "category": "数字资产",
       "accent": "#f0b45a",
-      "metrics": [{"label":"演示市值","value":"$2.3T","change":"+6.2% / 30d"},{"label":"长期持有占比","value":"71%","change":"+1.8pp"},{"label":"网络算力指数","value":"924","change":"+9.1%"}],
-      "trend": {"label":"长期持有供给占比（演示）","unit":"%","points":[{"label":"3月","value":64},{"label":"4月","value":66},{"label":"5月","value":65},{"label":"6月","value":68},{"label":"7月","value":69},{"label":"8月","value":71}]},
-      "ranking": {"label":"持有主体结构（演示指数）","items":[{"name":"长期个人持有","value":71,"display":"71%"},{"name":"基金与机构产品","value":16,"display":"16%"},{"name":"交易平台余额","value":9,"display":"9%"},{"name":"其他公开主体","value":4,"display":"4%"}]}
+      "source": "CoinGecko Public API",
+      "metrics": [
+        {
+          "label": "比特币市场规模",
+          "value": "$1.26T",
+          "change": "+0.51% / 24h"
+        },
+        {
+          "label": "24 小时成交量",
+          "value": "$16.27B",
+          "change": "1 个样本资产"
+        },
+        {
+          "label": "最大资产",
+          "value": "Bitcoin",
+          "change": "BTC · $1.26T"
+        }
+      ],
+      "trend": {
+        "label": "比特币市场规模近 24 小时估算",
+        "unit": "$B",
+        "points": [
+          {
+            "label": "-20h",
+            "value": 1256.507
+          },
+          {
+            "label": "-16h",
+            "value": 1257.797
+          },
+          {
+            "label": "-12h",
+            "value": 1259.087
+          },
+          {
+            "label": "-8h",
+            "value": 1260.377
+          },
+          {
+            "label": "-4h",
+            "value": 1261.667
+          },
+          {
+            "label": "现在",
+            "value": 1262.957
+          }
+        ]
+      },
+      "ranking": {
+        "label": "按实时市值排名",
+        "items": [
+          {
+            "name": "Bitcoin",
+            "value": 1262957251889,
+            "display": "$1.26T"
+          }
+        ]
+      }
     },
     "ai_crypto": {
       "category": "技术叙事",
       "accent": "#9b87e8",
-      "metrics": [{"label":"演示项目样本","value":"126","change":"+18 / 30d"},{"label":"计算网络规模","value":"$14.2B","change":"+21.6%"},{"label":"Agent 交易指数","value":"186","change":"+34.2%"}],
-      "trend": {"label":"Agent 链上交互指数（演示）","unit":"Index","points":[{"label":"3月","value":72},{"label":"4月","value":86},{"label":"5月","value":103},{"label":"6月","value":119},{"label":"7月","value":148},{"label":"8月","value":186}]},
-      "ranking": {"label":"AI × Crypto 应用方向（演示热度）","items":[{"name":"去中心化计算","value":92,"display":"92"},{"name":"AI Agent 支付","value":84,"display":"84"},{"name":"数据与模型市场","value":71,"display":"71"},{"name":"可验证推理","value":64,"display":"64"},{"name":"链上身份","value":58,"display":"58"}]}
+      "source": "CoinGecko Public API",
+      "metrics": [
+        {
+          "label": "AI × Crypto 市场规模",
+          "value": "$18.42B",
+          "change": "+3.28% / 24h"
+        },
+        {
+          "label": "24 小时成交量",
+          "value": "$1.05B",
+          "change": "25 个样本资产"
+        },
+        {
+          "label": "最大资产",
+          "value": "Chainlink",
+          "change": "LINK · $6.98B"
+        }
+      ],
+      "trend": {
+        "label": "AI × Crypto 市场规模近 24 小时估算",
+        "unit": "$B",
+        "points": [
+          {
+            "label": "-20h",
+            "value": 17.838
+          },
+          {
+            "label": "-16h",
+            "value": 17.955
+          },
+          {
+            "label": "-12h",
+            "value": 18.072
+          },
+          {
+            "label": "-8h",
+            "value": 18.189
+          },
+          {
+            "label": "-4h",
+            "value": 18.306
+          },
+          {
+            "label": "现在",
+            "value": 18.423
+          }
+        ]
+      },
+      "ranking": {
+        "label": "按实时市值排名",
+        "items": [
+          {
+            "name": "Chainlink",
+            "value": 6978147711,
+            "display": "$6.98B"
+          },
+          {
+            "name": "NEAR Protocol",
+            "value": 2131262693,
+            "display": "$2.13B"
+          },
+          {
+            "name": "Bittensor",
+            "value": 1889108271,
+            "display": "$1.89B"
+          },
+          {
+            "name": "Staked TAO (Root)",
+            "value": 1352624536,
+            "display": "$1.35B"
+          },
+          {
+            "name": "Internet Computer",
+            "value": 1254983904,
+            "display": "$1.25B"
+          }
+        ]
+      }
     },
     "payments": {
       "category": "支付技术",
       "accent": "#58bde8",
-      "metrics": [{"label":"月度支付笔数","value":"482M","change":"+17.8%"},{"label":"中位结算成本","value":"$0.03","change":"−22%"},{"label":"覆盖市场","value":"42","change":"+6"}],
-      "trend": {"label":"链上支付活跃指数（演示）","unit":"Index","points":[{"label":"3月","value":96},{"label":"4月","value":103},{"label":"5月","value":118},{"label":"6月","value":126},{"label":"7月","value":145},{"label":"8月","value":171}]},
-      "ranking": {"label":"支付场景贡献（演示指数）","items":[{"name":"跨境结算","value":88,"display":"88"},{"name":"平台内微支付","value":76,"display":"76"},{"name":"商户收款","value":63,"display":"63"},{"name":"创作者收入","value":48,"display":"48"},{"name":"机器支付","value":41,"display":"41"}]}
+      "source": "CoinGecko Public API",
+      "metrics": [
+        {
+          "label": "数字支付资产规模",
+          "value": "$296.68B",
+          "change": "+0.03% / 24h"
+        },
+        {
+          "label": "24 小时成交量",
+          "value": "$32.61B",
+          "change": "25 个样本资产"
+        },
+        {
+          "label": "最大资产",
+          "value": "Tether",
+          "change": "USDT · $183.02B"
+        }
+      ],
+      "trend": {
+        "label": "数字支付资产规模近 24 小时估算",
+        "unit": "$B",
+        "points": [
+          {
+            "label": "-20h",
+            "value": 296.579
+          },
+          {
+            "label": "-16h",
+            "value": 296.599
+          },
+          {
+            "label": "-12h",
+            "value": 296.618
+          },
+          {
+            "label": "-8h",
+            "value": 296.637
+          },
+          {
+            "label": "-4h",
+            "value": 296.657
+          },
+          {
+            "label": "现在",
+            "value": 296.676
+          }
+        ]
+      },
+      "ranking": {
+        "label": "按实时市值排名",
+        "items": [
+          {
+            "name": "Tether",
+            "value": 183015904889,
+            "display": "$183.02B"
+          },
+          {
+            "name": "USDC",
+            "value": 71855694041,
+            "display": "$71.86B"
+          },
+          {
+            "name": "USDS",
+            "value": 9801550750,
+            "display": "$9.8B"
+          },
+          {
+            "name": "Dai",
+            "value": 4586148304,
+            "display": "$4.59B"
+          },
+          {
+            "name": "USD1",
+            "value": 4006519487,
+            "display": "$4.01B"
+          }
+        ]
+      }
     },
     "layer2": {
       "category": "区块链基础设施",
       "accent": "#7e9eea",
-      "metrics": [{"label":"日均交易量","value":"18.6M","change":"+14.2%"},{"label":"平均成本","value":"$0.018","change":"−31%"},{"label":"锁定价值","value":"$48B","change":"+7.5%"}],
-      "trend": {"label":"Layer 2 日均交易量（演示）","unit":"M","points":[{"label":"3月","value":10.2},{"label":"4月","value":11.8},{"label":"5月","value":13.1},{"label":"6月","value":15.7},{"label":"7月","value":17},{"label":"8月","value":18.6}]},
-      "ranking": {"label":"Layer 2 活跃度排名（演示指数）","items":[{"name":"Arbitrum","value":96,"display":"96"},{"name":"Base","value":91,"display":"91"},{"name":"Optimism","value":77,"display":"77"},{"name":"zkSync","value":64,"display":"64"},{"name":"Scroll","value":58,"display":"58"}]}
+      "source": "CoinGecko Public API",
+      "metrics": [
+        {
+          "label": "Layer 2 市场规模",
+          "value": "$6.77B",
+          "change": "+1.74% / 24h"
+        },
+        {
+          "label": "24 小时成交量",
+          "value": "$254.56M",
+          "change": "25 个样本资产"
+        },
+        {
+          "label": "最大资产",
+          "value": "OKB",
+          "change": "OKB · $2.26B"
+        }
+      ],
+      "trend": {
+        "label": "Layer 2 市场规模近 24 小时估算",
+        "unit": "$B",
+        "points": [
+          {
+            "label": "-20h",
+            "value": 6.652
+          },
+          {
+            "label": "-16h",
+            "value": 6.675
+          },
+          {
+            "label": "-12h",
+            "value": 6.699
+          },
+          {
+            "label": "-8h",
+            "value": 6.722
+          },
+          {
+            "label": "-4h",
+            "value": 6.745
+          },
+          {
+            "label": "现在",
+            "value": 6.768
+          }
+        ]
+      },
+      "ranking": {
+        "label": "按实时市值排名",
+        "items": [
+          {
+            "name": "OKB",
+            "value": 2263606560,
+            "display": "$2.26B"
+          },
+          {
+            "name": "Mantle",
+            "value": 1443940054,
+            "display": "$1.44B"
+          },
+          {
+            "name": "POL (ex-MATIC)",
+            "value": 804206839,
+            "display": "$804.21M"
+          },
+          {
+            "name": "Arbitrum",
+            "value": 491119076,
+            "display": "$491.12M"
+          },
+          {
+            "name": "Mantle Bridged WETH (Mantle)",
+            "value": 299362800,
+            "display": "$299.36M"
+          }
+        ]
+      }
     },
     "privacy": {
       "category": "密码学应用",
       "accent": "#b487e8",
-      "metrics": [{"label":"演示研发项目","value":"84","change":"+11"},{"label":"证明生成成本","value":"−37%","change":"6 个月"},{"label":"身份试点","value":"29","change":"+8"}],
-      "trend": {"label":"隐私技术开发活跃度（演示）","unit":"Index","points":[{"label":"3月","value":68},{"label":"4月","value":75},{"label":"5月","value":79},{"label":"6月","value":94},{"label":"7月","value":108},{"label":"8月","value":126}]},
-      "ranking": {"label":"隐私技术方向（演示热度）","items":[{"name":"零知识证明基础设施","value":94,"display":"94"},{"name":"选择性披露身份","value":82,"display":"82"},{"name":"隐私池","value":69,"display":"69"},{"name":"机密计算","value":61,"display":"61"},{"name":"合规证明","value":55,"display":"55"}]}
+      "source": "CoinGecko Public API",
+      "metrics": [
+        {
+          "label": "隐私资产市场规模",
+          "value": "$16.23B",
+          "change": "+1.26% / 24h"
+        },
+        {
+          "label": "24 小时成交量",
+          "value": "$189.91M",
+          "change": "25 个样本资产"
+        },
+        {
+          "label": "最大资产",
+          "value": "Zcash",
+          "change": "ZEC · $8.29B"
+        }
+      ],
+      "trend": {
+        "label": "隐私资产市场规模近 24 小时估算",
+        "unit": "$B",
+        "points": [
+          {
+            "label": "-20h",
+            "value": 16.032
+          },
+          {
+            "label": "-16h",
+            "value": 16.073
+          },
+          {
+            "label": "-12h",
+            "value": 16.113
+          },
+          {
+            "label": "-8h",
+            "value": 16.153
+          },
+          {
+            "label": "-4h",
+            "value": 16.193
+          },
+          {
+            "label": "现在",
+            "value": 16.234
+          }
+        ]
+      },
+      "ranking": {
+        "label": "按实时市值排名",
+        "items": [
+          {
+            "name": "Zcash",
+            "value": 8293322886,
+            "display": "$8.29B"
+          },
+          {
+            "name": "Monero",
+            "value": 7584653850,
+            "display": "$7.58B"
+          },
+          {
+            "name": "Decred",
+            "value": 211563790,
+            "display": "$211.56M"
+          },
+          {
+            "name": "Pirate Chain",
+            "value": 41303823,
+            "display": "$41.3M"
+          },
+          {
+            "name": "Verge",
+            "value": 33999316,
+            "display": "$34M"
+          }
+        ]
+      }
     },
     "chain_ecosystem": {
       "category": "公链生态",
       "accent": "#e4b943",
-      "metrics": [{"label":"日活跃地址","value":"2.1M","change":"+8.4%"},{"label":"生态 TVL","value":"$8.7B","change":"+5.1%"},{"label":"月活跃应用","value":"386","change":"+22"}],
-      "trend": {"label":"日活跃地址（演示，M）","unit":"M","points":[{"label":"3月","value":1.4},{"label":"4月","value":1.5},{"label":"5月","value":1.7},{"label":"6月","value":1.8},{"label":"7月","value":1.9},{"label":"8月","value":2.1}]},
-      "ranking": {"label":"生态应用板块（演示活跃度）","items":[{"name":"DEX","value":95,"display":"95"},{"name":"游戏与社交","value":78,"display":"78"},{"name":"借贷","value":69,"display":"69"},{"name":"稳定币支付","value":61,"display":"61"},{"name":"衍生品","value":52,"display":"52"}]}
+      "source": "CoinGecko Public API",
+      "metrics": [
+        {
+          "label": "公链资产市场规模",
+          "value": "$1.8T",
+          "change": "+0.5% / 24h"
+        },
+        {
+          "label": "24 小时成交量",
+          "value": "$24.77B",
+          "change": "25 个样本资产"
+        },
+        {
+          "label": "最大资产",
+          "value": "Bitcoin",
+          "change": "BTC · $1.26T"
+        }
+      ],
+      "trend": {
+        "label": "公链资产市场规模近 24 小时估算",
+        "unit": "$B",
+        "points": [
+          {
+            "label": "-20h",
+            "value": 1786.212
+          },
+          {
+            "label": "-16h",
+            "value": 1787.988
+          },
+          {
+            "label": "-12h",
+            "value": 1789.764
+          },
+          {
+            "label": "-8h",
+            "value": 1791.54
+          },
+          {
+            "label": "-4h",
+            "value": 1793.316
+          },
+          {
+            "label": "现在",
+            "value": 1795.092
+          }
+        ]
+      },
+      "ranking": {
+        "label": "按实时市值排名",
+        "items": [
+          {
+            "name": "Bitcoin",
+            "value": 1262957251889,
+            "display": "$1.26T"
+          },
+          {
+            "name": "Ethereum",
+            "value": 226488037542,
+            "display": "$226.49B"
+          },
+          {
+            "name": "BNB",
+            "value": 81456542224,
+            "display": "$81.46B"
+          },
+          {
+            "name": "XRP",
+            "value": 62775581968,
+            "display": "$62.78B"
+          },
+          {
+            "name": "Solana",
+            "value": 43801884576,
+            "display": "$43.8B"
+          }
+        ]
+      }
     },
     "defi": {
       "category": "金融协议",
       "accent": "#55d69e",
-      "metrics": [{"label":"演示总 TVL","value":"$168B","change":"+9.7%"},{"label":"月交易量","value":"$312B","change":"+14.1%"},{"label":"借贷利用率","value":"68%","change":"+3.2pp"}],
-      "trend": {"label":"DeFi 总 TVL（演示）","unit":"$B","points":[{"label":"3月","value":124},{"label":"4月","value":132},{"label":"5月","value":139},{"label":"6月","value":147},{"label":"7月","value":155},{"label":"8月","value":168}]},
-      "ranking": {"label":"DeFi 板块规模（演示指数）","items":[{"name":"DEX","value":96,"display":"96"},{"name":"借贷","value":87,"display":"87"},{"name":"流动性质押","value":78,"display":"78"},{"name":"衍生品","value":66,"display":"66"},{"name":"收益聚合","value":48,"display":"48"}]}
+      "source": "CoinGecko Public API",
+      "metrics": [
+        {
+          "label": "DeFi 市场规模",
+          "value": "$78.61B",
+          "change": "+0.86% / 24h"
+        },
+        {
+          "label": "24 小时成交量",
+          "value": "$1.58B",
+          "change": "25 个样本资产"
+        },
+        {
+          "label": "最大资产",
+          "value": "Lido Staked Ether",
+          "change": "STETH · $17.87B"
+        }
+      ],
+      "trend": {
+        "label": "DeFi 市场规模近 24 小时估算",
+        "unit": "$B",
+        "points": [
+          {
+            "label": "-20h",
+            "value": 77.934
+          },
+          {
+            "label": "-16h",
+            "value": 78.068
+          },
+          {
+            "label": "-12h",
+            "value": 78.202
+          },
+          {
+            "label": "-8h",
+            "value": 78.337
+          },
+          {
+            "label": "-4h",
+            "value": 78.471
+          },
+          {
+            "label": "现在",
+            "value": 78.605
+          }
+        ]
+      },
+      "ranking": {
+        "label": "按实时市值排名",
+        "items": [
+          {
+            "name": "Lido Staked Ether",
+            "value": 17865737231,
+            "display": "$17.87B"
+          },
+          {
+            "name": "Hyperliquid",
+            "value": 12439410760,
+            "display": "$12.44B"
+          },
+          {
+            "name": "Rain",
+            "value": 9142210278,
+            "display": "$9.14B"
+          },
+          {
+            "name": "Wrapped stETH",
+            "value": 8689835714,
+            "display": "$8.69B"
+          },
+          {
+            "name": "Chainlink",
+            "value": 6980705967,
+            "display": "$6.98B"
+          }
+        ]
+      }
     }
   }
 }
