@@ -1,8 +1,19 @@
 {
   "schemaVersion": 1,
-  "latest": "20260810T000000Z",
-  "generatedAt": "2026-08-15T13:49:04.913Z",
+  "latest": "20260817T000000Z",
+  "generatedAt": "2026-08-17T01:00:52.238Z",
   "snapshots": [
+    {
+      "id": "20260817T000000Z",
+      "file": "./data/snapshots/20260817T000000Z.json",
+      "generatedAt": "2026-08-17T01:00:52.238Z",
+      "slotStart": "2026-08-17T00:00:00.000Z",
+      "windowStart": "2026-08-10T00:58:51.286Z",
+      "windowEnd": "2026-08-17T00:58:51.286Z",
+      "status": "published",
+      "modeLabel": "DeepSeek 定时快照 · Truth Social + X · 实时市场指标",
+      "digest": "274699e1104c4a55"
+    },
     {
       "id": "20260815T120000Z",
       "file": "./data/snapshots/20260815T120000Z.json",
