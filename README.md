@@ -71,7 +71,7 @@ npm run typecheck
 - 可以提交源代码、演示 JSON、人物插画、测试、部署模板和 `.env.example`。
 - 不要提交 `.env`、真实 API Key、X Token、服务器地址与登录信息、SSH 私钥、日志或本地增量状态文件。
 - `.gitignore` 已覆盖常见环境文件、证书、私钥、日志，以及 `data/social-input/*-state.json`。
-- `.github/workflows/social-radar-snapshot.yml` 每周一北京时间 08:00 运行，也保留手动验收入口。工作流通过 Repository Secrets 读取 X 与 DeepSeek 密钥，并用路径白名单发布根目录和 `static-site/` 两份公开快照；网页前端和提交内容都不会包含密钥。
+- `.github/workflows/social-radar-snapshot.yml` 每周一北京时间 08:00 运行，也保留手动验收入口。手动运行默认复用最近已采集动态并跳过 X/Trump 请求，适合生成失败后低成本重试；取消勾选 `reuse_social_input` 才会重新采集。定时运行始终采集最新动态。工作流通过 Repository Secrets 读取 X 与 DeepSeek 密钥，并用路径白名单发布根目录和 `static-site/` 两份公开快照；网页前端和提交内容都不会包含密钥。
 - `.openai/hosting.json` 只包含 Sites 项目标识和逻辑绑定，不包含访问凭证。
 
 GitHub 仓库应上传整个项目。当前 GitHub Pages 从 `main` 根目录发布，因此人物雷达成功后会把 `static-site/data/` 原子同步到根目录 `data/`；两个目录必须指向同一快照版本。真实密钥只保存在 GitHub Repository Secrets，不会回写到仓库。
