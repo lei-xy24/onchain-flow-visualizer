@@ -10,6 +10,10 @@ on:
         description: "使用仓库内演示输入（不调用 DeepSeek）"
         type: boolean
         default: false
+      reuse_social_input:
+        description: "复用最近已采集动态（不调用 X/Trump；手动重试建议勾选）"
+        type: boolean
+        default: true
 
 concurrency:
   group: social-radar-snapshot
@@ -32,6 +36,7 @@ jobs:
       MARKET_INPUT_URL: ${{ secrets.MARKET_INPUT_URL }}
       MARKET_INPUT_BEARER_TOKEN: ${{ secrets.MARKET_INPUT_BEARER_TOKEN }}
       DEMO_MODE: ${{ inputs.demo }}
+      REUSE_SOCIAL_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.reuse_social_input }}
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
@@ -39,10 +44,10 @@ jobs:
           node-version: 22
           package-manager-cache: false
       - name: Collect Trump archive and X posts
-        if: env.DEMO_MODE != 'true'
+        if: env.DEMO_MODE != 'true' && env.REUSE_SOCIAL_INPUT != 'true'
         run: node scripts/collect-social-posts.mjs
       - name: Persist collected public posts
-        if: env.DEMO_MODE != 'true'
+        if: env.DEMO_MODE != 'true' && env.REUSE_SOCIAL_INPUT != 'true'
         run: |
           git config user.name "social-radar-bot"
           git config user.email "social-radar-bot@users.noreply.github.com"
@@ -53,6 +58,11 @@ jobs:
             git commit -m "data: cache collected social posts"
             git push
           fi
+      - name: Reuse collected public posts (skip X)
+        if: env.DEMO_MODE != 'true' && env.REUSE_SOCIAL_INPUT == 'true'
+        run: |
+          test -s data/social-input/latest.json
+          echo "Using cached public posts; X and Trump collection skipped"
       - name: Refresh market input
         if: env.DEMO_MODE != 'true'
         run: node scripts/refresh-market-input.mjs

@@ -85,6 +85,39 @@ test("普通主题引用市场指标时拒绝发布", () => {
   assert.ok(errors.some((error) => error.includes("非市场主题不应引用市场指标")));
 });
 
+test("自定义市场标识会归一化为直接相关模板", () => {
+  const candidate = structuredClone(modelOutput);
+  const bitcoinTopic = candidate.figures[0].topics.find((topic) => topic.topicType === "bitcoin");
+  bitcoinTopic.topicType = "bitcoin_supply_scarcity";
+  bitcoinTopic.name = "比特币供应稀缺性";
+
+  const grounded = groundModelOutput(candidate, marketInput);
+  const normalized = grounded.figures[0].topics.find((topic) => topic.name === "比特币供应稀缺性");
+  assert.equal(normalized.dataMode, "market");
+  assert.equal(normalized.topicType, "bitcoin");
+  assert.ok(normalized.story.watch.every((watch) => /^metric-|^ranking-/.test(watch.metricRef)));
+  assert.deepEqual(validateModelOutput(grounded, socialInput, marketInput, config), []);
+});
+
+test("找不到直接市场模板的候选会自动降级为证据分析", () => {
+  const candidate = structuredClone(modelOutput);
+  const topic = candidate.figures[2].topics.find((item) => item.topicType === "layer2");
+  topic.topicType = "ethereum_scaling_state_management";
+  topic.name = "以太坊扩容与状态管理";
+  topic.category = "协议研发";
+  topic.summary = "近期动态集中讨论以太坊状态增长、节点负担与协议实现。";
+  topic.why = "多条公开动态持续讨论状态管理问题。";
+  topic.keywords = ["以太坊", "扩容", "状态管理"];
+
+  const grounded = groundModelOutput(candidate, marketInput);
+  const downgraded = grounded.figures[2].topics.find((item) => item.name === "以太坊扩容与状态管理");
+  assert.equal(downgraded.dataMode, "evidence");
+  assert.equal(downgraded.topicType, "ethereum_scaling_state_management");
+  assert.ok(downgraded.story.watch.every((watch) => watch.focus && !("metricRef" in watch)));
+  assert.match(downgraded.story.chapters[2].body, /不是公链、资产或市值排名/);
+  assert.deepEqual(validateModelOutput(grounded, socialInput, marketInput, config), []);
+});
+
 test("DeepSeek 返回合法但缺字段的 JSON 时安全拒绝", () => {
   const invalid = structuredClone(modelOutput);
   invalid.figures[0].topics[0] = { topicType: "stablecoin", name: "不完整主题" };

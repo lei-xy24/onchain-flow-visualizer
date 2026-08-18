@@ -18,7 +18,7 @@
   "provider": "deepseek",
   "apiBaseUrl": "https://api.deepseek.com",
   "model": "deepseek-v4-pro",
-  "promptVersion": "interest-story-deepseek-v3-topic-relevance",
+  "promptVersion": "interest-story-deepseek-v4-market-normalization",
   "sourceFile": "data/social-input/latest.json",
   "marketFile": "data/market-input/latest.json",
   "outputDirectory": "static-site/data/snapshots",

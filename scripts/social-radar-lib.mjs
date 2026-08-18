@@ -9,6 +9,16 @@ export const WATCH_METRIC_REFS = [
   ...Array.from({ length: 3 }, (_, index) => [`metric-${index}-value`, `metric-${index}-change`]).flat(),
   ...Array.from({ length: 5 }, (_, index) => `ranking-${index}-display`),
 ];
+const MARKET_TOPIC_PATTERNS = Object.freeze({
+  stablecoin: /稳定币|数字美元|法币锚定|stablecoin|\busdc\b|\busdt\b/i,
+  bitcoin: /比特币|bitcoin|\bbtc\b/i,
+  ai_crypto: /ai\s*[×x+&]\s*(?:crypto|加密)|(?:人工智能|\bai\b).*(?:区块链|加密|链上)|(?:区块链|加密|链上).*(?:人工智能|\bai\b)/i,
+  payments: /链上支付|加密支付|稳定币支付|数字资产支付|机器支付|区块链结算|crypto[_ -]?payments?/i,
+  layer2: /layer\s*2|layer[_ -]?two|\bl2\b|rollup|zk[- ]?evm|blob|二层网络|二层扩容/i,
+  privacy: /零知识|\bzk\b|隐私池|选择性披露|链上隐私|隐私增强技术|隐私币|privacy[_ -]?(?:tech|crypto|chain)/i,
+  chain_ecosystem: /公链|区块链生态|链上生态|bnb\s*chain|solana|ethereum\s+ecosystem|以太坊生态|chain[_ -]?ecosystem/i,
+  defi: /\bdefi\b|去中心化金融|去中心化交易|\bdex\b|链上借贷|流动性质押|\btvl\b/i,
+});
 
 export async function readJson(filePath) {
   return JSON.parse(await readFile(filePath, "utf8"));
@@ -155,18 +165,13 @@ export function groundModelOutput(modelOutput, marketInput) {
       .filter((topic) => topic && typeof topic === "object" && !Array.isArray(topic))
       .map((topic) => {
         if (topic.dataMode !== "market") {
-          topic.dataMode = "evidence";
-          if (!Array.isArray(topic.story?.watch)) return topic;
-          topic.story.watch = topic.story.watch.map((watch) => {
-            if (!watch || typeof watch !== "object" || Array.isArray(watch)) return watch;
-            const groundedWatch = { ...watch, focus: watch.focus || watch.title };
-            delete groundedWatch.metricRef;
-            delete groundedWatch.metric;
-            return groundedWatch;
-          });
-          return topic;
+          return groundEvidenceTopic(topic, marketInput, false);
         }
-        const catalog = marketMetricCatalog(marketInput?.topics?.[topic.topicType]);
+
+        const marketTopicType = inferDirectMarketTopicType(topic, marketInput);
+        if (!marketTopicType) return groundEvidenceTopic(topic, marketInput, true);
+        topic.topicType = marketTopicType;
+        const catalog = marketMetricCatalog(marketInput?.topics?.[marketTopicType]);
         if (!Array.isArray(topic.story?.watch) || !catalog.length) return topic;
         topic.story.watch = topic.story.watch.map((watch, index) => {
           if (!watch || typeof watch !== "object" || Array.isArray(watch)) return watch;
@@ -181,6 +186,60 @@ export function groundModelOutput(modelOutput, marketInput) {
       });
   }
   return grounded;
+}
+
+function inferDirectMarketTopicType(topic, marketInput) {
+  const availableTypes = new Set(Object.keys(marketInput?.topics || {}));
+  const text = [
+    topic.topicType,
+    topic.name,
+    topic.category,
+    topic.summary,
+    topic.why,
+    ...(Array.isArray(topic.keywords) ? topic.keywords : []),
+  ].filter(Boolean).join(" ");
+  const exactType = availableTypes.has(topic.topicType) ? topic.topicType : null;
+  if (exactType && MARKET_TOPIC_PATTERNS[exactType]?.test(text)) return exactType;
+
+  const typeHint = String(topic.topicType || "").replaceAll("_", " ");
+  const hintMatches = MARKET_TOPIC_TYPES.filter((topicType) => availableTypes.has(topicType) && MARKET_TOPIC_PATTERNS[topicType]?.test(typeHint));
+  if (hintMatches.length === 1 && MARKET_TOPIC_PATTERNS[hintMatches[0]].test(text)) return hintMatches[0];
+
+  const textMatches = MARKET_TOPIC_TYPES.filter((topicType) => availableTypes.has(topicType) && MARKET_TOPIC_PATTERNS[topicType]?.test(text));
+  return textMatches.length === 1 ? textMatches[0] : null;
+}
+
+function groundEvidenceTopic(topic, marketInput, downgradedFromMarket) {
+  topic.dataMode = "evidence";
+  if (marketInput?.topics?.[topic.topicType]) topic.topicType = evidenceTopicType(topic.topicType);
+  if (Array.isArray(topic.story?.watch)) {
+    topic.story.watch = topic.story.watch.map((watch) => {
+      if (!watch || typeof watch !== "object" || Array.isArray(watch)) return watch;
+      const groundedWatch = { ...watch, focus: watch.focus || watch.title || "后续变化" };
+      delete groundedWatch.metricRef;
+      delete groundedWatch.metric;
+      return groundedWatch;
+    });
+  }
+  if (downgradedFromMarket && Array.isArray(topic.story?.chapters)) {
+    const keywords = (Array.isArray(topic.keywords) ? topic.keywords : []).slice(0, 3).join("、") || topic.name;
+    topic.story.chapters = topic.story.chapters.map((chapter) => {
+      if (chapter?.view === "signal") return chapter;
+      if (chapter?.view === "trend") return { ...chapter, kicker: "趋势", title: "讨论持续性与时间分布", body: `根据所引用的公开动态，观察“${topic.name}”在分析窗口内是否持续出现，不引入无关市场走势。` };
+      if (chapter?.view === "ranking") return { ...chapter, kicker: "重点", title: "公开动态中的重点排序", body: `围绕${keywords}比较主题内部的证据覆盖，这是公开动态重点排序，不是公链、资产或市值排名。` };
+      if (chapter?.view === "watch") return { ...chapter, kicker: "观察", title: "接下来关注什么", body: `继续观察“${topic.name}”是否持续、是否出现更具体信息，以及重点是否发生变化。` };
+      return chapter;
+    });
+  }
+  return topic;
+}
+
+function evidenceTopicType(topicType) {
+  const normalized = String(topicType || "topic")
+    .toLowerCase()
+    .replace(/[^a-z0-9_]+/g, "_")
+    .replace(/^_+|_+$/g, "") || "topic";
+  return `evidence_${normalized}`.slice(0, 48).replace(/_+$/g, "");
 }
 
 export function buildPublishedSnapshot({ config, socialInput, marketInput, modelOutput, previousSnapshot, slot, generatedAt, modelName, isDemo }) {

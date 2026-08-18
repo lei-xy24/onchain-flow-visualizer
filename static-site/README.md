@@ -355,7 +355,7 @@ GitHub Actions 的每周任务依次执行：
 
 人物最近 7 天不足两条动态时，不会为了凑主题而让模型生成结论；该人物本期不进入分析。所有人物都不足两条时，本次任务不发布，页面继续展示上一份成功快照。
 
-每周调度使用 `.github/workflows/social-radar-snapshot.yml`，在北京时间每周一 08:00 运行，并保留手动验收入口。运行时需要 Repository Secrets `X_BEARER_TOKEN` 和 `DEEPSEEK_API_KEY`；`TRUMP_FM_BASE_URL`、`DEEPSEEK_MODEL`、`DEEPSEEK_BASE_URL` 和 `X_API_BASE_URL` 可按需覆盖。成功快照通过 `scripts/publish-radar-to-github.mjs` 同步到根目录和 `static-site/data/`，再以路径白名单提交到 `main`。原始动态、增量状态和密钥不会进入提交。`deploy/systemd/` 只作为可选的自托管替代方案，不应与 GitHub Actions 同时启用。
+每周调度使用 `.github/workflows/social-radar-snapshot.yml`，在北京时间每周一 08:00 运行，并保留手动验收入口。手动运行默认勾选 `reuse_social_input`，直接使用仓库内最近一次成功保存的公开动态并跳过 X/Trump 采集，适合模型或校验失败后的低成本重试；需要主动获取最新动态时才取消勾选。定时任务不受该手动选项影响，始终采集最新动态。运行时需要 Repository Secrets `X_BEARER_TOKEN` 和 `DEEPSEEK_API_KEY`；`TRUMP_FM_BASE_URL`、`DEEPSEEK_MODEL`、`DEEPSEEK_BASE_URL` 和 `X_API_BASE_URL` 可按需覆盖。成功快照通过 `scripts/publish-radar-to-github.mjs` 同步到根目录和 `static-site/data/`，再以路径白名单提交到 `main`。原始动态、增量状态和密钥不会进入提交。`deploy/systemd/` 只作为可选的自托管替代方案，不应与 GitHub Actions 同时启用。
 
 ## CORS
 
