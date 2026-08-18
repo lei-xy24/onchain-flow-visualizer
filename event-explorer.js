@@ -2,33 +2,29 @@
   "use strict";
 
   const SVG_NS = "http://www.w3.org/2000/svg";
-  const state = { context: readContext(), index: null, snapshot: null, story: null, figure: null, theme: null, chapter: 0, timer: null };
+  const state = { context: readContext(), index: null, snapshot: null, story: null, figure: null, theme: null, chapter: 0 };
   const elements = Object.fromEntries([
     "figure-avatar","story-category","story-title","story-lead","data-mode","interest-score","origin-copy","origin-theme","boundary-label","boundary-copy","snapshot-grid",
-    "previous-chapter","play-story","next-chapter","story-progress","chapter-list","chapter-kicker","chapter-title","chapter-number","chapter-body",
-    "signal-view","signal-count","signal-keywords","signal-evidence","trend-view","trend-title","trend-mode-label","trend-chart","ranking-view","ranking-title","ranking-list","ranking-detail",
-    "watch-view","watch-grid","narrator-quote","note-figure","note-theme","note-score","note-confidence","snapshot-version","loading-overlay","loading-title","loading-detail","loading-steps"
+    "chapter-list","chapter-kicker","chapter-title","chapter-number","chapter-body",
+    "signal-view","signal-count","signal-keywords","signal-evidence","trend-view","trend-kicker","trend-title","trend-mode-label","trend-chart","ranking-view","ranking-kicker","ranking-title","ranking-list","ranking-detail",
+    "watch-view","watch-grid","note-figure","note-theme","note-score","note-confidence","snapshot-version","loading-overlay","loading-title","loading-detail","loading-steps"
   ].map((id) => [toCamel(id), document.getElementById(id)]));
 
-  elements.previousChapter.addEventListener("click", () => { stopStory(); selectChapter((state.chapter - 1 + 4) % 4); });
-  elements.nextChapter.addEventListener("click", () => { stopStory(); selectChapter((state.chapter + 1) % 4); });
-  elements.playStory.addEventListener("click", toggleStory);
   elements.snapshotVersion.addEventListener("change", () => {
     const nextUrl = new URL(location.href); nextUrl.searchParams.set("snapshot", elements.snapshotVersion.value); location.href = nextUrl;
   });
-  window.addEventListener("pagehide", stopStory);
   loadData();
 
   async function loadData() {
     try {
       state.index = await window.SocialRadarSnapshots.loadIndex();
-      advanceLoading(1, "正在加载所选版本的主题指标、趋势和排名");
+      advanceLoading(1, "正在判断主题应使用市场数据还是公开动态证据");
       state.snapshot = await window.SocialRadarSnapshots.loadSnapshot(state.index, state.context.snapshot);
       state.figure = state.snapshot.figures.find((item) => item.id === state.context.figureId) || state.snapshot.figures[0];
       state.theme = state.figure.themes.find((item) => item.storyId === state.context.theme) || state.figure.themes[0];
       state.context.theme = state.theme.storyId;
       state.context.snapshot = state.snapshot.snapshotId;
-      state.story = state.theme.story;
+      state.story = prepareStory(state.theme, state.figure, state.snapshot);
       window.SocialRadarSnapshots.populateVersionSelect(elements.snapshotVersion, state.index, state.snapshot.snapshotId);
       const currentUrl = new URL(location.href); currentUrl.searchParams.set("snapshot", state.snapshot.snapshotId); history.replaceState(null, "", currentUrl);
       await wait(320); advanceLoading(2, "正在组合兴趣证据与四个故事章节"); await wait(320);
@@ -48,11 +44,15 @@
     document.documentElement.style.setProperty("--story-accent", state.story.accent);
     elements.storyCategory.textContent = `${state.story.category} · ${state.figure.nameZh}兴趣主题`;
     elements.storyTitle.textContent = state.story.headline; elements.storyLead.textContent = state.story.lead;
-    elements.dataMode.textContent = state.snapshot.modeLabel; elements.interestScore.textContent = `${state.theme.score} 关注度`;
+    elements.interestScore.textContent = `${state.theme.score} 关注度`;
     elements.boundaryLabel.textContent = state.snapshot.isLive ? "分析边界" : "演示边界";
-    elements.trendModeLabel.textContent = state.snapshot.marketMode === "live-api" ? "实时市场快照" : "演示指标";
+    const usesMarketData = state.story.dataMode === "market";
+    elements.dataMode.textContent = usesMarketData ? state.snapshot.modeLabel : "DeepSeek 定时快照 · 公开动态证据分析";
+    elements.trendKicker.textContent = usesMarketData ? "Market trend" : "Discussion trend";
+    elements.rankingKicker.textContent = usesMarketData ? "Market landscape" : "Topic priorities";
+    elements.trendModeLabel.textContent = usesMarketData ? (state.snapshot.marketMode === "live-api" ? "直接相关市场数据" : "主题市场快照") : "公开动态时间分布";
     elements.originCopy.textContent = `${state.figure.nameZh}最近 7 天的多条公开动态中，“${state.theme.name}”相关关键词形成稳定主题簇。`;
-    elements.originTheme.textContent = state.theme.name; elements.boundaryCopy.textContent = state.snapshot.disclaimer;
+    elements.originTheme.textContent = state.theme.name; elements.boundaryCopy.textContent = usesMarketData ? state.snapshot.disclaimer : "本主题只分析人物近 7 天的公开动态证据，不展示与主题无关的公链、代币、市值或市场排名。";
     elements.noteFigure.textContent = state.figure.nameZh; elements.noteTheme.textContent = state.theme.name;
     elements.noteScore.textContent = `${state.theme.score} / 100 · ${state.theme.trend}`; elements.noteConfidence.textContent = state.theme.confidence;
   }
@@ -68,7 +68,7 @@
       const button = create("button", "chapter-button"); button.type = "button"; button.dataset.index = String(index);
       button.append(create("span", null, String(index + 1).padStart(2, "0")), create("div", null, ""));
       button.lastChild.append(create("small", null, chapter.kicker), create("strong", null, chapter.title));
-      button.addEventListener("click", () => { stopStory(); selectChapter(index); }); elements.chapterList.appendChild(button);
+      button.addEventListener("click", () => selectChapter(index)); elements.chapterList.appendChild(button);
     });
   }
 
@@ -77,9 +77,6 @@
     elements.chapterList.querySelectorAll("[data-index]").forEach((button) => button.classList.toggle("is-active", Number(button.dataset.index) === index));
     elements.chapterKicker.textContent = chapter.kicker; elements.chapterTitle.textContent = chapter.title; elements.chapterNumber.textContent = String(index + 1).padStart(2, "0"); elements.chapterBody.textContent = chapter.body;
     ["signal","trend","ranking","watch"].forEach((view) => { elements[`${view}View`].hidden = view !== chapter.view; });
-    elements.storyProgress.textContent = `${index + 1} / ${state.story.chapters.length}`;
-    elements.narratorQuote.textContent = narratorText(chapter.view);
-    if (state.timer && index === state.story.chapters.length - 1) stopStory();
   }
 
   function renderSignal() {
@@ -101,27 +98,80 @@
     [0, 1, 2, 3, 4].forEach((index) => { const yy = 55 + index * 55; svg.appendChild(svgEl("line", { class: "chart-grid", x1: 55, x2: 840, y1: yy, y2: yy })); });
     const coords = points.map((point, index) => ({ ...point, x: x(index), y: y(point.value) })); const path = coords.map((p, i) => `${i ? "L" : "M"} ${p.x} ${p.y}`).join(" ");
     svg.appendChild(svgEl("path", { class: "trend-area", d: `${path} L ${coords.at(-1).x} 275 L ${coords[0].x} 275 Z` })); svg.appendChild(svgEl("path", { class: "trend-line", d: path }));
-    coords.forEach((point) => { const circle = svgEl("circle", { class: "trend-point", cx: point.x, cy: point.y, r: 6, tabindex: 0 }); const value = svgEl("text", { class: "point-value", x: point.x, y: point.y - 15, "text-anchor": "middle" }); value.textContent = `${point.value}${state.story.trend.unit === "%" ? "%" : ""}`; const label = svgEl("text", { class: "point-label", x: point.x, y: 304, "text-anchor": "middle" }); label.textContent = point.label; circle.addEventListener("click", () => value.classList.toggle("is-active")); svg.append(circle, value, label); });
+    coords.forEach((point) => { const circle = svgEl("circle", { class: "trend-point", cx: point.x, cy: point.y, r: 6, tabindex: 0 }); const value = svgEl("text", { class: "point-value", x: point.x, y: point.y - 15, "text-anchor": "middle" }); value.textContent = `${point.value}${["%", "条"].includes(state.story.trend.unit) ? state.story.trend.unit : ""}`; const label = svgEl("text", { class: "point-label", x: point.x, y: 304, "text-anchor": "middle" }); label.textContent = point.label; circle.addEventListener("click", () => value.classList.toggle("is-active")); svg.append(circle, value, label); });
   }
 
   function renderRanking() {
     elements.rankingTitle.textContent = state.story.ranking.label; elements.rankingList.replaceChildren(); const items = state.story.ranking.items.map((item) => ({ ...item, value: Number(item.value) })).filter((item) => Number.isFinite(item.value) && item.value > 0); const max = Math.max(...items.map((item) => item.value), 1);
     if (!items.length) { elements.rankingList.appendChild(create("p", "ranking-empty", "当前快照缺少可展示的排名数据")); return; }
-    items.forEach((item, index) => { const button = create("button", "ranking-row"); button.type = "button"; const bar = create("i"); bar.style.setProperty("--bar", `${(item.value / max) * 100}%`); button.append(create("span", "rank-number", String(index + 1).padStart(2, "0")), create("strong", null, item.name), bar, create("b", null, item.display)); button.addEventListener("click", () => { elements.rankingList.querySelectorAll("button").forEach((node) => node.classList.toggle("is-active", node === button)); elements.rankingDetail.textContent = `${item.name} 位列第 ${index + 1}；当前口径：${state.story.ranking.label}，快照时间 ${formatTime(state.snapshot.generatedAt)}。`; }); elements.rankingList.appendChild(button); });
+    items.forEach((item, index) => { const button = create("button", "ranking-row"); button.type = "button"; const bar = create("i"); bar.style.setProperty("--bar", `${(item.value / max) * 100}%`); button.append(create("span", "rank-number", String(index + 1).padStart(2, "0")), create("strong", null, item.name), bar, create("b", null, item.display)); button.addEventListener("click", () => { elements.rankingList.querySelectorAll("button").forEach((node) => node.classList.toggle("is-active", node === button)); elements.rankingDetail.textContent = state.story.dataMode === "market" ? `${item.name} 位列第 ${index + 1}；当前口径：${state.story.ranking.label}，快照时间 ${formatTime(state.snapshot.generatedAt)}。` : `${item.name} 在所引用公开动态中的证据覆盖位列第 ${index + 1}；这不是外部市场或公链排名。`; }); elements.rankingList.appendChild(button); });
   }
 
   function renderWatch() {
-    elements.watchGrid.replaceChildren(); state.story.watch.forEach((item, index) => { const card = create("article", `watch-card ${item.tone}`); card.append(create("span", null, `0${index + 1}`), create("strong", null, item.metric), create("h3", null, item.title), create("p", null, item.detail)); elements.watchGrid.appendChild(card); });
+    elements.watchGrid.replaceChildren(); state.story.watch.forEach((item, index) => { const card = create("article", `watch-card ${item.tone}`); card.append(create("span", null, `0${index + 1}`), create("strong", null, item.metric || item.focus || "观察"), create("h3", null, item.title), create("p", null, item.detail)); elements.watchGrid.appendChild(card); });
   }
 
-  function toggleStory() {
-    if (state.timer) { stopStory(); return; }
-    if (state.chapter === state.story.chapters.length - 1) selectChapter(0); setPlayState(true);
-    state.timer = window.setInterval(() => { if (state.chapter >= state.story.chapters.length - 1) { stopStory(); return; } selectChapter(state.chapter + 1); }, 3000);
+  function prepareStory(theme, figure, snapshot) {
+    const story = structuredClone(theme.story);
+    const explicitMode = story.dataMode;
+    if (explicitMode === "market" || (!explicitMode && isMarketAligned(theme))) {
+      story.dataMode = "market";
+      return story;
+    }
+    if (explicitMode === "evidence") return story;
+
+    const evidence = theme.evidence || [];
+    const activeDays = new Set(evidence.map((item) => String(item.time).slice(0, 10))).size;
+    const keywordItems = evidenceKeywordRanking(theme);
+    story.dataMode = "evidence";
+    story.category = "公开动态议题";
+    story.snapshot = [
+      { label: "关联公开动态", value: `${evidence.length} 条`, change: `${theme.evidenceBreakdown.originals || 0} 原创 · ${theme.evidenceBreakdown.quotes || 0} 引用` },
+      { label: "讨论活跃日", value: `${activeDays} 天`, change: figure.analysisWindow || "近 7 天" },
+      { label: "核心关键词", value: `${theme.keywords.length} 个`, change: theme.keywords.slice(0, 3).join(" · ") },
+    ];
+    story.trend = { label: `${theme.name}公开动态分布`, unit: "条", points: evidenceTrend(evidence, snapshot.windowEnd) };
+    story.ranking = { label: "按公开动态证据覆盖排序", items: keywordItems };
+    story.watch = [
+      { title: "话题是否持续", focus: "持续性", metric: "持续性", detail: `观察${figure.nameZh}后续是否继续讨论“${theme.name}”，以及是否跨多个日期反复出现。`, tone: "teal" },
+      { title: "内容是否具体化", focus: "具体化", metric: "具体化", detail: "关注后续公开动态是否出现更明确的政策、技术、产品或时间节点，而不是补充无关市场数据。", tone: "amber" },
+      { title: "重点是否发生变化", focus: "议题变化", metric: "议题变化", detail: `比较后续关键词是否仍集中在${theme.keywords.slice(0, 3).join("、")}，或转向新的子议题。`, tone: "violet" },
+    ];
+    story.chapters = story.chapters.map((chapter) => {
+      if (chapter.view === "signal") return chapter;
+      if (chapter.view === "trend") return { ...chapter, kicker: "趋势", title: "讨论持续性与时间分布", body: `近 7 天内，与“${theme.name}”直接相关的公开动态分布在 ${activeDays} 个活跃日。这里分析的是讨论频次和持续性，不引用无关市场走势。` };
+      if (chapter.view === "ranking") return { ...chapter, kicker: "重点", title: "公开动态中的重点排序", body: `按所引用动态的证据覆盖看，当前重点依次集中在${keywordItems.slice(0, 3).map((item) => item.name).join("、")}。这是话题内部的证据排序，不是公链或资产排名。` };
+      return { ...chapter, kicker: "观察", title: "接下来关注什么", body: `后续只跟踪“${theme.name}”本身是否持续、是否出现更具体信息，以及关键词重点如何变化，不为凑数据引入无关区块链指标。` };
+    });
+    return story;
   }
-  function stopStory() { if (state.timer) window.clearInterval(state.timer); state.timer = null; setPlayState(false); }
-  function setPlayState(playing) { elements.playStory.classList.toggle("is-playing", playing); elements.playStory.children[1].textContent = playing ? "暂停数据故事" : "播放数据故事"; }
-  function narratorText(view) { return ({ signal: `先用“${state.theme.name}”的多条公开动态说明主题怎么得出，强调不是从单条内容下结论。`, trend: "这一章只讲长期变化，不用单日涨跌抢走叙事重点。", ranking: "排名用于解释结构和竞争格局，点击条目可以补充口径说明。", watch: "最后收束成三条可持续观察的问题，为后续真实数据接入留下空间。" })[view]; }
+
+  function isMarketAligned(theme) {
+    const text = `${theme.name} ${theme.summary || ""} ${(theme.keywords || []).join(" ")}`;
+    const patterns = {
+      stablecoin: /稳定币|数字美元|usdc|usdt|法币锚定/i,
+      bitcoin: /比特币|\bbtc\b/i,
+      ai_crypto: /ai\s*[×x+&]\s*(?:crypto|加密)|(?:人工智能|\bai\b).*(?:区块链|加密|链上)|(?:区块链|加密|链上).*(?:人工智能|\bai\b)/i,
+      payments: /链上支付|加密支付|稳定币支付|数字资产支付|机器支付|区块链结算/i,
+      layer2: /layer\s*2|\bl2\b|rollup|zk[- ]?evm|以太坊.*扩容|blob/i,
+      privacy: /零知识|\bzk\b|隐私池|选择性披露|链上隐私|隐私增强技术|隐私币/i,
+      chain_ecosystem: /公链|区块链生态|链上生态|bnb\s*chain|solana|ethereum|以太坊生态/i,
+      defi: /\bdefi\b|去中心化金融|去中心化交易|\bdex\b|链上借贷|流动性质押|\btvl\b/i,
+    };
+    return patterns[theme.topicType]?.test(text) || false;
+  }
+
+  function evidenceTrend(evidence, windowEndValue) {
+    const end = new Date(windowEndValue || Date.now());
+    const counts = new Map();
+    evidence.forEach((item) => { const day = String(item.time).slice(0, 10); counts.set(day, (counts.get(day) || 0) + 1); });
+    return Array.from({ length: 7 }, (_, index) => { const day = new Date(end); day.setUTCDate(day.getUTCDate() - (6 - index)); const key = day.toISOString().slice(0, 10); return { label: `${String(day.getUTCMonth() + 1).padStart(2, "0")}/${String(day.getUTCDate()).padStart(2, "0")}`, value: counts.get(key) || 0 }; });
+  }
+
+  function evidenceKeywordRanking(theme) {
+    const evidenceText = (theme.evidence || []).map((item) => `${item.summary || ""} ${(item.keywords || []).join(" ")}`.toLocaleLowerCase("zh-CN"));
+    return (theme.keywords || []).slice(0, 5).map((keyword) => { const normalized = keyword.toLocaleLowerCase("zh-CN"); const count = evidenceText.filter((text) => text.includes(normalized)).length || 1; return { name: keyword, value: count, display: `${count} 条证据` }; }).sort((left, right) => right.value - left.value);
+  }
   function readContext() { const params = new URLSearchParams(location.search); return { figureId: params.get("figureId") || "donald-trump", theme: params.get("theme") || "stablecoin", snapshot: params.get("snapshot") }; }
   function advanceLoading(step, detail) { [...elements.loadingSteps.children].forEach((item, index) => { item.classList.toggle("is-active", index === step); item.classList.toggle("is-done", index < step); }); elements.loadingDetail.textContent = detail; }
   function formatTime(value) { const date = new Date(value); return Number.isNaN(date.getTime()) ? "—" : new Intl.DateTimeFormat("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false }).format(date); }

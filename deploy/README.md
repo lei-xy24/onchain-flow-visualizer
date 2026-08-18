@@ -6,7 +6,7 @@
 
 1. 从 `trump.fm` 读取特朗普的 Truth Social 归档。
 2. 使用 X App Bearer Token 读取马斯克、Vitalik 和 CZ 的公开动态。
-3. 补充市场指标，调用 DeepSeek 生成关键词与四章数据故事。
+3. 调用 DeepSeek 生成关键词与四章主题故事；只有直接相关的区块链主题才补充市场指标，其他主题只使用公开动态证据。
 4. 校验证据、指标、排名和故事结构。
 5. 只把通过校验的公开快照提交到 GitHub `main`，供 GitHub Pages 读取。
 

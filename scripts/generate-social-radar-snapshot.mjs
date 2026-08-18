@@ -110,9 +110,9 @@ async function generateWithDeepSeek({ modelName, socialInput, marketInput, confi
             content: JSON.stringify({
               task: validationErrors.length
                 ? "上一次候选没有通过事实校验。请根据校验反馈从原始输入重新生成完整结果，不要复述错误内容。"
-                : "仅根据每位人物最近 7 天的公开动态，归纳其近期反复讨论且能够映射到数据模板的宽泛技术或市场概念，并为每个概念组织四章数据故事，以 JSON 格式返回。",
+                : "仅根据每位人物最近 7 天的公开动态，归纳其近期反复讨论的真实主题，并为每个主题组织四章故事。不要为了使用市场数据而把无关主题包装成区块链话题。",
               validationFeedback: validationErrors,
-              allowedTopicTypes: Object.keys(marketInput.topics),
+              allowedMarketTopicTypes: Object.keys(marketInput.topics),
               figures: socialInput.figures.map((figure) => ({ id: figure.id, name: figure.name, sources: figure.sources })),
               marketContext: Object.fromEntries(Object.entries(marketInput.topics).map(([topicType, market]) => [
                 topicType,
@@ -145,15 +145,19 @@ async function generateWithDeepSeek({ modelName, socialInput, marketInput, confi
 
 function buildInstructions(config) {
   return [
-    "你是链上数据产品的事实编辑。输出语言为简体中文。",
+    "你是公开动态主题分析产品的事实编辑。输出语言为简体中文。",
     "只允许使用输入里出现的 figure id、source id 和 marketContext 数值，不得补充外部事实或猜测人物立场。",
     `每位人物输出 1 至 ${config.maxTopicsPerFigure} 个宽泛主题，每个主题至少引用 ${config.minEvidencePerTopic} 条独立证据。`,
-    "topicType 只能从 allowedTopicTypes 中选择；无法合理映射的主题必须省略，绝对不要输出 other 或自造类型。",
+    "topicType 是稳定、唯一的英文 snake_case 主题标识。只有主题本身直接讨论对应区块链市场时，才能使用 allowedMarketTopicTypes 中的标识并把 dataMode 设为 market。",
+    "关税、选举、宏观经济、航天、纯 AI、企业产品、一般网络安全等主题不得映射成支付、公链、AI × Crypto、隐私资产等市场模板；这些主题必须使用自己的 topicType，并把 dataMode 设为 evidence。",
     "sourceIds 与 evidenceSummaries 必须一一对应，摘要只能归纳所引用文本。",
-    "故事四章必须依次为 signal、trend、ranking、watch；指标、趋势和排名只解释 marketContext，不得自行生成数字。",
+    "故事四章必须依次为 signal、trend、ranking、watch，并且四章始终围绕同一个真实主题。",
+    "dataMode=market 时，trend 和 ranking 可以解释该 topicType 的 marketContext，但不得自行生成数字。",
+    "dataMode=evidence 时，trend 只分析公开动态在时间上的持续性与变化，ranking 只比较证据中的关键词或子议题优先级，严禁提及无关公链、代币、市值、市场排名或链上趋势。",
     "输入只包含公开动态。原创和引用动态权重较高，回复只能作为辅助证据；不得把发帖或引用表述成投资、合作、支持或背书。",
-    "每个 watch 只能返回 title、metricRef、detail、tone；metricRef 必须逐字选择该 topicType 的 watchMetricOptions.ref，实际数值由程序注入，禁止输出 metric 字段。",
-    "watch 的 title 和 detail 只能解释所选 metricRef 对应的数据含义，不得加入 marketContext 与公开动态中都不存在的数字。",
+    "dataMode=market 时，每个 watch 返回 title、metricRef、detail、tone；metricRef 必须逐字选择对应 marketContext 的 watchMetricOptions.ref，禁止输出 metric 或 focus。",
+    "dataMode=evidence 时，每个 watch 返回 title、focus、detail、tone；focus 是简短的后续观察维度，禁止输出 metricRef、metric 或任何输入中不存在的数字。",
+    "如果人物关注的话题与区块链无关，也必须如实分析该话题，不得省略，更不得生搬硬套区块链数据。",
   ].join("\n");
 }
 

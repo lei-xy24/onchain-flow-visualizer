@@ -108,6 +108,20 @@ test("人物采集边界是特朗普走 trump.fm、另外三人走 X", async () 
   assert.ok(others.every((figure) => figure.accounts.some((account) => account.platform === "X")));
 });
 
+test("主题故事不强迫普通话题套用区块链数据且仅保留右侧信息卡", async () => {
+  const [generator, storyHtml, storyScript] = await Promise.all([
+    readFile(path.join(root, "scripts/generate-social-radar-snapshot.mjs"), "utf8"),
+    readFile(path.join(root, "static-site/event-explorer.html"), "utf8"),
+    readFile(path.join(root, "static-site/event-explorer.js"), "utf8"),
+  ]);
+  assert.match(generator, /dataMode=evidence/);
+  assert.match(generator, /不得映射成支付、公链、AI × Crypto、隐私资产/);
+  assert.match(storyHtml, /class="context-panel"/);
+  assert.doesNotMatch(storyHtml, /story-toolbar|播放数据故事|Narrator notes|演示时这样讲/);
+  assert.match(storyScript, /isMarketAligned/);
+  assert.match(storyScript, /这不是外部市场或公链排名/);
+});
+
 test("没有 X Token 时每周任务安全跳过且不覆盖快照", () => {
   const result = spawnSync(process.execPath, ["scripts/run-social-radar-cycle.mjs"], {
     cwd: root,
