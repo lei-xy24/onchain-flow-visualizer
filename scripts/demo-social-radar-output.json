@@ -5,6 +5,7 @@
       "topics": [
         {
           "topicType": "stablecoin",
+          "dataMode": "market",
           "name": "稳定币与数字美元",
           "category": "支付基础设施",
           "confidence": "高",
@@ -35,6 +36,7 @@
         },
         {
           "topicType": "bitcoin",
+          "dataMode": "market",
           "name": "比特币与长期配置",
           "category": "数字资产",
           "confidence": "中",
@@ -69,6 +71,7 @@
       "topics": [
         {
           "topicType": "ai_crypto",
+          "dataMode": "market",
           "name": "AI × Crypto",
           "category": "技术叙事",
           "confidence": "高",
@@ -99,6 +102,7 @@
         },
         {
           "topicType": "payments",
+          "dataMode": "market",
           "name": "链上支付网络",
           "category": "支付技术",
           "confidence": "中",
@@ -133,6 +137,7 @@
       "topics": [
         {
           "topicType": "layer2",
+          "dataMode": "market",
           "name": "Ethereum 扩容与 Layer 2",
           "category": "区块链基础设施",
           "confidence": "高",
@@ -163,6 +168,7 @@
         },
         {
           "topicType": "privacy",
+          "dataMode": "market",
           "name": "隐私增强技术",
           "category": "密码学应用",
           "confidence": "中",
@@ -197,6 +203,7 @@
       "topics": [
         {
           "topicType": "chain_ecosystem",
+          "dataMode": "market",
           "name": "BNB Chain 生态",
           "category": "公链生态",
           "confidence": "高",
@@ -227,6 +234,7 @@
         },
         {
           "topicType": "defi",
+          "dataMode": "market",
           "name": "DeFi 与链上流动性",
           "category": "金融协议",
           "confidence": "高",

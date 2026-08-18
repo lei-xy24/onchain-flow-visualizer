@@ -37,15 +37,27 @@ test("不存在的来源和市场指标会阻止发布", () => {
   assert.ok(errors.some((error) => error.includes("不存在的指标引用")));
 });
 
-test("不支持主题会被忽略且模型自造数字会替换为市场指标引用", () => {
+test("普通主题保留证据分析且市场主题只使用真实指标", () => {
   const candidate = structuredClone(modelOutput);
-  candidate.figures[0].topics.push({ ...structuredClone(candidate.figures[0].topics[0]), topicType: "other", name: "美国优先政策与选举动员" });
+  const generalTopic = structuredClone(candidate.figures[0].topics[0]);
+  generalTopic.topicType = "trade_policy";
+  generalTopic.dataMode = "evidence";
+  generalTopic.name = "关税与贸易执法";
+  generalTopic.category = "公共政策";
+  generalTopic.story.watch = [
+    { title: "执法是否持续", focus: "持续性", detail: "关注后续公开动态是否继续讨论关税执法。", tone: "teal" },
+    { title: "政策是否具体", focus: "具体化", detail: "关注是否出现更具体的政策范围和时间节点。", tone: "amber" },
+    { title: "议题是否转向", focus: "议题变化", detail: "比较后续关键词是否转向新的贸易子议题。", tone: "violet" },
+  ];
+  candidate.figures[0].topics = [generalTopic];
   const watch = candidate.figures[1].topics[0].story.watch[0];
   delete watch.metricRef;
   watch.metric = "3–4 周";
 
   const grounded = groundModelOutput(candidate, marketInput);
-  assert.equal(grounded.figures[0].topics.some((topic) => topic.topicType === "other"), false);
+  assert.equal(grounded.figures[0].topics[0].topicType, "trade_policy");
+  assert.equal(grounded.figures[0].topics[0].dataMode, "evidence");
+  assert.equal("metricRef" in grounded.figures[0].topics[0].story.watch[0], false);
   assert.equal(grounded.figures[1].topics[0].story.watch[0].metricRef, "metric-0-value");
   assert.deepEqual(validateModelOutput(grounded, socialInput, marketInput, config), []);
 
@@ -54,8 +66,23 @@ test("不支持主题会被忽略且模型自造数字会替换为市场指标�
     slot: new Date("2026-08-13T12:00:00Z"), generatedAt: "2026-08-13T12:06:00.000Z",
     modelName: config.model, isDemo: false,
   });
+  const generalStory = snapshot.figures[0].themes[0].story;
+  assert.equal(generalStory.dataMode, "evidence");
+  assert.equal(generalStory.snapshot[0].label, "关联公开动态");
+  assert.equal(generalStory.ranking.label, "按公开动态证据覆盖排序");
+  assert.equal(generalStory.watch[0].metric, "持续性");
+  assert.equal(JSON.stringify(generalStory).includes("公链资产市场规模"), false);
   assert.equal(snapshot.figures[1].themes[0].story.watch[0].metric, marketInput.topics.ai_crypto.metrics[0].value);
   assert.notEqual(snapshot.figures[1].themes[0].story.watch[0].metric, "3–4 周");
+});
+
+test("普通主题引用市场指标时拒绝发布", () => {
+  const invalid = structuredClone(modelOutput);
+  invalid.figures[0].topics[0].topicType = "trade_policy";
+  invalid.figures[0].topics[0].dataMode = "evidence";
+  invalid.figures[0].topics[0].story.watch[0].focus = "持续性";
+  const errors = validateModelOutput(invalid, socialInput, marketInput, config);
+  assert.ok(errors.some((error) => error.includes("非市场主题不应引用市场指标")));
 });
 
 test("DeepSeek 返回合法但缺字段的 JSON 时安全拒绝", () => {

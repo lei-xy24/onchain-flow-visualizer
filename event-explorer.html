@@ -4,10 +4,10 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>主题数据故事 · 区块链安全监控平台</title>
-    <meta name="description" content="从人物兴趣主题出发，通过市场规模、趋势、排名和观察结论讲述数据故事" />
-    <link rel="stylesheet" href="./event-explorer.css?v=20260813-v2" />
+    <meta name="description" content="从人物公开动态出发，围绕真实关注主题分析信号、趋势、重点和后续观察" />
+    <link rel="stylesheet" href="./event-explorer.css?v=20260818-v1" />
     <script src="./snapshot-store.js?v=20260813-v1" defer></script>
-    <script src="./event-explorer.js?v=20260813-v3" defer></script>
+    <script src="./event-explorer.js?v=20260818-v1" defer></script>
   </head>
   <body>
     <header class="story-header">
@@ -35,11 +35,6 @@
 
       <section class="snapshot-grid" id="snapshot-grid" aria-label="主题概览"></section>
 
-      <section class="story-toolbar" aria-label="故事播放控制">
-        <div><p class="eyebrow">Guided story</p><h2>四步讲清这个主题为什么值得关注</h2></div>
-        <div class="story-controls"><button id="previous-chapter" type="button" aria-label="上一章">←</button><button class="play-button" id="play-story" type="button"><span aria-hidden="true">▶</span><span>播放数据故事</span></button><button id="next-chapter" type="button" aria-label="下一章">→</button><span id="story-progress">1 / 4</span></div>
-      </section>
-
       <section class="story-workspace" aria-label="交互式主题数据故事">
         <nav class="chapter-list" id="chapter-list" aria-label="故事章节"></nav>
 
@@ -54,12 +49,12 @@
           </div>
 
           <div class="visual-card trend-view" id="trend-view" hidden>
-            <div class="visual-heading"><div><small>Market trend</small><strong id="trend-title">—</strong></div><span id="trend-mode-label">快照指标</span></div>
+            <div class="visual-heading"><div><small id="trend-kicker">Topic trend</small><strong id="trend-title">—</strong></div><span id="trend-mode-label">主题证据</span></div>
             <svg id="trend-chart" viewBox="0 0 880 340" role="img" aria-labelledby="trend-chart-title trend-chart-desc"><title id="trend-chart-title">主题趋势图</title><desc id="trend-chart-desc">展示主题快照中保存的核心指标变化曲线。</desc></svg>
           </div>
 
           <div class="visual-card ranking-view" id="ranking-view" hidden>
-            <div class="visual-heading"><div><small>Market landscape</small><strong id="ranking-title">—</strong></div><span>点击项目查看解释</span></div>
+            <div class="visual-heading"><div><small id="ranking-kicker">Topic priorities</small><strong id="ranking-title">—</strong></div><span>点击项目查看解释</span></div>
             <div class="ranking-list" id="ranking-list"></div>
             <div class="ranking-detail" id="ranking-detail">选择一个项目查看其在当前主题中的位置。</div>
           </div>
@@ -70,22 +65,20 @@
           </div>
         </article>
 
-        <aside class="narrator-panel">
-          <p class="eyebrow">Narrator notes</p><h2>演示时这样讲</h2>
-          <div class="narrator-quote" id="narrator-quote">先说明兴趣结论来自哪些公开信号，再进入市场数据。</div>
+        <aside class="context-panel" aria-label="当前主题信息">
           <dl><div><dt>人物</dt><dd id="note-figure">—</dd></div><div><dt>主题</dt><dd id="note-theme">—</dd></div><div><dt>兴趣强度</dt><dd id="note-score">—</dd></div><div><dt>结论置信度</dt><dd id="note-confidence">—</dd></div></dl>
           <a href="./hot-topic.html">返回查看其他人物或主题</a>
         </aside>
       </section>
 
       <section class="ending-card">
-        <div><p class="eyebrow">From signal to insight</p><h2>人物只是故事入口，主题数据才是可持续探索的主体</h2></div>
-        <p>正式接入后，每个主题可以使用不同的数据模板：稳定币讲规模与链分布，公链讲用户与生态，DeFi 讲流动性与风险，隐私技术讲研发与采用。</p>
+        <div><p class="eyebrow">From signal to insight</p><h2>围绕真实主题展开，不为数据模板生搬硬套</h2></div>
+        <p>区块链主题使用直接相关的市场数据；政策、技术、商业等其他主题只分析公开动态频次、关键词证据和后续关注点。</p>
       </section>
     </main>
 
     <div class="loading-overlay" id="loading-overlay">
-      <div class="loading-dialog" role="status" aria-live="polite"><div class="loading-orbit" aria-hidden="true"><i></i><i></i><i></i></div><p>Topic story builder</p><h2 id="loading-title">正在构建主题数据故事</h2><span id="loading-detail">正在读取人物兴趣结论</span><ol id="loading-steps"><li class="is-active">读取兴趣证据</li><li>加载主题指标</li><li>生成故事章节</li></ol></div>
+      <div class="loading-dialog" role="status" aria-live="polite"><div class="loading-orbit" aria-hidden="true"><i></i><i></i><i></i></div><p>Topic story builder</p><h2 id="loading-title">正在构建主题数据故事</h2><span id="loading-detail">正在读取人物兴趣结论</span><ol id="loading-steps"><li class="is-active">读取兴趣证据</li><li>匹配主题数据</li><li>生成故事章节</li></ol></div>
     </div>
   </body>
 </html>
