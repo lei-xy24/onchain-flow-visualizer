@@ -1,12 +1,12 @@
 {
   "schemaVersion": 1,
-  "snapshotId": "20260817T000000Z",
+  "snapshotId": "20260824T000000Z",
   "status": "published",
-  "slotStart": "2026-08-17T00:00:00.000Z",
-  "windowStart": "2026-08-11T05:27:47.912Z",
-  "windowEnd": "2026-08-18T05:27:47.912Z",
-  "generatedAt": "2026-08-18T05:45:50.353Z",
-  "nextScheduledAt": "2026-08-24T00:00:00.000Z",
+  "slotStart": "2026-08-24T00:00:00.000Z",
+  "windowStart": "2026-08-17T00:59:26.527Z",
+  "windowEnd": "2026-08-24T00:59:26.527Z",
+  "generatedAt": "2026-08-24T01:01:12.650Z",
+  "nextScheduledAt": "2026-08-31T00:00:00.000Z",
   "model": "deepseek-v4-pro",
   "modelProvider": "deepseek",
   "promptVersion": "interest-story-deepseek-v4-market-normalization",
@@ -41,35 +41,357 @@
       "postsAnalyzed": 80,
       "sourceCount": 80,
       "analysisWindow": "近 7 天",
-      "lastSuccessAt": "2026-08-18T05:45:50.353Z",
+      "lastSuccessAt": "2026-08-24T01:01:12.650Z",
       "themes": [
         {
-          "id": "election-endorsements-选举背书与候选人支持",
-          "topicType": "election_endorsements",
-          "storyId": "election_endorsements",
-          "name": "选举背书与候选人支持",
-          "category": "政治",
-          "score": 87,
+          "id": "white-house-ballroom-complex-白宫宴会厅-军事综合体建设",
+          "topicType": "white_house_ballroom_complex",
+          "storyId": "white_house_ballroom_complex",
+          "name": "白宫宴会厅/军事综合体建设",
+          "category": "国内政策与基建",
+          "score": 86,
           "change": 0,
           "trend": "新出现",
           "confidence": "高",
-          "summary": "特朗普在最近7天内密集发布对佛罗里达州、怀俄明州、阿拉斯加州等地共和党候选人的背书，强调其America First议程，并呼吁选民在8月18日投票。",
-          "why": "大量原创动态反复出现对候选人的具体背书，且包含统一的政策关键词和投票呼吁。",
+          "summary": "特朗普反复强调白宫宴会厅/军事综合体项目对国家安全的重要性，并庆祝最高法院允许继续施工的裁决。",
+          "why": "多条原创动态直接提及该项目，包括最高法院裁决、项目进展和国家安全理由。",
           "keywords": [
-            "背书",
-            "选举",
-            "America First",
-            "投票",
-            "候选人"
+            "白宫宴会厅",
+            "军事综合体",
+            "最高法院",
+            "国家安全",
+            "施工"
           ],
           "sourceIds": [
-            "trump-fm-117113535082793528",
-            "trump-fm-117113531476309322",
-            "trump-fm-117113530523550991",
-            "trump-fm-117113293401777923",
-            "trump-fm-117113292058934152",
-            "trump-fm-117113263662596354",
-            "trump-fm-117113262645072564"
+            "trump-fm-117139411859970862",
+            "trump-fm-117135361970854867",
+            "trump-fm-117135011934383556",
+            "trump-fm-117134359860253059",
+            "trump-fm-117134308987004111",
+            "trump-fm-117134194900118704",
+            "trump-fm-117125718254050188",
+            "trump-fm-117116872320047163"
+          ],
+          "evidenceBreakdown": {
+            "posts": 8,
+            "originals": 8,
+            "quotes": 0,
+            "replies": 0,
+            "weightedCount": 8
+          },
+          "scoreBreakdown": {
+            "frequency": 100,
+            "freshness": 60,
+            "continuity": 98
+          },
+          "evidence": [
+            {
+              "id": "trump-fm-117139411859970862",
+              "type": "post",
+              "kind": "original",
+              "weight": 1,
+              "platform": "Truth Social",
+              "provider": "trump.fm",
+              "time": "2026-08-22T13:32:56.478Z",
+              "title": "Tremendous work has been done on t…",
+              "summary": "特朗普称白宫宴会厅/军事综合体项目进展顺利，低于预算且提前完成，由爱国者和公司出资。",
+              "keywords": [
+                "宴会厅",
+                "军事综合体",
+                "国家安全",
+                "预算"
+              ],
+              "url": "https://trump.fm/post/ts_117139411859970862"
+            },
+            {
+              "id": "trump-fm-117135361970854867",
+              "type": "post",
+              "kind": "original",
+              "weight": 1,
+              "platform": "Truth Social",
+              "provider": "trump.fm",
+              "time": "2026-08-21T20:23:00.072Z",
+              "title": "We are grateful for the Decision o…",
+              "summary": "特朗普感谢最高法院裁决，称该项目对国家安全至关重要，是总统们150年来的愿望。",
+              "keywords": [
+                "最高法院",
+                "国家安全",
+                "150年"
+              ],
+              "url": "https://trump.fm/post/ts_117135361970854867"
+            },
+            {
+              "id": "trump-fm-117135011934383556",
+              "type": "post",
+              "kind": "original",
+              "weight": 1,
+              "platform": "Truth Social",
+              "provider": "trump.fm",
+              "time": "2026-08-21T18:53:58.941Z",
+              "title": "Work on Trump White House ballroom…",
+              "summary": "特朗普分享新闻：最高法院首席大法官罗伯茨裁定白宫宴会厅施工可以继续。",
+              "keywords": [
+                "最高法院",
+                "罗伯茨",
+                "施工"
+              ],
+              "url": "https://trump.fm/post/ts_117135011934383556"
+            },
+            {
+              "id": "trump-fm-117134359860253059",
+              "type": "post",
+              "kind": "original",
+              "weight": 1,
+              "platform": "Truth Social",
+              "provider": "trump.fm",
+              "time": "2026-08-21T16:08:09.078Z",
+              "title": "MORNING GLORY: SCOTUS should urgen…",
+              "summary": "特朗普分享福克斯新闻观点文章，呼吁最高法院紧急允许白宫施工继续。",
+              "keywords": [
+                "最高法院",
+                "施工",
+                "紧急"
+              ],
+              "url": "https://trump.fm/post/ts_117134359860253059"
+            },
+            {
+              "id": "trump-fm-117134308987004111",
+              "type": "post",
+              "kind": "original",
+              "weight": 1,
+              "platform": "Truth Social",
+              "provider": "trump.fm",
+              "time": "2026-08-21T15:55:12.814Z",
+              "title": "I served as Trump’s NSA. SCOTUS ne…",
+              "summary": "特朗普分享前国安顾问文章，称最高法院需要阻止法院将总统安全置于风险之中。",
+              "keywords": [
+                "最高法院",
+                "总统安全",
+                "法院"
+              ],
+              "url": "https://trump.fm/post/ts_117134308987004111"
+            },
+            {
+              "id": "trump-fm-117134194900118704",
+              "type": "post",
+              "kind": "original",
+              "weight": 1,
+              "platform": "Truth Social",
+              "provider": "trump.fm",
+              "time": "2026-08-21T15:26:11.987Z",
+              "title": "Trump Is Right: Judges Can’t Be Co…",
+              "summary": "特朗普分享华尔街日报观点文章，称法官不能当施工工头。",
+              "keywords": [
+                "法官",
+                "施工",
+                "工头"
+              ],
+              "url": "https://trump.fm/post/ts_117134194900118704"
+            },
+            {
+              "id": "trump-fm-117125718254050188",
+              "type": "post",
+              "kind": "original",
+              "weight": 1,
+              "platform": "Truth Social",
+              "provider": "trump.fm",
+              "time": "2026-08-20T03:30:28.632Z",
+              "title": "MORNING GLORY: SCOTUS should urgen…",
+              "summary": "特朗普再次分享福克斯新闻观点文章，呼吁最高法院紧急允许白宫施工继续。",
+              "keywords": [
+                "最高法院",
+                "施工",
+                "紧急"
+              ],
+              "url": "https://trump.fm/post/ts_117125718254050188"
+            },
+            {
+              "id": "trump-fm-117116872320047163",
+              "type": "post",
+              "kind": "original",
+              "weight": 1,
+              "platform": "Truth Social",
+              "provider": "trump.fm",
+              "time": "2026-08-18T14:00:50.391Z",
+              "title": "MORNING GLORY: SCOTUS should urgen…",
+              "summary": "特朗普再次分享福克斯新闻观点文章，呼吁最高法院紧急允许白宫施工继续。",
+              "keywords": [
+                "最高法院",
+                "施工",
+                "紧急"
+              ],
+              "url": "https://trump.fm/post/ts_117116872320047163"
+            }
+          ],
+          "story": {
+            "dataMode": "evidence",
+            "name": "白宫宴会厅/军事综合体建设",
+            "category": "国内政策与基建",
+            "headline": "特朗普力推白宫宴会厅/军事综合体建设",
+            "lead": "特朗普在最近一周内多次发布动态，强调白宫宴会厅/军事综合体项目对国家安全的重要性，并庆祝最高法院允许继续施工的裁决。",
+            "accent": "#b94545",
+            "snapshot": [
+              {
+                "label": "关联公开动态",
+                "value": "8 条",
+                "change": "8 原创 · 0 引用"
+              },
+              {
+                "label": "讨论活跃日",
+                "value": "4 天",
+                "change": "近 7 天"
+              },
+              {
+                "label": "核心关键词",
+                "value": "5 个",
+                "change": "白宫宴会厅 · 军事综合体 · 最高法院"
+              }
+            ],
+            "trend": {
+              "label": "白宫宴会厅/军事综合体建设公开动态分布",
+              "unit": "条",
+              "points": [
+                {
+                  "label": "08/18",
+                  "value": 1
+                },
+                {
+                  "label": "08/19",
+                  "value": 0
+                },
+                {
+                  "label": "08/20",
+                  "value": 1
+                },
+                {
+                  "label": "08/21",
+                  "value": 5
+                },
+                {
+                  "label": "08/22",
+                  "value": 1
+                },
+                {
+                  "label": "08/23",
+                  "value": 0
+                },
+                {
+                  "label": "08/24",
+                  "value": 0
+                }
+              ]
+            },
+            "ranking": {
+              "label": "按公开动态证据覆盖排序",
+              "items": [
+                {
+                  "name": "最高法院",
+                  "value": 6,
+                  "display": "6 条证据"
+                },
+                {
+                  "name": "施工",
+                  "value": 5,
+                  "display": "5 条证据"
+                },
+                {
+                  "name": "白宫宴会厅",
+                  "value": 2,
+                  "display": "2 条证据"
+                },
+                {
+                  "name": "国家安全",
+                  "value": 2,
+                  "display": "2 条证据"
+                },
+                {
+                  "name": "军事综合体",
+                  "value": 1,
+                  "display": "1 条证据"
+                }
+              ]
+            },
+            "watch": [
+              {
+                "title": "施工进展",
+                "focus": "项目是否继续按计划推进",
+                "detail": "特朗普声称项目低于预算且提前完成，需观察实际施工进度。",
+                "tone": "teal",
+                "metric": "项目是否继续按计划推进",
+                "metricLabel": "观察维度"
+              },
+              {
+                "title": "法律挑战",
+                "focus": "是否出现新的法律诉讼",
+                "detail": "最高法院裁决后，可能仍有其他法律挑战，需关注后续司法动态。",
+                "tone": "amber",
+                "metric": "是否出现新的法律诉讼",
+                "metricLabel": "观察维度"
+              },
+              {
+                "title": "政治反应",
+                "focus": "反对派和媒体的反应",
+                "detail": "该项目可能引发政治争议，需关注民主党人和媒体的批评。",
+                "tone": "violet",
+                "metric": "反对派和媒体的反应",
+                "metricLabel": "观察维度"
+              }
+            ],
+            "chapters": [
+              {
+                "title": "信号：最高法院裁决与项目进展",
+                "kicker": "signal",
+                "body": "特朗普发布多条动态，宣布最高法院裁决允许白宫宴会厅/军事综合体施工继续，并强调项目低于预算、提前完成。",
+                "view": "signal"
+              },
+              {
+                "title": "趋势：持续强调国家安全理由",
+                "kicker": "trend",
+                "body": "从8月18日到8月23日，特朗普反复分享支持施工的观点文章，并亲自发帖强调国家安全理由，显示其持续推动该议题。",
+                "view": "trend"
+              },
+              {
+                "title": "排名：最高法院裁决与国家安全为核心关键词",
+                "kicker": "ranking",
+                "body": "在相关动态中，'最高法院'、'国家安全'、'施工'等关键词出现频率最高，表明特朗普将法律裁决与国家安全紧密绑定。",
+                "view": "ranking"
+              },
+              {
+                "title": "观察：后续施工进展与法律挑战",
+                "kicker": "watch",
+                "body": "关注项目是否按计划推进，以及是否面临新的法律挑战或政治争议。",
+                "view": "watch"
+              }
+            ]
+          }
+        },
+        {
+          "id": "iran-economic-warfare-对伊朗经济战与霍尔木兹海峡控制",
+          "topicType": "iran_economic_warfare",
+          "storyId": "iran_economic_warfare",
+          "name": "对伊朗经济战与霍尔木兹海峡控制",
+          "category": "外交与国家安全",
+          "score": 81,
+          "change": 0,
+          "trend": "新出现",
+          "confidence": "高",
+          "summary": "特朗普宣布对伊朗实施前所未有的经济行动，并声称美国控制霍尔木兹海峡，强调伊朗核威胁。",
+          "why": "多条原创动态直接涉及对伊朗的经济制裁、军事行动和霍尔木兹海峡控制。",
+          "keywords": [
+            "伊朗",
+            "经济战",
+            "霍尔木兹海峡",
+            "核武器",
+            "制裁"
+          ],
+          "sourceIds": [
+            "trump-fm-117124650907675461",
+            "trump-fm-117116752164653735",
+            "trump-fm-117134622109680955",
+            "trump-fm-117134600045602327",
+            "trump-fm-117134598983433487",
+            "trump-fm-117134595889412013",
+            "trump-fm-117134651908743307"
           ],
           "evidenceBreakdown": {
             "posts": 7,
@@ -80,136 +402,136 @@
           },
           "scoreBreakdown": {
             "frequency": 100,
-            "freshness": 96,
-            "continuity": 50
+            "freshness": 57,
+            "continuity": 82
           },
           "evidence": [
             {
-              "id": "trump-fm-117113535082793528",
+              "id": "trump-fm-117124650907675461",
               "type": "post",
               "kind": "original",
               "weight": 1,
               "platform": "Truth Social",
               "provider": "trump.fm",
-              "time": "2026-08-17T23:52:08.192Z",
-              "title": "It is my Great Honor to endorse Am…",
-              "summary": "特朗普背书北卡罗来纳州第11国会选区候选人Jennifer Balkcom，强调其America First立场，并攻击对手。",
+              "time": "2026-08-19T22:59:02.219Z",
+              "title": "No one has given the Islamic Repub…",
+              "summary": "特朗普宣布对伊朗实施最严厉的经济行动，称其为经济战和孤立，并警告任何国家提供支持将面临后果。",
               "keywords": [
-                "背书",
-                "Jennifer Balkcom",
-                "America First"
+                "经济战",
+                "孤立",
+                "制裁",
+                "核武器"
               ],
-              "url": "https://trump.fm/post/ts_117113535082793528"
+              "url": "https://trump.fm/post/ts_117124650907675461"
             },
             {
-              "id": "trump-fm-117113531476309322",
+              "id": "trump-fm-117116752164653735",
               "type": "post",
               "kind": "original",
               "weight": 1,
               "platform": "Truth Social",
               "provider": "trump.fm",
-              "time": "2026-08-17T23:51:13.161Z",
-              "title": "Senator Ashley Moody is doing a tr…",
-              "summary": "特朗普背书佛罗里达州参议员Ashley Moody，列举其政策立场并呼吁投票。",
+              "time": "2026-08-18T13:30:16.966Z",
+              "title": "There are no talks or conversation…",
+              "summary": "特朗普称与伊朗没有谈判，海军封锁仍然有效，霍尔木兹海峡开放且水雷已清除。",
               "keywords": [
-                "背书",
-                "Ashley Moody",
-                "佛罗里达"
+                "海军封锁",
+                "霍尔木兹海峡",
+                "水雷"
               ],
-              "url": "https://trump.fm/post/ts_117113531476309322"
+              "url": "https://trump.fm/post/ts_117116752164653735"
             },
             {
-              "id": "trump-fm-117113530523550991",
+              "id": "trump-fm-117134622109680955",
               "type": "post",
               "kind": "original",
               "weight": 1,
               "platform": "Truth Social",
               "provider": "trump.fm",
-              "time": "2026-08-17T23:50:58.624Z",
-              "title": "Highly Respected Congressman Byron…",
-              "summary": "特朗普背书佛罗里达州州长候选人Byron Donalds，称其为TOTAL WINNER。",
+              "time": "2026-08-21T17:14:50.688Z",
+              "title": "Trump says he'll declare Strait of…",
+              "summary": "特朗普称在击败伊朗后将宣布霍尔木兹海峡为美国领土。",
               "keywords": [
-                "背书",
-                "Byron Donalds",
-                "州长"
+                "霍尔木兹海峡",
+                "美国领土",
+                "击败伊朗"
               ],
-              "url": "https://trump.fm/post/ts_117113530523550991"
+              "url": "https://trump.fm/post/ts_117134622109680955"
             },
             {
-              "id": "trump-fm-117113293401777923",
+              "id": "trump-fm-117134600045602327",
               "type": "post",
               "kind": "original",
               "weight": 1,
               "platform": "Truth Social",
               "provider": "trump.fm",
-              "time": "2026-08-17T22:50:40.432Z",
-              "title": "Highly Respected Congresswoman, Ha…",
-              "summary": "特朗普背书怀俄明州参议员候选人Harriet Hageman，强调其America First议程。",
+              "time": "2026-08-21T17:09:14.016Z",
+              "title": "Trump: US Has Total Control of Hor…",
+              "summary": "特朗普声称美国完全控制霍尔木兹海峡。",
               "keywords": [
-                "背书",
-                "Harriet Hageman",
-                "怀俄明"
+                "霍尔木兹海峡",
+                "控制"
               ],
-              "url": "https://trump.fm/post/ts_117113293401777923"
+              "url": "https://trump.fm/post/ts_117134600045602327"
             },
             {
-              "id": "trump-fm-117113292058934152",
+              "id": "trump-fm-117134598983433487",
               "type": "post",
               "kind": "original",
               "weight": 1,
               "platform": "Truth Social",
               "provider": "trump.fm",
-              "time": "2026-08-17T22:50:19.942Z",
-              "title": "“MAGA” Megan Degenfelder is runnin…",
-              "summary": "特朗普背书怀俄明州州长候选人Megan Degenfelder，称其为MAGA Megan。",
+              "time": "2026-08-21T17:08:57.808Z",
+              "title": "Trump Touts Stranglehold on Iran: …",
+              "summary": "特朗普吹嘘对伊朗的扼杀，并说'赞美真主！'",
               "keywords": [
-                "背书",
-                "Megan Degenfelder",
-                "怀俄明"
+                "扼杀",
+                "伊朗",
+                "赞美真主"
               ],
-              "url": "https://trump.fm/post/ts_117113292058934152"
+              "url": "https://trump.fm/post/ts_117134598983433487"
             },
             {
-              "id": "trump-fm-117113263662596354",
+              "id": "trump-fm-117134595889412013",
               "type": "post",
               "kind": "original",
               "weight": 1,
               "platform": "Truth Social",
               "provider": "trump.fm",
-              "time": "2026-08-17T22:43:06.648Z",
-              "title": "Congressman Nick Begich is doing a…",
-              "summary": "特朗普背书阿拉斯加州国会议员Nick Begich，强调其America First政策。",
+              "time": "2026-08-21T17:08:10.598Z",
+              "title": "Bessent says US to apply measures …",
+              "summary": "财政部长贝森特称美国将对伊朗实施前所未有的措施。",
               "keywords": [
-                "背书",
-                "Nick Begich",
-                "阿拉斯加"
+                "贝森特",
+                "措施",
+                "伊朗"
               ],
-              "url": "https://trump.fm/post/ts_117113263662596354"
+              "url": "https://trump.fm/post/ts_117134595889412013"
             },
             {
-              "id": "trump-fm-117113262645072564",
+              "id": "trump-fm-117134651908743307",
               "type": "post",
               "kind": "original",
               "weight": 1,
               "platform": "Truth Social",
               "provider": "trump.fm",
-              "time": "2026-08-17T22:42:51.124Z",
-              "title": "Senator Dan Sullivan is doing a fa…",
-              "summary": "特朗普背书阿拉斯加州参议员Dan Sullivan，并警告选民注意同名候选人混淆。",
+              "time": "2026-08-21T17:22:25.384Z",
+              "title": "‘ECONOMIC D-DAY’: Trump Announces …",
+              "summary": "特朗普宣布'经济D日'行动，旨在摧毁伊朗的影子经济。",
               "keywords": [
-                "背书",
-                "Dan Sullivan",
-                "阿拉斯加"
+                "经济D日",
+                "影子经济",
+                "伊朗"
               ],
-              "url": "https://trump.fm/post/ts_117113262645072564"
+              "url": "https://trump.fm/post/ts_117134651908743307"
             }
           ],
           "story": {
             "dataMode": "evidence",
-            "name": "选举背书与候选人支持",
-            "category": "政治",
-            "headline": "特朗普密集背书共和党候选人，强化America First议程",
-            "lead": "在8月18日选举日前，特朗普通过Truth Social连续发布数十条背书动态，覆盖多个州和职位，形成统一的竞选叙事。",
+            "name": "对伊朗经济战与霍尔木兹海峡控制",
+            "category": "外交与国家安全",
+            "headline": "特朗普升级对伊朗经济战并宣称控制霍尔木兹海峡",
+            "lead": "特朗普在最近一周内宣布对伊朗实施最严厉的经济行动，并声称美国控制霍尔木兹海峡，强调伊朗核威胁。",
             "accent": "#b94545",
             "snapshot": [
               {
@@ -219,45 +541,45 @@
               },
               {
                 "label": "讨论活跃日",
-                "value": "1 天",
+                "value": "3 天",
                 "change": "近 7 天"
               },
               {
                 "label": "核心关键词",
                 "value": "5 个",
-                "change": "背书 · 选举 · America First"
+                "change": "伊朗 · 经济战 · 霍尔木兹海峡"
               }
             ],
             "trend": {
-              "label": "选举背书与候选人支持公开动态分布",
+              "label": "对伊朗经济战与霍尔木兹海峡控制公开动态分布",
               "unit": "条",
               "points": [
                 {
-                  "label": "08/12",
-                  "value": 0
-                },
-                {
-                  "label": "08/13",
-                  "value": 0
-                },
-                {
-                  "label": "08/14",
-                  "value": 0
-                },
-                {
-                  "label": "08/15",
-                  "value": 0
-                },
-                {
-                  "label": "08/16",
-                  "value": 0
-                },
-                {
-                  "label": "08/17",
-                  "value": 7
-                },
-                {
                   "label": "08/18",
+                  "value": 1
+                },
+                {
+                  "label": "08/19",
+                  "value": 1
+                },
+                {
+                  "label": "08/20",
+                  "value": 0
+                },
+                {
+                  "label": "08/21",
+                  "value": 5
+                },
+                {
+                  "label": "08/22",
+                  "value": 0
+                },
+                {
+                  "label": "08/23",
+                  "value": 0
+                },
+                {
+                  "label": "08/24",
                   "value": 0
                 }
               ]
@@ -266,27 +588,27 @@
               "label": "按公开动态证据覆盖排序",
               "items": [
                 {
-                  "name": "背书",
-                  "value": 7,
-                  "display": "7 条证据"
+                  "name": "伊朗",
+                  "value": 6,
+                  "display": "6 条证据"
                 },
                 {
-                  "name": "候选人",
-                  "value": 5,
-                  "display": "5 条证据"
-                },
-                {
-                  "name": "America First",
+                  "name": "霍尔木兹海峡",
                   "value": 3,
                   "display": "3 条证据"
                 },
                 {
-                  "name": "选举",
+                  "name": "经济战",
                   "value": 1,
                   "display": "1 条证据"
                 },
                 {
-                  "name": "投票",
+                  "name": "核武器",
+                  "value": 1,
+                  "display": "1 条证据"
+                },
+                {
+                  "name": "制裁",
                   "value": 1,
                   "display": "1 条证据"
                 }
@@ -294,81 +616,81 @@
             },
             "watch": [
               {
-                "title": "选举结果",
-                "focus": "候选人胜选情况",
-                "detail": "观察特朗普背书的候选人在8月18日选举中的表现，特别是佛罗里达州和阿拉斯加州的竞争。",
-                "tone": "teal",
-                "metric": "候选人胜选情况",
-                "metricLabel": "观察维度"
-              },
-              {
-                "title": "后续背书",
-                "focus": "特朗普是否继续为其他州候选人背书",
-                "detail": "关注特朗普是否会在未来几天内为更多候选人发布背书动态，以及其政策重点是否变化。",
+                "title": "伊朗反应",
+                "focus": "伊朗是否采取反制措施",
+                "detail": "伊朗可能对经济制裁和军事压力作出回应，需关注其官方表态和行动。",
                 "tone": "amber",
-                "metric": "特朗普是否继续为其他州候选人背书",
+                "metric": "伊朗是否采取反制措施",
                 "metricLabel": "观察维度"
               },
               {
-                "title": "政策叙事",
-                "focus": "America First议程的强调程度",
-                "detail": "观察特朗普在选举后是否继续强调相同的政策关键词，或转向新的议题。",
+                "title": "国际社会态度",
+                "focus": "盟友和对手的立场",
+                "detail": "特朗普呼吁盟友支持，但国际社会可能批评单边行动，需观察各方反应。",
                 "tone": "violet",
-                "metric": "America First议程的强调程度",
+                "metric": "盟友和对手的立场",
+                "metricLabel": "观察维度"
+              },
+              {
+                "title": "霍尔木兹海峡局势",
+                "focus": "海峡通行是否受影响",
+                "detail": "特朗普声称控制海峡，但实际局势可能紧张，需关注航运安全。",
+                "tone": "teal",
+                "metric": "海峡通行是否受影响",
                 "metricLabel": "观察维度"
               }
             ],
             "chapters": [
               {
-                "title": "信号：背书动态集中爆发",
+                "title": "信号：宣布经济D日与海军封锁",
                 "kicker": "signal",
-                "body": "特朗普在8月17日深夜至18日凌晨连续发布对佛罗里达州、怀俄明州、阿拉斯加州等地候选人的背书，每条动态均包含对候选人个人品质的赞扬和对America First政策的强调。",
+                "body": "特朗普宣布对伊朗实施前所未有的经济行动，并称海军封锁仍然有效，霍尔木兹海峡开放。",
                 "view": "signal"
               },
               {
-                "title": "趋势：政策关键词高度重复",
+                "title": "趋势：从经济制裁到领土主张",
                 "kicker": "trend",
-                "body": "所有背书动态中反复出现“Grow our Economy”、“Cut Taxes and Regulations”、“Promote MADE IN THE U.S.A.”、“Unleash American Energy DOMINANCE”、“Keep our Border SECURE”、“Defend our always under siege Second Amendment”等短语，显示特朗普在选举周期内集中推广其核心议程。",
+                "body": "动态显示特朗普从经济制裁逐步升级到声称控制霍尔木兹海峡，甚至提出将其变为美国领土。",
                 "view": "trend"
               },
               {
-                "title": "排名：佛罗里达州背书数量最多",
+                "title": "排名：经济战与核威胁为核心关键词",
                 "kicker": "ranking",
-                "body": "在特朗普的背书动态中，佛罗里达州候选人出现的频率最高，包括州长、参议员、国会议员和州议员等多个职位，其次是怀俄明州和阿拉斯加州。这反映了特朗普对关键州的重视。",
+                "body": "在相关动态中，'经济战'、'霍尔木兹海峡'、'核武器'等关键词出现频率最高，表明特朗普将经济手段与军事控制结合。",
                 "view": "ranking"
               },
               {
-                "title": "观察：选举结果与后续背书",
+                "title": "观察：伊朗反应与国际社会态度",
                 "kicker": "watch",
-                "body": "关注8月18日选举结果，以及特朗普是否会对获胜者进行进一步宣传或对失败者表达不满。",
+                "body": "关注伊朗对经济制裁的反应，以及国际社会对美国单边行动的立场。",
                 "view": "watch"
               }
             ]
           }
         },
         {
-          "id": "iran-nuclear-policy-伊朗核政策与外交",
-          "topicType": "iran_nuclear_policy",
-          "storyId": "iran_nuclear_policy",
-          "name": "伊朗核政策与外交",
-          "category": "外交政策",
-          "score": 83,
+          "id": "canada-tariffs-and-keystone-对加拿大关税与keystone-xl管道",
+          "topicType": "canada_tariffs_and_keystone",
+          "storyId": "canada_tariffs_and_keystone",
+          "name": "对加拿大关税与Keystone XL管道",
+          "category": "贸易与能源",
+          "score": 79,
           "change": 0,
           "trend": "新出现",
           "confidence": "高",
-          "summary": "特朗普多次就伊朗核问题发表声明，强调美国的目标是阻止伊朗拥有核武器，并提及对伊朗的经济孤立和军事行动。",
-          "why": "多条动态直接涉及伊朗核问题，且包含明确的政策立场和行动呼吁。",
+          "summary": "特朗普暂停对加拿大50%关税，并提及可能重启Keystone XL管道，强调贸易协议。",
+          "why": "多条原创动态直接涉及对加拿大关税暂停和Keystone XL管道协议。",
           "keywords": [
-            "伊朗",
-            "核武器",
-            "经济孤立",
-            "军事行动",
-            "外交"
+            "加拿大",
+            "关税",
+            "Keystone XL",
+            "贸易协议",
+            "能源"
           ],
           "sourceIds": [
-            "trump-fm-117110334410901963",
-            "trump-fm-117093801058115505",
-            "trump-fm-117107215379637520"
+            "trump-fm-117119761850520698",
+            "trump-fm-117143083340259038",
+            "trump-fm-117133120342300539"
           ],
           "evidenceBreakdown": {
             "posts": 3,
@@ -379,68 +701,69 @@
           },
           "scoreBreakdown": {
             "frequency": 93,
-            "freshness": 72,
+            "freshness": 60,
             "continuity": 82
           },
           "evidence": [
             {
-              "id": "trump-fm-117110334410901963",
+              "id": "trump-fm-117119761850520698",
               "type": "post",
               "kind": "original",
               "weight": 1,
               "platform": "Truth Social",
               "provider": "trump.fm",
-              "time": "2026-08-17T10:18:09.814Z",
-              "title": "The number one Goal is, and always…",
-              "summary": "特朗普声明美国的第一目标是伊朗不能拥有核武器。",
+              "time": "2026-08-19T02:15:41.128Z",
+              "title": "I have paused the 50% Tariffs agai…",
+              "summary": "特朗普宣布暂停对加拿大50%关税三天，因为双方达成协议，可能重启Keystone XL管道。",
               "keywords": [
-                "伊朗",
-                "核武器",
-                "目标"
+                "关税",
+                "加拿大",
+                "Keystone XL",
+                "协议"
               ],
-              "url": "https://trump.fm/post/ts_117110334410901963"
+              "url": "https://trump.fm/post/ts_117119761850520698"
             },
             {
-              "id": "trump-fm-117093801058115505",
+              "id": "trump-fm-117143083340259038",
               "type": "post",
               "kind": "original",
               "weight": 1,
               "platform": "Truth Social",
               "provider": "trump.fm",
-              "time": "2026-08-14T12:13:30.872Z",
-              "title": "Bessent to Newsmax: US to Hit Iran…",
-              "summary": "特朗普转发新闻，称美国将对伊朗实施前所未有的经济孤立。",
+              "time": "2026-08-23T05:06:38.819Z",
+              "title": "Canada wants the benefits of being…",
+              "summary": "特朗普批评加拿大想要州的好处却不成为州，并指责其对美国农民征收高额关税。",
               "keywords": [
-                "伊朗",
-                "经济孤立",
-                "制裁"
+                "加拿大",
+                "关税",
+                "农民"
               ],
-              "url": "https://trump.fm/post/ts_117093801058115505"
+              "url": "https://trump.fm/post/ts_117143083340259038"
             },
             {
-              "id": "trump-fm-117107215379637520",
+              "id": "trump-fm-117133120342300539",
               "type": "post",
               "kind": "original",
               "weight": 1,
               "platform": "Truth Social",
               "provider": "trump.fm",
-              "time": "2026-08-16T21:04:57.174Z",
-              "title": "Based on my very good relationship…",
-              "summary": "特朗普提及与韩国总统讨论伊朗无核化，但韩国拒绝参与。",
+              "time": "2026-08-21T10:52:55.535Z",
+              "title": "Today, I concluded a deal to subst…",
+              "summary": "特朗普宣布达成协议降低牛肉价格，允许进口30万吨牛肉，无配额关税。",
               "keywords": [
-                "伊朗",
-                "无核化",
-                "韩国"
+                "牛肉",
+                "关税",
+                "进口"
               ],
-              "url": "https://trump.fm/post/ts_117107215379637520"
+              "url": "https://trump.fm/post/ts_117133120342300539"
             }
           ],
           "story": {
             "dataMode": "evidence",
-            "name": "伊朗核政策与外交",
-            "category": "外交政策",
-            "headline": "特朗普强化对伊朗核问题的强硬立场",
-            "lead": "特朗普在最近一周内多次就伊朗核问题表态，强调阻止伊朗拥核是美国首要目标，并暗示将采取经济孤立等措施。",
+            "name": "对加拿大关税与Keystone XL管道",
+            "category": "贸易与能源",
+            "headline": "特朗普暂停对加拿大关税并推动Keystone XL管道",
+            "lead": "特朗普在最近一周内宣布暂停对加拿大50%关税，并提及可能重启Keystone XL管道，同时批评加拿大贸易行为。",
             "accent": "#b94545",
             "snapshot": [
               {
@@ -456,39 +779,39 @@
               {
                 "label": "核心关键词",
                 "value": "5 个",
-                "change": "伊朗 · 核武器 · 经济孤立"
+                "change": "加拿大 · 关税 · Keystone XL"
               }
             ],
             "trend": {
-              "label": "伊朗核政策与外交公开动态分布",
+              "label": "对加拿大关税与Keystone XL管道公开动态分布",
               "unit": "条",
               "points": [
                 {
-                  "label": "08/12",
-                  "value": 0
-                },
-                {
-                  "label": "08/13",
-                  "value": 0
-                },
-                {
-                  "label": "08/14",
-                  "value": 1
-                },
-                {
-                  "label": "08/15",
-                  "value": 0
-                },
-                {
-                  "label": "08/16",
-                  "value": 1
-                },
-                {
-                  "label": "08/17",
-                  "value": 1
-                },
-                {
                   "label": "08/18",
+                  "value": 0
+                },
+                {
+                  "label": "08/19",
+                  "value": 1
+                },
+                {
+                  "label": "08/20",
+                  "value": 0
+                },
+                {
+                  "label": "08/21",
+                  "value": 1
+                },
+                {
+                  "label": "08/22",
+                  "value": 0
+                },
+                {
+                  "label": "08/23",
+                  "value": 1
+                },
+                {
+                  "label": "08/24",
                   "value": 0
                 }
               ]
@@ -497,27 +820,27 @@
               "label": "按公开动态证据覆盖排序",
               "items": [
                 {
-                  "name": "伊朗",
+                  "name": "关税",
                   "value": 3,
                   "display": "3 条证据"
                 },
                 {
-                  "name": "核武器",
+                  "name": "加拿大",
+                  "value": 2,
+                  "display": "2 条证据"
+                },
+                {
+                  "name": "Keystone XL",
                   "value": 1,
                   "display": "1 条证据"
                 },
                 {
-                  "name": "经济孤立",
+                  "name": "贸易协议",
                   "value": 1,
                   "display": "1 条证据"
                 },
                 {
-                  "name": "军事行动",
-                  "value": 1,
-                  "display": "1 条证据"
-                },
-                {
-                  "name": "外交",
+                  "name": "能源",
                   "value": 1,
                   "display": "1 条证据"
                 }
@@ -525,266 +848,53 @@
             },
             "watch": [
               {
-                "title": "伊朗官方回应",
-                "focus": "伊朗对特朗普言论的反应",
-                "detail": "观察伊朗政府或官方媒体是否对特朗普的核政策声明做出回应，以及回应的强硬程度。",
+                "title": "协议最终化",
+                "focus": "关税暂停是否转为永久",
+                "detail": "特朗普称协议需最终化文件，需观察后续进展。",
                 "tone": "teal",
-                "metric": "伊朗对特朗普言论的反应",
+                "metric": "关税暂停是否转为永久",
                 "metricLabel": "观察维度"
               },
               {
-                "title": "经济制裁实施",
-                "focus": "美国对伊朗经济孤立的实际措施",
-                "detail": "关注美国是否宣布新的对伊制裁措施，或在国际场合推动对伊朗的经济孤立。",
+                "title": "Keystone XL管道",
+                "focus": "管道是否实际重启",
+                "detail": "特朗普称管道可能从坟墓中复活，需关注实际建设计划。",
                 "tone": "amber",
-                "metric": "美国对伊朗经济孤立的实际措施",
+                "metric": "管道是否实际重启",
                 "metricLabel": "观察维度"
               },
               {
-                "title": "军事动态",
-                "focus": "美国在中东的军事部署",
-                "detail": "观察美国是否在中东地区增加军事存在或进行相关演习，以配合对伊朗的施压。",
+                "title": "加拿大反应",
+                "focus": "加拿大政府回应",
+                "detail": "加拿大可能对协议细节有不同立场，需关注官方表态。",
                 "tone": "violet",
-                "metric": "美国在中东的军事部署",
+                "metric": "加拿大政府回应",
                 "metricLabel": "观察维度"
               }
             ],
             "chapters": [
               {
-                "title": "信号：明确伊朗核红线",
+                "title": "信号：暂停关税与管道协议",
                 "kicker": "signal",
-                "body": "特朗普在8月17日发布动态，明确表示“伊朗不能以任何方式、形状或形式拥有核武器”，这是其近期对伊朗政策的核心信号。",
+                "body": "特朗普宣布暂停对加拿大50%关税三天，因为双方达成协议，可能重启Keystone XL管道。",
                 "view": "signal"
               },
               {
-                "title": "趋势：从外交到经济施压",
+                "title": "趋势：从关税威胁到贸易协议",
                 "kicker": "trend",
-                "body": "特朗普的动态显示，美国对伊朗的策略可能从单纯的外交谈判转向经济孤立和军事威慑，例如转发财政部长关于经济孤立的言论。",
+                "body": "动态显示特朗普从批评加拿大关税行为转向宣布暂停关税和达成协议，显示贸易谈判进展。",
                 "view": "trend"
               },
               {
-                "title": "排名：核问题优先于其他外交议题",
+                "title": "排名：关税与管道为核心关键词",
                 "kicker": "ranking",
-                "body": "在特朗普的外交相关动态中，伊朗核问题出现的频率最高，且语气最为强硬，表明其当前外交议程中伊朗问题占据优先地位。",
+                "body": "在相关动态中，'关税'、'加拿大'、'Keystone XL'等关键词出现频率最高，表明贸易和能源是焦点。",
                 "view": "ranking"
               },
               {
-                "title": "观察：伊朗反应与后续行动",
+                "title": "观察：协议最终化与管道重启",
                 "kicker": "watch",
-                "body": "关注伊朗对特朗普言论的回应，以及美国是否采取进一步的经济或军事措施。",
-                "view": "watch"
-              }
-            ]
-          }
-        },
-        {
-          "id": "media-criticism-对主流媒体的批评",
-          "topicType": "media_criticism",
-          "storyId": "media_criticism",
-          "name": "对主流媒体的批评",
-          "category": "媒体关系",
-          "score": 76,
-          "change": 0,
-          "trend": "新出现",
-          "confidence": "中",
-          "summary": "特朗普多次批评福克斯新闻主持人Shannon Bream和媒体使用旧照片、假民调等，认为媒体对MAGA和共和党有偏见。",
-          "why": "多条动态直接点名批评媒体和主持人，并涉及具体事件。",
-          "keywords": [
-            "媒体",
-            "福克斯新闻",
-            "Shannon Bream",
-            "假民调",
-            "偏见"
-          ],
-          "sourceIds": [
-            "trump-fm-117108144716925846",
-            "trump-fm-117107001767972921"
-          ],
-          "evidenceBreakdown": {
-            "posts": 2,
-            "originals": 2,
-            "quotes": 0,
-            "replies": 0,
-            "weightedCount": 2
-          },
-          "scoreBreakdown": {
-            "frequency": 77,
-            "freshness": 82,
-            "continuity": 66
-          },
-          "evidence": [
-            {
-              "id": "trump-fm-117108144716925846",
-              "type": "post",
-              "kind": "original",
-              "weight": 1,
-              "platform": "Truth Social",
-              "provider": "trump.fm",
-              "time": "2026-08-17T01:01:17.736Z",
-              "title": "During Shannon Bream’s show, they …",
-              "summary": "特朗普批评Shannon Bream的节目使用旧照片和假民调，称其偏见严重。",
-              "keywords": [
-                "Shannon Bream",
-                "旧照片",
-                "假民调"
-              ],
-              "url": "https://trump.fm/post/ts_117108144716925846"
-            },
-            {
-              "id": "trump-fm-117107001767972921",
-              "type": "post",
-              "kind": "original",
-              "weight": 1,
-              "platform": "Truth Social",
-              "provider": "trump.fm",
-              "time": "2026-08-16T20:10:37.719Z",
-              "title": "Watching FoxNews with Shannon Brea…",
-              "summary": "特朗普再次批评Shannon Bream的节目，列举其政府的成就，并称其节目“beyond redemption”。",
-              "keywords": [
-                "Shannon Bream",
-                "成就",
-                "偏见"
-              ],
-              "url": "https://trump.fm/post/ts_117107001767972921"
-            }
-          ],
-          "story": {
-            "dataMode": "evidence",
-            "name": "对主流媒体的批评",
-            "category": "媒体关系",
-            "headline": "特朗普持续抨击媒体偏见",
-            "lead": "特朗普在最近一周内多次批评福克斯新闻主持人Shannon Bream，指责其使用旧照片和假民调，并强调自己政府的成就。",
-            "accent": "#b94545",
-            "snapshot": [
-              {
-                "label": "关联公开动态",
-                "value": "2 条",
-                "change": "2 原创 · 0 引用"
-              },
-              {
-                "label": "讨论活跃日",
-                "value": "2 天",
-                "change": "近 7 天"
-              },
-              {
-                "label": "核心关键词",
-                "value": "5 个",
-                "change": "媒体 · 福克斯新闻 · Shannon Bream"
-              }
-            ],
-            "trend": {
-              "label": "对主流媒体的批评公开动态分布",
-              "unit": "条",
-              "points": [
-                {
-                  "label": "08/12",
-                  "value": 0
-                },
-                {
-                  "label": "08/13",
-                  "value": 0
-                },
-                {
-                  "label": "08/14",
-                  "value": 0
-                },
-                {
-                  "label": "08/15",
-                  "value": 0
-                },
-                {
-                  "label": "08/16",
-                  "value": 1
-                },
-                {
-                  "label": "08/17",
-                  "value": 1
-                },
-                {
-                  "label": "08/18",
-                  "value": 0
-                }
-              ]
-            },
-            "ranking": {
-              "label": "按公开动态证据覆盖排序",
-              "items": [
-                {
-                  "name": "Shannon Bream",
-                  "value": 2,
-                  "display": "2 条证据"
-                },
-                {
-                  "name": "偏见",
-                  "value": 2,
-                  "display": "2 条证据"
-                },
-                {
-                  "name": "媒体",
-                  "value": 1,
-                  "display": "1 条证据"
-                },
-                {
-                  "name": "福克斯新闻",
-                  "value": 1,
-                  "display": "1 条证据"
-                },
-                {
-                  "name": "假民调",
-                  "value": 1,
-                  "display": "1 条证据"
-                }
-              ]
-            },
-            "watch": [
-              {
-                "title": "福克斯新闻回应",
-                "focus": "福克斯新闻或Shannon Bream的公开回应",
-                "detail": "观察福克斯新闻是否对特朗普的批评做出官方回应，或Shannon Bream是否在节目中提及。",
-                "tone": "teal",
-                "metric": "福克斯新闻或Shannon Bream的公开回应",
-                "metricLabel": "观察维度"
-              },
-              {
-                "title": "媒体偏见讨论",
-                "focus": "其他媒体或公众对特朗普批评的反应",
-                "detail": "关注其他媒体或公众人物是否对特朗普的媒体批评进行讨论或支持。",
-                "tone": "amber",
-                "metric": "其他媒体或公众对特朗普批评的反应",
-                "metricLabel": "观察维度"
-              },
-              {
-                "title": "特朗普后续批评",
-                "focus": "特朗普是否继续批评其他媒体",
-                "detail": "观察特朗普是否将批评扩展到其他媒体或主持人，以及批评的频率是否增加。",
-                "tone": "violet",
-                "metric": "特朗普是否继续批评其他媒体",
-                "metricLabel": "观察维度"
-              }
-            ],
-            "chapters": [
-              {
-                "title": "信号：点名批评Shannon Bream",
-                "kicker": "signal",
-                "body": "特朗普在8月17日发布动态，直接批评Shannon Bream的节目使用旧照片和假民调，称其“biased against MAGA”。",
-                "view": "signal"
-              },
-              {
-                "title": "趋势：从具体事件到整体否定",
-                "kicker": "trend",
-                "body": "特朗普的批评从具体事件（旧照片）扩展到对整个节目的否定，称其“beyond redemption”，并预测其收视率将下降。",
-                "view": "trend"
-              },
-              {
-                "title": "排名：媒体批评集中在福克斯新闻",
-                "kicker": "ranking",
-                "body": "在特朗普的媒体批评动态中，福克斯新闻及其主持人Shannon Bream是主要目标，其他媒体如CNN也被提及但频率较低。",
-                "view": "ranking"
-              },
-              {
-                "title": "观察：媒体回应与舆论影响",
-                "kicker": "watch",
-                "body": "关注福克斯新闻或Shannon Bream是否对特朗普的批评做出回应，以及这些批评对媒体公信力的影响。",
+                "body": "关注协议是否最终化，以及Keystone XL管道是否实际重启。",
                 "view": "watch"
               }
             ]
@@ -810,165 +920,196 @@
           "userId": "44196397"
         }
       ],
-      "postsAnalyzed": 144,
-      "sourceCount": 144,
+      "postsAnalyzed": 266,
+      "sourceCount": 266,
       "analysisWindow": "近 7 天",
-      "lastSuccessAt": "2026-08-18T05:45:50.353Z",
+      "lastSuccessAt": "2026-08-24T01:01:12.650Z",
       "themes": [
         {
-          "id": "grok-ai-grok-ai-模型推广与迭代",
-          "topicType": "grok_ai",
-          "storyId": "grok_ai",
-          "name": "Grok AI 模型推广与迭代",
+          "id": "grok-ai-products-grok-ai-产品推广",
+          "topicType": "grok_ai_products",
+          "storyId": "grok_ai_products",
+          "name": "Grok AI 产品推广",
           "category": "人工智能",
-          "score": 82,
+          "score": 89,
           "change": 0,
           "trend": "新出现",
           "confidence": "高",
-          "summary": "马斯克在最近7天内密集推广Grok 4.6及Grok Bot，强调其在智能、速度和成本上的优势，并预告Grok 4.7将超越现有模型。",
-          "why": "大量动态直接提及Grok，且包含具体的性能数据和推广呼吁。",
+          "summary": "马斯克频繁推广Grok AI产品，包括Grok Bot、Grok Build、Grok 4.6等，强调其功能和性能。",
+          "why": "大量动态直接提及Grok相关产品，并附有链接和宣传语。",
           "keywords": [
             "Grok",
             "AI",
-            "模型",
-            "Grok 4.6",
-            "Grok 4.7"
+            "Grok Bot",
+            "Grok Build",
+            "Grok 4.6"
           ],
           "sourceIds": [
-            "x-2089416747720061154",
-            "x-2088780849948832078",
-            "x-2088735708693602427",
-            "x-2087604711767896527",
-            "x-2087565020158992709",
-            "x-2087586063682596905"
+            "x-2091591712833753456",
+            "x-2091191054439682373",
+            "x-2091006071884451959",
+            "x-2090915155987272119",
+            "x-2090840497338425739",
+            "x-2090839546686767400",
+            "x-2090560905746473398",
+            "x-2090489998382375423"
           ],
           "evidenceBreakdown": {
-            "posts": 6,
+            "posts": 8,
             "originals": 0,
-            "quotes": 4,
-            "replies": 2,
-            "weightedCount": 5
+            "quotes": 8,
+            "replies": 0,
+            "weightedCount": 8
           },
           "scoreBreakdown": {
             "frequency": 100,
-            "freshness": 49,
-            "continuity": 100
+            "freshness": 70,
+            "continuity": 98
           },
           "evidence": [
             {
-              "id": "x-2089416747720061154",
+              "id": "x-2091591712833753456",
               "type": "post",
               "kind": "quote",
               "weight": 1,
               "platform": "X",
               "provider": "x-api",
-              "time": "2026-08-17T18:19:06.000Z",
-              "title": "Grok 4.6 is smart, super fast &amp…",
-              "summary": "马斯克称Grok 4.6聪明、超快且价格实惠。",
+              "time": "2026-08-23T18:21:38.000Z",
+              "title": "Grok Bot can do amazing things!",
+              "summary": "马斯克称Grok Bot可以做惊人的事情。",
+              "keywords": [
+                "Grok Bot",
+                "惊人"
+              ],
+              "url": "https://x.com/elonmusk/status/2091591712833753456"
+            },
+            {
+              "id": "x-2091191054439682373",
+              "type": "post",
+              "kind": "quote",
+              "weight": 1,
+              "platform": "X",
+              "provider": "x-api",
+              "time": "2026-08-22T15:49:34.000Z",
+              "title": "Try Grok @Bot",
+              "summary": "马斯克推广Grok @Bot，并附上链接。",
+              "keywords": [
+                "Grok Bot",
+                "推广"
+              ],
+              "url": "https://x.com/elonmusk/status/2091191054439682373"
+            },
+            {
+              "id": "x-2091006071884451959",
+              "type": "post",
+              "kind": "quote",
+              "weight": 1,
+              "platform": "X",
+              "provider": "x-api",
+              "time": "2026-08-22T03:34:31.000Z",
+              "title": "It’s that easy to use Grok @Bot",
+              "summary": "马斯克称使用Grok @Bot很容易。",
+              "keywords": [
+                "Grok Bot",
+                "容易"
+              ],
+              "url": "https://x.com/elonmusk/status/2091006071884451959"
+            },
+            {
+              "id": "x-2090915155987272119",
+              "type": "post",
+              "kind": "quote",
+              "weight": 1,
+              "platform": "X",
+              "provider": "x-api",
+              "time": "2026-08-21T21:33:15.000Z",
+              "title": "Try Grok 4.6 using the Grok Build …",
+              "summary": "马斯克建议使用Grok 4.6和Grok Build harness或Cursor app。",
               "keywords": [
                 "Grok 4.6",
-                "聪明",
-                "快速",
-                "实惠"
+                "Grok Build",
+                "Cursor"
               ],
-              "url": "https://x.com/elonmusk/status/2089416747720061154"
+              "url": "https://x.com/elonmusk/status/2090915155987272119"
             },
             {
-              "id": "x-2088780849948832078",
+              "id": "x-2090840497338425739",
               "type": "post",
               "kind": "quote",
               "weight": 1,
               "platform": "X",
               "provider": "x-api",
-              "time": "2026-08-16T00:12:16.000Z",
-              "title": "Grok 4.6",
-              "summary": "马斯克发布Grok 4.6相关动态。",
-              "keywords": [
-                "Grok 4.6"
-              ],
-              "url": "https://x.com/elonmusk/status/2088780849948832078"
-            },
-            {
-              "id": "x-2088735708693602427",
-              "type": "post",
-              "kind": "reply",
-              "weight": 0.5,
-              "platform": "X",
-              "provider": "x-api",
-              "time": "2026-08-15T21:12:54.000Z",
-              "title": "@TheChiefNerd Worth trying Grok 4.…",
-              "summary": "马斯克表示Grok 4.7有很大机会在智能上超越所有当前模型。",
-              "keywords": [
-                "Grok 4.7",
-                "超越",
-                "智能"
-              ],
-              "url": "https://x.com/elonmusk/status/2088735708693602427"
-            },
-            {
-              "id": "x-2087604711767896527",
-              "type": "post",
-              "kind": "reply",
-              "weight": 0.5,
-              "platform": "X",
-              "provider": "x-api",
-              "time": "2026-08-12T18:18:43.000Z",
-              "title": "@beffjezos Grok 4.7 is significant…",
-              "summary": "马斯克称Grok 4.7比4.6显著更好，将在3-4周内准备好，并加入大量SpaceX数据。",
-              "keywords": [
-                "Grok 4.7",
-                "SpaceX数据",
-                "3-4周"
-              ],
-              "url": "https://x.com/elonmusk/status/2087604711767896527"
-            },
-            {
-              "id": "x-2087565020158992709",
-              "type": "post",
-              "kind": "quote",
-              "weight": 1,
-              "platform": "X",
-              "provider": "x-api",
-              "time": "2026-08-12T15:41:00.000Z",
-              "title": "Grok 4.6 is now out 🚀🚀🚀 Smart, …",
-              "summary": "马斯克宣布Grok 4.6发布，称其聪明、快速且性价比高。",
+              "time": "2026-08-21T16:36:35.000Z",
+              "title": "Grok 4.6 on extra high thinking mo…",
+              "summary": "马斯克称Grok 4.6在CursorBench上获得第一名。",
               "keywords": [
                 "Grok 4.6",
-                "发布",
-                "性价比"
+                "CursorBench",
+                "第一名"
               ],
-              "url": "https://x.com/elonmusk/status/2087565020158992709"
+              "url": "https://x.com/elonmusk/status/2090840497338425739"
             },
             {
-              "id": "x-2087586063682596905",
+              "id": "x-2090839546686767400",
               "type": "post",
               "kind": "quote",
               "weight": 1,
               "platform": "X",
               "provider": "x-api",
-              "time": "2026-08-12T17:04:37.000Z",
-              "title": "Grok 4.6 is objectively #1 when co…",
-              "summary": "马斯克称Grok 4.6在智能、速度和成本综合考量下客观排名第一。",
+              "time": "2026-08-21T16:32:48.000Z",
+              "title": "Improvements to Grok Build almost …",
+              "summary": "马斯克称Grok Build几乎每天都有改进。",
               "keywords": [
-                "Grok 4.6",
-                "排名第一",
-                "综合"
+                "Grok Build",
+                "改进"
               ],
-              "url": "https://x.com/elonmusk/status/2087586063682596905"
+              "url": "https://x.com/elonmusk/status/2090839546686767400"
+            },
+            {
+              "id": "x-2090560905746473398",
+              "type": "post",
+              "kind": "quote",
+              "weight": 1,
+              "platform": "X",
+              "provider": "x-api",
+              "time": "2026-08-20T22:05:35.000Z",
+              "title": "Easiest way to try Grok Build",
+              "summary": "马斯克称这是尝试Grok Build的最简单方式。",
+              "keywords": [
+                "Grok Build",
+                "简单"
+              ],
+              "url": "https://x.com/elonmusk/status/2090560905746473398"
+            },
+            {
+              "id": "x-2090489998382375423",
+              "type": "post",
+              "kind": "quote",
+              "weight": 1,
+              "platform": "X",
+              "provider": "x-api",
+              "time": "2026-08-20T17:23:49.000Z",
+              "title": "Interesting ways to use Grok @Bot",
+              "summary": "马斯克分享使用Grok @Bot的有趣方式。",
+              "keywords": [
+                "Grok Bot",
+                "有趣"
+              ],
+              "url": "https://x.com/elonmusk/status/2090489998382375423"
             }
           ],
           "story": {
             "dataMode": "evidence",
-            "name": "Grok AI 模型推广与迭代",
+            "name": "Grok AI 产品推广",
             "category": "人工智能",
-            "headline": "马斯克全力推广Grok AI，预告4.7版本",
-            "lead": "马斯克在最近一周内高频发布关于Grok AI的动态，从Grok 4.6的发布到Grok 4.7的预告，展示了其在AI领域的持续投入和竞争策略。",
+            "headline": "马斯克密集推广Grok AI产品",
+            "lead": "马斯克在最近一周内频繁发布动态，推广Grok Bot、Grok Build和Grok 4.6等AI产品，强调其功能和性能。",
             "accent": "#617481",
             "snapshot": [
               {
                 "label": "关联公开动态",
-                "value": "6 条",
-                "change": "0 原创 · 4 引用"
+                "value": "8 条",
+                "change": "0 原创 · 8 引用"
               },
               {
                 "label": "讨论活跃日",
@@ -978,39 +1119,39 @@
               {
                 "label": "核心关键词",
                 "value": "5 个",
-                "change": "Grok · AI · 模型"
+                "change": "Grok · AI · Grok Bot"
               }
             ],
             "trend": {
-              "label": "Grok AI 模型推广与迭代公开动态分布",
+              "label": "Grok AI 产品推广公开动态分布",
               "unit": "条",
               "points": [
                 {
-                  "label": "08/12",
+                  "label": "08/18",
+                  "value": 0
+                },
+                {
+                  "label": "08/19",
+                  "value": 0
+                },
+                {
+                  "label": "08/20",
+                  "value": 2
+                },
+                {
+                  "label": "08/21",
                   "value": 3
                 },
                 {
-                  "label": "08/13",
-                  "value": 0
+                  "label": "08/22",
+                  "value": 2
                 },
                 {
-                  "label": "08/14",
-                  "value": 0
-                },
-                {
-                  "label": "08/15",
+                  "label": "08/23",
                   "value": 1
                 },
                 {
-                  "label": "08/16",
-                  "value": 1
-                },
-                {
-                  "label": "08/17",
-                  "value": 1
-                },
-                {
-                  "label": "08/18",
+                  "label": "08/24",
                   "value": 0
                 }
               ]
@@ -1020,26 +1161,26 @@
               "items": [
                 {
                   "name": "Grok",
-                  "value": 6,
-                  "display": "6 条证据"
+                  "value": 8,
+                  "display": "8 条证据"
                 },
                 {
-                  "name": "Grok 4.6",
+                  "name": "Grok Bot",
                   "value": 4,
                   "display": "4 条证据"
                 },
                 {
-                  "name": "Grok 4.7",
+                  "name": "Grok Build",
+                  "value": 3,
+                  "display": "3 条证据"
+                },
+                {
+                  "name": "Grok 4.6",
                   "value": 2,
                   "display": "2 条证据"
                 },
                 {
                   "name": "AI",
-                  "value": 1,
-                  "display": "1 条证据"
-                },
-                {
-                  "name": "模型",
                   "value": 1,
                   "display": "1 条证据"
                 }
@@ -1048,217 +1189,287 @@
             "watch": [
               {
                 "title": "Grok 4.7发布",
-                "focus": "Grok 4.7的发布时间和性能",
-                "detail": "观察马斯克是否按计划在3-4周内发布Grok 4.7，以及其实际性能是否如宣称般超越现有模型。",
+                "focus": "新版本功能和性能",
+                "detail": "马斯克提到Grok 4.7即将发布，需关注其升级内容。",
                 "tone": "teal",
-                "metric": "Grok 4.7的发布时间和性能",
+                "metric": "新版本功能和性能",
                 "metricLabel": "观察维度"
               },
               {
-                "title": "竞争对手反应",
-                "focus": "Anthropic等竞争对手的模型更新",
-                "detail": "关注Anthropic等公司是否发布新模型以应对Grok的竞争，以及马斯克如何回应。",
+                "title": "用户采用",
+                "focus": "Grok产品的用户增长",
+                "detail": "马斯克频繁推广，需观察实际用户增长和反馈。",
                 "tone": "amber",
-                "metric": "Anthropic等竞争对手的模型更新",
+                "metric": "Grok产品的用户增长",
                 "metricLabel": "观察维度"
               },
               {
-                "title": "用户采用情况",
-                "focus": "Grok的用户增长和使用反馈",
-                "detail": "观察Grok的用户数量和使用反馈，特别是Grok Bot的beta测试进展。",
+                "title": "竞争格局",
+                "focus": "与其他AI产品的竞争",
+                "detail": "马斯克强调Grok在基准测试中的表现，需关注与竞争对手的比较。",
                 "tone": "violet",
-                "metric": "Grok的用户增长和使用反馈",
+                "metric": "与其他AI产品的竞争",
                 "metricLabel": "观察维度"
               }
             ],
             "chapters": [
               {
-                "title": "信号：Grok 4.6正式发布",
+                "title": "信号：Grok产品频繁亮相",
                 "kicker": "signal",
-                "body": "马斯克在8月12日宣布Grok 4.6发布，称其“聪明、快速且性价比高”，并随后多次转发相关评测和用户反馈。",
+                "body": "马斯克发布多条动态，推广Grok Bot、Grok Build和Grok 4.6，并附上使用链接。",
                 "view": "signal"
               },
               {
-                "title": "趋势：从4.6到4.7的快速迭代",
+                "title": "趋势：从功能展示到性能排名",
                 "kicker": "trend",
-                "body": "马斯克在推广Grok 4.6的同时，多次提及Grok 4.7，称其将显著超越现有模型，并透露将加入SpaceX数据，显示其AI模型迭代速度加快。",
+                "body": "动态显示马斯克从简单推广转向强调Grok 4.6在基准测试中的领先地位，显示产品迭代加速。",
                 "view": "trend"
               },
               {
-                "title": "排名：Grok在多项基准测试中领先",
+                "title": "排名：Grok 4.6和Grok Build为核心关键词",
                 "kicker": "ranking",
-                "body": "马斯克引用多个基准测试结果，如CursorBench和Databricks，声称Grok 4.6排名第一，强调其在真实世界任务中的优势。",
+                "body": "在相关动态中，'Grok 4.6'、'Grok Build'、'Grok Bot'等关键词出现频率最高，表明马斯克重点推广这些产品。",
                 "view": "ranking"
               },
               {
-                "title": "观察：Grok 4.7发布与竞争格局",
+                "title": "观察：Grok 4.7发布与用户增长",
                 "kicker": "watch",
-                "body": "关注Grok 4.7的发布时间和性能表现，以及其对AI市场竞争格局的影响。",
+                "body": "关注Grok 4.7的发布，以及Grok产品的用户采用情况。",
                 "view": "watch"
               }
             ]
           }
         },
         {
-          "id": "spacex-launches-spacex-火箭发射与太空探索",
-          "topicType": "spacex_launches",
-          "storyId": "spacex_launches",
-          "name": "SpaceX 火箭发射与太空探索",
+          "id": "starship-development-starship-开发与发射",
+          "topicType": "starship_development",
+          "storyId": "starship_development",
+          "name": "Starship 开发与发射",
           "category": "航天",
-          "score": 78,
+          "score": 85,
           "change": 0,
           "trend": "新出现",
           "confidence": "高",
-          "summary": "马斯克多次发布关于SpaceX火箭发射、月球基地计划和团队加入的动态，强调太空探索的进展和愿景。",
-          "why": "多条动态直接涉及SpaceX的发射活动和未来计划，且包含具体事件。",
+          "summary": "马斯克讨论Starship的开发进展，包括不锈钢材料、发射频率、回收和未来计划。",
+          "why": "多条动态直接涉及Starship的技术细节和发射计划。",
           "keywords": [
+            "Starship",
             "SpaceX",
-            "火箭发射",
-            "月球基地",
-            "太空探索",
-            "团队"
+            "不锈钢",
+            "发射",
+            "回收"
           ],
           "sourceIds": [
-            "x-2089148681887031667",
-            "x-2087260966660759954",
-            "x-2088273489820061920",
-            "x-2087409075009274035"
+            "x-2091617925669245333",
+            "x-2091287025555214632",
+            "x-2090655236155384288",
+            "x-2090597441552679012",
+            "x-2090547828841980274",
+            "x-2090489744400482663",
+            "x-2090305535937851863",
+            "x-2089717086310318249"
           ],
           "evidenceBreakdown": {
-            "posts": 4,
-            "originals": 0,
-            "quotes": 4,
-            "replies": 0,
-            "weightedCount": 4
+            "posts": 8,
+            "originals": 1,
+            "quotes": 5,
+            "replies": 2,
+            "weightedCount": 7
           },
           "scoreBreakdown": {
             "frequency": 100,
-            "freshness": 38,
-            "continuity": 98
+            "freshness": 57,
+            "continuity": 100
           },
           "evidence": [
             {
-              "id": "x-2089148681887031667",
+              "id": "x-2091617925669245333",
               "type": "post",
               "kind": "quote",
               "weight": 1,
               "platform": "X",
               "provider": "x-api",
-              "time": "2026-08-17T00:33:54.000Z",
-              "title": "Two major rocket launches almost s…",
-              "summary": "马斯克称两次重大火箭发射几乎同时进行。",
+              "time": "2026-08-23T20:05:48.000Z",
+              "title": "This is why I switched Starship to…",
+              "summary": "马斯克解释为什么将Starship改为不锈钢，并称已创造新合金。",
               "keywords": [
-                "火箭发射",
-                "同时",
-                "重大"
+                "Starship",
+                "不锈钢",
+                "合金"
               ],
-              "url": "https://x.com/elonmusk/status/2089148681887031667"
+              "url": "https://x.com/elonmusk/status/2091617925669245333"
             },
             {
-              "id": "x-2087260966660759954",
+              "id": "x-2091287025555214632",
               "type": "post",
-              "kind": "quote",
-              "weight": 1,
+              "kind": "reply",
+              "weight": 0.5,
               "platform": "X",
               "provider": "x-api",
-              "time": "2026-08-11T19:32:48.000Z",
-              "title": "Moonbase Alpha will be so cool. An…",
-              "summary": "马斯克表示月球基地Alpha会很酷，并希望让任何人都能去月球。",
+              "time": "2026-08-22T22:10:55.000Z",
+              "title": "@CJHandmer @SciGuySpace @SpaceX On…",
+              "summary": "马斯克称一旦Starship每周可靠飞行几次，将把资源转向Starship以增加发射频率。",
               "keywords": [
-                "月球基地",
-                "Alpha",
-                "任何人"
+                "Starship",
+                "发射频率",
+                "资源"
               ],
-              "url": "https://x.com/elonmusk/status/2087260966660759954"
+              "url": "https://x.com/elonmusk/status/2091287025555214632"
             },
             {
-              "id": "x-2088273489820061920",
+              "id": "x-2090655236155384288",
               "type": "post",
-              "kind": "quote",
+              "kind": "original",
               "weight": 1,
               "platform": "X",
               "provider": "x-api",
-              "time": "2026-08-14T14:36:12.000Z",
-              "title": "It is an honor to have such a grea…",
-              "summary": "马斯克称很荣幸有伟大团队加入SpaceX。",
+              "time": "2026-08-21T04:20:25.000Z",
+              "title": "Starship is so sci-fi",
+              "summary": "马斯克称Starship非常科幻。",
               "keywords": [
-                "团队",
-                "加入",
-                "SpaceX"
+                "Starship",
+                "科幻"
               ],
-              "url": "https://x.com/elonmusk/status/2088273489820061920"
+              "url": "https://x.com/elonmusk/status/2090655236155384288"
             },
             {
-              "id": "x-2087409075009274035",
+              "id": "x-2090597441552679012",
+              "type": "post",
+              "kind": "reply",
+              "weight": 0.5,
+              "platform": "X",
+              "provider": "x-api",
+              "time": "2026-08-21T00:30:46.000Z",
+              "title": "@aaronburnett We’re aiming to reac…",
+              "summary": "马斯克称目标是在2030年达到每天30+次Starship发射。",
+              "keywords": [
+                "Starship",
+                "发射",
+                "2030"
+              ],
+              "url": "https://x.com/elonmusk/status/2090597441552679012"
+            },
+            {
+              "id": "x-2090547828841980274",
               "type": "post",
               "kind": "quote",
               "weight": 1,
               "platform": "X",
               "provider": "x-api",
-              "time": "2026-08-12T05:21:20.000Z",
-              "title": "SpaceX company update",
-              "summary": "马斯克发布SpaceX公司更新。",
+              "time": "2026-08-20T21:13:37.000Z",
+              "title": "Raptor 3 is an engineering work of…",
+              "summary": "马斯克称Raptor 3是工程艺术品。",
               "keywords": [
-                "SpaceX",
-                "公司更新"
+                "Raptor 3",
+                "工程"
               ],
-              "url": "https://x.com/elonmusk/status/2087409075009274035"
+              "url": "https://x.com/elonmusk/status/2090547828841980274"
+            },
+            {
+              "id": "x-2090489744400482663",
+              "type": "post",
+              "kind": "quote",
+              "weight": 1,
+              "platform": "X",
+              "provider": "x-api",
+              "time": "2026-08-20T17:22:49.000Z",
+              "title": "Preparing for another Starship fli…",
+              "summary": "马斯克称正在准备另一次Starship飞行。",
+              "keywords": [
+                "Starship",
+                "飞行"
+              ],
+              "url": "https://x.com/elonmusk/status/2090489744400482663"
+            },
+            {
+              "id": "x-2090305535937851863",
+              "type": "post",
+              "kind": "quote",
+              "weight": 1,
+              "platform": "X",
+              "provider": "x-api",
+              "time": "2026-08-20T05:10:50.000Z",
+              "title": "Looks like we will probably catch …",
+              "summary": "马斯克称可能几个月内用塔架捕获飞船，并讨论首次再飞行时间。",
+              "keywords": [
+                "Starship",
+                "捕获",
+                "再飞行"
+              ],
+              "url": "https://x.com/elonmusk/status/2090305535937851863"
+            },
+            {
+              "id": "x-2089717086310318249",
+              "type": "post",
+              "kind": "quote",
+              "weight": 1,
+              "platform": "X",
+              "provider": "x-api",
+              "time": "2026-08-18T14:12:33.000Z",
+              "title": "Starship Flight 13 is being recove…",
+              "summary": "马斯克称Starship Flight 13正在从海上回收。",
+              "keywords": [
+                "Starship",
+                "Flight 13",
+                "回收"
+              ],
+              "url": "https://x.com/elonmusk/status/2089717086310318249"
             }
           ],
           "story": {
             "dataMode": "evidence",
-            "name": "SpaceX 火箭发射与太空探索",
+            "name": "Starship 开发与发射",
             "category": "航天",
-            "headline": "SpaceX加速发射与月球计划",
-            "lead": "马斯克在最近一周内多次分享SpaceX的发射活动和未来太空探索计划，包括月球基地和团队扩张。",
+            "headline": "马斯克推进Starship开发与高频发射计划",
+            "lead": "马斯克在最近一周内讨论Starship的材料、发射频率、回收和未来计划，显示其致力于实现高频发射。",
             "accent": "#617481",
             "snapshot": [
               {
                 "label": "关联公开动态",
-                "value": "4 条",
-                "change": "0 原创 · 4 引用"
+                "value": "8 条",
+                "change": "1 原创 · 5 引用"
               },
               {
                 "label": "讨论活跃日",
-                "value": "4 天",
+                "value": "5 天",
                 "change": "近 7 天"
               },
               {
                 "label": "核心关键词",
                 "value": "5 个",
-                "change": "SpaceX · 火箭发射 · 月球基地"
+                "change": "Starship · SpaceX · 不锈钢"
               }
             ],
             "trend": {
-              "label": "SpaceX 火箭发射与太空探索公开动态分布",
+              "label": "Starship 开发与发射公开动态分布",
               "unit": "条",
               "points": [
                 {
-                  "label": "08/12",
-                  "value": 1
-                },
-                {
-                  "label": "08/13",
-                  "value": 0
-                },
-                {
-                  "label": "08/14",
-                  "value": 1
-                },
-                {
-                  "label": "08/15",
-                  "value": 0
-                },
-                {
-                  "label": "08/16",
-                  "value": 0
-                },
-                {
-                  "label": "08/17",
-                  "value": 1
-                },
-                {
                   "label": "08/18",
+                  "value": 1
+                },
+                {
+                  "label": "08/19",
+                  "value": 0
+                },
+                {
+                  "label": "08/20",
+                  "value": 3
+                },
+                {
+                  "label": "08/21",
+                  "value": 2
+                },
+                {
+                  "label": "08/22",
+                  "value": 1
+                },
+                {
+                  "label": "08/23",
+                  "value": 1
+                },
+                {
+                  "label": "08/24",
                   "value": 0
                 }
               ]
@@ -1267,27 +1478,27 @@
               "label": "按公开动态证据覆盖排序",
               "items": [
                 {
-                  "name": "SpaceX",
+                  "name": "Starship",
+                  "value": 7,
+                  "display": "7 条证据"
+                },
+                {
+                  "name": "发射",
                   "value": 2,
                   "display": "2 条证据"
                 },
                 {
-                  "name": "火箭发射",
+                  "name": "SpaceX",
                   "value": 1,
                   "display": "1 条证据"
                 },
                 {
-                  "name": "月球基地",
+                  "name": "不锈钢",
                   "value": 1,
                   "display": "1 条证据"
                 },
                 {
-                  "name": "太空探索",
-                  "value": 1,
-                  "display": "1 条证据"
-                },
-                {
-                  "name": "团队",
+                  "name": "回收",
                   "value": 1,
                   "display": "1 条证据"
                 }
@@ -1295,157 +1506,244 @@
             },
             "watch": [
               {
-                "title": "下一次发射",
-                "focus": "SpaceX的下一次重大发射任务",
-                "detail": "观察SpaceX是否宣布下一次发射的具体时间和任务目标。",
+                "title": "再飞行时间",
+                "focus": "Starship首次再飞行是否按计划",
+                "detail": "马斯克称再飞行可能在年底或明年初，需观察实际进度。",
                 "tone": "teal",
-                "metric": "SpaceX的下一次重大发射任务",
+                "metric": "Starship首次再飞行是否按计划",
                 "metricLabel": "观察维度"
               },
               {
-                "title": "月球基地进展",
-                "focus": "月球基地Alpha的规划和建设",
-                "detail": "关注马斯克是否透露更多关于月球基地Alpha的细节，如时间表或技术方案。",
+                "title": "捕获测试",
+                "focus": "塔架捕获飞船是否成功",
+                "detail": "马斯克称可能几个月内用塔架捕获飞船，需关注测试结果。",
                 "tone": "amber",
-                "metric": "月球基地Alpha的规划和建设",
+                "metric": "塔架捕获飞船是否成功",
                 "metricLabel": "观察维度"
               },
               {
-                "title": "团队扩张",
-                "focus": "SpaceX的人才招聘和团队建设",
-                "detail": "观察SpaceX是否继续吸引顶尖人才加入，以及团队扩张对项目的影响。",
+                "title": "发射频率提升",
+                "focus": "是否实现每周多次发射",
+                "detail": "马斯克计划提高发射频率，需观察实际发射节奏。",
                 "tone": "violet",
-                "metric": "SpaceX的人才招聘和团队建设",
+                "metric": "是否实现每周多次发射",
                 "metricLabel": "观察维度"
               }
             ],
             "chapters": [
               {
-                "title": "信号：双火箭同时发射",
+                "title": "信号：Starship技术细节与发射准备",
                 "kicker": "signal",
-                "body": "马斯克在8月17日发布动态，称两次重大火箭发射几乎同时进行，展示了SpaceX的发射能力。",
+                "body": "马斯克分享Starship的不锈钢材料、Raptor 3发动机和Flight 13回收等细节。",
                 "view": "signal"
               },
               {
-                "title": "趋势：从发射到月球基地的长期愿景",
+                "title": "趋势：从单次发射到高频发射目标",
                 "kicker": "trend",
-                "body": "马斯克的动态不仅关注当前的发射任务，还展望了月球基地Alpha和让普通人登月的愿景，显示其太空探索的长期规划。",
+                "body": "动态显示马斯克从讨论单次发射转向设定2030年每天30+次发射的目标，显示其长期规划。",
                 "view": "trend"
               },
               {
-                "title": "排名：发射活动与团队扩张并重",
+                "title": "排名：Starship和发射频率为核心关键词",
                 "kicker": "ranking",
-                "body": "在SpaceX相关动态中，发射活动和团队建设是主要话题，其中发射活动的提及频率略高，反映了SpaceX当前的重点。",
+                "body": "在相关动态中，'Starship'、'发射'、'回收'等关键词出现频率最高，表明马斯克聚焦于发射能力提升。",
                 "view": "ranking"
               },
               {
-                "title": "观察：后续发射与月球计划进展",
+                "title": "观察：Starship再飞行与捕获测试",
                 "kicker": "watch",
-                "body": "关注SpaceX的后续发射任务和月球基地计划的进一步细节。",
+                "body": "关注Starship的首次再飞行和塔架捕获测试结果。",
                 "view": "watch"
               }
             ]
           }
         },
         {
-          "id": "tesla-manufacturing-特斯拉美国制造与自动驾驶",
-          "topicType": "tesla_manufacturing",
-          "storyId": "tesla_manufacturing",
-          "name": "特斯拉美国制造与自动驾驶",
-          "category": "汽车",
-          "score": 73,
+          "id": "political-commentary-政治评论与选举诚信",
+          "topicType": "political_commentary",
+          "storyId": "political_commentary",
+          "name": "政治评论与选举诚信",
+          "category": "政治",
+          "score": 82,
           "change": 0,
           "trend": "新出现",
-          "confidence": "中",
-          "summary": "马斯克强调特斯拉汽车是美国制造比例最高的，并推广其自动驾驶功能。",
-          "why": "多条动态涉及特斯拉的制造和自动驾驶，但数量相对较少。",
+          "confidence": "高",
+          "summary": "马斯克发表政治评论，涉及选举诚信、移民、司法等议题，并支持特定政治立场。",
+          "why": "多条动态直接涉及政治话题，包括选举欺诈、移民政策和司法案件。",
           "keywords": [
-            "特斯拉",
-            "美国制造",
-            "自动驾驶",
-            "FSD"
+            "选举",
+            "移民",
+            "司法",
+            "政治",
+            "投票"
           ],
           "sourceIds": [
-            "x-2088781747911819519",
-            "x-2088037519312994480",
-            "x-2087587240277049622"
+            "x-2091189233654624544",
+            "x-2090966834807984173",
+            "x-2090965365773992400",
+            "x-2090483357456990564",
+            "x-2090390978460794965",
+            "x-2090390688647025024",
+            "x-2090136255694881101",
+            "x-2090135010993160442"
           ],
           "evidenceBreakdown": {
-            "posts": 3,
+            "posts": 8,
             "originals": 1,
-            "quotes": 2,
+            "quotes": 7,
             "replies": 0,
-            "weightedCount": 3
+            "weightedCount": 8
           },
           "scoreBreakdown": {
-            "frequency": 90,
-            "freshness": 43,
+            "frequency": 100,
+            "freshness": 56,
             "continuity": 88
           },
           "evidence": [
             {
-              "id": "x-2088781747911819519",
+              "id": "x-2091189233654624544",
               "type": "post",
               "kind": "quote",
               "weight": 1,
               "platform": "X",
               "provider": "x-api",
-              "time": "2026-08-16T00:15:51.000Z",
-              "title": "Tesla cars sold in America are the…",
-              "summary": "马斯克称在美国销售的特斯拉汽车是美国制造比例最高的。",
+              "time": "2026-08-22T15:42:20.000Z",
+              "title": "Talarico wants to enable voting fr…",
+              "summary": "马斯克称Talarico想通过禁止选民ID来在德克萨斯州实现投票欺诈。",
               "keywords": [
-                "特斯拉",
-                "美国制造",
-                "最高"
+                "投票欺诈",
+                "选民ID",
+                "德克萨斯"
               ],
-              "url": "https://x.com/elonmusk/status/2088781747911819519"
+              "url": "https://x.com/elonmusk/status/2091189233654624544"
             },
             {
-              "id": "x-2088037519312994480",
+              "id": "x-2090966834807984173",
+              "type": "post",
+              "kind": "quote",
+              "weight": 1,
+              "platform": "X",
+              "provider": "x-api",
+              "time": "2026-08-22T00:58:36.000Z",
+              "title": "The reason Rome fell was because t…",
+              "summary": "马斯克称罗马衰落是因为他们不再制造罗马人。",
+              "keywords": [
+                "罗马",
+                "衰落",
+                "人口"
+              ],
+              "url": "https://x.com/elonmusk/status/2090966834807984173"
+            },
+            {
+              "id": "x-2090965365773992400",
+              "type": "post",
+              "kind": "quote",
+              "weight": 1,
+              "platform": "X",
+              "provider": "x-api",
+              "time": "2026-08-22T00:52:46.000Z",
+              "title": "Murder 1",
+              "summary": "马斯克称'谋杀1'，可能涉及司法案件。",
+              "keywords": [
+                "谋杀",
+                "司法"
+              ],
+              "url": "https://x.com/elonmusk/status/2090965365773992400"
+            },
+            {
+              "id": "x-2090483357456990564",
+              "type": "post",
+              "kind": "quote",
+              "weight": 1,
+              "platform": "X",
+              "provider": "x-api",
+              "time": "2026-08-20T16:57:26.000Z",
+              "title": "The media never mentioned that the…",
+              "summary": "马斯克称媒体从未提及警察在弗洛伊德抱怨呼吸急促时立即叫了救护车。",
+              "keywords": [
+                "弗洛伊德",
+                "警察",
+                "救护车"
+              ],
+              "url": "https://x.com/elonmusk/status/2090483357456990564"
+            },
+            {
+              "id": "x-2090390978460794965",
+              "type": "post",
+              "kind": "quote",
+              "weight": 1,
+              "platform": "X",
+              "provider": "x-api",
+              "time": "2026-08-20T10:50:21.000Z",
+              "title": "Did you know Chauvin called for an…",
+              "summary": "马斯克问是否知道Chauvin立即叫了救护车。",
+              "keywords": [
+                "Chauvin",
+                "救护车"
+              ],
+              "url": "https://x.com/elonmusk/status/2090390978460794965"
+            },
+            {
+              "id": "x-2090390688647025024",
+              "type": "post",
+              "kind": "quote",
+              "weight": 1,
+              "platform": "X",
+              "provider": "x-api",
+              "time": "2026-08-20T10:49:12.000Z",
+              "title": "Free Chauvin",
+              "summary": "马斯克称'释放Chauvin'。",
+              "keywords": [
+                "释放Chauvin"
+              ],
+              "url": "https://x.com/elonmusk/status/2090390688647025024"
+            },
+            {
+              "id": "x-2090136255694881101",
               "type": "post",
               "kind": "original",
               "weight": 1,
               "platform": "X",
               "provider": "x-api",
-              "time": "2026-08-13T22:58:33.000Z",
-              "title": "Tesla self-driving is amazing",
-              "summary": "马斯克称特斯拉自动驾驶令人惊叹。",
+              "time": "2026-08-19T17:58:10.000Z",
+              "title": "Derek Chauvin was unjustly convict…",
+              "summary": "马斯克称Derek Chauvin被不公正定罪，应该被释放。",
               "keywords": [
-                "特斯拉",
-                "自动驾驶",
-                "惊叹"
+                "Chauvin",
+                "不公正",
+                "释放"
               ],
-              "url": "https://x.com/elonmusk/status/2088037519312994480"
+              "url": "https://x.com/elonmusk/status/2090136255694881101"
             },
             {
-              "id": "x-2087587240277049622",
+              "id": "x-2090135010993160442",
               "type": "post",
               "kind": "quote",
               "weight": 1,
               "platform": "X",
               "provider": "x-api",
-              "time": "2026-08-12T17:09:18.000Z",
-              "title": "Tesla FSD FTW",
-              "summary": "马斯克发布关于特斯拉FSD的动态。",
+              "time": "2026-08-19T17:53:14.000Z",
+              "title": "AfD is the only hope for Germany",
+              "summary": "马斯克称AfD是德国唯一的希望。",
               "keywords": [
-                "特斯拉",
-                "FSD"
+                "AfD",
+                "德国"
               ],
-              "url": "https://x.com/elonmusk/status/2087587240277049622"
+              "url": "https://x.com/elonmusk/status/2090135010993160442"
             }
           ],
           "story": {
             "dataMode": "evidence",
-            "name": "特斯拉美国制造与自动驾驶",
-            "category": "汽车",
-            "headline": "马斯克强调特斯拉美国制造与自动驾驶优势",
-            "lead": "马斯克在最近一周内多次提及特斯拉的美国制造属性和自动驾驶技术，试图强化其品牌形象。",
+            "name": "政治评论与选举诚信",
+            "category": "政治",
+            "headline": "马斯克发表政治评论并质疑选举诚信",
+            "lead": "马斯克在最近一周内发表多条政治评论，涉及选举诚信、移民、司法案件和德国政治，表达保守立场。",
             "accent": "#617481",
             "snapshot": [
               {
                 "label": "关联公开动态",
-                "value": "3 条",
-                "change": "1 原创 · 2 引用"
+                "value": "8 条",
+                "change": "1 原创 · 7 引用"
               },
               {
                 "label": "讨论活跃日",
@@ -1454,274 +1752,40 @@
               },
               {
                 "label": "核心关键词",
-                "value": "4 个",
-                "change": "特斯拉 · 美国制造 · 自动驾驶"
-              }
-            ],
-            "trend": {
-              "label": "特斯拉美国制造与自动驾驶公开动态分布",
-              "unit": "条",
-              "points": [
-                {
-                  "label": "08/12",
-                  "value": 1
-                },
-                {
-                  "label": "08/13",
-                  "value": 1
-                },
-                {
-                  "label": "08/14",
-                  "value": 0
-                },
-                {
-                  "label": "08/15",
-                  "value": 0
-                },
-                {
-                  "label": "08/16",
-                  "value": 1
-                },
-                {
-                  "label": "08/17",
-                  "value": 0
-                },
-                {
-                  "label": "08/18",
-                  "value": 0
-                }
-              ]
-            },
-            "ranking": {
-              "label": "按公开动态证据覆盖排序",
-              "items": [
-                {
-                  "name": "特斯拉",
-                  "value": 3,
-                  "display": "3 条证据"
-                },
-                {
-                  "name": "美国制造",
-                  "value": 1,
-                  "display": "1 条证据"
-                },
-                {
-                  "name": "自动驾驶",
-                  "value": 1,
-                  "display": "1 条证据"
-                },
-                {
-                  "name": "FSD",
-                  "value": 1,
-                  "display": "1 条证据"
-                }
-              ]
-            },
-            "watch": [
-              {
-                "title": "FSD更新",
-                "focus": "特斯拉自动驾驶软件的版本更新",
-                "detail": "观察特斯拉是否发布新的FSD版本，以及其性能改进。",
-                "tone": "teal",
-                "metric": "特斯拉自动驾驶软件的版本更新",
-                "metricLabel": "观察维度"
-              },
-              {
-                "title": "制造数据",
-                "focus": "特斯拉美国制造比例的进一步数据",
-                "detail": "关注是否有第三方数据验证特斯拉的美国制造比例，或马斯克是否提供更多细节。",
-                "tone": "amber",
-                "metric": "特斯拉美国制造比例的进一步数据",
-                "metricLabel": "观察维度"
-              },
-              {
-                "title": "市场反应",
-                "focus": "消费者对特斯拉制造和自动驾驶的反馈",
-                "detail": "观察社交媒体上用户对特斯拉制造和自动驾驶的讨论和评价。",
-                "tone": "violet",
-                "metric": "消费者对特斯拉制造和自动驾驶的反馈",
-                "metricLabel": "观察维度"
-              }
-            ],
-            "chapters": [
-              {
-                "title": "信号：美国制造比例最高",
-                "kicker": "signal",
-                "body": "马斯克在8月16日发布动态，称在美国销售的特斯拉汽车是美国制造比例最高的，回应了关于制造业回流的讨论。",
-                "view": "signal"
-              },
-              {
-                "title": "趋势：从制造到自动驾驶的持续宣传",
-                "kicker": "trend",
-                "body": "马斯克的动态从强调制造优势转向推广自动驾驶功能，显示特斯拉在技术和品牌上的双重叙事。",
-                "view": "trend"
-              },
-              {
-                "title": "排名：制造与自动驾驶并重",
-                "kicker": "ranking",
-                "body": "在特斯拉相关动态中，制造和自动驾驶的提及频率相当，但自动驾驶的互动量更高，表明用户更关注技术进展。",
-                "view": "ranking"
-              },
-              {
-                "title": "观察：FSD更新与市场反应",
-                "kicker": "watch",
-                "body": "关注特斯拉FSD的后续更新和用户反馈，以及美国制造叙事对销售的影响。",
-                "view": "watch"
-              }
-            ]
-          }
-        }
-      ]
-    },
-    {
-      "id": "vitalik-buterin",
-      "name": "Vitalik Buterin",
-      "nameZh": "维塔利克·布特林",
-      "initials": "VB",
-      "role": "区块链研究者",
-      "avatar": "./assets/vitalik-buterin-chainwatch-editorial.png",
-      "colors": [
-        "#4e5a7f",
-        "#8f9cce"
-      ],
-      "accounts": [
-        {
-          "platform": "X",
-          "handle": "@VitalikButerin",
-          "userId": "295218901"
-        }
-      ],
-      "postsAnalyzed": 2,
-      "sourceCount": 2,
-      "analysisWindow": "近 7 天",
-      "lastSuccessAt": "2026-08-18T05:45:50.353Z",
-      "themes": [
-        {
-          "id": "ethereum-scaling-以太坊扩容策略",
-          "topicType": "ethereum_scaling",
-          "storyId": "ethereum_scaling",
-          "name": "以太坊扩容策略",
-          "category": "区块链基础设施",
-          "score": 62,
-          "change": 0,
-          "trend": "新出现",
-          "confidence": "高",
-          "summary": "Vitalik Buterin讨论以太坊扩容策略，强调UTXO风格状态和动态状态的结合，并提及比特币社区的贡献。",
-          "why": "动态直接涉及以太坊扩容技术路线，且与市场模板layer2相关。",
-          "keywords": [
-            "以太坊",
-            "扩容",
-            "UTXO",
-            "状态",
-            "layer2"
-          ],
-          "sourceIds": [
-            "x-2088995690567671968",
-            "x-2087241620618088674"
-          ],
-          "evidenceBreakdown": {
-            "posts": 2,
-            "originals": 2,
-            "quotes": 0,
-            "replies": 0,
-            "weightedCount": 2
-          },
-          "scoreBreakdown": {
-            "frequency": 77,
-            "freshness": 42,
-            "continuity": 66
-          },
-          "evidence": [
-            {
-              "id": "x-2088995690567671968",
-              "type": "post",
-              "kind": "original",
-              "weight": 1,
-              "platform": "X",
-              "provider": "x-api",
-              "time": "2026-08-16T14:25:58.000Z",
-              "title": "Bitcoiners deserve a lot of credit…",
-              "summary": "Vitalik表示比特币社区在UTXO等想法上有贡献，并称当前以太坊扩容策略是结合UTXO风格状态和动态状态。",
-              "keywords": [
-                "以太坊",
-                "扩容",
-                "UTXO",
-                "状态"
-              ],
-              "url": "https://x.com/VitalikButerin/status/2088995690567671968"
-            },
-            {
-              "id": "x-2087241620618088674",
-              "type": "post",
-              "kind": "original",
-              "weight": 1,
-              "platform": "X",
-              "provider": "x-api",
-              "time": "2026-08-11T18:15:56.000Z",
-              "title": "Impressive work! For comparison, a…",
-              "summary": "Vitalik评论Muse 30B的推理性能，并提到H100的对比数据。",
-              "keywords": [
-                "Muse 30B",
-                "推理",
-                "H100"
-              ],
-              "url": "https://x.com/VitalikButerin/status/2087241620618088674"
-            }
-          ],
-          "story": {
-            "dataMode": "evidence",
-            "name": "以太坊扩容策略",
-            "category": "区块链基础设施",
-            "headline": "Vitalik阐述以太坊扩容新方向",
-            "lead": "Vitalik Buterin在最近一周内就以太坊扩容策略发表看法，强调结合UTXO和动态状态，并认可比特币社区的贡献。",
-            "accent": "#8f9cce",
-            "snapshot": [
-              {
-                "label": "关联公开动态",
-                "value": "2 条",
-                "change": "2 原创 · 0 引用"
-              },
-              {
-                "label": "讨论活跃日",
-                "value": "2 天",
-                "change": "近 7 天"
-              },
-              {
-                "label": "核心关键词",
                 "value": "5 个",
-                "change": "以太坊 · 扩容 · UTXO"
+                "change": "选举 · 移民 · 司法"
               }
             ],
             "trend": {
-              "label": "以太坊扩容策略公开动态分布",
+              "label": "政治评论与选举诚信公开动态分布",
               "unit": "条",
               "points": [
                 {
-                  "label": "08/12",
-                  "value": 0
-                },
-                {
-                  "label": "08/13",
-                  "value": 0
-                },
-                {
-                  "label": "08/14",
-                  "value": 0
-                },
-                {
-                  "label": "08/15",
-                  "value": 0
-                },
-                {
-                  "label": "08/16",
-                  "value": 1
-                },
-                {
-                  "label": "08/17",
-                  "value": 0
-                },
-                {
                   "label": "08/18",
+                  "value": 0
+                },
+                {
+                  "label": "08/19",
+                  "value": 2
+                },
+                {
+                  "label": "08/20",
+                  "value": 3
+                },
+                {
+                  "label": "08/21",
+                  "value": 0
+                },
+                {
+                  "label": "08/22",
+                  "value": 3
+                },
+                {
+                  "label": "08/23",
+                  "value": 0
+                },
+                {
+                  "label": "08/24",
                   "value": 0
                 }
               ]
@@ -1730,27 +1794,27 @@
               "label": "按公开动态证据覆盖排序",
               "items": [
                 {
-                  "name": "以太坊",
+                  "name": "选举",
                   "value": 1,
                   "display": "1 条证据"
                 },
                 {
-                  "name": "扩容",
+                  "name": "移民",
                   "value": 1,
                   "display": "1 条证据"
                 },
                 {
-                  "name": "UTXO",
+                  "name": "司法",
                   "value": 1,
                   "display": "1 条证据"
                 },
                 {
-                  "name": "状态",
+                  "name": "政治",
                   "value": 1,
                   "display": "1 条证据"
                 },
                 {
-                  "name": "layer2",
+                  "name": "投票",
                   "value": 1,
                   "display": "1 条证据"
                 }
@@ -1758,53 +1822,53 @@
             },
             "watch": [
               {
-                "title": "Layer 2 市场规模",
-                "detail": "观察Layer 2市场规模变化，以反映以太坊扩容生态的整体表现。",
+                "title": "选举诚信辩论",
+                "focus": "选民ID法案进展",
+                "detail": "马斯克批评禁止选民ID，需关注相关立法动态。",
                 "tone": "teal",
-                "focus": "Layer 2 市场规模",
-                "metric": "Layer 2 市场规模",
+                "metric": "选民ID法案进展",
                 "metricLabel": "观察维度"
               },
               {
-                "title": "Layer 2 市场规模变化",
-                "detail": "关注Layer 2市场规模的24小时变化，以捕捉短期趋势。",
+                "title": "司法案件发展",
+                "focus": "Chauvin案件是否重审",
+                "detail": "马斯克呼吁释放Chauvin，需关注司法程序。",
                 "tone": "amber",
-                "focus": "Layer 2 市场规模变化",
-                "metric": "Layer 2 市场规模变化",
+                "metric": "Chauvin案件是否重审",
                 "metricLabel": "观察维度"
               },
               {
-                "title": "最大资产",
-                "detail": "关注Layer 2领域最大资产的表现，以了解市场焦点。",
+                "title": "国际政治影响",
+                "focus": "AfD在德国选举中的表现",
+                "detail": "马斯克支持AfD，需关注德国政治反应。",
                 "tone": "violet",
-                "focus": "最大资产",
-                "metric": "最大资产",
+                "metric": "AfD在德国选举中的表现",
                 "metricLabel": "观察维度"
               }
             ],
             "chapters": [
               {
-                "title": "信号：明确扩容技术路线",
+                "title": "信号：选举欺诈与司法案件评论",
                 "kicker": "signal",
-                "body": "Vitalik在8月16日发布动态，表示当前以太坊扩容策略是结合UTXO风格状态和动态状态，并称赞比特币社区的贡献。",
+                "body": "马斯克称德克萨斯州存在投票欺诈风险，并质疑Chauvin案件的公正性。",
                 "view": "signal"
               },
               {
-                "title": "讨论持续性与时间分布",
-                "kicker": "趋势",
-                "body": "根据所引用的公开动态，观察“以太坊扩容策略”在分析窗口内是否持续出现，不引入无关市场走势。",
+                "title": "趋势：从国内政治到国际政治",
+                "kicker": "trend",
+                "body": "动态显示马斯克从美国选举和司法议题扩展到德国政治，支持AfD。",
                 "view": "trend"
               },
               {
-                "title": "公开动态中的重点排序",
-                "kicker": "重点",
-                "body": "围绕以太坊、扩容、UTXO比较主题内部的证据覆盖，这是公开动态重点排序，不是公链、资产或市值排名。",
+                "title": "排名：选举诚信和司法公正为核心关键词",
+                "kicker": "ranking",
+                "body": "在相关动态中，'选举'、'司法'、'Chauvin'等关键词出现频率最高，表明马斯克聚焦于这些争议话题。",
                 "view": "ranking"
               },
               {
-                "title": "接下来关注什么",
-                "kicker": "观察",
-                "body": "继续观察“以太坊扩容策略”是否持续、是否出现更具体信息，以及重点是否发生变化。",
+                "title": "观察：政治立场对商业影响",
+                "kicker": "watch",
+                "body": "关注马斯克的政治评论是否影响其商业利益和公众形象。",
                 "view": "watch"
               }
             ]
@@ -1830,172 +1894,154 @@
           "userId": "902926941413453824"
         }
       ],
-      "postsAnalyzed": 25,
-      "sourceCount": 25,
+      "postsAnalyzed": 18,
+      "sourceCount": 18,
       "analysisWindow": "近 7 天",
-      "lastSuccessAt": "2026-08-18T05:45:50.353Z",
+      "lastSuccessAt": "2026-08-24T01:01:12.650Z",
       "themes": [
         {
-          "id": "wallet-security-钱包安全与用户体验",
-          "topicType": "wallet_security",
-          "storyId": "wallet_security",
-          "name": "钱包安全与用户体验",
-          "category": "加密货币安全",
-          "score": 83,
+          "id": "tokenization-资产代币化",
+          "topicType": "tokenization",
+          "storyId": "tokenization",
+          "name": "资产代币化",
+          "category": "区块链应用",
+          "score": 72,
           "change": 0,
           "trend": "新出现",
           "confidence": "高",
-          "summary": "CZ讨论硬件钱包安全漏洞、钓鱼攻击和钱包过滤功能，强调用户保护。",
-          "why": "多条动态涉及钱包安全和用户体验问题。",
+          "summary": "赵长鹏提倡代币化一切资产，认为这是国家融资和吸引外国直接投资的最佳方式。",
+          "why": "原创动态直接表达对代币化的支持，并解释其好处。",
           "keywords": [
-            "钱包",
-            "安全",
-            "钓鱼",
-            "硬件钱包",
-            "用户体验"
+            "代币化",
+            "区块链",
+            "融资",
+            "FDI",
+            "股票"
           ],
           "sourceIds": [
-            "x-2087971745190044010",
-            "x-2088999201246245153",
-            "x-2087941099793027110",
-            "x-2089217802955809198"
+            "x-2090590687657922579",
+            "x-2091470052830929245",
+            "x-2090606468915740991"
           ],
           "evidenceBreakdown": {
-            "posts": 4,
-            "originals": 1,
-            "quotes": 3,
-            "replies": 0,
-            "weightedCount": 4
+            "posts": 3,
+            "originals": 0,
+            "quotes": 1,
+            "replies": 2,
+            "weightedCount": 2
           },
           "scoreBreakdown": {
-            "frequency": 100,
-            "freshness": 59,
-            "continuity": 88
+            "frequency": 77,
+            "freshness": 65,
+            "continuity": 72
           },
           "evidence": [
             {
-              "id": "x-2087971745190044010",
-              "type": "post",
-              "kind": "original",
-              "weight": 1,
-              "platform": "X",
-              "provider": "x-api",
-              "time": "2026-08-13T18:37:11.000Z",
-              "title": "Not a great month for hardware wal…",
-              "summary": "CZ称硬件钱包本月表现不佳，Trezor披露其运输提供商数据泄露，影响约1.37万客户。",
-              "keywords": [
-                "硬件钱包",
-                "Trezor",
-                "数据泄露"
-              ],
-              "url": "https://x.com/cz_binance/status/2087971745190044010"
-            },
-            {
-              "id": "x-2088999201246245153",
+              "id": "x-2090590687657922579",
               "type": "post",
               "kind": "quote",
               "weight": 1,
               "platform": "X",
               "provider": "x-api",
-              "time": "2026-08-16T14:39:55.000Z",
-              "title": "Beware of phishing attempts! 👇 Di…",
-              "summary": "CZ警告钓鱼尝试，并披露SafePal是YZiLabs投资组合公司。",
+              "time": "2026-08-21T00:03:55.000Z",
+              "title": "Let's tokenize everything. Tokeniz…",
+              "summary": "赵长鹏称让我们代币化一切，代币化是国家融资和吸引FDI的最佳方式，支持所有区块链上的代币化。",
               "keywords": [
-                "钓鱼",
-                "SafePal",
-                "披露"
+                "代币化",
+                "融资",
+                "FDI",
+                "区块链"
               ],
-              "url": "https://x.com/cz_binance/status/2088999201246245153"
+              "url": "https://x.com/cz_binance/status/2090590687657922579"
             },
             {
-              "id": "x-2087941099793027110",
+              "id": "x-2091470052830929245",
               "type": "post",
-              "kind": "quote",
-              "weight": 1,
+              "kind": "reply",
+              "weight": 0.5,
               "platform": "X",
               "provider": "x-api",
-              "time": "2026-08-13T16:35:24.000Z",
-              "title": "A good wallet should filter these …",
-              "summary": "CZ称好的钱包应该过滤掉毒地址。",
+              "time": "2026-08-23T10:18:12.000Z",
+              "title": "@MoEthWhale It's new and interesti…",
+              "summary": "赵长鹏评论代币化新项目，强调需要确保发行方能履行义务。",
               "keywords": [
-                "钱包",
-                "过滤",
-                "毒地址"
+                "代币化",
+                "发行方",
+                "义务"
               ],
-              "url": "https://x.com/cz_binance/status/2087941099793027110"
+              "url": "https://x.com/cz_binance/status/2091470052830929245"
             },
             {
-              "id": "x-2089217802955809198",
+              "id": "x-2090606468915740991",
               "type": "post",
-              "kind": "quote",
-              "weight": 1,
+              "kind": "reply",
+              "weight": 0.5,
               "platform": "X",
               "provider": "x-api",
-              "time": "2026-08-17T05:08:34.000Z",
-              "title": "I mis-judged that. A few people me…",
-              "summary": "CZ承认误判了忽略币功能的有用性，并提到TrustWallet团队将更新该功能。",
+              "time": "2026-08-21T01:06:38.000Z",
+              "title": "@brucefenton It's time...",
+              "summary": "赵长鹏回复'是时候了'，可能涉及代币化时机。",
               "keywords": [
-                "TrustWallet",
-                "忽略币",
-                "更新"
+                "代币化",
+                "时机"
               ],
-              "url": "https://x.com/cz_binance/status/2089217802955809198"
+              "url": "https://x.com/cz_binance/status/2090606468915740991"
             }
           ],
           "story": {
             "dataMode": "evidence",
-            "name": "钱包安全与用户体验",
-            "category": "加密货币安全",
-            "headline": "CZ关注钱包安全与用户体验改进",
-            "lead": "CZ在最近一周内多次讨论钱包安全问题，包括硬件钱包数据泄露和钓鱼攻击，并呼吁改进钱包过滤功能。",
+            "name": "资产代币化",
+            "category": "区块链应用",
+            "headline": "赵长鹏倡导资产代币化",
+            "lead": "赵长鹏在最近一周内发表动态，提倡代币化一切资产，认为这是国家融资和吸引外国直接投资的最佳方式。",
             "accent": "#e0b63b",
             "snapshot": [
               {
                 "label": "关联公开动态",
-                "value": "4 条",
-                "change": "1 原创 · 3 引用"
+                "value": "3 条",
+                "change": "0 原创 · 1 引用"
               },
               {
                 "label": "讨论活跃日",
-                "value": "3 天",
+                "value": "2 天",
                 "change": "近 7 天"
               },
               {
                 "label": "核心关键词",
                 "value": "5 个",
-                "change": "钱包 · 安全 · 钓鱼"
+                "change": "代币化 · 区块链 · 融资"
               }
             ],
             "trend": {
-              "label": "钱包安全与用户体验公开动态分布",
+              "label": "资产代币化公开动态分布",
               "unit": "条",
               "points": [
                 {
-                  "label": "08/12",
+                  "label": "08/18",
                   "value": 0
                 },
                 {
-                  "label": "08/13",
+                  "label": "08/19",
+                  "value": 0
+                },
+                {
+                  "label": "08/20",
+                  "value": 0
+                },
+                {
+                  "label": "08/21",
                   "value": 2
                 },
                 {
-                  "label": "08/14",
+                  "label": "08/22",
                   "value": 0
                 },
                 {
-                  "label": "08/15",
-                  "value": 0
-                },
-                {
-                  "label": "08/16",
+                  "label": "08/23",
                   "value": 1
                 },
                 {
-                  "label": "08/17",
-                  "value": 1
-                },
-                {
-                  "label": "08/18",
+                  "label": "08/24",
                   "value": 0
                 }
               ]
@@ -2004,27 +2050,27 @@
               "label": "按公开动态证据覆盖排序",
               "items": [
                 {
-                  "name": "钱包",
-                  "value": 2,
-                  "display": "2 条证据"
+                  "name": "代币化",
+                  "value": 3,
+                  "display": "3 条证据"
                 },
                 {
-                  "name": "安全",
+                  "name": "区块链",
                   "value": 1,
                   "display": "1 条证据"
                 },
                 {
-                  "name": "钓鱼",
+                  "name": "融资",
                   "value": 1,
                   "display": "1 条证据"
                 },
                 {
-                  "name": "硬件钱包",
+                  "name": "FDI",
                   "value": 1,
                   "display": "1 条证据"
                 },
                 {
-                  "name": "用户体验",
+                  "name": "股票",
                   "value": 1,
                   "display": "1 条证据"
                 }
@@ -2032,261 +2078,457 @@
             },
             "watch": [
               {
-                "title": "钱包功能更新",
-                "focus": "TrustWallet等钱包的忽略币功能改进",
-                "detail": "观察TrustWallet是否发布更新以简化忽略币功能，以及用户反馈。",
+                "title": "项目落地",
+                "focus": "代币化项目是否成功发行",
+                "detail": "赵长鹏强调发行方义务，需观察实际项目进展。",
                 "tone": "teal",
-                "metric": "TrustWallet等钱包的忽略币功能改进",
+                "metric": "代币化项目是否成功发行",
                 "metricLabel": "观察维度"
               },
               {
-                "title": "安全事件",
-                "focus": "新的钱包安全漏洞或钓鱼攻击",
-                "detail": "关注是否有新的硬件钱包数据泄露或钓鱼攻击事件，以及CZ的回应。",
+                "title": "监管环境",
+                "focus": "各国对代币化的监管态度",
+                "detail": "代币化涉及证券法规，需关注监管动态。",
                 "tone": "amber",
-                "metric": "新的钱包安全漏洞或钓鱼攻击",
+                "metric": "各国对代币化的监管态度",
                 "metricLabel": "观察维度"
               },
               {
-                "title": "用户教育",
-                "focus": "CZ对用户安全意识的倡导",
-                "detail": "观察CZ是否继续发布安全提示或教育内容，以提高用户防范意识。",
+                "title": "区块链采用",
+                "focus": "哪些区块链被用于代币化",
+                "detail": "赵长鹏支持所有区块链，需观察实际采用情况。",
                 "tone": "violet",
-                "metric": "CZ对用户安全意识的倡导",
+                "metric": "哪些区块链被用于代币化",
                 "metricLabel": "观察维度"
               }
             ],
             "chapters": [
               {
-                "title": "信号：硬件钱包数据泄露",
+                "title": "信号：代币化倡议",
                 "kicker": "signal",
-                "body": "CZ在8月13日发布动态，指出Trezor的运输提供商数据泄露，影响约1.37万客户，引发对硬件钱包安全的担忧。",
+                "body": "赵长鹏发布动态，明确支持代币化，并解释其对国家和公司的好处。",
                 "view": "signal"
               },
               {
-                "title": "趋势：从安全警告到用户体验优化",
+                "title": "趋势：从理念到实践关注",
                 "kicker": "trend",
-                "body": "CZ的动态从安全警告转向用户体验改进，如建议钱包过滤毒地址，并认可TrustWallet的忽略币功能。",
+                "body": "动态显示赵长鹏不仅提倡代币化，还关注具体项目的可行性和发行方义务。",
                 "view": "trend"
               },
               {
-                "title": "排名：安全话题优先于其他钱包问题",
+                "title": "排名：代币化和融资为核心关键词",
                 "kicker": "ranking",
-                "body": "在CZ的钱包相关动态中，安全漏洞和钓鱼攻击的提及频率最高，显示其对用户资产保护的重视。",
+                "body": "在相关动态中，'代币化'、'融资'、'FDI'等关键词出现频率最高，表明赵长鹏聚焦于代币化的经济价值。",
                 "view": "ranking"
               },
               {
-                "title": "观察：钱包功能更新与安全事件",
+                "title": "观察：代币化项目落地",
                 "kicker": "watch",
-                "body": "关注TrustWallet等钱包的功能更新，以及是否有新的安全事件发生。",
+                "body": "关注代币化项目是否实际落地，以及监管环境变化。",
                 "view": "watch"
               }
             ]
           }
         },
         {
-          "id": "bitcoin-比特币供应与价值",
-          "topicType": "bitcoin",
-          "storyId": "bitcoin",
-          "name": "比特币供应与价值",
-          "category": "数字资产",
-          "score": 66,
+          "id": "binance-usage-binance-平台使用",
+          "topicType": "binance_usage",
+          "storyId": "binance_usage",
+          "name": "Binance 平台使用",
+          "category": "加密货币交易所",
+          "score": 72,
           "change": 0,
           "trend": "新出现",
-          "confidence": "高",
-          "summary": "CZ讨论比特币的供应量、丢失币和通缩属性，并预测未来价格。",
-          "why": "动态直接涉及比特币供应和价格，且与市场模板bitcoin相关。",
+          "confidence": "中",
+          "summary": "赵长鹏推广Binance平台，暗示其广泛使用。",
+          "why": "动态直接提及Binance，并鼓励使用。",
           "keywords": [
-            "比特币",
-            "供应",
-            "丢失",
-            "通缩",
-            "价格"
+            "Binance",
+            "交易所",
+            "使用"
           ],
           "sourceIds": [
-            "x-2088545438328836149",
-            "x-2088559989162217593",
-            "x-2088559457966100511"
+            "x-2091562667479830867",
+            "x-2091470870011412911"
           ],
           "evidenceBreakdown": {
-            "posts": 3,
-            "originals": 1,
-            "quotes": 0,
-            "replies": 2,
-            "weightedCount": 2
+            "posts": 2,
+            "originals": 0,
+            "quotes": 1,
+            "replies": 1,
+            "weightedCount": 1.5
           },
           "scoreBreakdown": {
-            "frequency": 77,
-            "freshness": 59,
+            "frequency": 63,
+            "freshness": 92,
             "continuity": 56
           },
           "evidence": [
             {
-              "id": "x-2088545438328836149",
+              "id": "x-2091562667479830867",
               "type": "post",
-              "kind": "original",
+              "kind": "reply",
+              "weight": 0.5,
+              "platform": "X",
+              "provider": "x-api",
+              "time": "2026-08-23T16:26:13.000Z",
+              "title": "@Booksey They all use Binance, so …",
+              "summary": "赵长鹏回复称'他们都用Binance，所以你也应该用。'",
+              "keywords": [
+                "Binance",
+                "使用"
+              ],
+              "url": "https://x.com/cz_binance/status/2091562667479830867"
+            },
+            {
+              "id": "x-2091470870011412911",
+              "type": "post",
+              "kind": "quote",
               "weight": 1,
               "platform": "X",
               "provider": "x-api",
-              "time": "2026-08-15T08:36:50.000Z",
-              "title": "Bitcoin surpassed 20.07 million co…",
-              "summary": "CZ称比特币已开采超过2007万枚，估计10-20%的币丢失，是通缩资产。",
+              "time": "2026-08-23T10:21:27.000Z",
+              "title": "The 2nd largest \"anonymous\" donor …",
+              "summary": "赵长鹏称第二大匿名捐赠者来自'CZ public'地址，感谢贡献者。",
               "keywords": [
-                "比特币",
-                "开采",
-                "丢失",
-                "通缩"
+                "CZ public",
+                "捐赠"
               ],
-              "url": "https://x.com/cz_binance/status/2088545438328836149"
-            },
-            {
-              "id": "x-2088559989162217593",
-              "type": "post",
-              "kind": "reply",
-              "weight": 0.5,
-              "platform": "X",
-              "provider": "x-api",
-              "time": "2026-08-15T09:34:39.000Z",
-              "title": "@QuintenFrancois Soon, millionaire…",
-              "summary": "CZ回复称很快百万富翁也买不起1个完整比特币。",
-              "keywords": [
-                "比特币",
-                "价格",
-                "百万富翁"
-              ],
-              "url": "https://x.com/cz_binance/status/2088559989162217593"
-            },
-            {
-              "id": "x-2088559457966100511",
-              "type": "post",
-              "kind": "reply",
-              "weight": 0.5,
-              "platform": "X",
-              "provider": "x-api",
-              "time": "2026-08-15T09:32:32.000Z",
-              "title": "@amansaiofficial Yeah, many long t…",
-              "summary": "CZ称许多长期持有者不移动或花费他们的币，无法购买。",
-              "keywords": [
-                "比特币",
-                "长期持有",
-                "不移动"
-              ],
-              "url": "https://x.com/cz_binance/status/2088559457966100511"
+              "url": "https://x.com/cz_binance/status/2091470870011412911"
             }
           ],
           "story": {
-            "dataMode": "market",
-            "name": "比特币供应与价值",
-            "category": "数字资产",
-            "headline": "CZ强调比特币稀缺性与长期价值",
-            "lead": "CZ在最近一周内多次讨论比特币的供应量、丢失币和通缩属性，并暗示价格将上涨。",
-            "accent": "#f0b45a",
+            "dataMode": "evidence",
+            "name": "Binance 平台使用",
+            "category": "加密货币交易所",
+            "headline": "赵长鹏推广Binance平台",
+            "lead": "赵长鹏在动态中提及Binance平台，并鼓励使用，同时感谢社区贡献。",
+            "accent": "#e0b63b",
             "snapshot": [
               {
-                "label": "比特币市场规模",
-                "value": "$1.29T",
-                "change": "+0.92% / 24h"
+                "label": "关联公开动态",
+                "value": "2 条",
+                "change": "0 原创 · 1 引用"
               },
               {
-                "label": "24 小时成交量",
-                "value": "$21.13B",
-                "change": "1 个样本资产"
+                "label": "讨论活跃日",
+                "value": "1 天",
+                "change": "近 7 天"
               },
               {
-                "label": "最大资产",
-                "value": "Bitcoin",
-                "change": "BTC · $1.29T"
+                "label": "核心关键词",
+                "value": "3 个",
+                "change": "Binance · 交易所 · 使用"
               }
             ],
             "trend": {
-              "label": "比特币市场规模近 24 小时估算",
-              "unit": "$B",
+              "label": "Binance 平台使用公开动态分布",
+              "unit": "条",
               "points": [
                 {
-                  "label": "-20h",
-                  "value": 1275.547
+                  "label": "08/18",
+                  "value": 0
                 },
                 {
-                  "label": "-16h",
-                  "value": 1277.902
+                  "label": "08/19",
+                  "value": 0
                 },
                 {
-                  "label": "-12h",
-                  "value": 1280.257
+                  "label": "08/20",
+                  "value": 0
                 },
                 {
-                  "label": "-8h",
-                  "value": 1282.612
+                  "label": "08/21",
+                  "value": 0
                 },
                 {
-                  "label": "-4h",
-                  "value": 1284.967
+                  "label": "08/22",
+                  "value": 0
                 },
                 {
-                  "label": "现在",
-                  "value": 1287.322
+                  "label": "08/23",
+                  "value": 2
+                },
+                {
+                  "label": "08/24",
+                  "value": 0
                 }
               ]
             },
             "ranking": {
-              "label": "按实时市值排名",
+              "label": "按公开动态证据覆盖排序",
               "items": [
                 {
-                  "name": "Bitcoin",
-                  "value": 1287322401723,
-                  "display": "$1.29T"
+                  "name": "Binance",
+                  "value": 1,
+                  "display": "1 条证据"
+                },
+                {
+                  "name": "交易所",
+                  "value": 1,
+                  "display": "1 条证据"
+                },
+                {
+                  "name": "使用",
+                  "value": 1,
+                  "display": "1 条证据"
                 }
               ]
             },
             "watch": [
               {
-                "title": "比特币市场规模",
-                "metricRef": "metric-0-value",
-                "detail": "观察比特币市场规模变化，以反映市场整体情绪。",
+                "title": "用户增长",
+                "focus": "Binance用户数量变化",
+                "detail": "赵长鹏推广平台，需观察用户增长数据。",
                 "tone": "teal",
-                "metric": "$1.29T",
-                "metricLabel": "比特币市场规模"
+                "metric": "Binance用户数量变化",
+                "metricLabel": "观察维度"
               },
               {
-                "title": "比特币市场规模变化",
-                "metricRef": "metric-0-change",
-                "detail": "关注比特币市场规模的24小时变化，以捕捉短期波动。",
+                "title": "社区活动",
+                "focus": "社区捐赠和参与度",
+                "detail": "赵长鹏感谢社区贡献，需关注社区活跃度。",
                 "tone": "amber",
-                "metric": "+0.92% / 24h",
-                "metricLabel": "比特币市场规模变化"
+                "metric": "社区捐赠和参与度",
+                "metricLabel": "观察维度"
               },
               {
-                "title": "最大资产",
-                "metricRef": "metric-2-value",
-                "detail": "关注比特币作为最大资产的表现，以了解市场焦点。",
+                "title": "平台功能",
+                "focus": "Binance新功能推出",
+                "detail": "需关注平台是否推出新功能以吸引用户。",
                 "tone": "violet",
-                "metric": "Bitcoin",
-                "metricLabel": "最大资产"
+                "metric": "Binance新功能推出",
+                "metricLabel": "观察维度"
               }
             ],
             "chapters": [
               {
-                "title": "信号：比特币供应接近上限",
+                "title": "信号：Binance提及",
                 "kicker": "signal",
-                "body": "CZ在8月15日发布动态，指出比特币已开采超过2007万枚，仅剩4.4%供应，并估计10-20%的币丢失。",
+                "body": "赵长鹏回复称'他们都用Binance，所以你也应该用。'",
                 "view": "signal"
               },
               {
-                "title": "趋势：从供应分析到价格预测",
+                "title": "趋势：从平台推广到社区互动",
                 "kicker": "trend",
-                "body": "CZ的动态从供应数据转向价格预测，暗示比特币的稀缺性将推动价格上涨，甚至百万富翁也难以购买完整一枚。",
+                "body": "动态显示赵长鹏不仅推广平台，还感谢社区捐赠，显示社区参与。",
                 "view": "trend"
               },
               {
-                "title": "排名：比特币话题优先于其他加密货币",
+                "title": "排名：Binance和社区为核心关键词",
                 "kicker": "ranking",
-                "body": "在CZ的近期动态中，比特币相关讨论的频率和互动量最高，显示其对比特币的持续关注。",
+                "body": "在相关动态中，'Binance'和'社区'关键词出现，但证据有限。",
                 "view": "ranking"
               },
               {
-                "title": "观察：市场反应与价格走势",
+                "title": "观察：平台增长与社区活动",
                 "kicker": "watch",
-                "body": "关注比特币价格对CZ言论的反应，以及市场对稀缺性叙事的接受程度。",
+                "body": "关注Binance用户增长和社区活动。",
+                "view": "watch"
+              }
+            ]
+          }
+        },
+        {
+          "id": "ai-trading-ai-交易",
+          "topicType": "ai_trading",
+          "storyId": "ai_trading",
+          "name": "AI 交易",
+          "category": "金融科技",
+          "score": 68,
+          "change": 0,
+          "trend": "新出现",
+          "confidence": "中",
+          "summary": "赵长鹏提及让AI进行交易，暗示AI在加密货币交易中的应用。",
+          "why": "动态直接提及AI交易，但证据较少。",
+          "keywords": [
+            "AI",
+            "交易",
+            "加密货币",
+            "自动化"
+          ],
+          "sourceIds": [
+            "x-2090533681769161201",
+            "x-2091562667479830867"
+          ],
+          "evidenceBreakdown": {
+            "posts": 2,
+            "originals": 0,
+            "quotes": 1,
+            "replies": 1,
+            "weightedCount": 1.5
+          },
+          "scoreBreakdown": {
+            "frequency": 66,
+            "freshness": 68,
+            "continuity": 72
+          },
+          "evidence": [
+            {
+              "id": "x-2090533681769161201",
+              "type": "post",
+              "kind": "quote",
+              "weight": 1,
+              "platform": "X",
+              "provider": "x-api",
+              "time": "2026-08-20T20:17:24.000Z",
+              "title": "Cup of tea? Let AI do the trading …",
+              "summary": "赵长鹏称'来杯茶？让AI为你交易。'",
+              "keywords": [
+                "AI",
+                "交易"
+              ],
+              "url": "https://x.com/cz_binance/status/2090533681769161201"
+            },
+            {
+              "id": "x-2091562667479830867",
+              "type": "post",
+              "kind": "reply",
+              "weight": 0.5,
+              "platform": "X",
+              "provider": "x-api",
+              "time": "2026-08-23T16:26:13.000Z",
+              "title": "@Booksey They all use Binance, so …",
+              "summary": "赵长鹏回复称'他们都用Binance，所以你也应该用。'，可能涉及交易平台。",
+              "keywords": [
+                "Binance",
+                "交易"
+              ],
+              "url": "https://x.com/cz_binance/status/2091562667479830867"
+            }
+          ],
+          "story": {
+            "dataMode": "evidence",
+            "name": "AI 交易",
+            "category": "金融科技",
+            "headline": "赵长鹏提及AI交易",
+            "lead": "赵长鹏在动态中提及让AI进行交易，暗示AI在加密货币交易中的应用潜力。",
+            "accent": "#e0b63b",
+            "snapshot": [
+              {
+                "label": "关联公开动态",
+                "value": "2 条",
+                "change": "0 原创 · 1 引用"
+              },
+              {
+                "label": "讨论活跃日",
+                "value": "2 天",
+                "change": "近 7 天"
+              },
+              {
+                "label": "核心关键词",
+                "value": "4 个",
+                "change": "AI · 交易 · 加密货币"
+              }
+            ],
+            "trend": {
+              "label": "AI 交易公开动态分布",
+              "unit": "条",
+              "points": [
+                {
+                  "label": "08/18",
+                  "value": 0
+                },
+                {
+                  "label": "08/19",
+                  "value": 0
+                },
+                {
+                  "label": "08/20",
+                  "value": 1
+                },
+                {
+                  "label": "08/21",
+                  "value": 0
+                },
+                {
+                  "label": "08/22",
+                  "value": 0
+                },
+                {
+                  "label": "08/23",
+                  "value": 1
+                },
+                {
+                  "label": "08/24",
+                  "value": 0
+                }
+              ]
+            },
+            "ranking": {
+              "label": "按公开动态证据覆盖排序",
+              "items": [
+                {
+                  "name": "交易",
+                  "value": 2,
+                  "display": "2 条证据"
+                },
+                {
+                  "name": "AI",
+                  "value": 1,
+                  "display": "1 条证据"
+                },
+                {
+                  "name": "加密货币",
+                  "value": 1,
+                  "display": "1 条证据"
+                },
+                {
+                  "name": "自动化",
+                  "value": 1,
+                  "display": "1 条证据"
+                }
+              ]
+            },
+            "watch": [
+              {
+                "title": "产品推出",
+                "focus": "Binance是否推出AI交易功能",
+                "detail": "赵长鹏提及AI交易，需观察平台是否集成。",
+                "tone": "teal",
+                "metric": "Binance是否推出AI交易功能",
+                "metricLabel": "观察维度"
+              },
+              {
+                "title": "用户采用",
+                "focus": "AI交易工具的受欢迎程度",
+                "detail": "需观察用户对AI交易工具的反应。",
+                "tone": "amber",
+                "metric": "AI交易工具的受欢迎程度",
+                "metricLabel": "观察维度"
+              },
+              {
+                "title": "监管合规",
+                "focus": "AI交易是否面临监管挑战",
+                "detail": "AI交易可能涉及合规问题，需关注监管态度。",
+                "tone": "violet",
+                "metric": "AI交易是否面临监管挑战",
+                "metricLabel": "观察维度"
+              }
+            ],
+            "chapters": [
+              {
+                "title": "信号：AI交易提及",
+                "kicker": "signal",
+                "body": "赵长鹏发布动态，称'让AI为你交易'，并附上链接。",
+                "view": "signal"
+              },
+              {
+                "title": "趋势：从提及到平台关联",
+                "kicker": "trend",
+                "body": "动态显示赵长鹏将AI交易与Binance平台关联，可能暗示平台功能。",
+                "view": "trend"
+              },
+              {
+                "title": "排名：AI和交易为核心关键词",
+                "kicker": "ranking",
+                "body": "在相关动态中，'AI'和'交易'关键词出现，但证据有限。",
+                "view": "ranking"
+              },
+              {
+                "title": "观察：AI交易产品推出",
+                "kicker": "watch",
+                "body": "关注Binance是否推出AI交易功能或相关产品。",
                 "view": "watch"
               }
             ]
@@ -2295,5 +2537,5 @@
       ]
     }
   ],
-  "digest": "b6ea6a22f937ebf5"
+  "digest": "03a13a06ce7286a3"
 }
