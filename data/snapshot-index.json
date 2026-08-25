@@ -1,18 +1,18 @@
 {
   "schemaVersion": 1,
   "latest": "20260824T000000Z",
-  "generatedAt": "2026-08-25T05:14:17.653Z",
+  "generatedAt": "2026-08-25T05:22:30.890Z",
   "snapshots": [
     {
       "id": "20260824T000000Z",
       "file": "./data/snapshots/20260824T000000Z.json",
-      "generatedAt": "2026-08-25T05:14:17.653Z",
+      "generatedAt": "2026-08-25T05:22:30.890Z",
       "slotStart": "2026-08-24T00:00:00.000Z",
-      "windowStart": "2026-08-17T00:59:26.527Z",
-      "windowEnd": "2026-08-24T00:59:26.527Z",
+      "windowStart": "2026-08-18T05:19:58.656Z",
+      "windowEnd": "2026-08-25T05:19:58.656Z",
       "status": "published",
       "modeLabel": "DeepSeek 定时快照 · 社交信号 + 相关资产事件行情",
-      "digest": "499d380063c1f356"
+      "digest": "09c07762896f4c04"
     },
     {
       "id": "20260817T000000Z",
