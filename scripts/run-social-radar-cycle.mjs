@@ -16,6 +16,7 @@ const publishToGitHub = isEnabled(process.env.RADAR_GITHUB_PUBLISH);
 if (publishToGitHub) await run("scripts/publish-radar-to-github.mjs", ["--check-only"]);
 await run("scripts/collect-social-posts.mjs");
 await run("scripts/refresh-market-input.mjs");
+await run("scripts/refresh-event-market-input.mjs");
 await run("scripts/generate-social-radar-snapshot.mjs");
 if (publishToGitHub) await run("scripts/publish-radar-to-github.mjs");
 console.log(JSON.stringify({ status: "published", delivery: publishToGitHub ? "github" : "local", at: new Date().toISOString() }));

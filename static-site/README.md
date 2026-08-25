@@ -16,7 +16,7 @@
 - `relation.html` / `relation.js`：查询两个地址的直接关联交易。
 - `analysis-loading.js`：用户画像与地址关联共用的全屏加载过渡页。
 - `hot-topic.html`：人物兴趣雷达，分析人物近期公开动态并归纳兴趣主题。
-- `event-explorer.html`：从人物兴趣主题进入的数据故事页；区块链主题展示直接相关的市场数据，其他主题展示公开动态频次、关键词证据排序与观察结论。
+- `event-explorer.html`：从人物兴趣主题进入的数据故事页；直接提到具体资产的主题展示发帖前后行情时间轴，其他主题展示公开动态频次、关键词证据排序与观察结论。
 - `data/`：最近成功快照、历史版本索引和按周保存的快照文件。
 
 页面流程：
@@ -328,11 +328,11 @@ Accept: application/json
 点击兴趣主题后进入 `event-explorer.html`。主题故事分为四章：
 
 1. 说明兴趣主题是如何从多条公开信号中归纳出来的。
-2. 展示该主题在近 7 天公开动态中的持续性；只有直接相关的区块链主题才使用市场趋势。
-3. 展示话题内部的关键词或子议题证据排序；只有直接相关的区块链主题才使用网络、资产或项目排名。
-4. 收束成三条只围绕当前主题的后续观察点。
+2. 如果动态直接提到与主题相关的具体资产，以发帖时刻为 T=0 展示 T-24h 至 T+72h 的价格路径；否则展示近 7 天讨论持续性。
+3. 对比已保存的同资产历史提及事件，按可比窗口绝对波动排序；没有直接资产事件时只做话题内部证据排序。
+4. 观察短线反应、成交量和相对 BTC 强弱，并明确时间相关性不等于人物导致行情。
 
-生成器不会为了使用区块链数据而扭曲原始话题。稳定币、比特币、Layer 2、DeFi 等直接相关主题可以使用对应市场模板；关税、选举、宏观经济、航天、纯 AI、企业产品或一般安全话题只使用公开动态证据。历史快照如果存在旧版错配，前端会自动切换成证据分析，不需要重新调用 X API。
+生成器不会为了使用区块链数据而扭曲原始话题。只有标题或正文明确出现资产名称、简称或代币符号，并且该资产也与当前主题直接相关，才会进入事件行情；人物姓名本身不会触发同名代币。关税、选举、宏观经济、航天、纯 AI、企业产品或一般安全话题只使用公开动态证据。历史事件随成功快照保留 90 天，后续周报会自动累积同资产对照案例。
 
 故事页不再提供自动播放导览和“演示时这样讲”讲稿，章节通过左侧四步导航手动切换；人物、主题、兴趣强度和置信度信息卡保留在右侧。
 
@@ -344,18 +344,19 @@ Accept: application/json
 npm run radar:demo
 ```
 
-真实生成需要在任务环境中提供 `X_BEARER_TOKEN` 和 `DEEPSEEK_API_KEY`。特朗普通过不需要密钥的 `trump.fm` API 读取 Truth Social 归档，并在 `data/social-input/trump-fm-state.json` 保存增量位置；马斯克、Vitalik 和 CZ 通过 X API 采集，并在 `data/social-input/x-state.json` 保存 `since_id`。两路数据合并为滚动 7 天输入；市场适配器默认从 CoinGecko 公共接口生成实时市值、成交量、趋势估算与排名。可先复制 `.env.example` 查看环境变量名；密钥不能放到 `static-site/`。
+真实生成需要在任务环境中提供 `X_BEARER_TOKEN` 和 `DEEPSEEK_API_KEY`。特朗普通过不需要密钥的 `trump.fm` API 读取 Truth Social 归档，并在 `data/social-input/trump-fm-state.json` 保存增量位置；马斯克、Vitalik 和 CZ 通过 X API 采集，并在 `data/social-input/x-state.json` 保存 `since_id`。两路数据合并为滚动 7 天输入；市场适配器默认从 CoinGecko 公共接口读取主题快照，并对动态中直接提到的资产读取历史行情。`COINGECKO_API_KEY` 是可选的 Demo Key，留空时使用公共接口。可先复制 `.env.example` 查看环境变量名；密钥不能放到 `static-site/`。
 
 GitHub Actions 的每周任务依次执行：
 
 1. 使用 `trump.fm` REST API 读取特朗普的 Truth Social 归档，使用 X API `GET /2/users/{id}/tweets` 读取另外三人；两路都排除转发，回复权重为 0.5。
-2. 调用 DeepSeek JSON Output，归纳主题并生成四章故事；默认使用更高质量的 `deepseek-v4-pro`，并关闭思考模式以保持结构化 JSON 稳定。
-3. 校验来源 id、证据数量、主题数据模式、市场指标引用和故事结构；普通主题一旦引用无关市场指标就拒绝发布。
-4. 只在全部通过后更新 `static-site/data/`，再同步根目录 `data/` 并提交快照，供 GitHub Pages 读取。
+2. 从 CoinGecko 读取直接提及资产的历史行情；同一币种在一次任务中只请求一次，再按各动态时间切分事件窗口。
+3. 调用 DeepSeek JSON Output，归纳主题并生成四章故事；默认使用更高质量的 `deepseek-v4-pro`，并关闭思考模式以保持结构化 JSON 稳定。
+4. 校验来源 id、证据数量、主题数据模式、事件资产关联和故事结构；普通主题一旦引用无关市场指标就拒绝发布。
+5. 只在全部通过后更新 `static-site/data/`，再同步根目录 `data/` 并提交快照，供 GitHub Pages 读取。
 
 人物最近 7 天不足两条动态时，不会为了凑主题而让模型生成结论；该人物本期不进入分析。所有人物都不足两条时，本次任务不发布，页面继续展示上一份成功快照。
 
-每周调度使用 `.github/workflows/social-radar-snapshot.yml`，在北京时间每周一 08:00 运行，并保留手动验收入口。手动运行默认勾选 `reuse_social_input`，直接使用仓库内最近一次成功保存的公开动态并跳过 X/Trump 采集，适合模型或校验失败后的低成本重试；需要主动获取最新动态时才取消勾选。定时任务不受该手动选项影响，始终采集最新动态。运行时需要 Repository Secrets `X_BEARER_TOKEN` 和 `DEEPSEEK_API_KEY`；`TRUMP_FM_BASE_URL`、`DEEPSEEK_MODEL`、`DEEPSEEK_BASE_URL` 和 `X_API_BASE_URL` 可按需覆盖。成功快照通过 `scripts/publish-radar-to-github.mjs` 同步到根目录和 `static-site/data/`，再以路径白名单提交到 `main`。原始动态、增量状态和密钥不会进入提交。`deploy/systemd/` 只作为可选的自托管替代方案，不应与 GitHub Actions 同时启用。
+每周调度使用 `.github/workflows/social-radar-snapshot.yml`，在北京时间每周一 08:00 运行，并保留手动验收入口。手动运行默认勾选 `reuse_social_input`，直接使用仓库内最近一次成功保存的公开动态并跳过 X/Trump 采集，适合模型或校验失败后的低成本重试；需要主动获取最新动态时才取消勾选。定时任务不受该手动选项影响，始终采集最新动态。运行时需要 Repository Secrets `X_BEARER_TOKEN` 和 `DEEPSEEK_API_KEY`，可选添加 `COINGECKO_API_KEY`；`TRUMP_FM_BASE_URL`、`DEEPSEEK_MODEL`、`DEEPSEEK_BASE_URL`、`X_API_BASE_URL` 和 `COINGECKO_BASE_URL` 可按需覆盖。成功快照通过 `scripts/publish-radar-to-github.mjs` 同步到根目录和 `static-site/data/`，再以路径白名单提交到 `main`。原始动态、行情临时输入、增量状态和密钥不会进入提交。`deploy/systemd/` 只作为可选的自托管替代方案，不应与 GitHub Actions 同时启用。
 
 ## CORS
 

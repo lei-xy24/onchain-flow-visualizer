@@ -18,12 +18,14 @@ import {
   writeJsonAtomic,
 } from "./social-radar-lib.mjs";
 import { radarOutputSchema } from "./social-radar-schema.mjs";
+import { validateEventMarketInput } from "./event-market-lib.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const args = parseArgs(process.argv.slice(2));
 const config = await readJson(path.join(root, "social-radar.config.json"));
 const socialFile = resolveFile(args.input || process.env.SOCIAL_INPUT_FILE || (args.demo ? "scripts/demo-social-radar-input.json" : config.sourceFile));
 const marketFile = resolveFile(args.market || process.env.MARKET_INPUT_FILE || (args.demo ? "scripts/demo-market-input.json" : config.marketFile));
+const eventMarketFile = resolveFile(args.eventMarket || process.env.EVENT_MARKET_INPUT_FILE || (args.demo ? "scripts/demo-event-market-input.json" : config.eventMarketFile));
 const outputDirectory = resolveFile(config.outputDirectory);
 const latestFile = resolveFile(config.publicLatestFile);
 const indexFile = resolveFile(config.publicIndexFile);
@@ -31,10 +33,16 @@ const slot = args.slot ? new Date(args.slot) : floorToPublishSlot(new Date(), co
 
 if (Number.isNaN(slot.getTime())) throw new Error(`无效的 --slot：${args.slot}`);
 
-const [rawSocialInput, marketInput] = await Promise.all([readJson(socialFile), readJson(marketFile)]);
+const [rawSocialInput, marketInput, eventMarketInput] = await Promise.all([
+  readJson(socialFile),
+  readJson(marketFile),
+  readOptionalJson(eventMarketFile).then((value) => value || { schemaVersion: 1, mode: "unavailable", reactions: [] }),
+]);
 const socialInput = normalizeSocialInput(rawSocialInput, config.analysisWindowHours);
 const marketErrors = validateMarketInput(marketInput);
 if (marketErrors.length) throw new Error(`市场输入校验失败：${marketErrors.join("；")}`);
+const eventMarketErrors = validateEventMarketInput(eventMarketInput, socialInput);
+if (eventMarketErrors.length) throw new Error(`事件行情输入校验失败：${eventMarketErrors.join("；")}`);
 const previousSnapshot = await readOptionalJson(latestFile);
 const generatedAt = args.generatedAt
   ? new Date(args.generatedAt).toISOString()
@@ -65,6 +73,7 @@ const snapshot = buildPublishedSnapshot({
   config,
   socialInput,
   marketInput,
+  eventMarketInput,
   modelOutput,
   previousSnapshot,
   slot,
@@ -218,6 +227,7 @@ function parseArgs(values) {
     else if (value.startsWith("--generated-at=")) result.generatedAt = value.slice(15);
     else if (value.startsWith("--input=")) result.input = value.slice(8);
     else if (value.startsWith("--market=")) result.market = value.slice(9);
+    else if (value.startsWith("--event-market=")) result.eventMarket = value.slice(15);
     else throw new Error(`未知参数：${value}`);
     return result;
   }, {});

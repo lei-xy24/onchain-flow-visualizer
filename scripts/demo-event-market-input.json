@@ -1,0 +1,79 @@
+{
+  "schemaVersion": 1,
+  "mode": "demo-hourly-market",
+  "collectedAt": "2026-08-13T10:05:00.000Z",
+  "window": { "beforeHours": 24, "afterHours": 72 },
+  "eventCount": 5,
+  "unavailableEvents": [],
+  "reactions": [
+    {
+      "id": "trump-post-reserve-btc", "figureId": "donald-trump", "sourceId": "trump-post-reserve", "eventAt": "2026-08-10T07:32:00.000Z", "eventTitle": "比特币储备与美元流动性", "platform": "Truth Social", "url": "https://example.com/demo/trump-post-reserve", "matchReason": "动态正文或标题直接提到 BTC",
+      "asset": { "id": "bitcoin", "symbol": "BTC", "name": "比特币", "coinGeckoId": "bitcoin", "reactionMode": "price" }, "basePrice": 118420,
+      "coverage": { "start": "2026-08-09T07:32:00.000Z", "end": "2026-08-13T07:32:00.000Z", "beforeHours": 24, "afterHours": 72 },
+      "metrics": { "return1h": 0.42, "return6h": 1.73, "return24h": 3.86, "return72h": 1.48, "maxRise": 5.21, "maxDrawdown": -0.71, "volumeRatio24h": 1.64, "btcReturn24h": null, "btcAdjusted24h": null },
+      "points": [
+        { "time": "2026-08-09T07:32:00.000Z", "hours": -24, "price": 117120, "change": -1.1, "volume": 42000000000 },
+        { "time": "2026-08-10T07:32:00.000Z", "hours": 0, "price": 118420, "change": 0, "volume": 48000000000 },
+        { "time": "2026-08-10T08:32:00.000Z", "hours": 1, "price": 118917, "change": 0.42, "volume": 51000000000 },
+        { "time": "2026-08-10T13:32:00.000Z", "hours": 6, "price": 120469, "change": 1.73, "volume": 62000000000 },
+        { "time": "2026-08-11T07:32:00.000Z", "hours": 24, "price": 122991, "change": 3.86, "volume": 79000000000 },
+        { "time": "2026-08-12T07:32:00.000Z", "hours": 48, "price": 124590, "change": 5.21, "volume": 71000000000 },
+        { "time": "2026-08-13T07:32:00.000Z", "hours": 72, "price": 120172, "change": 1.48, "volume": 58000000000 }
+      ]
+    },
+    {
+      "id": "trump-post-bitcoin-btc", "figureId": "donald-trump", "sourceId": "trump-post-bitcoin", "eventAt": "2026-08-09T11:10:00.000Z", "eventTitle": "比特币与长期配置", "platform": "Truth Social", "url": "https://example.com/demo/trump-post-bitcoin", "matchReason": "动态正文或标题直接提到 BTC",
+      "asset": { "id": "bitcoin", "symbol": "BTC", "name": "比特币", "coinGeckoId": "bitcoin", "reactionMode": "price" }, "basePrice": 117380,
+      "coverage": { "start": "2026-08-08T11:10:00.000Z", "end": "2026-08-12T11:10:00.000Z", "beforeHours": 24, "afterHours": 72 },
+      "metrics": { "return1h": -0.18, "return6h": 0.68, "return24h": 1.21, "return72h": 4.02, "maxRise": 4.38, "maxDrawdown": -0.63, "volumeRatio24h": 1.22, "btcReturn24h": null, "btcAdjusted24h": null },
+      "points": [
+        { "time": "2026-08-08T11:10:00.000Z", "hours": -24, "price": 116900, "change": -0.41, "volume": 39000000000 },
+        { "time": "2026-08-09T11:10:00.000Z", "hours": 0, "price": 117380, "change": 0, "volume": 43000000000 },
+        { "time": "2026-08-09T12:10:00.000Z", "hours": 1, "price": 117169, "change": -0.18, "volume": 42500000000 },
+        { "time": "2026-08-09T17:10:00.000Z", "hours": 6, "price": 118178, "change": 0.68, "volume": 47000000000 },
+        { "time": "2026-08-10T11:10:00.000Z", "hours": 24, "price": 118800, "change": 1.21, "volume": 52000000000 },
+        { "time": "2026-08-11T11:10:00.000Z", "hours": 48, "price": 120961, "change": 3.05, "volume": 59000000000 },
+        { "time": "2026-08-12T11:10:00.000Z", "hours": 72, "price": 122099, "change": 4.02, "volume": 54000000000 }
+      ]
+    },
+    {
+      "id": "vitalik-post-zkevm-eth", "figureId": "vitalik-buterin", "sourceId": "vitalik-post-zkevm", "eventAt": "2026-08-13T00:35:00.000Z", "eventTitle": "zkEVM 与证明系统", "platform": "X", "url": "https://example.com/demo/vitalik-post-zkevm", "matchReason": "动态正文或标题直接提到 ETH",
+      "asset": { "id": "ethereum", "symbol": "ETH", "name": "以太坊", "coinGeckoId": "ethereum", "reactionMode": "price" }, "basePrice": 4678,
+      "coverage": { "start": "2026-08-12T00:35:00.000Z", "end": "2026-08-13T10:00:00.000Z", "beforeHours": 24, "afterHours": 9.4 },
+      "metrics": { "return1h": 0.31, "return6h": 1.16, "return24h": null, "return72h": null, "maxRise": 1.42, "maxDrawdown": -0.22, "volumeRatio24h": null, "btcReturn24h": null, "btcAdjusted24h": null },
+      "points": [
+        { "time": "2026-08-12T00:35:00.000Z", "hours": -24, "price": 4590, "change": -1.88, "volume": 22000000000 },
+        { "time": "2026-08-13T00:35:00.000Z", "hours": 0, "price": 4678, "change": 0, "volume": 25000000000 },
+        { "time": "2026-08-13T01:35:00.000Z", "hours": 1, "price": 4692.5, "change": 0.31, "volume": 26000000000 },
+        { "time": "2026-08-13T06:35:00.000Z", "hours": 6, "price": 4732.3, "change": 1.16, "volume": 29000000000 },
+        { "time": "2026-08-13T10:00:00.000Z", "hours": 9.4, "price": 4721, "change": 0.92, "volume": 28500000000 }
+      ]
+    },
+    {
+      "id": "cz-post-bnb-defi-bnb", "figureId": "changpeng-zhao", "sourceId": "cz-post-bnb-defi", "eventAt": "2026-08-12T23:50:00.000Z", "eventTitle": "BNB Chain 与 DeFi 生态", "platform": "X", "url": "https://example.com/demo/cz-post-bnb-defi", "matchReason": "动态正文或标题直接提到 BNB",
+      "asset": { "id": "binancecoin", "symbol": "BNB", "name": "BNB", "coinGeckoId": "binancecoin", "reactionMode": "price" }, "basePrice": 842.5,
+      "coverage": { "start": "2026-08-11T23:50:00.000Z", "end": "2026-08-13T10:00:00.000Z", "beforeHours": 24, "afterHours": 10.2 },
+      "metrics": { "return1h": 0.12, "return6h": -0.84, "return24h": null, "return72h": null, "maxRise": 0.39, "maxDrawdown": -1.08, "volumeRatio24h": null, "btcReturn24h": null, "btcAdjusted24h": null },
+      "points": [
+        { "time": "2026-08-11T23:50:00.000Z", "hours": -24, "price": 835.4, "change": -0.84, "volume": 2100000000 },
+        { "time": "2026-08-12T23:50:00.000Z", "hours": 0, "price": 842.5, "change": 0, "volume": 2400000000 },
+        { "time": "2026-08-13T00:50:00.000Z", "hours": 1, "price": 843.5, "change": 0.12, "volume": 2500000000 },
+        { "time": "2026-08-13T05:50:00.000Z", "hours": 6, "price": 835.4, "change": -0.84, "volume": 2800000000 },
+        { "time": "2026-08-13T10:00:00.000Z", "hours": 10.2, "price": 838.1, "change": -0.52, "volume": 2700000000 }
+      ]
+    },
+    {
+      "id": "cz-post-developers-bnb", "figureId": "changpeng-zhao", "sourceId": "cz-post-developers", "eventAt": "2026-08-12T08:44:00.000Z", "eventTitle": "开发者与生态增长", "platform": "X", "url": "https://example.com/demo/cz-post-developers", "matchReason": "动态正文或标题直接提到 BNB",
+      "asset": { "id": "binancecoin", "symbol": "BNB", "name": "BNB", "coinGeckoId": "binancecoin", "reactionMode": "price" }, "basePrice": 831.2,
+      "coverage": { "start": "2026-08-11T08:44:00.000Z", "end": "2026-08-13T08:44:00.000Z", "beforeHours": 24, "afterHours": 48 },
+      "metrics": { "return1h": 0.66, "return6h": 1.94, "return24h": 1.31, "return72h": null, "maxRise": 2.35, "maxDrawdown": -0.18, "volumeRatio24h": 1.41, "btcReturn24h": 0.76, "btcAdjusted24h": 0.55 },
+      "points": [
+        { "time": "2026-08-11T08:44:00.000Z", "hours": -24, "price": 824.1, "change": -0.85, "volume": 1900000000 },
+        { "time": "2026-08-12T08:44:00.000Z", "hours": 0, "price": 831.2, "change": 0, "volume": 2200000000 },
+        { "time": "2026-08-12T09:44:00.000Z", "hours": 1, "price": 836.7, "change": 0.66, "volume": 2400000000 },
+        { "time": "2026-08-12T14:44:00.000Z", "hours": 6, "price": 847.3, "change": 1.94, "volume": 2700000000 },
+        { "time": "2026-08-13T08:44:00.000Z", "hours": 24, "price": 842.1, "change": 1.31, "volume": 3100000000 }
+      ]
+    }
+  ]
+}
