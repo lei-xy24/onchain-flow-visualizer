@@ -1,18 +1,18 @@
 {
   "schemaVersion": 1,
   "latest": "20260824T000000Z",
-  "generatedAt": "2026-08-24T01:01:12.650Z",
+  "generatedAt": "2026-08-25T03:50:19.398Z",
   "snapshots": [
     {
       "id": "20260824T000000Z",
       "file": "./data/snapshots/20260824T000000Z.json",
-      "generatedAt": "2026-08-24T01:01:12.650Z",
+      "generatedAt": "2026-08-25T03:50:19.398Z",
       "slotStart": "2026-08-24T00:00:00.000Z",
       "windowStart": "2026-08-17T00:59:26.527Z",
       "windowEnd": "2026-08-24T00:59:26.527Z",
       "status": "published",
-      "modeLabel": "DeepSeek 定时快照 · Truth Social + X · 主题相关分析",
-      "digest": "03a13a06ce7286a3"
+      "modeLabel": "DeepSeek 定时快照 · 社交信号 + 相关资产事件行情",
+      "digest": "e94c8e984a678242"
     },
     {
       "id": "20260817T000000Z",
