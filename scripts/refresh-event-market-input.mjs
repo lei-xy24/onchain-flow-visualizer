@@ -8,12 +8,14 @@ import { readJson, requireHttpsBaseUrl, writeJsonAtomic } from "./social-radar-l
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const config = await readJson(path.join(root, "social-radar.config.json"));
 const socialFile = resolveFile(process.env.SOCIAL_INPUT_FILE || config.sourceFile);
+const candidateFile = resolveFile(process.env.EVENT_CANDIDATE_FILE || config.eventCandidateFile);
 const outputFile = resolveFile(process.env.EVENT_MARKET_INPUT_FILE || config.eventMarketFile);
-const socialInput = await readJson(socialFile);
+const [socialInput, eventCandidates] = await Promise.all([readJson(socialFile), readJson(candidateFile)]);
 const beforeHours = Number(config.eventWindowBeforeHours || 24);
 const afterHours = Number(config.eventWindowAfterHours || 72);
-const events = extractAssetEvents(socialInput, { maxEventsPerAsset: Number(config.maxEventsPerAsset || 8) });
-const range = queryRangeForEvents(events, { beforeHours, afterHours });
+const baselineHours = Number(config.eventBaselineHours || 168);
+const events = extractAssetEvents(socialInput, { eventCandidates, maxEventsPerAsset: Number(config.maxEventsPerAsset || 8) });
+const range = queryRangeForEvents(events, { beforeHours, afterHours, baselineHours });
 const coinIds = [...new Set(events.map((event) => event.asset.coinGeckoId))];
 if (coinIds.some((id) => id !== "bitcoin") && !coinIds.includes("bitcoin")) coinIds.push("bitcoin");
 
@@ -32,17 +34,20 @@ if (range) {
 
 const result = buildEventMarketInput({
   socialInput,
+  eventCandidates,
   seriesByCoin,
   collectedAt: new Date().toISOString(),
   beforeHours,
   afterHours,
   maxEventsPerAsset: Number(config.maxEventsPerAsset || 8),
-  mode: Object.keys(seriesByCoin).length ? "live-api" : "no-direct-asset-events",
+  baselineHours,
+  mode: Object.keys(seriesByCoin).length ? "live-api" : "no-verified-event-data",
 });
 const errors = validateEventMarketInput(result, socialInput);
 if (errors.length) throw new Error(`事件行情输入校验失败：${errors.join("；")}`);
 await writeJsonAtomic(outputFile, result);
-console.log(`事件行情已写入 ${path.relative(root, outputFile)}：识别 ${events.length} 个直接资产事件，生成 ${result.reactions.length} 条价格反应`);
+const passed = result.reactions.filter((reaction) => reaction.significance?.passed).length;
+console.log(`事件行情已写入 ${path.relative(root, outputFile)}：${eventCandidates.events.length} 个事件候选、${events.length} 组预选资产，${passed} 组通过异常波动验证`);
 
 async function fetchCoinHistory(coinId, range) {
   const baseUrl = requireHttpsBaseUrl(process.env.COINGECKO_BASE_URL || "https://api.coingecko.com/api/v3", "CoinGecko API 地址");

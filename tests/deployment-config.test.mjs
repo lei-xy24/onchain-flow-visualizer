@@ -83,6 +83,7 @@ test("GitHub Actions 每周一生成快照且只通过 Secrets 注入密钥", as
   assert.match(workflow, /Collect Trump archive and X posts[\s\S]*?if:\s*env\.DEMO_MODE != 'true' && env\.REUSE_SOCIAL_INPUT != 'true'/);
   assert.match(workflow, /Reuse collected public posts \(skip X\)[\s\S]*?env\.REUSE_SOCIAL_INPUT == 'true'/);
   assert.match(workflow, /Refresh event market reactions[\s\S]*?node scripts\/refresh-event-market-input\.mjs/);
+  assert.match(workflow, /Analyze potential market-impact events[\s\S]*?node scripts\/generate-event-impact-candidates\.mjs[\s\S]*?Refresh event market reactions/);
   assert.match(workflow, /run:\s*node scripts\/publish-radar-to-github\.mjs/);
   assert.doesNotMatch(workflow, /git add data\/market-input\/latest\.json/);
   assert.doesNotMatch(workflow, /SERVER_(?:HOST|USER|PASSWORD)|SSH_PRIVATE_KEY/);
@@ -91,6 +92,7 @@ test("GitHub Actions 每周一生成快照且只通过 Secrets 注入密钥", as
   assert.equal(config.model, "deepseek-v4-pro");
   assert.equal(config.eventWindowBeforeHours, 24);
   assert.equal(config.eventWindowAfterHours, 72);
+  assert.equal(config.eventBaselineHours, 168);
 });
 
 test("静态页面引用的本地文件都存在", async () => {

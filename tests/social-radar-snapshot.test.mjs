@@ -153,7 +153,7 @@ test("发布快照包含人物、故事和完整四章", () => {
   assert.ok(snapshot.figures.flatMap((figure) => figure.themes).flatMap((theme) => theme.evidence).every((item) => item.type === "post"));
 });
 
-test("直接提币主题生成事件时间轴，普通主题不强加币价", () => {
+test("事件行情作为独立主题发布，普通兴趣主题不强加币价", () => {
   const snapshot = buildPublishedSnapshot({
     config, socialInput, marketInput, eventMarketInput, modelOutput, previousSnapshot: null,
     slot: new Date("2026-08-10T00:00:00.000Z"), generatedAt: "2026-08-13T10:06:00.000Z",
@@ -161,14 +161,41 @@ test("直接提币主题生成事件时间轴，普通主题不强加币价", ()
   });
   assert.deepEqual(validateSnapshot(snapshot), []);
   const trump = snapshot.figures.find((figure) => figure.id === "donald-trump");
+  const eventTheme = trump.themes.find((theme) => theme.topicType === "market_impact_events");
   const bitcoin = trump.themes.find((theme) => theme.topicType === "bitcoin");
   const stablecoin = trump.themes.find((theme) => theme.topicType === "stablecoin");
-  assert.equal(bitcoin.story.dataMode, "event-market");
-  assert.equal(bitcoin.story.marketReactions.length, 2);
-  assert.match(bitcoin.story.chapters[1].title, /发言前后价格路径/);
-  assert.match(bitcoin.story.chapters[3].body, /不是因果关系|不把时间重合/);
+  assert.equal(eventTheme.story.dataMode, "event-market");
+  assert.equal(eventTheme.story.marketReactions.length, 2);
+  assert.match(eventTheme.story.chapters[1].title, /事件前后价格路径/);
+  assert.match(eventTheme.story.chapters[3].body, /不等于因果|因果/);
+  assert.equal(bitcoin.story.dataMode, "market");
   assert.equal(stablecoin.story.dataMode, "market");
   assert.equal("marketReactions" in stablecoin.story, false);
+});
+
+test("单条关键动态也能独立形成事件行情主题", () => {
+  const oneSource = structuredClone(socialInput);
+  const vitalik = oneSource.figures.find((figure) => figure.id === "vitalik-buterin");
+  vitalik.sources = vitalik.sources.filter((source) => source.id === "vitalik-post-zkevm");
+  const snapshot = buildPublishedSnapshot({
+    config, socialInput, eventSocialInput: oneSource, marketInput, eventMarketInput, modelOutput, previousSnapshot: null,
+    slot: new Date("2026-08-10T00:00:00.000Z"), generatedAt: "2026-08-13T10:06:00.000Z",
+    modelName: config.model, isDemo: true,
+  });
+  const theme = snapshot.figures.find((figure) => figure.id === "vitalik-buterin").themes.find((item) => item.topicType === "market_impact_events");
+  assert.equal(theme.evidence.length, 1);
+  assert.deepEqual(validateSnapshot(snapshot), []);
+});
+
+test("未达到异常阈值的行情不会生成事件主题", () => {
+  const ordinary = structuredClone(eventMarketInput);
+  ordinary.reactions.forEach((reaction) => { reaction.significance = { passed: false, level: "ordinary", reasons: ["未达到预设阈值"] }; });
+  const snapshot = buildPublishedSnapshot({
+    config, socialInput, marketInput, eventMarketInput: ordinary, modelOutput, previousSnapshot: null,
+    slot: new Date("2026-08-10T00:00:00.000Z"), generatedAt: "2026-08-13T10:06:00.000Z",
+    modelName: config.model, isDemo: false,
+  });
+  assert.ok(snapshot.figures.every((figure) => figure.themes.every((theme) => theme.topicType !== "market_impact_events")));
 });
 
 test("已发布快照中的同资产事件会进入后续历史对比", () => {
@@ -177,20 +204,20 @@ test("已发布快照中的同资产事件会进入后续历史对比", () => {
     slot: new Date("2026-08-10T00:00:00.000Z"), generatedAt: "2026-08-13T10:06:00.000Z",
     modelName: config.model, isDemo: true,
   });
-  const previousBitcoin = first.figures.find((figure) => figure.id === "donald-trump").themes.find((theme) => theme.topicType === "bitcoin");
-  const olderReaction = structuredClone(previousBitcoin.story.marketReactions[0]);
+  const previousEvents = first.figures.find((figure) => figure.id === "donald-trump").themes.find((theme) => theme.topicType === "market_impact_events");
+  const olderReaction = structuredClone(previousEvents.story.marketReactions[0]);
   olderReaction.id = "older-bitcoin-event-btc";
   olderReaction.sourceId = "older-bitcoin-event";
   olderReaction.eventAt = "2026-07-20T12:00:00.000Z";
   olderReaction.eventTitle = "历史比特币相关动态";
-  previousBitcoin.story.marketReactions.push(olderReaction);
+  previousEvents.story.marketReactions.push(olderReaction);
 
   const next = buildPublishedSnapshot({
     config, socialInput, marketInput, eventMarketInput, modelOutput, previousSnapshot: first,
     slot: new Date("2026-08-17T00:00:00.000Z"), generatedAt: "2026-08-20T10:06:00.000Z",
     modelName: config.model, isDemo: false,
   });
-  const nextBitcoin = next.figures.find((figure) => figure.id === "donald-trump").themes.find((theme) => theme.topicType === "bitcoin");
-  assert.ok(nextBitcoin.story.marketReactions.some((reaction) => reaction.id === olderReaction.id));
-  assert.ok(nextBitcoin.story.ranking.items.some((item) => item.reactionId === olderReaction.id));
+  const nextEvents = next.figures.find((figure) => figure.id === "donald-trump").themes.find((theme) => theme.topicType === "market_impact_events");
+  assert.ok(nextEvents.story.marketReactions.some((reaction) => reaction.id === olderReaction.id));
+  assert.ok(nextEvents.story.ranking.items.some((item) => item.reactionId === olderReaction.id));
 });

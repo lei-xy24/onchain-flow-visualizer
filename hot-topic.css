@@ -561,7 +561,7 @@ a:focus-visible {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 390px;
   gap: 15px;
-  align-items: start;
+  align-items: stretch;
   margin-top: 15px;
 }
 
@@ -1062,7 +1062,9 @@ a:focus-visible {
 .evidence-panel {
   position: sticky;
   top: 84px;
-  min-height: 520px;
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
   overflow: hidden;
 }
 
@@ -1102,7 +1104,8 @@ a:focus-visible {
 }
 
 .evidence-header {
-  padding: 21px;
+  flex: 0 0 auto;
+  padding: 15px 17px;
   border-bottom: 1px solid var(--line);
   background: linear-gradient(135deg, #132b2e, #183538);
   color: white;
@@ -1159,24 +1162,29 @@ a:focus-visible {
 }
 
 .evidence-about {
-  margin: 14px 0 0;
+  margin: 8px 0 0;
   color: #b7c9cb;
   font-size: 10px;
-  line-height: 1.65;
+  line-height: 1.5;
 }
 
 .evidence-body {
-  padding: 19px 21px 22px;
+  display: flex;
+  min-height: 0;
+  padding: 12px 17px 15px;
+  flex: 1 1 auto;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .evidence-section + .evidence-section {
-  margin-top: 19px;
-  padding-top: 17px;
+  margin-top: 10px;
+  padding-top: 9px;
   border-top: 1px solid var(--line);
 }
 
 .evidence-section h3 {
-  margin: 0 0 11px;
+  margin: 0 0 7px;
   color: #748285;
   font-size: 9px;
   font-weight: 850;
@@ -1191,7 +1199,7 @@ a:focus-visible {
 }
 
 .score-item {
-  padding: 10px;
+  padding: 7px 8px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: #fafcfc;
@@ -1208,7 +1216,7 @@ a:focus-visible {
 }
 
 .score-item strong {
-  margin-top: 5px;
+  margin-top: 3px;
   color: #34494b;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 14px;
@@ -1218,7 +1226,7 @@ a:focus-visible {
   position: relative;
   display: block;
   height: 3px;
-  margin-top: 8px;
+  margin-top: 5px;
   overflow: hidden;
   border-radius: 999px;
   background: #e0e9e8;
@@ -1234,7 +1242,7 @@ a:focus-visible {
 }
 
 .keyword-cloud span {
-  padding: 6px 8px;
+  padding: 5px 7px;
 }
 
 .keyword-cloud span.is-strong {
@@ -1257,7 +1265,37 @@ a:focus-visible {
 
 .proof-list {
   display: grid;
+  min-height: 0;
+  padding-right: 4px;
   gap: 7px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-color: #9db8b5 transparent;
+  scrollbar-width: thin;
+}
+
+.proof-section {
+  display: flex;
+  min-height: 0;
+  flex: 1 1 auto;
+  flex-direction: column;
+}
+
+.proof-section .proof-title {
+  flex: 0 0 auto;
+}
+
+.proof-section .proof-list {
+  flex: 1 1 auto;
+}
+
+.proof-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.proof-list::-webkit-scrollbar-thumb {
+  border-radius: 999px;
+  background: #9db8b5;
 }
 
 .proof-card {
@@ -1318,7 +1356,7 @@ a:focus-visible {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  margin-top: 18px;
+  margin-top: 10px;
   padding: 11px 12px;
   border-radius: 8px;
   color: white;
@@ -1326,6 +1364,7 @@ a:focus-visible {
   font-size: 10px;
   font-weight: 850;
   text-decoration: none;
+  flex: 0 0 auto;
 }
 
 .story-button:hover {
@@ -1633,8 +1672,11 @@ a:focus-visible {
 
   .evidence-panel {
     position: static;
+    height: auto !important;
     min-height: auto;
   }
+
+  .proof-list { max-height: 380px; }
 
   .theme-list {
     min-height: auto;

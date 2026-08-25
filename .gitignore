@@ -58,3 +58,4 @@ tsconfig.tsbuildinfo
 /data/social-input/x-state.json
 /data/social-input/trump-fm-state.json
 /data/market-input/event-reactions-latest.json
+/data/market-input/event-candidates-latest.json

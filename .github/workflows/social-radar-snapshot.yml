@@ -68,6 +68,9 @@ jobs:
       - name: Refresh market input
         if: env.DEMO_MODE != 'true'
         run: node scripts/refresh-market-input.mjs
+      - name: Analyze potential market-impact events
+        if: env.DEMO_MODE != 'true'
+        run: node scripts/generate-event-impact-candidates.mjs
       - name: Refresh event market reactions
         if: env.DEMO_MODE != 'true'
         run: node scripts/refresh-event-market-input.mjs
