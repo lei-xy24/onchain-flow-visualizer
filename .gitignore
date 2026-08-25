@@ -57,3 +57,4 @@ tsconfig.tsbuildinfo
 # local incremental cursors for the three-hour social collector
 /data/social-input/x-state.json
 /data/social-input/trump-fm-state.json
+/data/market-input/event-reactions-latest.json

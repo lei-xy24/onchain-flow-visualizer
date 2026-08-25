@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>主题数据故事 · 区块链安全监控平台</title>
     <meta name="description" content="从人物公开动态出发，围绕真实关注主题分析信号、趋势、重点和后续观察" />
-    <link rel="stylesheet" href="./event-explorer.css?v=20260818-v1" />
+    <link rel="stylesheet" href="./event-explorer.css?v=20260825-v1" />
     <script src="./snapshot-store.js?v=20260813-v1" defer></script>
-    <script src="./event-explorer.js?v=20260818-v1" defer></script>
+    <script src="./event-explorer.js?v=20260825-v1" defer></script>
   </head>
   <body>
     <header class="story-header">
@@ -50,6 +50,11 @@
 
           <div class="visual-card trend-view" id="trend-view" hidden>
             <div class="visual-heading"><div><small id="trend-kicker">Topic trend</small><strong id="trend-title">—</strong></div><span id="trend-mode-label">主题证据</span></div>
+            <section class="event-market-panel" id="event-market-panel" hidden aria-label="资产事件时间轴">
+              <div class="event-panel-heading"><div><small>Event timeline</small><strong>选择一条公开动态，对照发帖前后行情</strong></div><span>发帖时刻 = T=0</span></div>
+              <div class="event-timeline" id="event-timeline"></div>
+              <div class="event-summary" id="event-summary"></div>
+            </section>
             <svg id="trend-chart" viewBox="0 0 880 340" role="img" aria-labelledby="trend-chart-title trend-chart-desc"><title id="trend-chart-title">主题趋势图</title><desc id="trend-chart-desc">展示主题快照中保存的核心指标变化曲线。</desc></svg>
           </div>
 
@@ -72,8 +77,8 @@
       </section>
 
       <section class="ending-card">
-        <div><p class="eyebrow">From signal to insight</p><h2>围绕真实主题展开，不为数据模板生搬硬套</h2></div>
-        <p>区块链主题使用直接相关的市场数据；政策、技术、商业等其他主题只分析公开动态频次、关键词证据和后续关注点。</p>
+        <div><p class="eyebrow">From signal to market reaction</p><h2>动态直接提到资产，才对照发帖前后行情</h2></div>
+        <p>时间轴展示 T-24h 至 T+72h 的价格和成交量变化，保留上涨与下跌案例；时间重合只代表相关性，不代表人物造成了市场波动。</p>
       </section>
     </main>
 

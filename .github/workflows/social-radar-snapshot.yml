@@ -35,6 +35,8 @@ jobs:
       TRUMP_FM_BASE_URL: ${{ vars.TRUMP_FM_BASE_URL }}
       MARKET_INPUT_URL: ${{ secrets.MARKET_INPUT_URL }}
       MARKET_INPUT_BEARER_TOKEN: ${{ secrets.MARKET_INPUT_BEARER_TOKEN }}
+      COINGECKO_API_KEY: ${{ secrets.COINGECKO_API_KEY }}
+      COINGECKO_BASE_URL: ${{ vars.COINGECKO_BASE_URL }}
       DEMO_MODE: ${{ inputs.demo }}
       REUSE_SOCIAL_INPUT: ${{ github.event_name == 'workflow_dispatch' && inputs.reuse_social_input }}
     steps:
@@ -66,6 +68,9 @@ jobs:
       - name: Refresh market input
         if: env.DEMO_MODE != 'true'
         run: node scripts/refresh-market-input.mjs
+      - name: Refresh event market reactions
+        if: env.DEMO_MODE != 'true'
+        run: node scripts/refresh-event-market-input.mjs
       - name: Generate and validate snapshot
         run: |
           if [ "$DEMO_MODE" = "true" ]; then

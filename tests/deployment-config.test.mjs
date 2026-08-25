@@ -77,16 +77,20 @@ test("GitHub Actions 每周一生成快照且只通过 Secrets 注入密钥", as
   assert.match(workflow, /cron:\s*["']0 0 \* \* 1["']/);
   assert.match(workflow, /DEEPSEEK_API_KEY:\s*\$\{\{\s*secrets\.DEEPSEEK_API_KEY\s*\}\}/);
   assert.match(workflow, /X_BEARER_TOKEN:\s*\$\{\{\s*secrets\.X_BEARER_TOKEN\s*\}\}/);
+  assert.match(workflow, /COINGECKO_API_KEY:\s*\$\{\{\s*secrets\.COINGECKO_API_KEY\s*\}\}/);
   assert.match(workflow, /reuse_social_input:[\s\S]*?default:\s*true/);
   assert.match(workflow, /REUSE_SOCIAL_INPUT:\s*\$\{\{\s*github\.event_name == 'workflow_dispatch' && inputs\.reuse_social_input\s*\}\}/);
   assert.match(workflow, /Collect Trump archive and X posts[\s\S]*?if:\s*env\.DEMO_MODE != 'true' && env\.REUSE_SOCIAL_INPUT != 'true'/);
   assert.match(workflow, /Reuse collected public posts \(skip X\)[\s\S]*?env\.REUSE_SOCIAL_INPUT == 'true'/);
+  assert.match(workflow, /Refresh event market reactions[\s\S]*?node scripts\/refresh-event-market-input\.mjs/);
   assert.match(workflow, /run:\s*node scripts\/publish-radar-to-github\.mjs/);
   assert.doesNotMatch(workflow, /git add data\/market-input\/latest\.json/);
   assert.doesNotMatch(workflow, /SERVER_(?:HOST|USER|PASSWORD)|SSH_PRIVATE_KEY/);
   assert.equal(config.schedule, "0 0 * * 1");
   assert.equal(config.publishIntervalHours, 168);
   assert.equal(config.model, "deepseek-v4-pro");
+  assert.equal(config.eventWindowBeforeHours, 24);
+  assert.equal(config.eventWindowAfterHours, 72);
 });
 
 test("静态页面引用的本地文件都存在", async () => {

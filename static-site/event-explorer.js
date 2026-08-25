@@ -2,11 +2,11 @@
   "use strict";
 
   const SVG_NS = "http://www.w3.org/2000/svg";
-  const state = { context: readContext(), index: null, snapshot: null, story: null, figure: null, theme: null, chapter: 0 };
+  const state = { context: readContext(), index: null, snapshot: null, story: null, figure: null, theme: null, chapter: 0, selectedReactionId: null };
   const elements = Object.fromEntries([
     "figure-avatar","story-category","story-title","story-lead","data-mode","interest-score","origin-copy","origin-theme","boundary-label","boundary-copy","snapshot-grid",
     "chapter-list","chapter-kicker","chapter-title","chapter-number","chapter-body",
-    "signal-view","signal-count","signal-keywords","signal-evidence","trend-view","trend-kicker","trend-title","trend-mode-label","trend-chart","ranking-view","ranking-kicker","ranking-title","ranking-list","ranking-detail",
+    "signal-view","signal-count","signal-keywords","signal-evidence","trend-view","trend-kicker","trend-title","trend-mode-label","event-market-panel","event-timeline","event-summary","trend-chart","ranking-view","ranking-kicker","ranking-title","ranking-list","ranking-detail",
     "watch-view","watch-grid","note-figure","note-theme","note-score","note-confidence","snapshot-version","loading-overlay","loading-title","loading-detail","loading-steps"
   ].map((id) => [toCamel(id), document.getElementById(id)]));
 
@@ -35,7 +35,7 @@
   }
 
   function renderAll() {
-    renderHero(); renderSnapshots(); renderChapters(); renderSignal(); renderTrend(); renderRanking(); renderWatch(); selectChapter(0);
+    renderHero(); renderSnapshots(); renderChapters(); renderSignal(); renderEventTimeline(); renderTrend(); renderRanking(); renderWatch(); selectChapter(0);
   }
 
   function renderHero() {
@@ -47,12 +47,13 @@
     elements.interestScore.textContent = `${state.theme.score} 关注度`;
     elements.boundaryLabel.textContent = state.snapshot.isLive ? "分析边界" : "演示边界";
     const usesMarketData = state.story.dataMode === "market";
-    elements.dataMode.textContent = usesMarketData ? state.snapshot.modeLabel : "DeepSeek 定时快照 · 公开动态证据分析";
-    elements.trendKicker.textContent = usesMarketData ? "Market trend" : "Discussion trend";
-    elements.rankingKicker.textContent = usesMarketData ? "Market landscape" : "Topic priorities";
-    elements.trendModeLabel.textContent = usesMarketData ? (state.snapshot.marketMode === "live-api" ? "直接相关市场数据" : "主题市场快照") : "公开动态时间分布";
+    const usesEventMarket = state.story.dataMode === "event-market";
+    elements.dataMode.textContent = usesEventMarket ? "公开动态 × 历史小时行情" : usesMarketData ? state.snapshot.modeLabel : "DeepSeek 定时快照 · 公开动态证据分析";
+    elements.trendKicker.textContent = usesEventMarket ? "Event price reaction" : usesMarketData ? "Market trend" : "Discussion trend";
+    elements.rankingKicker.textContent = usesEventMarket ? "Historical event comparison" : usesMarketData ? "Market landscape" : "Topic priorities";
+    elements.trendModeLabel.textContent = usesEventMarket ? "T-24h → T+72h" : usesMarketData ? (state.snapshot.marketMode === "live-api" ? "直接相关市场数据" : "主题市场快照") : "公开动态时间分布";
     elements.originCopy.textContent = `${state.figure.nameZh}最近 7 天的多条公开动态中，“${state.theme.name}”相关关键词形成稳定主题簇。`;
-    elements.originTheme.textContent = state.theme.name; elements.boundaryCopy.textContent = usesMarketData ? state.snapshot.disclaimer : "本主题只分析人物近 7 天的公开动态证据，不展示与主题无关的公链、代币、市值或市场排名。";
+    elements.originTheme.textContent = state.theme.name; elements.boundaryCopy.textContent = usesEventMarket ? "行情只匹配动态中直接提到、且与当前主题直接相关的资产。T=0 前后波动是时间相关性，不是因果结论。" : usesMarketData ? state.snapshot.disclaimer : "本主题只分析人物近 7 天的公开动态证据，不展示与主题无关的公链、代币、市值或市场排名。";
     elements.noteFigure.textContent = state.figure.nameZh; elements.noteTheme.textContent = state.theme.name;
     elements.noteScore.textContent = `${state.theme.score} / 100 · ${state.theme.trend}`; elements.noteConfidence.textContent = state.theme.confidence;
   }
@@ -89,22 +90,45 @@
     });
   }
 
+  function renderEventTimeline() {
+    const isEventMarket = state.story.dataMode === "event-market" && Array.isArray(state.story.marketReactions) && state.story.marketReactions.length;
+    elements.eventMarketPanel.hidden = !isEventMarket;
+    if (!isEventMarket) return;
+    if (!state.selectedReactionId || !state.story.marketReactions.some((item) => item.id === state.selectedReactionId)) state.selectedReactionId = state.story.primaryReactionId || state.story.marketReactions[0].id;
+    elements.eventTimeline.replaceChildren();
+    state.story.marketReactions.forEach((reaction) => {
+      const move = comparableMove(reaction); const button = create("button", `event-chip${reaction.id === state.selectedReactionId ? " is-active" : ""}`); button.type = "button";
+      button.append(create("span", null, reaction.asset.symbol), create("strong", null, formatEventDate(reaction.eventAt)), create("small", null, `${move.horizon} ${formatSigned(move.value)}`));
+      button.title = reaction.eventTitle; button.addEventListener("click", () => { state.selectedReactionId = reaction.id; renderEventTimeline(); renderTrend(); }); elements.eventTimeline.appendChild(button);
+    });
+    const reaction = selectedReaction(); const metrics = reaction.metrics || {}; elements.eventSummary.replaceChildren();
+    [
+      ["+1 小时", formatSigned(metrics.return1h)], ["+6 小时", formatSigned(metrics.return6h)], ["+24 小时", formatSigned(metrics.return24h)],
+      ["成交量比", Number.isFinite(metrics.volumeRatio24h) ? `${metrics.volumeRatio24h.toFixed(2)}×` : "待观察"],
+      ["相对 BTC", Number.isFinite(metrics.btcAdjusted24h) ? formatSigned(metrics.btcAdjusted24h) : "不适用/待观察"],
+    ].forEach(([label, value]) => { const item = create("div"); item.append(create("span", null, label), create("strong", null, value)); elements.eventSummary.appendChild(item); });
+  }
+
   function renderTrend() {
-    elements.trendTitle.textContent = state.story.trend.label; const svg = elements.trendChart; svg.replaceChildren();
-    const points = state.story.trend.points.map((point) => ({ ...point, value: Number(point.value) })).filter((point) => Number.isFinite(point.value));
+    const reaction = state.story.dataMode === "event-market" ? selectedReaction() : null;
+    const trend = reaction ? { label: `${reaction.asset.symbol} · ${reaction.eventTitle}`, unit: "%", points: reaction.points.map((point) => ({ ...point, label: relativeHour(point.hours), value: point.change })) } : state.story.trend;
+    elements.trendTitle.textContent = trend.label; const svg = elements.trendChart; svg.replaceChildren();
+    const points = trend.points.map((point) => ({ ...point, value: Number(point.value), hours: Number(point.hours) })).filter((point) => Number.isFinite(point.value));
     if (points.length < 2) { const message = svgEl("text", { class: "point-label", x: 450, y: 170, "text-anchor": "middle" }); message.textContent = "当前快照缺少可绘制的趋势数据"; svg.appendChild(message); return; }
-    const values = points.map((p) => p.value); const rawMin = Math.min(...values); const rawMax = Math.max(...values); const padding = Math.max((rawMax - rawMin) * 0.12, Math.abs(rawMax) * 0.04, 1); const min = rawMin - padding; const max = rawMax + padding;
-    const x = (index) => 70 + index * (750 / (points.length - 1)); const y = (value) => 275 - ((value - min) / (max - min)) * 220;
+    const values = points.map((p) => p.value); const rawMin = Math.min(...values, reaction ? 0 : Infinity); const rawMax = Math.max(...values, reaction ? 0 : -Infinity); const padding = Math.max((rawMax - rawMin) * 0.12, Math.abs(rawMax) * 0.04, 1); const min = rawMin - padding; const max = rawMax + padding;
+    const hourValues = points.map((point) => point.hours).filter(Number.isFinite); const minHour = hourValues.length ? Math.min(...hourValues) : 0; const maxHour = hourValues.length ? Math.max(...hourValues) : points.length - 1;
+    const x = (point, index) => reaction ? 70 + ((point.hours - minHour) / Math.max(1, maxHour - minHour)) * 750 : 70 + index * (750 / (points.length - 1)); const y = (value) => 275 - ((value - min) / (max - min)) * 220;
     [0, 1, 2, 3, 4].forEach((index) => { const yy = 55 + index * 55; svg.appendChild(svgEl("line", { class: "chart-grid", x1: 55, x2: 840, y1: yy, y2: yy })); });
-    const coords = points.map((point, index) => ({ ...point, x: x(index), y: y(point.value) })); const path = coords.map((p, i) => `${i ? "L" : "M"} ${p.x} ${p.y}`).join(" ");
+    const coords = points.map((point, index) => ({ ...point, x: x(point, index), y: y(point.value) })); const path = coords.map((p, i) => `${i ? "L" : "M"} ${p.x} ${p.y}`).join(" ");
+    if (reaction && minHour <= 0 && maxHour >= 0) { const eventX = 70 + ((0 - minHour) / Math.max(1, maxHour - minHour)) * 750; const marker = svgEl("line", { class: "event-marker", x1: eventX, x2: eventX, y1: 42, y2: 282 }); const markerLabel = svgEl("text", { class: "event-marker-label", x: eventX, y: 31, "text-anchor": "middle" }); markerLabel.textContent = "T=0 · 发帖"; svg.append(marker, markerLabel); }
     svg.appendChild(svgEl("path", { class: "trend-area", d: `${path} L ${coords.at(-1).x} 275 L ${coords[0].x} 275 Z` })); svg.appendChild(svgEl("path", { class: "trend-line", d: path }));
-    coords.forEach((point) => { const circle = svgEl("circle", { class: "trend-point", cx: point.x, cy: point.y, r: 6, tabindex: 0 }); const value = svgEl("text", { class: "point-value", x: point.x, y: point.y - 15, "text-anchor": "middle" }); value.textContent = `${point.value}${["%", "条"].includes(state.story.trend.unit) ? state.story.trend.unit : ""}`; const label = svgEl("text", { class: "point-label", x: point.x, y: 304, "text-anchor": "middle" }); label.textContent = point.label; circle.addEventListener("click", () => value.classList.toggle("is-active")); svg.append(circle, value, label); });
+    coords.forEach((point, index) => { const showLabel = !reaction || points.length <= 9 || shouldLabelEventPoint(point.hours, index, points.length); if (!showLabel) return; const circle = svgEl("circle", { class: "trend-point", cx: point.x, cy: point.y, r: 6, tabindex: 0 }); const value = svgEl("text", { class: "point-value", x: point.x, y: point.y - 15, "text-anchor": "middle" }); value.textContent = `${point.value > 0 && reaction ? "+" : ""}${point.value}${["%", "条"].includes(trend.unit) ? trend.unit : ""}`; const label = svgEl("text", { class: "point-label", x: point.x, y: 304, "text-anchor": "middle" }); label.textContent = point.label; circle.addEventListener("click", () => value.classList.toggle("is-active")); svg.append(circle, value, label); });
   }
 
   function renderRanking() {
     elements.rankingTitle.textContent = state.story.ranking.label; elements.rankingList.replaceChildren(); const items = state.story.ranking.items.map((item) => ({ ...item, value: Number(item.value) })).filter((item) => Number.isFinite(item.value) && item.value > 0); const max = Math.max(...items.map((item) => item.value), 1);
     if (!items.length) { elements.rankingList.appendChild(create("p", "ranking-empty", "当前快照缺少可展示的排名数据")); return; }
-    items.forEach((item, index) => { const button = create("button", "ranking-row"); button.type = "button"; const bar = create("i"); bar.style.setProperty("--bar", `${(item.value / max) * 100}%`); button.append(create("span", "rank-number", String(index + 1).padStart(2, "0")), create("strong", null, item.name), bar, create("b", null, item.display)); button.addEventListener("click", () => { elements.rankingList.querySelectorAll("button").forEach((node) => node.classList.toggle("is-active", node === button)); elements.rankingDetail.textContent = state.story.dataMode === "market" ? `${item.name} 位列第 ${index + 1}；当前口径：${state.story.ranking.label}，快照时间 ${formatTime(state.snapshot.generatedAt)}。` : `${item.name} 在所引用公开动态中的证据覆盖位列第 ${index + 1}；这不是外部市场或公链排名。`; }); elements.rankingList.appendChild(button); });
+    items.forEach((item, index) => { const button = create("button", "ranking-row"); button.type = "button"; const bar = create("i"); bar.style.setProperty("--bar", `${(item.value / max) * 100}%`); button.append(create("span", "rank-number", String(index + 1).padStart(2, "0")), create("strong", null, item.name), bar, create("b", null, item.display)); button.addEventListener("click", () => { elements.rankingList.querySelectorAll("button").forEach((node) => node.classList.toggle("is-active", node === button)); if (state.story.dataMode === "event-market") { state.selectedReactionId = item.reactionId || state.selectedReactionId; elements.rankingDetail.textContent = `${item.eventTitle || item.name}：发帖后可比窗口波动为 ${item.display}。排序按绝对波动，不区分涨跌；这只是时间相关性，不是影响价格的因果证明。`; } else elements.rankingDetail.textContent = state.story.dataMode === "market" ? `${item.name} 位列第 ${index + 1}；当前口径：${state.story.ranking.label}，快照时间 ${formatTime(state.snapshot.generatedAt)}。` : `${item.name} 在所引用公开动态中的证据覆盖位列第 ${index + 1}；这不是外部市场或公链排名。`; }); elements.rankingList.appendChild(button); });
   }
 
   function renderWatch() {
@@ -114,6 +138,7 @@
   function prepareStory(theme, figure, snapshot) {
     const story = structuredClone(theme.story);
     const explicitMode = story.dataMode;
+    if (explicitMode === "event-market") return story;
     if (explicitMode === "market" || (!explicitMode && isMarketAligned(theme))) {
       story.dataMode = "market";
       return story;
@@ -172,6 +197,12 @@
     const evidenceText = (theme.evidence || []).map((item) => `${item.summary || ""} ${(item.keywords || []).join(" ")}`.toLocaleLowerCase("zh-CN"));
     return (theme.keywords || []).slice(0, 5).map((keyword) => { const normalized = keyword.toLocaleLowerCase("zh-CN"); const count = evidenceText.filter((text) => text.includes(normalized)).length || 1; return { name: keyword, value: count, display: `${count} 条证据` }; }).sort((left, right) => right.value - left.value);
   }
+  function selectedReaction() { return state.story.marketReactions?.find((item) => item.id === state.selectedReactionId) || state.story.marketReactions?.[0] || null; }
+  function comparableMove(reaction) { for (const [key, horizon] of [["return24h", "+24h"], ["return6h", "+6h"], ["return1h", "+1h"]]) if (Number.isFinite(reaction.metrics?.[key])) return { value: reaction.metrics[key], horizon }; return { value: null, horizon: "待观察" }; }
+  function formatSigned(value) { return Number.isFinite(value) ? `${value > 0 ? "+" : ""}${Number(value).toFixed(2)}%` : "待观察"; }
+  function formatEventDate(value) { const date = new Date(value); return Number.isNaN(date.getTime()) ? "—" : new Intl.DateTimeFormat("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false }).format(date); }
+  function relativeHour(value) { const hours = Number(value); if (!Number.isFinite(hours)) return "—"; if (Math.abs(hours) < .1) return "T=0"; return `T${hours > 0 ? "+" : ""}${Number.isInteger(hours) ? hours : hours.toFixed(1)}h`; }
+  function shouldLabelEventPoint(hours, index, length) { return index === 0 || index === length - 1 || Math.abs(hours) < 1 || [24, 48, 72].some((target) => Math.abs(hours - target) < .6); }
   function readContext() { const params = new URLSearchParams(location.search); return { figureId: params.get("figureId") || "donald-trump", theme: params.get("theme") || "stablecoin", snapshot: params.get("snapshot") }; }
   function advanceLoading(step, detail) { [...elements.loadingSteps.children].forEach((item, index) => { item.classList.toggle("is-active", index === step); item.classList.toggle("is-done", index < step); }); elements.loadingDetail.textContent = detail; }
   function formatTime(value) { const date = new Date(value); return Number.isNaN(date.getTime()) ? "—" : new Intl.DateTimeFormat("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false }).format(date); }
