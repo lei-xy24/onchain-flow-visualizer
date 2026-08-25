@@ -2,7 +2,7 @@
 
 本仓库以 `static-site/` 前端为交付主体。链上概览、地址追踪、用户画像、地址关联和实时交易只消费后端团队提供的 HTTP 接口，本仓库不实现这些业务后端；接口地址统一配置在 `static-site/runtime-config.js`，留空时使用内置演示数据。
 
-“人物兴趣雷达”由 GitHub Actions 每周一北京时间 08:00 运行：从 `trump.fm` 读取特朗普的 Truth Social 归档，并通过 X API 读取马斯克、Vitalik 和 CZ 的公开动态；随后调用 DeepSeek V4 Pro 归纳真实关注主题。动态直接提到具体资产、且资产与当前主题直接相关时，系统会用 CoinGecko 历史小时行情对照 T-24h 至 T+72h 的价格和成交量反应；其他主题继续使用公开动态证据，不强加币价。`deploy/` 保留阿里云 systemd 作为可选的自托管替代方案。
+“人物兴趣雷达”由 GitHub Actions 每周一北京时间 08:00 运行：从 `trump.fm` 读取特朗普的 Truth Social 归档，并通过 X API 读取马斯克、Vitalik 和 CZ 的公开动态；随后调用 DeepSeek V4 Pro 归纳真实关注主题。事件行情与兴趣主题独立：DeepSeek 先在看不到价格的阶段判断动态是否存在明确的市场传导路径并预选候选资产，之后 CoinGecko 才提供历史小时行情；只有价格、成交量或相对 BTC 表现达到预设异常阈值的事件才展示。`deploy/` 保留阿里云 systemd 作为可选的自托管替代方案。
 
 仓库结构：
 

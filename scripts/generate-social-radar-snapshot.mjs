@@ -38,10 +38,11 @@ const [rawSocialInput, marketInput, eventMarketInput] = await Promise.all([
   readJson(marketFile),
   readOptionalJson(eventMarketFile).then((value) => value || { schemaVersion: 1, mode: "unavailable", reactions: [] }),
 ]);
-const socialInput = normalizeSocialInput(rawSocialInput, config.analysisWindowHours);
+const eventSocialInput = normalizeSocialInput(rawSocialInput, config.analysisWindowHours, 1);
+const socialInput = normalizeSocialInput(rawSocialInput, config.analysisWindowHours, config.minEvidencePerTopic);
 const marketErrors = validateMarketInput(marketInput);
 if (marketErrors.length) throw new Error(`市场输入校验失败：${marketErrors.join("；")}`);
-const eventMarketErrors = validateEventMarketInput(eventMarketInput, socialInput);
+const eventMarketErrors = validateEventMarketInput(eventMarketInput, eventSocialInput);
 if (eventMarketErrors.length) throw new Error(`事件行情输入校验失败：${eventMarketErrors.join("；")}`);
 const previousSnapshot = await readOptionalJson(latestFile);
 const generatedAt = args.generatedAt
@@ -72,6 +73,7 @@ if (modelErrors.length) await rejectCandidate("model-output", modelOutput, model
 const snapshot = buildPublishedSnapshot({
   config,
   socialInput,
+  eventSocialInput,
   marketInput,
   eventMarketInput,
   modelOutput,
@@ -171,7 +173,7 @@ function buildInstructions(config) {
   ].join("\n");
 }
 
-function normalizeSocialInput(input, analysisWindowHours) {
+function normalizeSocialInput(input, analysisWindowHours, minimumSources = config.minEvidencePerTopic) {
   if (!Array.isArray(input.figures) || !input.figures.length) throw new Error("社交输入缺少 figures");
   const windowEnd = new Date(input.windowEnd || new Date());
   const cutoff = windowEnd.getTime() - analysisWindowHours * 36e5;
@@ -190,8 +192,8 @@ function normalizeSocialInput(input, analysisWindowHours) {
       })
       .sort((left, right) => new Date(right.publishedAt) - new Date(left.publishedAt));
     return { ...figure, sources: sources.map((source) => ({ ...source, kind: source.kind || "original", weight: source.weight ?? (source.kind === "reply" ? 0.5 : 1) })) };
-  }).filter((figure) => figure.sources.length >= config.minEvidencePerTopic);
-  if (!figures.length) throw new Error(`最近 ${analysisWindowHours} 小时没有人物达到 ${config.minEvidencePerTopic} 条公开动态，保留上一份快照`);
+  }).filter((figure) => figure.sources.length >= minimumSources);
+  if (!figures.length) throw new Error(`最近 ${analysisWindowHours} 小时没有人物达到 ${minimumSources} 条公开动态，保留上一份快照`);
   return {
     ...input,
     windowStart: new Date(cutoff).toISOString(),

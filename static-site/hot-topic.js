@@ -9,7 +9,7 @@
     snapshotVersion: document.getElementById("snapshot-version"),
     refresh: document.getElementById("refresh-data"), peopleSummary: document.getElementById("people-summary"),
     peopleList: document.getElementById("people-list"), selectedFigure: document.getElementById("selected-figure"),
-    themeList: document.getElementById("theme-list"), evidencePanel: document.getElementById("evidence-panel"),
+    themePanel: document.getElementById("theme-panel"), themeList: document.getElementById("theme-list"), evidencePanel: document.getElementById("evidence-panel"),
     boundaryCopy: document.getElementById("boundary-copy"), syncOverlay: document.getElementById("sync-overlay"),
     syncDetail: document.getElementById("sync-detail"), syncSteps: document.getElementById("sync-steps"),
     toast: document.getElementById("radar-toast"),
@@ -17,6 +17,8 @@
 
   elements.refresh.addEventListener("click", () => loadData(true, "latest"));
   elements.snapshotVersion.addEventListener("change", () => loadData(true, elements.snapshotVersion.value));
+  window.addEventListener("resize", syncEvidenceHeight);
+  if (window.ResizeObserver) new ResizeObserver(syncEvidenceHeight).observe(elements.themePanel);
   loadData(false, new URLSearchParams(location.search).get("snapshot"));
 
   async function loadData(showLoading, requestedId) {
@@ -126,14 +128,15 @@
     const body = createElement("div", "evidence-body");
     const scores = createElement("section", "evidence-section"); scores.appendChild(createElement("h3", null, "主题评分依据"));
     const scoreGrid = createElement("div", "score-grid");
-    scoreGrid.append(createScore("出现频率", theme.scoreBreakdown.frequency), createScore("时间新鲜度", theme.scoreBreakdown.freshness), createScore("跨日连续性", theme.scoreBreakdown.continuity)); scores.appendChild(scoreGrid);
+    const scoreLabels = theme.scoreLabels || ["出现频率", "时间新鲜度", "跨日连续性"];
+    scoreGrid.append(createScore(scoreLabels[0], theme.scoreBreakdown.frequency), createScore(scoreLabels[1], theme.scoreBreakdown.freshness), createScore(scoreLabels[2], theme.scoreBreakdown.continuity)); scores.appendChild(scoreGrid);
     const keywords = createElement("section", "evidence-section"); keywords.appendChild(createElement("h3", null, "提取关键词"));
     const keywordCloud = createElement("div", "keyword-cloud"); theme.keywords.forEach((word, index) => keywordCloud.appendChild(createElement("span", index < 2 ? "is-strong" : null, word))); keywords.appendChild(keywordCloud);
-    const proofs = createElement("section", "evidence-section");
+    const proofs = createElement("section", "evidence-section proof-section");
     const proofTitle = createElement("div", "proof-title"); proofTitle.append(createElement("h3", null, "公开动态证据"), createElement("span", null, evidenceLabel(theme.evidenceBreakdown))); proofs.appendChild(proofTitle);
     const list = createElement("div", "proof-list"); theme.evidence.forEach((item) => list.appendChild(createProof(item))); proofs.appendChild(list);
     const action = createElement("a", "story-button", "进入主题数据故事"); action.href = buildStoryUrl(theme); action.appendChild(createElement("span", null, "→"));
-    body.append(scores, keywords, proofs, action); elements.evidencePanel.append(header, body);
+    body.append(scores, keywords, proofs, action); elements.evidencePanel.append(header, body); syncEvidenceHeight();
   }
 
   function createScore(label, value) {
@@ -157,6 +160,12 @@
   function activeFigure() { return state.data?.figures.find((item) => item.id === state.activeFigureId) || null; }
   function activeTheme() { return activeFigure()?.themes.find((item) => item.id === state.activeThemeId) || null; }
   function activePostDays(figure) { return new Set(figure.themes.flatMap((theme) => theme.evidence.map((item) => String(item.time).slice(0, 10)))).size; }
+  function syncEvidenceHeight() {
+    window.requestAnimationFrame(() => {
+      if (!elements.themePanel || !elements.evidencePanel) return;
+      elements.evidencePanel.style.height = window.matchMedia("(min-width: 1121px)").matches ? `${elements.themePanel.offsetHeight}px` : "";
+    });
+  }
   function evidenceLabel(breakdown) { return `${breakdown.originals || 0} 条原创 · ${breakdown.quotes || 0} 条引用 · ${breakdown.replies || 0} 条回复`; }
   function createMetric(label, value) { const div = document.createElement("div"); div.append(createElement("dt", null, label), createElement("dd", null, String(value))); return div; }
   function createAvatar(className, figure) { const wrapper = createElement("span", className); if (figure.avatar) { const image = document.createElement("img"); image.src = figure.avatar; image.alt = `${figure.nameZh}头像`; wrapper.appendChild(image); } else wrapper.textContent = figure.initials; return wrapper; }
