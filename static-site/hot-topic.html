@@ -10,14 +10,22 @@
     <title>人物兴趣雷达 · 区块链安全监控平台</title>
     <meta name="description" content="从公众人物最近 7 天的公开动态中提取关键词，归纳近期讨论的区块链主题" />
     <link rel="stylesheet" href="./auth.css?v=20260830-back-nav" />
-    <link rel="stylesheet" href="./hot-topic.css?v=20260813-v4" />
+    <link rel="stylesheet" href="./hot-topic.css?v=20260830-theme-market" />
     <script src="./auth.js?v=20260830-ui-fix"></script>
-    <script src="./snapshot-store.js?v=20260813-v1" defer></script>
-    <script src="./hot-topic.js?v=20260830-back-nav" defer></script>
+    <script src="./snapshot-store.js?v=20260830-theme-market" defer></script>
+    <script src="./hot-topic.js?v=20260830-theme-market" defer></script>
   </head>
   <body>
     <header class="radar-header">
       <a class="page-back-link" href="./index.html" aria-label="返回链上概览">返回</a>
+      <div class="page-header-context">
+        <strong>人物兴趣雷达</strong>
+        <span id="radar-header-context">正在读取当前人物</span>
+      </div>
+      <div class="page-header-status">
+        <span id="radar-header-status">正在读取快照</span>
+        <time id="radar-header-time">—</time>
+      </div>
     </header>
 
     <main class="radar-shell">
@@ -73,9 +81,9 @@
           <div class="theme-list" id="theme-list" aria-live="polite"></div>
         </div>
 
-        <aside class="evidence-panel" id="evidence-panel" aria-live="polite">
-          <div class="empty-detail"><span aria-hidden="true">⌁</span><h2>选择一个讨论主题</h2><p>查看关键词、评分依据与近期公开动态证据。</p></div>
-        </aside>
+        <section class="evidence-panel" id="evidence-panel" aria-live="polite">
+          <div class="empty-detail"><span aria-hidden="true">⌁</span><h2>选择一个讨论主题</h2><p>查看评分依据、关键词与可横向浏览的近期公开动态。</p></div>
+        </section>
       </section>
 
       <section class="boundary-note" aria-label="数据边界说明">

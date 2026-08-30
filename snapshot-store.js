@@ -15,7 +15,44 @@
     if (!entry) throw new Error(`找不到快照 ${id}`);
     const snapshot = await fetchJson(`${entry.file}?d=${encodeURIComponent(entry.digest || entry.id)}`);
     if (snapshot.status !== "published" || snapshot.snapshotId !== entry.id) throw new Error("快照发布状态或版本不一致");
-    return snapshot;
+    return normalizeSnapshot(snapshot);
+  }
+
+  function normalizeSnapshot(snapshot) {
+    const normalized = structuredClone(snapshot);
+    normalized.figures = (normalized.figures || []).map((figure) => {
+      const themes = Array.isArray(figure.themes) ? figure.themes : [];
+      const legacyTheme = themes.find((theme) => theme.topicType === "market_impact_events" || theme.story?.dataMode === "event-market");
+      const realThemes = themes.filter((theme) => theme !== legacyTheme);
+      if (!legacyTheme || !realThemes.length) return figure;
+      const legacyReactions = legacyTheme.story?.marketReactions || [];
+      return {
+        ...figure,
+        themes: realThemes.map((theme) => {
+          if (theme.marketImpact) return theme;
+          const sourceIds = new Set([...(theme.sourceIds || []), ...(theme.evidence || []).map((item) => item.id)]);
+          const reactions = legacyReactions
+            .filter((reaction) => sourceIds.has(reaction.sourceId))
+            .map((reaction) => ({ ...reaction, isCurrentWindow: true }));
+          if (!reactions.length) return theme;
+          const primary = reactions.find((reaction) => reaction.id === legacyTheme.story?.primaryReactionId) || reactions[0];
+          return {
+            ...theme,
+            marketImpact: {
+              version: 1,
+              status: reactions.some((reaction) => reaction.significance?.level === "strong") ? "strong" : "notable",
+              primaryReactionId: primary.id,
+              lastVerifiedAt: legacyTheme.lastVerifiedAt || normalized.generatedAt,
+              historyDays: legacyTheme.historyDays || 90,
+              reactions,
+              unavailableEvents: [],
+              derivedFromLegacyTheme: true,
+            },
+          };
+        }),
+      };
+    });
+    return normalized;
   }
 
   function populateVersionSelect(select, index, currentId) {
@@ -44,5 +81,5 @@
     return response.json();
   }
 
-  window.SocialRadarSnapshots = { loadIndex, loadSnapshot, populateVersionSelect, formatSlot };
+  window.SocialRadarSnapshots = { loadIndex, loadSnapshot, normalizeSnapshot, populateVersionSelect, formatSlot };
 })();

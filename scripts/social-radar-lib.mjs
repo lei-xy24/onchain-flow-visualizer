@@ -242,7 +242,7 @@ function evidenceTopicType(topicType) {
   return `evidence_${normalized}`.slice(0, 48).replace(/_+$/g, "");
 }
 
-export function buildPublishedSnapshot({ config, socialInput, eventSocialInput = socialInput, marketInput, eventMarketInput = { reactions: [] }, modelOutput, previousSnapshot, slot, generatedAt, modelName, isDemo }) {
+export function buildPublishedSnapshot({ config, socialInput, marketInput, eventMarketInput = { reactions: [], unavailableEvents: [] }, modelOutput, previousSnapshot, slot, generatedAt, modelName, isDemo }) {
   const previousFigures = new Map((previousSnapshot?.figures || []).map((figure) => [figure.id, figure]));
   const figures = socialInput.figures.map((figure) => {
     const aiFigure = modelOutput.figures.find((item) => item.figureId === figure.id);
@@ -326,18 +326,13 @@ export function buildPublishedSnapshot({ config, socialInput, eventSocialInput =
     };
   });
 
-  const figureResults = new Map(figures.map((figure) => [figure.id, figure]));
-  for (const eventFigure of eventSocialInput.figures || []) {
-    const previousFigure = previousFigures.get(eventFigure.id);
-    const previousTheme = (previousFigure?.themes || []).find((theme) => theme.story?.dataMode === "event-market" || theme.topicType === "market_impact_events");
-    const currentReactions = (eventMarketInput.reactions || []).filter((reaction) => reaction.figureId === eventFigure.id && reaction.significance?.passed !== false);
-    const marketReactions = mergeMarketReactions(currentReactions, previousTheme?.story?.marketReactions || [], generatedAt, config.eventHistoryDays || 90);
-    if (!marketReactions.length) continue;
-    const result = figureResults.get(eventFigure.id) || buildFigureShell(eventFigure, config, generatedAt);
-    const eventTheme = buildEventImpactTheme({ figure: eventFigure, previousTheme, marketReactions, currentReactions, generatedAt, config });
-    result.themes = [...result.themes.filter((theme) => theme.topicType !== "market_impact_events"), eventTheme];
-    figureResults.set(eventFigure.id, result);
-  }
+  const figureResults = new Map(figures.map((figure) => [figure.id, attachMarketImpact({
+    figure,
+    previousFigure: previousFigures.get(figure.id),
+    eventMarketInput,
+    generatedAt,
+    historyDays: config.eventHistoryDays || 90,
+  })]));
 
   const snapshot = {
     schemaVersion: 1,
@@ -363,98 +358,55 @@ export function buildPublishedSnapshot({ config, socialInput, eventSocialInput =
     isLive: !isDemo && ["x-posts-api", "mixed-social-api"].includes(socialInput.mode),
     title: isDemo ? "最近一份已发布的 DeepSeek 演示快照" : "最近一份已发布的 DeepSeek 分析快照",
     description: `${formatPublishCadence(config.publishIntervalHours)}；本页只读取最近一份校验通过并发布的结果。`,
-    disclaimer: "兴趣主题只来自人物最近 7 天的公开动态，不代表人物立场、投资、合作或背书，也不会推断其钱包或链上地址。事件行情会先依据动态内容提出影响路径与候选资产，再独立读取历史行情；只有价格、成交量或相对市场表现达到预设异常阈值才展示。时间重合只表示相关性，不能据此认定人物导致了价格变化。",
+    disclaimer: "兴趣主题只来自人物最近 7 天的公开动态，不代表人物立场、投资、合作或背书，也不会推断其钱包或链上地址。与某主题证据精确对应的候选资产会读取历史行情，并如实标注显著、普通或数据不足；无法按动态来源归属的行情不会强行放进主题。时间重合只表示相关性，不能据此认定人物导致了价格变化。",
     figures: [...figureResults.values()],
   };
   snapshot.digest = digestSnapshot(snapshot);
   return snapshot;
 }
 
-function buildFigureShell(figure, config, generatedAt) {
+function attachMarketImpact({ figure, previousFigure, eventMarketInput, generatedAt, historyDays }) {
+  const currentFigureReactions = (eventMarketInput.reactions || []).filter((reaction) => reaction.figureId === figure.id);
+  const currentUnavailable = (eventMarketInput.unavailableEvents || []).filter((event) => event.figureId === figure.id);
+  const previousThemes = new Map((previousFigure?.themes || []).map((theme) => [theme.topicType, theme]));
+  const legacyTheme = (previousFigure?.themes || []).find((theme) => theme.topicType === "market_impact_events" || theme.story?.dataMode === "event-market");
+  const legacyReactions = legacyTheme?.story?.marketReactions || [];
+
   return {
-    id: figure.id,
-    name: figure.name,
-    nameZh: figure.nameZh,
-    initials: figure.initials,
-    role: figure.role,
-    avatar: figure.avatar,
-    colors: figure.colors,
-    accounts: figure.accounts,
-    postsAnalyzed: figure.sources.length,
-    sourceCount: figure.sources.length,
-    analysisWindow: `近 ${Math.round(config.analysisWindowHours / 24)} 天`,
-    lastSuccessAt: generatedAt,
-    themes: [],
+    ...figure,
+    themes: figure.themes.map((theme) => {
+      const sourceIds = new Set(theme.sourceIds || []);
+      const currentReactions = currentFigureReactions.filter((reaction) => sourceIds.has(reaction.sourceId));
+      const unavailableEvents = currentUnavailable.filter((event) => sourceIds.has(event.sourceId));
+      const previousTheme = previousThemes.get(theme.topicType);
+      const previousReactions = previousTheme?.marketImpact?.reactions?.length
+        ? previousTheme.marketImpact.reactions
+        : legacyReactions.filter((reaction) => sourceIds.has(reaction.sourceId));
+      const reactions = mergeMarketReactions(currentReactions, previousReactions, generatedAt, historyDays);
+      if (!reactions.length && !unavailableEvents.length) return theme;
+      const primary = reactions.find((reaction) => reaction.isCurrentWindow !== false) || reactions[0] || null;
+      return {
+        ...theme,
+        marketImpact: {
+          version: 1,
+          status: marketImpactStatus(currentReactions, unavailableEvents, reactions),
+          primaryReactionId: primary?.id || null,
+          lastVerifiedAt: eventMarketInput.collectedAt || generatedAt,
+          historyDays,
+          reactions,
+          unavailableEvents,
+        },
+      };
+    }),
   };
 }
 
-function buildEventImpactTheme({ figure, previousTheme, marketReactions, currentReactions, generatedAt, config }) {
-  const sourceMap = new Map((figure.sources || []).map((source) => [source.id, source]));
-  const previousEvidence = new Map((previousTheme?.evidence || []).map((item) => [item.id, item]));
-  const evidence = [];
-  const seenSources = new Set();
-  for (const reaction of marketReactions) {
-    if (seenSources.has(reaction.sourceId)) continue;
-    const source = sourceMap.get(reaction.sourceId);
-    const old = previousEvidence.get(reaction.sourceId);
-    if (!source && !old) continue;
-    seenSources.add(reaction.sourceId);
-    evidence.push(source ? {
-      id: source.id,
-      type: source.type,
-      kind: source.kind || "original",
-      weight: source.weight ?? 1,
-      platform: source.platform,
-      provider: source.provider || null,
-      time: source.publishedAt,
-      title: source.title,
-      summary: reaction.impactHypothesis?.rationale || source.text,
-      keywords: [impactChannelLabel(reaction.impactHypothesis?.channel), reaction.asset?.symbol].filter(Boolean),
-      url: source.url,
-    } : old);
-  }
-  const assets = [...new Set(marketReactions.map((reaction) => reaction.asset?.symbol).filter(Boolean))];
-  const channels = [...new Set(marketReactions.map((reaction) => impactChannelLabel(reaction.impactHypothesis?.channel)).filter(Boolean))];
-  const currentSourceIds = new Set(currentReactions.map((reaction) => reaction.sourceId));
-  const originals = evidence.filter((item) => item.kind === "original").length;
-  const quotes = evidence.filter((item) => item.kind === "quote").length;
-  const replies = evidence.filter((item) => item.kind === "reply").length;
-  const strongestZ = Math.max(0, ...marketReactions.map((reaction) => Number(reaction.significance?.zScore) || 0));
-  const strongCount = marketReactions.filter((reaction) => reaction.significance?.level === "strong").length;
-  const highRelevance = marketReactions.filter((reaction) => reaction.impactHypothesis?.relevance === "high").length;
-  const score = clamp(Math.round(58 + Math.min(16, strongestZ * 5) + Math.min(10, strongCount * 4) + Math.min(8, highRelevance * 3) + Math.min(8, marketReactions.length * 2)), 0, 96);
-  const trend = deriveTrend(score, previousTheme?.score);
-  const topic = {
-    name: "事件与加密市场反应",
-    category: "跨市场事件",
-    score,
-  };
-  return {
-    id: "market-impact-events",
-    topicType: "market_impact_events",
-    storyId: "market_impact_events",
-    name: topic.name,
-    category: topic.category,
-    score,
-    change: trend.change,
-    trend: trend.trend,
-    confidence: marketReactions.some((reaction) => reaction.impactHypothesis?.confidence === "high") ? "高" : "中",
-    summary: `公开动态中的事件先形成影响假设，再用真实小时行情验证；当前保留 ${marketReactions.length} 组达到异常阈值的反应。`,
-    why: "事件候选资产在读取价格前确定，只有后续行情相对自身历史波动、成交量或 BTC 基准出现异常时才进入故事。",
-    keywords: [...channels, ...assets].filter(Boolean).slice(0, 8),
-    sourceIds: evidence.map((item) => item.id),
-    evidenceBreakdown: { posts: evidence.length, originals, quotes, replies, weightedCount: evidence.reduce((sum, item) => sum + (item.weight ?? 1), 0) },
-    scoreBreakdown: {
-      frequency: clamp(50 + marketReactions.length * 8, 0, 100),
-      freshness: clamp(55 + currentSourceIds.size * 12, 0, 100),
-      continuity: clamp(Math.round(50 + strongestZ * 12), 0, 100),
-    },
-    scoreLabels: ["验证事件", "本期事件", "异常强度"],
-    evidence,
-    story: buildEventMarketStory(topic, figure, marketReactions, currentReactions, figure.colors?.[1] || figure.colors?.[0] || "#42d6c7"),
-    lastVerifiedAt: generatedAt,
-    historyDays: config.eventHistoryDays || 90,
-  };
+function marketImpactStatus(currentReactions, unavailableEvents, reactions) {
+  if (currentReactions.some((reaction) => reaction.significance?.level === "strong")) return "strong";
+  if (currentReactions.some((reaction) => reaction.significance?.passed !== false)) return "notable";
+  if (currentReactions.length) return "ordinary";
+  if (unavailableEvents.length) return "insufficient";
+  return reactions.length ? "historical" : "unmapped";
 }
 
 function mergeMarketReactions(current, previous, generatedAt, historyDays) {
@@ -468,105 +420,6 @@ function mergeMarketReactions(current, previous, generatedAt, historyDays) {
   return [...merged.values()].sort((left, right) => new Date(right.eventAt) - new Date(left.eventAt)).slice(0, 24);
 }
 
-function buildEventMarketStory(topic, figure, marketReactions, currentReactions, accent) {
-  const primary = marketReactions[0];
-  const assets = [...new Set(marketReactions.map((reaction) => reaction.asset?.symbol).filter(Boolean))];
-  const comparable = marketReactions.map((reaction) => ({ reaction, ...reactionComparableMove(reaction) }));
-  const strongest = [...comparable].filter((item) => Number.isFinite(item.value)).sort((left, right) => Math.abs(right.value) - Math.abs(left.value))[0];
-  const trendPoints = (primary.points || []).map((point) => ({ label: relativeHourLabel(point.hours), value: Number(point.change), time: point.time, hours: point.hours }));
-  const rankingItems = comparable
-    .filter((item) => Number.isFinite(item.value))
-    .sort((left, right) => Math.abs(right.value) - Math.abs(left.value))
-    .slice(0, 8)
-    .map(({ reaction, value, horizon }) => ({
-      name: `${formatShortDate(reaction.eventAt)} · ${reaction.asset.symbol}`,
-      value: Math.max(Math.abs(value), 0.01),
-      display: `${formatSignedPercent(value)} / ${horizon}`,
-      reactionId: reaction.id,
-      eventTitle: reaction.eventTitle,
-      eventAt: reaction.eventAt,
-    }));
-  const primaryMove = reactionComparableMove(primary);
-  const volumeRatio = primary.metrics?.volumeRatio24h;
-  const relativeMetric = Number.isFinite(primary.metrics?.btcAdjusted24h)
-    ? { label: "相对 BTC（24h）", value: formatSignedPercent(primary.metrics.btcAdjusted24h), detail: "已扣除同期 BTC 涨跌，仅用于观察相对强弱。" }
-    : { label: "最大回撤（72h窗）", value: formatSignedPercent(primary.metrics?.maxDrawdown), detail: "从发帖时点起，在当前可用观察窗口内的最低变动。" };
-
-  return {
-    dataMode: "event-market",
-    name: topic.name,
-    category: `${topic.category} · 异常行情验证`,
-    headline: `${figure.nameZh}发布相关事件后，加密市场出现了什么反应？`,
-    lead: `先根据动态内容确定“事件如何可能传导到市场”以及候选资产，再把发布时间设为 T=0，对照前 24 小时至后 72 小时的真实行情。只有达到预设异常阈值的反应才展示。`,
-    accent,
-    snapshot: [
-      { label: "通过验证的事件反应", value: `${marketReactions.length} 组`, change: `${currentReactions.length} 组来自本期 · ${assets.join(" · ")}` },
-      { label: `最近事件${primaryMove.horizon}反应`, value: formatSignedPercent(primaryMove.value), change: `${formatShortDate(primary.eventAt)} · ${primary.asset.symbol} · ${significanceLabel(primary)}` },
-      { label: "最强异常波动", value: strongest ? formatSignedPercent(strongest.value) : "待观察", change: strongest ? `${formatShortDate(strongest.reaction.eventAt)} · ${strongest.reaction.asset.symbol} · ${strongest.horizon}` : "观察窗口尚未完整" },
-    ],
-    trend: { label: `${primary.asset.symbol} 事件时点归一化价格`, unit: "%", points: trendPoints },
-    ranking: { label: "已验证事件按可比窗口的绝对波动排序", items: rankingItems },
-    watch: [
-      { title: "短线价格反应", metric: formatSignedPercent(primary.metrics?.return1h), metricLabel: "+1h", detail: `事件发布后 1 小时，候选资产 ${primary.asset.symbol} 的价格变化。`, tone: "teal" },
-      { title: "成交量是否放大", metric: Number.isFinite(volumeRatio) ? `${volumeRatio.toFixed(2)}×` : "待观察", metricLabel: "后24h / 前24h", detail: "比较事件前后各 24 小时的平均小时成交量；数据不完整时不估算。", tone: "amber" },
-      { title: relativeMetric.label, metric: relativeMetric.value, metricLabel: "相关性观察", detail: relativeMetric.detail, tone: "violet" },
-    ],
-    chapters: [
-      { view: "signal", kicker: "信号", title: "为什么这个事件可能传导到加密市场？", body: primary.impactHypothesis?.rationale || `系统在读取行情前，将这条公开动态判断为可能影响 ${primary.asset.symbol} 的事件，并固定了候选资产。` },
-      { view: "trend", kicker: "价格反应", title: "事件前后价格路径", body: `以“${primary.eventTitle}”为 T=0，观察候选资产 ${primary.asset.symbol} 从 T-24h 到当前可用的 T+72h 路径。该反应通过了历史波动、成交量或相对 BTC 表现的预设阈值。` },
-      { view: "ranking", kicker: "历史对比", title: "已验证事件的波动排序", body: `把最近 ${marketReactions.length} 组通过阈值的事件反应按可比窗口绝对波动排序，同时保留上涨和下跌；未达到阈值的普通波动不会进入这张表。` },
-      { view: "watch", kicker: "观察", title: "异常相关不等于因果", body: "事件可能与币价波动存在时间关联，但相关性不等于因果关系；同期宏观消息、市场结构、流动性和其他新闻也会影响价格。页面展示的是可复核的异常反应，不把它表述成人物直接带动行情。" },
-    ],
-    marketReactions,
-    primaryReactionId: primary.id,
-  };
-}
-
-function impactChannelLabel(value) {
-  return ({
-    macro_risk: "宏观风险",
-    geopolitical: "地缘事件",
-    regulation_policy: "监管政策",
-    election_policy: "选举政策",
-    financial_liquidity: "金融流动性",
-    crypto_infrastructure: "加密基础设施",
-    exchange_platform: "交易平台",
-    protocol_technology: "协议技术",
-    corporate_adoption: "企业采用",
-    other: "其他影响路径",
-  })[value] || null;
-}
-
-function significanceLabel(reaction) {
-  if (reaction.significance?.level === "strong") return "强异常";
-  if (reaction.significance?.passed) return "显著异常";
-  return "已验证";
-}
-
-function reactionComparableMove(reaction) {
-  for (const [key, horizon] of [["return24h", "+24h"], ["return6h", "+6h"], ["return1h", "+1h"]]) {
-    const value = reaction.metrics?.[key];
-    if (Number.isFinite(value)) return { value, horizon };
-  }
-  return { value: null, horizon: "待观察" };
-}
-
-function formatSignedPercent(value) {
-  if (!Number.isFinite(value)) return "待观察";
-  return `${value > 0 ? "+" : ""}${Number(value).toFixed(2)}%`;
-}
-
-function formatShortDate(value) {
-  const date = new Date(value);
-  return Number.isFinite(date.getTime()) ? `${String(date.getUTCMonth() + 1).padStart(2, "0")}/${String(date.getUTCDate()).padStart(2, "0")}` : "—";
-}
-
-function relativeHourLabel(value) {
-  const hours = Number(value);
-  if (!Number.isFinite(hours)) return "—";
-  if (Math.abs(hours) < 0.1) return "T=0";
-  return `T${hours > 0 ? "+" : ""}${Number.isInteger(hours) ? hours : hours.toFixed(1)}h`;
-}
 
 function buildEvidenceStoryData(topic, figure, windowEndValue, analysisWindowHours) {
   const sources = topic.sourceIds.map((sourceId) => figure.sources.find((source) => source.id === sourceId)).filter(Boolean);
@@ -702,18 +555,38 @@ export function validateModelOutput(modelOutput, socialInput, marketInput, confi
 
 export function validateSnapshot(snapshot) {
   const errors = [];
+  const marketStatuses = new Set(["strong", "notable", "ordinary", "insufficient", "historical", "unmapped"]);
   if (snapshot.status !== "published") errors.push("快照状态必须为 published");
   if (!snapshot.snapshotId || !snapshot.generatedAt || !snapshot.slotStart) errors.push("快照元数据不完整");
   if (!Array.isArray(snapshot.figures) || !snapshot.figures.length) errors.push("快照没有人物");
   for (const figure of snapshot.figures || []) {
     if (!figure.themes?.length) errors.push(`${figure.id} 没有可发布主题`);
     for (const theme of figure.themes || []) {
-      const minimumEvidence = theme.story?.dataMode === "event-market" ? 1 : 2;
-      if (theme.evidence.length < minimumEvidence) errors.push(`${figure.id}/${theme.id} 证据不足`);
+      if (theme.topicType === "market_impact_events" || theme.story?.dataMode === "event-market") errors.push(`${figure.id}/${theme.id} 不应把行情验证发布为独立主题`);
+      if (theme.evidence.length < 2) errors.push(`${figure.id}/${theme.id} 证据不足`);
       if (theme.story.chapters.length !== 4 || theme.story.watch.length !== 3) errors.push(`${figure.id}/${theme.id} 故事结构不完整`);
-      if (!["market", "evidence", "event-market"].includes(theme.story.dataMode)) errors.push(`${figure.id}/${theme.id} 故事数据模式无效`);
+      if (!["market", "evidence"].includes(theme.story.dataMode)) errors.push(`${figure.id}/${theme.id} 故事数据模式无效`);
       if (!theme.story.trend.points.length || !theme.story.ranking.items.length) errors.push(`${figure.id}/${theme.id} 缺少数据图表`);
-      if (theme.story.dataMode === "event-market" && (!Array.isArray(theme.story.marketReactions) || !theme.story.marketReactions.length)) errors.push(`${figure.id}/${theme.id} 缺少资产事件行情`);
+      if (theme.marketImpact) {
+        const impact = theme.marketImpact;
+        const reactions = Array.isArray(impact.reactions) ? impact.reactions : [];
+        const unavailableEvents = Array.isArray(impact.unavailableEvents) ? impact.unavailableEvents : [];
+        const sourceIds = new Set(theme.sourceIds || []);
+        const reactionIds = new Set();
+        if (!marketStatuses.has(impact.status)) errors.push(`${figure.id}/${theme.id} 行情状态无效`);
+        if (!reactions.length && !unavailableEvents.length) errors.push(`${figure.id}/${theme.id} 行情验证没有可展示结果`);
+        if (reactions.length && !reactions.some((reaction) => reaction.id === impact.primaryReactionId)) errors.push(`${figure.id}/${theme.id} 主行情引用无效`);
+        for (const reaction of reactions) {
+          if (!reaction?.id || reactionIds.has(reaction.id)) errors.push(`${figure.id}/${theme.id} 行情反应 id 重复或无效`);
+          reactionIds.add(reaction?.id);
+          if (reaction?.figureId !== figure.id) errors.push(`${figure.id}/${theme.id} 行情反应人物不一致`);
+          if (reaction?.isCurrentWindow !== false && !sourceIds.has(reaction?.sourceId)) errors.push(`${figure.id}/${theme.id} 本期行情没有对应主题证据`);
+          if (!Array.isArray(reaction?.points) || reaction.points.length < 2) errors.push(`${figure.id}/${theme.id} 行情曲线数据不足`);
+        }
+        for (const event of unavailableEvents) {
+          if (event?.figureId !== figure.id || !sourceIds.has(event?.sourceId)) errors.push(`${figure.id}/${theme.id} 数据不足事件没有对应主题证据`);
+        }
+      }
     }
   }
   return errors;
