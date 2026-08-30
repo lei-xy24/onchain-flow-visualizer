@@ -90,12 +90,15 @@ test("全球市场联动入口紧跟人物兴趣雷达并复用同尺寸卡片�
     "全球市场联动应复用 hot-topic-card 骨架",
   );
   assert.match(index, /\.hot-topic-card\s*\{[^}]*min-height:\s*205px/s);
+  assert.match(index, /\.hot-topic-card\s*\{[^}]*grid-template-columns:\s*132px\s+minmax\(0,\s*1fr\)\s+360px/s);
+  assert.match(index, /\.cross-market-visual span small\s*\{[^}]*text-align:\s*center[^}]*width:\s*100%/s);
   assert.match(index, /href="\.\/global-markets\.html"/);
 });
 
 test("全球市场联动页只保留返回上级入口且提供可访问的数据探索控件", async () => {
-  const [html, script] = await Promise.all([
+  const [html, css, script] = await Promise.all([
     readFile(path.join(root, "global-markets.html"), "utf8"),
+    readFile(path.join(root, "global-markets.css"), "utf8"),
     readFile(path.join(root, "global-markets.js"), "utf8"),
   ]);
   const anchors = readAnchors(html);
@@ -116,6 +119,11 @@ test("全球市场联动页只保留返回上级入口且提供可访问的数�
   assert.match(html, /data-window="20" aria-pressed="true"/);
   assert.match(script, /create\("caption", null, `\$\{state\.correlationWindow\} 日收益率相关矩阵`\)/);
   assert.match(script, /button\.setAttribute\("aria-pressed", String\(pair\?\.id === state\.selectedPairId\)\)/);
+  assert.match(css, /\.market-title-row h1\s*\{[^}]*min-width:\s*0[^}]*max-width:\s*none[^}]*white-space:\s*nowrap/s);
+  assert.doesNotMatch(css, /\.market-title-row h1\s*\{[^}]*max-width:\s*840px/s);
+  for (const source of [html, css, script]) {
+    assert.doesNotMatch(source, /method-note|renderMethod|走势图基准 100/);
+  }
 });
 
 test("登录页不预填凭据且门禁使用短期会话和安全返回路径", async () => {

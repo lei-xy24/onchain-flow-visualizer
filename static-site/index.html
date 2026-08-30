@@ -179,7 +179,7 @@
         color: #ffffff;
         display: grid;
         gap: 24px;
-        grid-template-columns: 132px minmax(0, 1fr) auto;
+        grid-template-columns: 132px minmax(0, 1fr) 360px;
         min-height: 205px;
         overflow: hidden;
         padding: 22px;
@@ -229,10 +229,14 @@
 
       .cross-market-visual span small {
         color: rgba(255, 255, 255, 0.58);
+        display: block;
         font-size: 0.52rem;
         font-weight: 700;
         letter-spacing: 0.06em;
+        line-height: 1.2;
+        text-align: center;
         text-transform: uppercase;
+        width: 100%;
       }
 
       .cross-market-visual span:nth-child(1) { background: linear-gradient(145deg, #5f2027, #c8515c); }
