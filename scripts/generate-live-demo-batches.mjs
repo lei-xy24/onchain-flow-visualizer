@@ -77,7 +77,82 @@ const CHAINS = Object.freeze({
   },
 });
 
-const BATCHES = Object.freeze([
+const INITIAL_BATCHES = Object.freeze({
+  eth: [
+    {
+      number: 1,
+      transfers: [
+        ["exchange", "bridge", "native", 17_500],
+        ["fresh", "exchange", "native", 630],
+        ["bridge", "market", "native", 147_000],
+        ["treasury", "router", "native", 1_225_000],
+        ["fresh", "treasury", "native", 5_250],
+        ["custody", "exchange", "native", 1_400_000],
+      ],
+    },
+    {
+      number: 2,
+      transfers: [
+        ["bridge", "exchange", "native", 8_400],
+        ["market", "treasury", "native", 262_500],
+        ["router", "fresh", "native", 245],
+        ["treasury", "bridge", "native", 10_500_000],
+        ["custody", "market", "native", 2_100_000],
+        ["exchange", "router", "native", 29_750],
+      ],
+    },
+  ],
+  bsc: [
+    {
+      number: 1,
+      transfers: [
+        ["exchange", "bridge", "native", 19_200],
+        ["fresh", "exchange", "native", 480],
+        ["bridge", "market", "native", 720_000],
+        ["treasury", "router", "native", 4_800_000],
+        ["custody", "exchange", "native", 1_500_000],
+        ["exchange", "treasury", "native", 45_000],
+      ],
+    },
+    {
+      number: 2,
+      transfers: [
+        ["bridge", "exchange", "native", 5_400],
+        ["market", "treasury", "native", 246_000],
+        ["router", "fresh", "native", 300],
+        ["treasury", "bridge", "native", 38_400_000],
+        ["custody", "market", "native", 2_340_000],
+        ["exchange", "router", "native", 15_000],
+      ],
+    },
+  ],
+  polygon: [
+    {
+      number: 1,
+      transfers: [
+        ["exchange", "bridge", "native", 9_000],
+        ["fresh", "exchange", "native", 375],
+        ["bridge", "market", "native", 150_000],
+        ["treasury", "router", "native", 12_000],
+        ["custody", "exchange", "native", 1_500_000],
+        ["exchange", "treasury", "native", 55_000],
+      ],
+    },
+    {
+      number: 2,
+      transfers: [
+        ["bridge", "exchange", "native", 2_500],
+        ["market", "treasury", "native", 480_000],
+        ["router", "fresh", "native", 450],
+        ["treasury", "bridge", "native", 39_000],
+        ["custody", "market", "native", 2_200_000],
+        ["exchange", "router", "native", 21_000],
+      ],
+    },
+  ],
+});
+
+const SHARED_BATCHES = Object.freeze([
   {
     number: 3,
     transfers: [
@@ -113,38 +188,42 @@ const BATCHES = Object.freeze([
   },
 ]);
 
-const TRANSFER_SECOND_OFFSETS = Object.freeze([1, 3, 4, 6, 8, 9]);
-const TEN_SECONDS_MS = 10_000;
+const TRANSFER_SECOND_OFFSETS = Object.freeze([5, 15, 25, 35, 45, 55]);
+const LIVE_WINDOW_MS = 60_000;
 const WEI = 10n ** 18n;
 
 for (const [chain, config] of Object.entries(CHAINS)) {
-  const outputDirectory = path.join(
-    projectRoot,
-    "static-site",
-    "mock-live",
-    chain,
+  const outputDirectories = [
+    path.join(projectRoot, "mock-live", chain),
+    path.join(projectRoot, "static-site", "mock-live", chain),
+  ];
+  await Promise.all(
+    outputDirectories.map((directory) => mkdir(directory, { recursive: true })),
   );
-  await mkdir(outputDirectory, { recursive: true });
 
-  for (const batch of BATCHES) {
+  for (const batch of [...INITIAL_BATCHES[chain], ...SHARED_BATCHES]) {
     const windowStart = new Date(
-      Date.parse(config.start) + (batch.number - 1) * TEN_SECONDS_MS,
+      Date.parse(config.start) + (batch.number - 1) * LIVE_WINDOW_MS,
     );
     const response = {
       chain,
       window: {
         from: toIsoSeconds(windowStart),
-        to: toIsoSeconds(new Date(windowStart.getTime() + TEN_SECONDS_MS)),
+        to: toIsoSeconds(new Date(windowStart.getTime() + LIVE_WINDOW_MS)),
       },
       transfers: batch.transfers.map((definition, index) =>
         buildTransfer(chain, config, batch.number, index, windowStart, definition),
       ),
     };
 
-    await writeFile(
-      path.join(outputDirectory, `batch-${batch.number}.json`),
-      `${JSON.stringify(response, null, 2)}\n`,
-      "utf8",
+    await Promise.all(
+      outputDirectories.map((directory) =>
+        writeFile(
+          path.join(directory, `batch-${batch.number}.json`),
+          `${JSON.stringify(response, null, 2)}\n`,
+          "utf8",
+        ),
+      ),
     );
   }
 }
@@ -180,7 +259,6 @@ function buildTransfer(
     decimals,
     asset: isNative ? config.nativeAsset : config.stableAsset,
     assetAddress: isNative ? null : config.stableAddress,
-    valueUsd,
     txHash: `0x${createHash("sha256").update(id).digest("hex")}`,
   };
 }

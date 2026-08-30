@@ -2,18 +2,23 @@ import {
   DENSITY_RULES,
   LIVE_CHAINS,
   buildGraphModel,
-  formatRawAmount,
   formatTransferAmount,
   formatTransferTotal,
   parseLiveResponse,
   shortAddress,
   shortHash,
 } from "./live-core.js?v=20260724-native-usd";
+import {
+  formatRateTime,
+  formatTransferUsd as formatRealtimeTransferUsd,
+  formatTransfersUsdTotal as formatRealtimeTransfersUsdTotal,
+  loadUsdRates,
+} from "./currency-rates.js?v=20260830";
 
 // 后端团队提供接口后，只修改 runtime-config.js，不在前端放密钥。
 const BACKEND_API_URL = globalThis.ONCHAIN_API_CONFIG?.liveTransfers || "";
-const MOCK_DATA_VERSION = "20260724-native-usd";
-const POLL_INTERVAL_MS = 10_000;
+const MOCK_DATA_VERSION = "20260830-live-60s";
+const POLL_INTERVAL_MS = 60_000;
 const MOCK_BATCH_COUNTS = Object.freeze({ eth: 5, bsc: 5, polygon: 5 });
 
 const elements = {
@@ -23,6 +28,8 @@ const elements = {
   countdownLabel: document.getElementById("countdown-label"),
   pauseButton: document.getElementById("pause-button"),
   refreshButton: document.getElementById("refresh-button"),
+  unitToggle: document.getElementById("live-unit-toggle"),
+  unitStatus: document.getElementById("live-unit-status"),
   windowLabel: document.getElementById("window-label"),
   transactionCount: document.getElementById("transaction-count"),
   accountCount: document.getElementById("account-count"),
@@ -60,6 +67,9 @@ const state = {
   selectedTransferId: null,
   resizeTimer: null,
   zoom: 1,
+  amountDisplayMode: "native",
+  usdRateSnapshot: null,
+  unitRateLoading: false,
 };
 
 initialize();
@@ -76,6 +86,7 @@ function initialize() {
   elements.chainSelect.value = state.chain;
   document.title = `${LIVE_CHAINS[state.chain].label} · 实时交易图谱`;
   bindEvents();
+  renderUnitControl();
   refreshData({ manual: false });
   window.setInterval(updateCountdown, 250);
 }
@@ -101,6 +112,8 @@ function bindEvents() {
   elements.refreshButton.addEventListener("click", () => {
     refreshData({ manual: true });
   });
+
+  elements.unitToggle.addEventListener("click", toggleAmountDisplayMode);
 
   elements.zoomIn.addEventListener("click", () => setZoom(state.zoom + 0.2));
   elements.zoomOut.addEventListener("click", () => setZoom(state.zoom - 0.2));
@@ -147,7 +160,7 @@ function bindEvents() {
 async function refreshData({ manual }) {
   if (state.fetching || !state.chain) return;
   state.fetching = true;
-  setStatus("正在查询", manual ? "手动刷新" : "请求最近 10 秒", "loading");
+  setStatus("正在查询", manual ? "手动刷新" : "请求最近 60 秒", "loading");
 
   try {
     const mockBatchNumber = BACKEND_API_URL.trim()
@@ -164,6 +177,18 @@ async function refreshData({ manual }) {
 
     const parsed = parseLiveResponse(await response.json(), state.chain);
     state.response = parsed;
+    if (state.amountDisplayMode === "usd") {
+      try {
+        state.usdRateSnapshot = await loadUsdRates();
+        setUnitStatus();
+      } catch (error) {
+        state.amountDisplayMode = "native";
+        setUnitStatus(
+          error instanceof Error ? error.message : "实时汇率获取失败，请重试",
+          true,
+        );
+      }
+    }
     const graphSize = getGraphSize();
     state.graph = buildGraphModel(
       parsed,
@@ -198,14 +223,14 @@ async function refreshData({ manual }) {
         BACKEND_API_URL.trim()
           ? "实时连接"
           : `演示数据 ${mockBatchNumber}/${MOCK_BATCH_COUNTS[state.chain]}`,
-        "10 秒后更新",
+        "60 秒后更新",
         "ready",
       );
     }
   } catch (error) {
     console.error(error);
     state.nextPollAt = Date.now() + POLL_INTERVAL_MS;
-    setStatus("查询失败", "10 秒后重试", "error");
+    setStatus("查询失败", "60 秒后重试", "error");
     if (!state.response) {
       showGraphMessage(
         "error",
@@ -237,13 +262,14 @@ function renderResponse() {
   elements.windowLabel.textContent = `${formatWindow(state.response.window)} · ${chain.label}`;
   elements.transactionCount.textContent = String(state.response.transfers.length);
   elements.accountCount.textContent = String(state.graph.nodes.length);
-  elements.totalValue.textContent = formatTransferTotal(state.response.transfers);
+  elements.totalValue.textContent = formatLiveTotal(state.response.transfers);
+  renderUnitControl();
 
   if (state.graph.nodes.length === 0) {
     elements.edgeLayer.replaceChildren();
     elements.nodeLayer.replaceChildren();
     elements.transactionList.innerHTML =
-      '<p class="transaction-empty">这个 10 秒窗口没有收到转账记录。</p>';
+      '<p class="transaction-empty">这个 60 秒窗口没有收到转账记录。</p>';
     showGraphMessage("empty", "当前无交易", "图谱会在下一次查询时自动更新。");
     renderInspector();
     return;
@@ -253,7 +279,7 @@ function renderResponse() {
   renderGraph(chain);
   if (state.response.transfers.length === 0) {
     elements.transactionList.innerHTML =
-      '<p class="transaction-empty">这个 10 秒窗口没有收到转账记录，历史账户节点继续保留。</p>';
+      '<p class="transaction-empty">这个 60 秒窗口没有收到转账记录，历史账户节点继续保留。</p>';
   } else {
     renderTransactionList();
   }
@@ -265,7 +291,7 @@ function renderGraph(chain) {
   updateGraphViewport();
   elements.edgeLayer.innerHTML = state.graph.edges
     .map((edge) => {
-      const amount = formatTransferAmount(edge);
+      const amount = formatLiveAmount(edge);
       const description = `${edge.fromLabel || shortAddress(edge.from)} 到 ${edge.toLabel || shortAddress(edge.to)}，${amount}`;
       return `<g
         class="flow-edge-group"
@@ -322,7 +348,7 @@ function renderTransactionList() {
   );
   elements.transactionList.innerHTML = transfers
     .map((transfer) => {
-      const amount = `${formatRawAmount(transfer.rawAmount, transfer.decimals)} ${transfer.asset}`;
+      const amount = formatLiveAmount(transfer);
       const from = transfer.fromLabel || shortAddress(transfer.from);
       const to = transfer.toLabel || shortAddress(transfer.to);
       return `<button
@@ -374,7 +400,7 @@ function bindGraphEvents() {
     edgeElement.addEventListener("click", () => selectTransfer(id));
     edgeElement.addEventListener("pointerenter", (event) => {
       const transfer = state.graph.edges.find((edge) => edge.id === id);
-      const amount = formatTransferAmount(transfer);
+      const amount = formatLiveAmount(transfer);
       showTooltip(
         event,
         `<strong>${escapeHtml(amount)}</strong><span>${escapeHtml(shortAddress(transfer.from))} → ${escapeHtml(shortAddress(transfer.to))}</span><span>交易量等级 ${transfer.density.level}/5</span>`,
@@ -476,6 +502,79 @@ function renderDensityLegend() {
       return `<span class="density-item"><span class="density-dots" style="--legend-gap: ${Math.max(2, 8 - rule.level)}px">${dots}</span>${escapeHtml(rule.label)}</span>`;
     }),
   ].join("");
+}
+
+async function toggleAmountDisplayMode() {
+  if (state.unitRateLoading || !state.response) return;
+  if (state.amountDisplayMode === "usd") {
+    state.amountDisplayMode = "native";
+    setUnitStatus();
+    renderResponse();
+    return;
+  }
+
+  state.unitRateLoading = true;
+  setUnitStatus();
+  renderUnitControl();
+  try {
+    state.usdRateSnapshot = await loadUsdRates();
+    state.amountDisplayMode = "usd";
+    setUnitStatus();
+  } catch (error) {
+    state.amountDisplayMode = "native";
+    setUnitStatus(
+      error instanceof Error ? error.message : "实时汇率获取失败，请重试",
+      true,
+    );
+  } finally {
+    state.unitRateLoading = false;
+    renderResponse();
+  }
+}
+
+function formatLiveAmount(transfer) {
+  const nativeAmount = formatTransferAmount(transfer);
+  if (state.amountDisplayMode !== "usd") return nativeAmount;
+  return (
+    formatRealtimeTransferUsd(
+      transfer,
+      state.chain,
+      state.usdRateSnapshot,
+    ) || `${nativeAmount}（暂无实时汇率）`
+  );
+}
+
+function formatLiveTotal(transfers) {
+  if (state.amountDisplayMode !== "usd") return formatTransferTotal(transfers);
+  return (
+    formatRealtimeTransfersUsdTotal(
+      transfers,
+      state.chain,
+      state.usdRateSnapshot,
+    ) || "暂无实时汇率"
+  );
+}
+
+function renderUnitControl() {
+  const isUsdMode = state.amountDisplayMode === "usd";
+  elements.unitToggle.disabled = state.unitRateLoading || !state.response;
+  elements.unitToggle.setAttribute("aria-pressed", String(isUsdMode));
+  elements.unitToggle.textContent = state.unitRateLoading
+    ? "正在获取实时汇率…"
+    : isUsdMode
+      ? "显示原币种"
+      : "单位转换：美元";
+}
+
+function setUnitStatus(message = "", isError = false) {
+  const rateTime =
+    state.amountDisplayMode === "usd"
+      ? formatRateTime(state.usdRateSnapshot)
+      : "";
+  const text = message || (rateTime ? `实时汇率 · ${rateTime}` : "");
+  elements.unitStatus.textContent = text;
+  elements.unitStatus.hidden = !text;
+  elements.unitStatus.classList.toggle("is-error", isError);
 }
 
 function setZoom(nextZoom) {

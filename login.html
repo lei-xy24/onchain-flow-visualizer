@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>登录 · 区块链与数字金融服务安全监控平台</title>
+    <meta name="description" content="登录区块链与数字金融服务安全监控平台" />
+    <link rel="stylesheet" href="./auth.css?v=20260830" />
+    <script src="./auth.js?v=20260830"></script>
+  </head>
+  <body class="login-page">
+    <main class="login-shell">
+      <section class="login-card" aria-labelledby="login-title">
+        <aside class="login-brand-panel" aria-label="平台介绍">
+          <div class="login-brand">
+            <span class="login-brand-mark" aria-hidden="true">FS</span>
+            <span>
+              <strong>区块链与数字金融服务安全监控平台</strong>
+              <small>Financial security console</small>
+            </span>
+          </div>
+          <div class="login-brand-copy">
+            <p>Secure access</p>
+            <h1>看清链上资金<br />流向与风险信号</h1>
+            <p>
+              汇总链上概览、地址追踪、实时交易、用户画像与地址关联分析，
+              让演示和研判从同一个入口开始。
+            </p>
+          </div>
+          <div class="login-brand-status"><i></i><span>演示环境 · 当前会话受登录门禁保护</span></div>
+        </aside>
+
+        <div class="login-form-panel">
+          <div class="login-form-wrap">
+            <p class="login-kicker">Operator sign in</p>
+            <h2 id="login-title">欢迎回来</h2>
+            <p class="login-intro">请输入管理员账号，进入安全监控工作台。</p>
+
+            <form class="login-form" id="login-form" novalidate>
+              <div class="login-field">
+                <label for="login-username">用户名</label>
+                <div class="login-input-wrap">
+                  <input
+                    id="login-username"
+                    name="username"
+                    type="text"
+                    autocomplete="username"
+                    autocapitalize="none"
+                    spellcheck="false"
+                    placeholder="请输入用户名"
+                    required
+                  />
+                  <span class="login-input-icon" aria-hidden="true">ID</span>
+                </div>
+              </div>
+
+              <div class="login-field">
+                <label for="login-password">密码</label>
+                <div class="login-input-wrap">
+                  <input
+                    id="login-password"
+                    name="password"
+                    type="password"
+                    autocomplete="current-password"
+                    placeholder="请输入密码"
+                    required
+                  />
+                  <button
+                    class="login-input-icon login-password-toggle"
+                    id="password-toggle"
+                    type="button"
+                    aria-label="显示密码"
+                  >显示</button>
+                </div>
+              </div>
+
+              <p class="login-error" id="login-error" role="alert" hidden></p>
+              <button class="login-submit" id="login-submit" type="submit">
+                <span>登录平台</span><span aria-hidden="true">→</span>
+              </button>
+            </form>
+            <p class="login-session-note"><span>✓</span>登录状态仅保留在当前浏览器会话中，退出后立即清除。</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      const form = document.getElementById("login-form");
+      const username = document.getElementById("login-username");
+      const password = document.getElementById("login-password");
+      const submit = document.getElementById("login-submit");
+      const error = document.getElementById("login-error");
+      const passwordToggle = document.getElementById("password-toggle");
+
+      passwordToggle.addEventListener("click", () => {
+        const showPassword = password.type === "password";
+        password.type = showPassword ? "text" : "password";
+        passwordToggle.textContent = showPassword ? "隐藏" : "显示";
+        passwordToggle.setAttribute("aria-label", showPassword ? "隐藏密码" : "显示密码");
+        password.focus();
+      });
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        error.hidden = true;
+        submit.disabled = true;
+        submit.firstElementChild.textContent = "正在验证…";
+        try {
+          const accepted = await globalThis.FINSEC_AUTH.signIn(
+            username.value,
+            password.value,
+          );
+          if (!accepted) {
+            error.textContent = "用户名或密码不正确，请重新输入。";
+            error.hidden = false;
+            password.select();
+            return;
+          }
+          const returnTo = new URLSearchParams(location.search).get("returnTo");
+          location.replace(globalThis.FINSEC_AUTH.getSafeReturnUrl(returnTo));
+        } catch (loginError) {
+          error.textContent = loginError instanceof Error
+            ? loginError.message
+            : "当前浏览器无法完成登录校验。";
+          error.hidden = false;
+        } finally {
+          submit.disabled = false;
+          submit.firstElementChild.textContent = "登录平台";
+        }
+      });
+
+      username.focus();
+    </script>
+  </body>
+</html>

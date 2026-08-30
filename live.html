@@ -1,15 +1,17 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-auth-required="true">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>实时交易图谱</title>
     <meta
       name="description"
-      content="选择区块链网络，查看最近 10 秒的账户间资金流动"
+      content="选择区块链网络，查看最近 60 秒的账户间资金流动"
     />
-    <link rel="stylesheet" href="./live.css?v=20260731-unified-search" />
-    <script src="./live-search.js?v=20260731-unified-search" defer></script>
+    <link rel="stylesheet" href="./auth.css?v=20260830" />
+    <link rel="stylesheet" href="./live.css?v=20260830-live-60s" />
+    <script src="./auth.js?v=20260830"></script>
+    <script src="./live-search.js?v=20260830-live-60s" defer></script>
   </head>
   <body class="live-home-body">
     <header class="site-header">
@@ -28,9 +30,9 @@
     <main class="live-home-main">
       <section class="live-home-copy" aria-labelledby="live-home-title">
         <p class="section-kicker">链上实时资金流</p>
-        <h1 id="live-home-title">选择币种，进入最近 10 秒</h1>
+        <h1 id="live-home-title">选择网络，查看实时交易图谱</h1>
         <p class="live-home-lead">
-          图谱每 10 秒请求一次数据，将当前时间窗口内的账户和转账方向动态绘制出来。
+          图谱每 60 秒请求一次最近 60 秒的交易数据，动态绘制账户和转账方向。
         </p>
 
         <form class="asset-search" id="live-search-form">

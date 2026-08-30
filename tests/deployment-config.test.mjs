@@ -19,6 +19,7 @@ test("前端统一从运行时配置读取外部后端地址", async () => {
   assert.match(runtimeConfig, /overview:\s*""/);
   assert.match(runtimeConfig, /flow:\s*""/);
   assert.match(runtimeConfig, /liveTransfers:\s*""/);
+  assert.match(runtimeConfig, /marketPrices:\s*"https:\/\/api\.coingecko\.com\/api\/v3\/simple\/price"/);
   assert.match(index, /ONCHAIN_API_CONFIG\?\.overview/);
   assert.match(result, /ONCHAIN_API_CONFIG\?\.flow/);
   assert.match(live, /ONCHAIN_API_CONFIG\?\.liveTransfers/);

@@ -2,11 +2,15 @@
 
 本仓库以 `static-site/` 前端为交付主体。链上概览、地址追踪、用户画像、地址关联和实时交易只消费后端团队提供的 HTTP 接口，本仓库不实现这些业务后端；接口地址统一配置在 `static-site/runtime-config.js`，留空时使用内置演示数据。
 
+静态站带有统一的演示登录页。登录状态只保存在当前浏览器会话中，所有业务页面右上角均可退出；这是前端演示门禁，不替代服务器鉴权。单位转换通过 CoinGecko Keyless Public API 查询实时美元价格，使用 60 秒浏览器缓存，前端不保存行情 API Key。
+
 “人物兴趣雷达”由 GitHub Actions 每周一北京时间 08:00 运行：从 `trump.fm` 读取特朗普的 Truth Social 归档，并通过 X API 读取马斯克、Vitalik 和 CZ 的公开动态；随后调用 DeepSeek V4 Pro 归纳真实关注主题。事件行情与兴趣主题独立：DeepSeek 先在看不到价格的阶段判断动态是否存在明确的市场传导路径并预选候选资产，之后 CoinGecko 才提供历史小时行情；只有价格、成交量或相对 BTC 表现达到预设异常阈值的事件才展示。`deploy/` 保留阿里云 systemd 作为可选的自托管替代方案。
 
 仓库结构：
 
 - `static-site/`：GitHub Pages 的完整前端，也是当前业务交付主体。
+- `static-site/login.html`、`auth.js`、`auth.css`：演示登录、会话门禁和全站退出控件。
+- `static-site/currency-rates.js`：链上分析、实时交易、用户画像和地址关联共用的实时美元汇率模块。
 - `scripts/`、`data/`：人物兴趣雷达的采集、市场数据和每周快照生成逻辑。
 - `deploy/`：人物雷达可选的自托管 systemd 模板；当前线上定时任务使用 GitHub Actions。
 - `app/`、`worker/`：保留的 Sites/Cloudflare 构建入口，用于另一套地址追踪原型和构建验证，不是链上业务后端。

@@ -14,6 +14,12 @@ import {
   rememberAddressSearch,
 } from "./address-history.js?v=20260731-history-boundary";
 import { createAnalysisLoading } from "./analysis-loading.js?v=20260731";
+import {
+  formatRateTime,
+  formatTransferUsd as formatRealtimeTransferUsd,
+  formatTransfersUsdTotal as formatRealtimeTransfersUsdTotal,
+  loadUsdRates,
+} from "./currency-rates.js?v=20260830";
 
 const elements = {
   form: document.getElementById("profile-form"),
@@ -27,6 +33,11 @@ const elements = {
 const REQUEST_TIMEOUT_MS = 12_000;
 let activeProfileController = null;
 let profileRequestId = 0;
+let activeProfileResult = null;
+let amountDisplayMode = "native";
+let usdRateSnapshot = null;
+let unitRateError = "";
+let unitRateLoading = false;
 
 const profileLoading = createAnalysisLoading({
   title: "正在生成账户画像",
@@ -121,7 +132,18 @@ async function renderProfile({ rememberSearch = false } = {}) {
     profileLoading.setStep(2);
     const profile = buildAddressProfile(records, address);
     profileLoading.setStep(3);
-    elements.output.innerHTML = renderProfileHtml(chain, profile);
+    if (amountDisplayMode === "usd") {
+      try {
+        usdRateSnapshot = await loadUsdRates();
+      } catch (error) {
+        amountDisplayMode = "native";
+        unitRateError =
+          error instanceof Error ? error.message : "实时汇率获取失败，请重试";
+      }
+    }
+    if (requestId !== profileRequestId) return;
+    activeProfileResult = { chain, profile };
+    renderActiveProfile();
   } catch (error) {
     if (requestId !== profileRequestId) return;
     const message = timedOut
@@ -142,6 +164,7 @@ async function renderProfile({ rememberSearch = false } = {}) {
 }
 
 function renderProfileRequestError(message) {
+  activeProfileResult = null;
   elements.output.innerHTML = `
     <div class="analysis-request-error">
       <h2>账户画像生成失败</h2>
@@ -190,11 +213,23 @@ function renderProfileHtml(chain, profile) {
           <p class="section-kicker">Profile result</p>
           <h2>${hasData ? "画像结果" : "暂无画像数据"}</h2>
         </div>
-        <a class="analysis-link-button" href="./result.html?chain=${encodeURIComponent(chain)}&address=${encodeURIComponent(profile.address)}">查看资金流</a>
+        <div class="analysis-panel-controls">
+          <div class="analysis-panel-actions">
+            <button
+              class="analysis-unit-toggle"
+              id="profile-unit-toggle"
+              type="button"
+              ${unitRateLoading ? "disabled" : ""}
+              aria-pressed="${amountDisplayMode === "usd" ? "true" : "false"}"
+            >${renderUnitButtonLabel()}</button>
+            <a class="analysis-link-button" href="./result.html?chain=${encodeURIComponent(chain)}&address=${encodeURIComponent(profile.address)}">查看资金流</a>
+          </div>
+          ${renderUnitRateStatus()}
+        </div>
       </div>
 
       <dl class="profile-metrics">
-        <div><dt>交易总量</dt><dd>${escapeHtml(profile.totalAmount)}</dd></div>
+        <div><dt>交易总量</dt><dd>${escapeHtml(formatProfileTotal(chain, profile))}</dd></div>
         <div><dt>流入交易</dt><dd>${profile.inbound.length}</dd></div>
         <div><dt>流出交易</dt><dd>${profile.outbound.length}</dd></div>
         <div><dt>关联账户</dt><dd>${profile.counterparties.length}</dd></div>
@@ -231,11 +266,82 @@ function renderProfileHtml(chain, profile) {
 function renderTransfer(transfer) {
   return `
     <article>
-      <strong>${escapeHtml(formatTransferAmount(transfer))}</strong>
+      <strong>${escapeHtml(formatProfileTransfer(transfer))}</strong>
       <span>${escapeHtml(shortAddress(transfer.from))} → ${escapeHtml(shortAddress(transfer.to))}</span>
       <small>${escapeHtml(formatTime(transfer.time))} · ${escapeHtml(shortHash(transfer.txHash))}</small>
     </article>
   `;
+}
+
+function renderActiveProfile() {
+  if (!activeProfileResult) return;
+  elements.output.innerHTML = renderProfileHtml(
+    activeProfileResult.chain,
+    activeProfileResult.profile,
+  );
+  document
+    .getElementById("profile-unit-toggle")
+    ?.addEventListener("click", toggleAmountDisplayMode);
+}
+
+async function toggleAmountDisplayMode() {
+  if (!activeProfileResult || unitRateLoading) return;
+  if (amountDisplayMode === "usd") {
+    amountDisplayMode = "native";
+    unitRateError = "";
+    renderActiveProfile();
+    return;
+  }
+
+  unitRateLoading = true;
+  unitRateError = "";
+  renderActiveProfile();
+  try {
+    usdRateSnapshot = await loadUsdRates();
+    amountDisplayMode = "usd";
+  } catch (error) {
+    amountDisplayMode = "native";
+    unitRateError =
+      error instanceof Error ? error.message : "实时汇率获取失败，请重试";
+  } finally {
+    unitRateLoading = false;
+    renderActiveProfile();
+  }
+}
+
+function formatProfileTransfer(transfer) {
+  if (amountDisplayMode !== "usd") return formatTransferAmount(transfer);
+  return (
+    formatRealtimeTransferUsd(
+      transfer,
+      activeProfileResult?.chain,
+      usdRateSnapshot,
+    ) || `${formatTransferAmount(transfer)}（暂无实时汇率）`
+  );
+}
+
+function formatProfileTotal(chain, profile) {
+  if (amountDisplayMode !== "usd") return profile.totalAmount;
+  return (
+    formatRealtimeTransfersUsdTotal(profile.transfers, chain, usdRateSnapshot) ||
+    "暂无实时汇率"
+  );
+}
+
+function renderUnitButtonLabel() {
+  if (unitRateLoading) return "正在获取实时汇率…";
+  return amountDisplayMode === "usd" ? "显示原币种" : "单位转换：美元";
+}
+
+function renderUnitRateStatus() {
+  if (unitRateError) {
+    return `<span class="analysis-unit-status is-error" role="status">${escapeHtml(unitRateError)}</span>`;
+  }
+  const rateTime =
+    amountDisplayMode === "usd" ? formatRateTime(usdRateSnapshot) : "";
+  return rateTime
+    ? `<span class="analysis-unit-status">实时汇率 · ${escapeHtml(rateTime)}</span>`
+    : "";
 }
 
 function showError(message) {
