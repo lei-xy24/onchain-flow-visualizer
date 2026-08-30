@@ -7,7 +7,7 @@
     "figure-avatar","story-category","story-title","story-lead","data-mode","interest-score","origin-copy","origin-theme","boundary-label","boundary-copy","snapshot-grid",
     "chapter-list","chapter-kicker","chapter-title","chapter-number","chapter-body",
     "signal-view","signal-count","signal-keywords","signal-evidence","trend-view","trend-kicker","trend-title","trend-mode-label","event-market-panel","event-timeline","event-summary","trend-chart","ranking-view","ranking-kicker","ranking-title","ranking-list","ranking-detail",
-    "watch-view","watch-grid","note-figure","note-theme","note-score","note-confidence","snapshot-version","story-back-link","loading-overlay","loading-title","loading-detail","loading-steps"
+    "watch-view","watch-grid","note-figure","note-theme","note-score","note-confidence","snapshot-version","story-back-link","story-header-context","story-header-status","story-header-time","loading-overlay","loading-title","loading-detail","loading-steps"
   ].map((id) => [toCamel(id), document.getElementById(id)]));
 
   elements.snapshotVersion.addEventListener("change", () => {
@@ -26,12 +26,17 @@
       state.context.theme = state.theme.storyId;
       state.context.snapshot = state.snapshot.snapshotId;
       state.story = prepareStory(state.theme, state.figure, state.snapshot);
+      elements.storyHeaderContext.textContent = `${state.figure.nameZh} · ${state.theme.name}`;
+      elements.storyHeaderStatus.textContent = "已发布快照";
+      elements.storyHeaderTime.textContent = formatTime(state.snapshot.generatedAt);
+      elements.storyHeaderTime.dateTime = state.snapshot.generatedAt;
       window.SocialRadarSnapshots.populateVersionSelect(elements.snapshotVersion, state.index, state.snapshot.snapshotId);
       syncContextLinks();
       await wait(320); advanceLoading(2, "正在组合兴趣证据与四个故事章节"); await wait(320);
       renderAll(); elements.loadingOverlay.classList.add("is-hidden");
     } catch (error) {
       elements.loadingTitle.textContent = "主题故事加载失败"; elements.loadingDetail.textContent = `${error.message || "未知错误"}，请返回人物兴趣雷达重试。`;
+      elements.storyHeaderStatus.textContent = "加载失败"; elements.storyHeaderTime.textContent = "请返回后重试";
     }
   }
 
@@ -44,17 +49,18 @@
     if (avatar) { const image = document.createElement("img"); image.src = avatar; image.alt = `${state.figure.nameZh}头像`; elements.figureAvatar.appendChild(image); } else elements.figureAvatar.textContent = state.figure.initials;
     document.documentElement.style.setProperty("--story-accent", state.story.accent);
     const usesEventMarket = state.story.dataMode === "event-market";
+    const hasRelatedMarket = hasMarketReactions();
     elements.storyCategory.textContent = usesEventMarket ? `${state.story.category} · ${state.figure.nameZh}事件验证` : `${state.story.category} · ${state.figure.nameZh}兴趣主题`;
     elements.storyTitle.textContent = state.story.headline; elements.storyLead.textContent = state.story.lead;
-    elements.interestScore.textContent = usesEventMarket ? `${state.theme.score} 事件强度` : `${state.theme.score} 关注度`;
+    elements.interestScore.textContent = `${state.theme.score} 关注度`;
     elements.boundaryLabel.textContent = state.snapshot.isLive ? "分析边界" : "演示边界";
     const usesMarketData = state.story.dataMode === "market";
-    elements.dataMode.textContent = usesEventMarket ? "公开动态 × 历史小时行情" : usesMarketData ? state.snapshot.modeLabel : "DeepSeek 定时快照 · 公开动态证据分析";
-    elements.trendKicker.textContent = usesEventMarket ? "Event price reaction" : usesMarketData ? "Market trend" : "Discussion trend";
+    elements.dataMode.textContent = hasRelatedMarket ? "主题证据 × 相关事件小时行情" : usesMarketData ? state.snapshot.modeLabel : "DeepSeek 定时快照 · 公开动态证据分析";
+    elements.trendKicker.textContent = hasRelatedMarket ? "Event price reaction" : usesMarketData ? "Market trend" : "Discussion trend";
     elements.rankingKicker.textContent = usesEventMarket ? "Historical event comparison" : usesMarketData ? "Market landscape" : "Topic priorities";
-    elements.trendModeLabel.textContent = usesEventMarket ? "T-24h → T+72h" : usesMarketData ? (state.snapshot.marketMode === "live-api" ? "直接相关市场数据" : "主题市场快照") : "公开动态时间分布";
-    elements.originCopy.textContent = usesEventMarket ? `${state.figure.nameZh}的公开动态先形成事件影响假设和候选资产，再由历史小时行情独立验证。` : `${state.figure.nameZh}最近 7 天的多条公开动态中，“${state.theme.name}”相关关键词形成稳定主题簇。`;
-    elements.originTheme.textContent = state.theme.name; elements.boundaryCopy.textContent = usesEventMarket ? "候选资产在读取价格前确定；只有价格、成交量或相对 BTC 表现达到预设异常阈值才展示。T=0 前后波动仍是时间相关性，不是因果结论。" : usesMarketData ? state.snapshot.disclaimer : "本主题只分析人物近 7 天的公开动态证据，不展示与主题无关的公链、代币、市值或市场排名。";
+    elements.trendModeLabel.textContent = hasRelatedMarket ? "T-24h → T+72h" : usesMarketData ? (state.snapshot.marketMode === "live-api" ? "直接相关市场数据" : "主题市场快照") : "公开动态时间分布";
+    elements.originCopy.textContent = hasRelatedMarket ? `${state.figure.nameZh}围绕“${state.theme.name}”的动态形成主题，页面再按动态来源精确匹配候选资产行情。` : `${state.figure.nameZh}最近 7 天的多条公开动态中，“${state.theme.name}”相关关键词形成稳定主题簇。`;
+    elements.originTheme.textContent = state.theme.name; elements.boundaryCopy.textContent = hasRelatedMarket ? "行情只关联到同一条公开动态所属的主题；T=0 前后波动仍是时间相关性，不是因果结论。" : usesMarketData ? state.snapshot.disclaimer : "本主题只分析人物近 7 天的公开动态证据，不展示与主题无关的公链、代币、市值或市场排名。";
     elements.noteFigure.textContent = state.figure.nameZh; elements.noteTheme.textContent = state.theme.name;
     elements.noteScore.textContent = `${state.theme.score} / 100 · ${state.theme.trend}`; elements.noteConfidence.textContent = state.theme.confidence;
   }
@@ -92,14 +98,14 @@
   }
 
   function renderEventTimeline() {
-    const isEventMarket = state.story.dataMode === "event-market" && Array.isArray(state.story.marketReactions) && state.story.marketReactions.length;
+    const isEventMarket = hasMarketReactions();
     elements.eventMarketPanel.hidden = !isEventMarket;
     if (!isEventMarket) return;
     if (!state.selectedReactionId || !state.story.marketReactions.some((item) => item.id === state.selectedReactionId)) state.selectedReactionId = state.story.primaryReactionId || state.story.marketReactions[0].id;
     elements.eventTimeline.replaceChildren();
     state.story.marketReactions.forEach((reaction) => {
       const move = comparableMove(reaction); const button = create("button", `event-chip${reaction.id === state.selectedReactionId ? " is-active" : ""}`); button.type = "button";
-      const level = reaction.significance?.level === "strong" ? "强异常" : "显著";
+      const level = reaction.significance?.level === "strong" ? "强异常" : reaction.significance?.passed === false ? "普通波动" : reaction.significance?.passed ? "显著波动" : "已匹配行情";
       button.append(create("span", null, reaction.asset.symbol), create("strong", null, formatEventDate(reaction.eventAt)), create("small", null, `${move.horizon} ${formatSigned(move.value)} · ${level}`));
       button.title = reaction.eventTitle; button.addEventListener("click", () => { state.selectedReactionId = reaction.id; renderEventTimeline(); renderTrend(); }); elements.eventTimeline.appendChild(button);
     });
@@ -114,7 +120,7 @@
   }
 
   function renderTrend() {
-    const reaction = state.story.dataMode === "event-market" ? selectedReaction() : null;
+    const reaction = hasMarketReactions() ? selectedReaction() : null;
     const trend = reaction ? { label: `${reaction.asset.symbol} · ${reaction.eventTitle}`, unit: "%", points: reaction.points.map((point) => ({ ...point, label: relativeHour(point.hours), value: point.change })) } : state.story.trend;
     elements.trendTitle.textContent = trend.label; const svg = elements.trendChart; svg.replaceChildren();
     const points = trend.points.map((point) => ({ ...point, value: Number(point.value), hours: Number(point.hours) })).filter((point) => Number.isFinite(point.value));
@@ -142,12 +148,12 @@
   function prepareStory(theme, figure, snapshot) {
     const story = structuredClone(theme.story);
     const explicitMode = story.dataMode;
-    if (explicitMode === "event-market") return story;
+    if (explicitMode === "event-market") return attachMarketContext(story, theme);
     if (explicitMode === "market" || (!explicitMode && isMarketAligned(theme))) {
       story.dataMode = "market";
-      return story;
+      return attachMarketContext(story, theme);
     }
-    if (explicitMode === "evidence") return story;
+    if (explicitMode === "evidence") return attachMarketContext(story, theme);
 
     const evidence = theme.evidence || [];
     const activeDays = new Set(evidence.map((item) => String(item.time).slice(0, 10))).size;
@@ -172,6 +178,27 @@
       if (chapter.view === "ranking") return { ...chapter, kicker: "重点", title: "公开动态中的重点排序", body: `按所引用动态的证据覆盖看，当前重点依次集中在${keywordItems.slice(0, 3).map((item) => item.name).join("、")}。这是话题内部的证据排序，不是公链或资产排名。` };
       return { ...chapter, kicker: "观察", title: "接下来关注什么", body: `后续只跟踪“${theme.name}”本身是否持续、是否出现更具体信息，以及关键词重点如何变化，不为凑数据引入无关区块链指标。` };
     });
+    return attachMarketContext(story, theme);
+  }
+
+  function attachMarketContext(story, theme) {
+    const impact = theme.marketImpact;
+    if (!impact) return story;
+    const reactions = Array.isArray(impact.reactions) ? impact.reactions : [];
+    story.marketImpactStatus = impact.status;
+    story.marketUnavailable = impact.unavailableEvents || [];
+    if (!reactions.length) return story;
+    story.marketReactions = reactions;
+    story.primaryReactionId = impact.primaryReactionId || reactions[0].id;
+    if (story.dataMode !== "event-market") {
+      const primary = reactions.find((reaction) => reaction.id === story.primaryReactionId) || reactions[0];
+      story.chapters = story.chapters.map((chapter) => chapter.view === "trend" ? {
+        ...chapter,
+        kicker: "价格反应",
+        title: "相关动态前后价格路径",
+        body: `以“${primary.eventTitle}”发布时刻为 T=0，观察 ${primary.asset?.symbol || "候选资产"} 前 24 小时至后 72 小时的价格路径。行情与本主题通过同一条公开动态精确关联，但时间重合不等于因果。`,
+      } : chapter);
+    }
     return story;
   }
 
@@ -202,6 +229,7 @@
     return (theme.keywords || []).slice(0, 5).map((keyword) => { const normalized = keyword.toLocaleLowerCase("zh-CN"); const count = evidenceText.filter((text) => text.includes(normalized)).length || 1; return { name: keyword, value: count, display: `${count} 条证据` }; }).sort((left, right) => right.value - left.value);
   }
   function selectedReaction() { return state.story.marketReactions?.find((item) => item.id === state.selectedReactionId) || state.story.marketReactions?.[0] || null; }
+  function hasMarketReactions() { return Array.isArray(state.story?.marketReactions) && state.story.marketReactions.length > 0; }
   function comparableMove(reaction) { for (const [key, horizon] of [["return24h", "+24h"], ["return6h", "+6h"], ["return1h", "+1h"]]) if (Number.isFinite(reaction.metrics?.[key])) return { value: reaction.metrics[key], horizon }; return { value: null, horizon: "待观察" }; }
   function formatSigned(value) { return Number.isFinite(value) ? `${value > 0 ? "+" : ""}${Number(value).toFixed(2)}%` : "待观察"; }
   function formatUsd(value) { if (!Number.isFinite(value)) return "待观察"; if (value >= 1000) return `$${value.toLocaleString("en-US", { maximumFractionDigits: 2 })}`; if (value >= 1) return `$${value.toFixed(2)}`; return `$${value.toPrecision(4)}`; }

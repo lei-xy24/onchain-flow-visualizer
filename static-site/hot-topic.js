@@ -1,6 +1,7 @@
 (function () {
   "use strict";
 
+  const SVG_NS = "http://www.w3.org/2000/svg";
   const initialContext = readContext();
   const state = {
     index: null,
@@ -18,6 +19,7 @@
     refresh: document.getElementById("refresh-data"), peopleSummary: document.getElementById("people-summary"),
     peopleList: document.getElementById("people-list"), selectedFigure: document.getElementById("selected-figure"),
     themePanel: document.getElementById("theme-panel"), themeList: document.getElementById("theme-list"), evidencePanel: document.getElementById("evidence-panel"),
+    headerContext: document.getElementById("radar-header-context"), headerStatus: document.getElementById("radar-header-status"), headerTime: document.getElementById("radar-header-time"),
     boundaryCopy: document.getElementById("boundary-copy"), syncOverlay: document.getElementById("sync-overlay"),
     syncDetail: document.getElementById("sync-detail"), syncSteps: document.getElementById("sync-steps"),
     toast: document.getElementById("radar-toast"),
@@ -25,8 +27,6 @@
 
   elements.refresh.addEventListener("click", () => loadData(true, "latest"));
   elements.snapshotVersion.addEventListener("change", () => loadData(true, elements.snapshotVersion.value));
-  window.addEventListener("resize", syncEvidenceHeight);
-  if (window.ResizeObserver) new ResizeObserver(syncEvidenceHeight).observe(elements.themePanel);
   loadData(false, initialContext.snapshot);
 
   async function loadData(showLoading, requestedId) {
@@ -69,6 +69,9 @@
     elements.sourceTitle.textContent = snapshot.title; elements.sourceDescription.textContent = "每周一北京时间 08:00 自动更新；本页只读取最近一份校验通过并发布的结果。";
     elements.sourceMode.textContent = snapshot.modeLabel; elements.sourceTime.textContent = formatTime(snapshot.generatedAt);
     elements.sourceCadence.textContent = "每周一 08:00"; elements.sourceSignal.classList.toggle("is-demo", !snapshot.isLive);
+    elements.headerStatus.textContent = "已发布快照";
+    elements.headerTime.textContent = formatTime(snapshot.generatedAt);
+    elements.headerTime.dateTime = snapshot.generatedAt;
   }
 
   function renderPeople() {
@@ -99,6 +102,7 @@
 
   function renderFigure() {
     const figure = activeFigure(); elements.selectedFigure.replaceChildren();
+    elements.headerContext.textContent = `当前人物 · ${figure.nameZh}`;
     const identity = document.createElement("div");
     const accounts = createElement("div", "verified-account");
     figure.accounts.forEach((account) => {
@@ -114,8 +118,10 @@
   function renderThemes() {
     const figure = activeFigure(); elements.themeList.replaceChildren();
     figure.themes.forEach((theme, index) => {
-      const button = document.createElement("button"); button.type = "button"; button.className = "theme-card";
-      button.classList.toggle("is-active", theme.id === state.activeThemeId); button.setAttribute("aria-pressed", String(theme.id === state.activeThemeId));
+      const card = document.createElement("article"); card.className = "theme-card";
+      card.classList.toggle("is-active", theme.id === state.activeThemeId);
+      const button = document.createElement("button"); button.type = "button"; button.className = "theme-select";
+      button.setAttribute("aria-pressed", String(theme.id === state.activeThemeId));
       const rank = createElement("span", "theme-rank", String(index + 1).padStart(2, "0"));
       const copy = createElement("div", "theme-copy");
       const change = theme.change > 0 ? `+${theme.change}` : String(theme.change);
@@ -125,9 +131,84 @@
       const score = createElement("div", "theme-score"); score.append(createElement("strong", null, String(theme.score)), createElement("small", null, "关注度"));
       const bar = createElement("i", "score-bar"); bar.style.setProperty("--score", `${theme.score}%`); score.appendChild(bar);
       button.append(rank, copy, score); button.addEventListener("click", () => { state.activeThemeId = theme.id; renderThemes(); syncSelectionUrl(); });
-      elements.themeList.appendChild(button);
+      card.append(button, createMarketPreview(theme));
+      elements.themeList.appendChild(card);
     });
     renderEvidence(activeTheme());
+  }
+
+  function createMarketPreview(theme) {
+    const panel = createElement("section", "theme-market-preview");
+    panel.setAttribute("aria-label", `${theme.name}相关事件行情`);
+    const impact = theme.marketImpact;
+    const heading = createElement("div", "market-preview-heading");
+    heading.append(createElement("strong", null, "事件 × 市场反应"));
+    if (!impact) {
+      heading.append(createElement("span", "market-status neutral", "未建立可信映射"));
+      panel.append(heading, createElement("p", "market-preview-empty", "本期动态没有可精确归属到该主题的币价事件，不补画无关行情。"));
+      return panel;
+    }
+
+    const reactions = [...(impact.reactions || [])].sort((left, right) => {
+      const currentDelta = Number(right.isCurrentWindow !== false) - Number(left.isCurrentWindow !== false);
+      return currentDelta || new Date(right.eventAt) - new Date(left.eventAt);
+    });
+    const groups = groupBy(reactions, (reaction) => reaction.sourceId);
+    const unavailable = impact.unavailableEvents || [];
+    heading.append(createElement("span", `market-status ${impact.status || "neutral"}`, marketImpactLabel(impact.status)));
+    panel.appendChild(heading);
+
+    if (!groups.length && unavailable.length) {
+      const symbols = [...new Set(unavailable.map((event) => event.asset?.symbol).filter(Boolean))].join(" · ");
+      panel.append(createElement("p", "market-preview-empty insufficient", `${symbols || "候选资产"} 历史小时行情覆盖不足，暂不判断事件影响。`));
+      return panel;
+    }
+    if (!groups.length) {
+      panel.append(createElement("p", "market-preview-empty", "当前快照没有可绘制的事件行情。"));
+      return panel;
+    }
+
+    const eventList = createElement("div", "market-event-list");
+    groups.slice(0, 2).forEach((group) => eventList.appendChild(createMarketEvent(group)));
+    panel.appendChild(eventList);
+    if (groups.length > 2) panel.appendChild(createElement("small", "market-more", `进入数据故事查看另外 ${groups.length - 2} 个事件`));
+    return panel;
+  }
+
+  function createMarketEvent(reactions) {
+    const reaction = reactions.find((item) => item.isCurrentWindow !== false) || reactions[0];
+    const card = createElement("article", `market-event ${reaction.significance?.passed === false ? "ordinary" : ""}`);
+    const top = createElement("div", "market-event-top");
+    const title = createElement("div");
+    title.append(createElement("strong", null, reaction.eventTitle || "相关公开动态"), createElement("time", null, formatDateTime(reaction.eventAt)));
+    const symbols = [...new Set(reactions.map((item) => item.asset?.symbol).filter(Boolean))].join(" · ");
+    top.append(title, createElement("span", null, symbols || "资产"));
+    const chart = createSparkline(reaction);
+    const metrics = createElement("div", "market-event-metrics");
+    metrics.append(
+      createElement("span", null, `+1h ${formatSigned(reaction.metrics?.return1h)}`),
+      createElement("span", null, `+6h ${formatSigned(reaction.metrics?.return6h)}`),
+      createElement("span", null, `+24h ${formatSigned(reaction.metrics?.return24h)}`),
+    );
+    card.append(top, chart, metrics);
+    return card;
+  }
+
+  function createSparkline(reaction) {
+    const svg = document.createElementNS(SVG_NS, "svg");
+    svg.setAttribute("class", "market-sparkline"); svg.setAttribute("viewBox", "0 0 280 76"); svg.setAttribute("role", "img");
+    svg.setAttribute("aria-label", `${reaction.asset?.symbol || "资产"} 在事件前后价格变化曲线`);
+    const points = (reaction.points || []).map((point) => ({ hours: Number(point.hours), value: Number(point.change) })).filter((point) => Number.isFinite(point.hours) && Number.isFinite(point.value));
+    if (points.length < 2) return svg;
+    const minHour = Math.min(...points.map((point) => point.hours)); const maxHour = Math.max(...points.map((point) => point.hours));
+    const values = [...points.map((point) => point.value), 0]; const min = Math.min(...values); const max = Math.max(...values); const range = Math.max(1, max - min);
+    const x = (hours) => 8 + ((hours - minHour) / Math.max(1, maxHour - minHour)) * 264;
+    const y = (value) => 66 - ((value - min) / range) * 54;
+    const baseline = document.createElementNS(SVG_NS, "line"); baseline.setAttribute("class", "spark-baseline"); baseline.setAttribute("x1", "8"); baseline.setAttribute("x2", "272"); baseline.setAttribute("y1", String(y(0))); baseline.setAttribute("y2", String(y(0)));
+    const eventLine = document.createElementNS(SVG_NS, "line"); eventLine.setAttribute("class", "spark-event-line"); eventLine.setAttribute("x1", String(x(0))); eventLine.setAttribute("x2", String(x(0))); eventLine.setAttribute("y1", "7"); eventLine.setAttribute("y2", "69");
+    const path = document.createElementNS(SVG_NS, "path"); path.setAttribute("class", "spark-path"); path.setAttribute("d", points.map((point, index) => `${index ? "L" : "M"}${x(point.hours).toFixed(1)} ${y(point.value).toFixed(1)}`).join(" "));
+    const label = document.createElementNS(SVG_NS, "text"); label.setAttribute("class", "spark-label"); label.setAttribute("x", String(x(0) + 4)); label.setAttribute("y", "13"); label.textContent = "T=0";
+    svg.append(baseline, eventLine, path, label); return svg;
   }
 
   function renderEvidence(theme) {
@@ -136,7 +217,10 @@
     const header = createElement("header", "evidence-header");
     const headerTop = createElement("div", "evidence-header-top");
     const title = createElement("div"); title.append(createElement("p", "eyebrow", theme.category), createElement("h2", null, theme.name));
-    headerTop.append(title, createElement("span", "confidence-badge", `${theme.confidence}置信度`));
+    const actions = createElement("div", "evidence-actions");
+    actions.append(createElement("span", "confidence-badge", `${theme.confidence}置信度`));
+    const action = createElement("a", "story-button", "进入主题数据故事"); action.href = buildStoryUrl(theme); action.appendChild(createElement("span", null, "→")); actions.appendChild(action);
+    headerTop.append(title, actions);
     header.append(headerTop, createElement("p", "evidence-about", theme.why));
 
     const body = createElement("div", "evidence-body");
@@ -149,8 +233,7 @@
     const proofs = createElement("section", "evidence-section proof-section");
     const proofTitle = createElement("div", "proof-title"); proofTitle.append(createElement("h3", null, "公开动态证据"), createElement("span", null, evidenceLabel(theme.evidenceBreakdown))); proofs.appendChild(proofTitle);
     const list = createElement("div", "proof-list"); theme.evidence.forEach((item) => list.appendChild(createProof(item))); proofs.appendChild(list);
-    const action = createElement("a", "story-button", "进入主题数据故事"); action.href = buildStoryUrl(theme); action.appendChild(createElement("span", null, "→"));
-    body.append(scores, keywords, proofs, action); elements.evidencePanel.append(header, body); syncEvidenceHeight();
+    body.append(scores, keywords, proofs); elements.evidencePanel.append(header, body);
   }
 
   function createScore(label, value) {
@@ -185,12 +268,9 @@
   function activeFigure() { return state.data?.figures.find((item) => item.id === state.activeFigureId) || null; }
   function activeTheme() { return activeFigure()?.themes.find((item) => item.id === state.activeThemeId) || null; }
   function activePostDays(figure) { return new Set(figure.themes.flatMap((theme) => theme.evidence.map((item) => String(item.time).slice(0, 10)))).size; }
-  function syncEvidenceHeight() {
-    window.requestAnimationFrame(() => {
-      if (!elements.themePanel || !elements.evidencePanel) return;
-      elements.evidencePanel.style.height = window.matchMedia("(min-width: 1121px)").matches ? `${elements.themePanel.offsetHeight}px` : "";
-    });
-  }
+  function groupBy(items, keyFor) { const groups = new Map(); items.forEach((item) => { const key = keyFor(item); if (!groups.has(key)) groups.set(key, []); groups.get(key).push(item); }); return [...groups.values()]; }
+  function marketImpactLabel(status) { return ({ strong: "强异常", notable: "显著波动", ordinary: "普通波动", insufficient: "数据不足", historical: "历史验证", unmapped: "未映射" })[status] || "已匹配行情"; }
+  function formatSigned(value) { const number = Number(value); return Number.isFinite(number) ? `${number > 0 ? "+" : ""}${number.toFixed(2)}%` : "待观察"; }
   function evidenceLabel(breakdown) { return `${breakdown.originals || 0} 条原创 · ${breakdown.quotes || 0} 条引用 · ${breakdown.replies || 0} 条回复`; }
   function createMetric(label, value) { const div = document.createElement("div"); div.append(createElement("dt", null, label), createElement("dd", null, String(value))); return div; }
   function createAvatar(className, figure) { const wrapper = createElement("span", className); if (figure.avatar) { const image = document.createElement("img"); image.src = figure.avatar; image.alt = `${figure.nameZh}头像`; wrapper.appendChild(image); } else wrapper.textContent = figure.initials; return wrapper; }
@@ -206,6 +286,6 @@
   async function advanceLoading(step, detail) { await new Promise((resolve) => window.setTimeout(resolve, 320)); setLoadingStep(step); elements.syncDetail.textContent = detail; }
   function setLoadingStep(step) { [...elements.syncSteps.children].forEach((item, index) => { item.classList.toggle("is-active", index === step); item.classList.toggle("is-done", index < step); }); }
   function showToast(message) { window.clearTimeout(state.toastTimer); elements.toast.textContent = message; elements.toast.hidden = false; state.toastTimer = window.setTimeout(() => { elements.toast.hidden = true; }, 3400); }
-  function renderError(error) { elements.peopleSummary.textContent = "兴趣数据暂时不可用"; elements.peopleList.innerHTML = `<div class="load-error">读取失败：${escapeHtml(error.message || "未知错误")}</div>`; elements.sourceTitle.textContent = "数据连接失败"; elements.sourceDescription.textContent = "页面不会使用临时猜测结果替代。"; }
+  function renderError(error) { elements.peopleSummary.textContent = "兴趣数据暂时不可用"; elements.peopleList.innerHTML = `<div class="load-error">读取失败：${escapeHtml(error.message || "未知错误")}</div>`; elements.sourceTitle.textContent = "数据连接失败"; elements.sourceDescription.textContent = "页面不会使用临时猜测结果替代。"; elements.headerStatus.textContent = "加载失败"; elements.headerTime.textContent = "请返回后重试"; }
   function escapeHtml(value) { return String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;"); }
 })();

@@ -32,6 +32,7 @@ const mirroredFiles = [
   "profile.js",
   "relation.js",
   "runtime-config.js",
+  "snapshot-store.js",
 ];
 
 function readAnchors(html) {
@@ -195,6 +196,48 @@ test("四个下级页只保留同款返回入口并回到直接上级", async ()
     const html = await readFile(path.join(root, page), "utf8");
     assert.doesNotMatch(html, /data-auth-show-logout="false"/, page);
   }
+});
+
+test("人物雷达二三级页头只用返回导航并补充居中上下文和快照状态", async () => {
+  const [hotTopic, story, hotTopicCss, storyCss, hotTopicScript, storyScript] = await Promise.all([
+    readFile(path.join(root, "hot-topic.html"), "utf8"),
+    readFile(path.join(root, "event-explorer.html"), "utf8"),
+    readFile(path.join(root, "hot-topic.css"), "utf8"),
+    readFile(path.join(root, "event-explorer.css"), "utf8"),
+    readFile(path.join(root, "hot-topic.js"), "utf8"),
+    readFile(path.join(root, "event-explorer.js"), "utf8"),
+  ]);
+  const radarHeader = hotTopic.match(/<header class="radar-header">([\s\S]*?)<\/header>/)?.[1] || "";
+  const storyHeader = story.match(/<header class="story-header">([\s\S]*?)<\/header>/)?.[1] || "";
+  for (const [name, header] of [["雷达二级页", radarHeader], ["故事三级页", storyHeader]]) {
+    assert.equal((header.match(/<a\b/g) || []).length, 1, `${name}页头只能有返回链接`);
+    assert.doesNotMatch(header, /<(?:button|select)\b/, `${name}页头中间和右侧不能成为跨级导航`);
+    assert.match(header, /header-context/);
+    assert.match(header, /header-status/);
+  }
+  assert.match(hotTopicCss, /\.radar-header\s*\{[^}]*grid-template-columns:\s*minmax\(120px,\s*1fr\)\s+minmax\(0,\s*auto\)\s+minmax\(120px,\s*1fr\)/s);
+  assert.match(storyCss, /\.story-header\s*\{[^}]*grid-template-columns:minmax\(120px,1fr\) minmax\(0,auto\) minmax\(120px,1fr\)/s);
+  assert.match(hotTopicScript, /当前人物 · \$\{figure\.nameZh\}/);
+  assert.match(storyScript, /\$\{state\.figure\.nameZh\} · \$\{state\.theme\.name\}/);
+  assert.match(hotTopicScript, /headerStatus\.textContent = "加载失败"/);
+  assert.match(storyScript, /storyHeaderStatus\.textContent = "加载失败"/);
+});
+
+test("人物兴趣主题内展示事件行情且证据区移动到下方横向浏览", async () => {
+  const [hotTopicScript, hotTopicCss, store, generator] = await Promise.all([
+    readFile(path.join(root, "hot-topic.js"), "utf8"),
+    readFile(path.join(root, "hot-topic.css"), "utf8"),
+    readFile(path.join(root, "snapshot-store.js"), "utf8"),
+    readFile(path.join(root, "scripts/social-radar-lib.mjs"), "utf8"),
+  ]);
+  assert.match(hotTopicScript, /theme\.marketImpact/);
+  assert.match(hotTopicScript, /createMarketPreview/);
+  assert.match(hotTopicCss, /\.interest-workspace\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)/s);
+  assert.match(hotTopicCss, /\.proof-list\s*\{[^}]*grid-auto-flow:\s*column[^}]*overflow-x:\s*auto/s);
+  assert.match(store, /normalizeSnapshot/);
+  assert.match(store, /theme\.topicType === "market_impact_events"/);
+  assert.match(generator, /marketImpact:/);
+  assert.doesNotMatch(generator, /topicType:\s*"market_impact_events"/);
 });
 
 test("故事页返回人物兴趣雷达时保留上下文，雷达页可恢复人物和主题", async () => {
