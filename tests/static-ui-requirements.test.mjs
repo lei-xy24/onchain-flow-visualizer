@@ -33,8 +33,8 @@ test("所有业务页先执行登录门禁并提供根目录静态镜像", async
   for (const file of protectedPages) {
     const html = await readFile(path.join(root, file), "utf8");
     assert.match(html, /<html[^>]+data-auth-required="true"/i, file);
-    assert.match(html, /\.\/auth\.css\?v=20260830/, file);
-    assert.match(html, /\.\/auth\.js\?v=20260830/, file);
+    assert.match(html, /\.\/auth\.css\?v=20260830-ui-fix/, file);
+    assert.match(html, /\.\/auth\.js\?v=20260830-ui-fix/, file);
   }
 
   for (const file of mirroredFiles) {
@@ -68,10 +68,11 @@ test("登录页不预填凭据且门禁使用短期会话和安全返回路径",
 });
 
 test("实时交易界面、轮询和演示窗口统一为 60 秒", async () => {
-  const [live, liveResult, liveScript, generator] = await Promise.all([
+  const [live, liveResult, liveScript, liveCss, generator] = await Promise.all([
     readFile(path.join(root, "live.html"), "utf8"),
     readFile(path.join(root, "live-result.html"), "utf8"),
     readFile(path.join(root, "live-result.js"), "utf8"),
+    readFile(path.join(root, "live.css"), "utf8"),
     readFile(path.join(root, "scripts/generate-live-demo-batches.mjs"), "utf8"),
   ]);
   assert.match(live, /选择网络，查看实时交易图谱/);
@@ -80,6 +81,14 @@ test("实时交易界面、轮询和演示窗口统一为 60 秒", async () => {
   assert.match(liveScript, /POLL_INTERVAL_MS\s*=\s*60_000/);
   assert.doesNotMatch([live, liveResult, liveScript].join("\n"), /10\s*秒/);
   assert.match(generator, /LIVE_WINDOW_MS\s*=\s*60_000/);
+  assert.match(
+    liveCss,
+    /\.live-home-copy h1\s*\{[^}]*font-size:\s*clamp\(2\.45rem,\s*5\.5vw,\s*4rem\)[^}]*max-width:\s*none/s,
+  );
+  assert.doesNotMatch(
+    liveCss,
+    /@media\s*\(max-width:\s*880px\)[\s\S]*?\.live-home-copy h1\s*\{\s*font-size:\s*3rem/,
+  );
 
   for (const chain of ["eth", "bsc", "polygon"]) {
     for (let batch = 1; batch <= 5; batch += 1) {
@@ -116,7 +125,37 @@ test("四类分析页使用实时单位转换且结果页不再显示地址快�
   assert.match(profile, /profile-unit-toggle/);
   assert.match(relation, /relation-unit-toggle/);
   assert.match(liveResult, /live-unit-toggle/);
-  assert.match(runtimeConfig, /marketPrices:\s*"https:\/\/api\.coingecko\.com\/api\/v3\/simple\/price"/);
+  assert.match(runtimeConfig, /marketPrices:\s*"https:\/\/data-api\.binance\.vision\/api\/v3\/ticker\/price"/);
+  assert.match(runtimeConfig, /marketPricesSecondary:\s*"https:\/\/api\.gateio\.ws\/api\/v4\/spot\/tickers"/);
+  assert.match(runtimeConfig, /marketPricesFallback:\s*"https:\/\/api\.coingecko\.com\/api\/v3\/simple\/price"/);
+});
+
+test("退出只在一级页显示，实时交易二级页只保留返回入口", async () => {
+  const [result, liveResult, storyResult, auth] = await Promise.all([
+    readFile(path.join(root, "result.html"), "utf8"),
+    readFile(path.join(root, "live-result.html"), "utf8"),
+    readFile(path.join(root, "event-explorer.html"), "utf8"),
+    readFile(path.join(root, "auth.js"), "utf8"),
+  ]);
+  assert.match(result, /data-auth-show-logout="false"/);
+  assert.match(liveResult, /data-auth-show-logout="false"/);
+  assert.match(storyResult, /data-auth-show-logout="false"/);
+  assert.match(auth, /dataset\.authShowLogout === "false"/);
+
+  const navigation = liveResult.match(
+    /<nav class="tool-nav monitor-nav"[\s\S]*?<\/nav>/,
+  )?.[0];
+  assert.ok(navigation, "实时交易二级页应保留返回导航");
+  assert.deepEqual([...navigation.matchAll(/href="([^"]+)"/g)].map((item) => item[1]), [
+    "./live.html",
+  ]);
+  assert.match(navigation, /← 返回实时交易/);
+  assert.doesNotMatch(navigation, /index\.html|track\.html|profile\.html|relation\.html/);
+
+  for (const page of ["index.html", "track.html", "live.html", "profile.html", "relation.html", "hot-topic.html"]) {
+    const html = await readFile(path.join(root, page), "utf8");
+    assert.doesNotMatch(html, /data-auth-show-logout="false"/, page);
+  }
 });
 
 test("地址关联页使用不会在桌面端断成两行的短标题", async () => {

@@ -121,11 +121,11 @@ a {
 }
 
 .live-home-copy h1 {
-  font-size: 4rem;
+  font-size: clamp(2.45rem, 5.5vw, 4rem);
   letter-spacing: 0;
   line-height: 1.02;
   margin: 0;
-  max-width: 820px;
+  max-width: none;
 }
 
 .live-home-lead {
@@ -2104,10 +2104,6 @@ a {
 }
 
 @media (max-width: 880px) {
-  .live-home-copy h1 {
-    font-size: 3rem;
-  }
-
   .network-grid {
     grid-template-columns: 1fr;
   }

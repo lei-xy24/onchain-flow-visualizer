@@ -134,7 +134,9 @@ window.ONCHAIN_API_CONFIG = Object.freeze({
   overview: "https://api.example.com/overview",
   flow: "https://api.example.com/flow",
   liveTransfers: "https://api.example.com/live-transfers",
-  marketPrices: "https://api.coingecko.com/api/v3/simple/price",
+  marketPrices: "https://data-api.binance.vision/api/v3/ticker/price",
+  marketPricesSecondary: "https://api.gateio.ws/api/v4/spot/tickers",
+  marketPricesFallback: "https://api.coingecko.com/api/v3/simple/price",
 });
 ```
 
@@ -314,11 +316,11 @@ Accept: application/json
 
 ### 资金追踪金额显示
 
-资金追踪、实时交易、用户画像和地址关联默认显示链上原币金额。点击“单位转换：美元”后，前端通过 `runtime-config.js` 的 `marketPrices` 地址查询实时美元价格，并在当前浏览器中缓存 60 秒；转换失败或资产没有可靠映射时继续显示原币，不会用 `$0` 代替未知价格。默认地址使用 CoinGecko Keyless Public API，不携带任何 Key；生产环境也可以把 `marketPrices` 指向后端团队提供的同参数代理。后端资金流接口仍只需返回链上原始金额字段。
+资金追踪、实时交易、用户画像和地址关联默认显示链上原币金额。点击“单位转换：美元”后，前端先通过 Binance 公共行情读取 ETH、BNB、POL 和稳定币的实时 USDT 报价；主源不可用时并行尝试 Gate.io 与 CoinGecko，采用第一个返回完整价格的备用源。成功结果在当前浏览器缓存 60 秒；转换失败或资产没有可靠映射时继续显示原币，不会用 `$0` 代替未知价格，也不会直接显示浏览器的 `Failed to fetch`。Binance 或 Gate.io 返回的 USDT 报价会在页面标明“USDT 近似美元”，CoinGecko 可用时则标明精确美元汇率。三个公开接口均不携带 Key，后端资金流接口仍只需返回链上原始金额字段。
 
 ## 演示登录边界
 
-业务页面会先检查当前浏览器会话中的登录状态，未登录时跳转到 `login.html`，登录成功后回到原页面；右上角“退出”会立即清除该会话。凭据只以校验摘要存在源码中，不在文档重复明文。
+业务页面会先检查当前浏览器会话中的登录状态，未登录时跳转到 `login.html`，登录成功后回到原页面。一级页面右上角的“退出”会立即清除该会话；二级结果与故事页面不显示退出按钮，只保留返回对应一级页面的入口。凭据只以校验摘要存在源码中，不在文档重复明文。
 
 GitHub Pages 是纯静态站，浏览器端门禁只能用于演示流程，不能保护 HTML、JSON、接口地址或阻止懂技术的访问者绕过页面校验。真实生产环境必须在服务器、反向代理和业务 API 层再次验证身份与权限。
 

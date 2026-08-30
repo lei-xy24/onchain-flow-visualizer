@@ -1,7 +1,35 @@
-const DEFAULT_PRICE_API = "https://api.coingecko.com/api/v3/simple/price";
-const CACHE_KEY = "onchain-usd-rates-v1";
+const DEFAULT_PRICE_API =
+  "https://data-api.binance.vision/api/v3/ticker/price";
+const SECONDARY_PRICE_API = "https://api.gateio.ws/api/v4/spot/tickers";
+const FALLBACK_PRICE_API = "https://api.coingecko.com/api/v3/simple/price";
+const CACHE_KEY = "onchain-usd-rates-v2";
 const CACHE_TTL_MS = 60_000;
-const REQUEST_TIMEOUT_MS = 8_000;
+const PRIMARY_TIMEOUT_MS = 2_500;
+const FALLBACK_TIMEOUT_MS = 3_500;
+const BINANCE_SYMBOLS = Object.freeze([
+  "ETHUSDT",
+  "BNBUSDT",
+  "POLUSDT",
+  "USDCUSDT",
+]);
+const PRICE_ID_BY_BINANCE_SYMBOL = Object.freeze({
+  ETHUSDT: "ethereum",
+  BNBUSDT: "binancecoin",
+  POLUSDT: "polygon-ecosystem-token",
+  USDCUSDT: "usd-coin",
+});
+const GATE_PAIRS = Object.freeze([
+  "ETH_USDT",
+  "BNB_USDT",
+  "POL_USDT",
+  "USDC_USDT",
+]);
+const PRICE_ID_BY_GATE_PAIR = Object.freeze({
+  ETH_USDT: "ethereum",
+  BNB_USDT: "binancecoin",
+  POL_USDT: "polygon-ecosystem-token",
+  USDC_USDT: "usd-coin",
+});
 
 const PRICE_IDS_BY_ASSET = Object.freeze({
   "eth:native": "ethereum",
@@ -112,62 +140,194 @@ export function formatRateTime(snapshot) {
   }).format(new Date(snapshot.updatedAt));
 }
 
+export function formatRateStatus(snapshot) {
+  const time = formatRateTime(snapshot);
+  if (!time) return "";
+  const source = String(snapshot?.source || "实时行情");
+  return snapshot?.approximate
+    ? `${source} 实时行情 · USDT 近似美元 · ${time}`
+    : `${source} 实时汇率 · ${time}`;
+}
+
 async function requestUsdRates() {
-  const controller = new AbortController();
-  const timeoutId = globalThis.setTimeout(
-    () => controller.abort(),
-    REQUEST_TIMEOUT_MS,
-  );
+  try {
+    return await runProvider(requestBinanceRates, PRIMARY_TIMEOUT_MS);
+  } catch {
+    // 主行情源不可用时，继续尝试两个独立备用源。
+  }
 
   try {
-    const response = await fetch(buildPriceRequestUrl(), {
-      cache: "no-store",
-      headers: { Accept: "application/json" },
-      signal: controller.signal,
-    });
-    if (!response.ok) {
-      throw new Error(`实时汇率接口返回 HTTP ${response.status}`);
-    }
-    const value = await response.json();
-    const rates = {};
-    let latestProviderTime = 0;
-    for (const priceId of REQUESTED_PRICE_IDS) {
-      const item = value?.[priceId];
-      if (!Number.isFinite(item?.usd) || item.usd <= 0) continue;
-      rates[priceId] = item.usd;
-      if (Number.isFinite(item.last_updated_at)) {
-        latestProviderTime = Math.max(
-          latestProviderTime,
-          item.last_updated_at * 1_000,
-        );
-      }
-    }
-    if (!Object.keys(rates).length) {
-      throw new Error("实时汇率接口没有返回可用价格");
-    }
-    return {
-      fetchedAt: Date.now(),
-      rates,
-      source: "CoinGecko",
-      updatedAt: latestProviderTime || Date.now(),
-    };
-  } catch (error) {
-    if (error?.name === "AbortError") {
-      throw new Error("实时汇率请求超时，请稍后重试");
-    }
-    throw error;
-  } finally {
-    globalThis.clearTimeout(timeoutId);
+    return await runFallbackProviders();
+  } catch {
+    throw new Error("实时汇率服务暂时不可用，请稍后重试");
   }
 }
 
-function buildPriceRequestUrl() {
+async function runProvider(provider, timeoutMs) {
+  const controller = new AbortController();
+  let timeoutId;
+  const timeout = new Promise((_, reject) => {
+    timeoutId = globalThis.setTimeout(() => {
+      controller.abort();
+      reject(new Error("行情源请求超时"));
+    }, timeoutMs);
+  });
+  try {
+    return await Promise.race([provider(controller.signal), timeout]);
+  } finally {
+    globalThis.clearTimeout(timeoutId);
+    controller.abort();
+  }
+}
+
+async function runFallbackProviders() {
+  const controller = new AbortController();
+  let timeoutId;
+  const timeout = new Promise((_, reject) => {
+    timeoutId = globalThis.setTimeout(() => {
+      controller.abort();
+      reject(new Error("备用行情源请求超时"));
+    }, FALLBACK_TIMEOUT_MS);
+  });
+  try {
+    return await Promise.race([
+      Promise.any([
+        requestGateRates(controller.signal),
+        requestCoinGeckoRates(controller.signal),
+      ]),
+      timeout,
+    ]);
+  } finally {
+    globalThis.clearTimeout(timeoutId);
+    controller.abort();
+  }
+}
+
+async function requestBinanceRates(signal) {
+  const value = await fetchJson(buildBinancePriceRequestUrl(), signal);
+  if (!Array.isArray(value)) throw new Error("Binance 行情格式无效");
+
+  const rates = { tether: 1 };
+  for (const item of value) {
+    const priceId = PRICE_ID_BY_BINANCE_SYMBOL[item?.symbol];
+    const price = Number(item?.price);
+    if (priceId && Number.isFinite(price) && price > 0) {
+      rates[priceId] = price;
+    }
+  }
+  requireCompleteRates(rates);
+  return {
+    fetchedAt: Date.now(),
+    rates,
+    source: "Binance",
+    approximate: true,
+    quote: "USDT",
+    updatedAt: Date.now(),
+  };
+}
+
+async function requestGateRates(signal) {
+  const values = await Promise.all(
+    GATE_PAIRS.map((pair) =>
+      fetchJson(buildGatePriceRequestUrl(pair), signal),
+    ),
+  );
+  const rates = { tether: 1 };
+  for (const value of values) {
+    for (const item of Array.isArray(value) ? value : []) {
+      const priceId = PRICE_ID_BY_GATE_PAIR[item?.currency_pair];
+      const price = Number(item?.last);
+      if (priceId && Number.isFinite(price) && price > 0) {
+        rates[priceId] = price;
+      }
+    }
+  }
+  requireCompleteRates(rates);
+  return {
+    fetchedAt: Date.now(),
+    rates,
+    source: "Gate.io",
+    approximate: true,
+    quote: "USDT",
+    updatedAt: Date.now(),
+  };
+}
+
+async function requestCoinGeckoRates(signal) {
+  const value = await fetchJson(buildCoinGeckoPriceRequestUrl(), signal);
+  const rates = {};
+  let latestProviderTime = 0;
+  for (const priceId of REQUESTED_PRICE_IDS) {
+    const item = value?.[priceId];
+    if (!Number.isFinite(item?.usd) || item.usd <= 0) continue;
+    rates[priceId] = item.usd;
+    if (Number.isFinite(item.last_updated_at)) {
+      latestProviderTime = Math.max(
+        latestProviderTime,
+        item.last_updated_at * 1_000,
+      );
+    }
+  }
+  requireCompleteRates(rates);
+  return {
+    fetchedAt: Date.now(),
+    rates,
+    source: "CoinGecko",
+    approximate: false,
+    quote: "USD",
+    updatedAt: latestProviderTime || Date.now(),
+  };
+}
+
+async function fetchJson(url, signal) {
+  const response = await fetch(url, {
+    cache: "no-store",
+    headers: { Accept: "application/json" },
+    signal,
+  });
+  if (!response.ok) throw new Error(`行情接口返回 HTTP ${response.status}`);
+  return response.json();
+}
+
+function requireCompleteRates(rates) {
+  if (
+    !REQUESTED_PRICE_IDS.every(
+      (priceId) => Number.isFinite(rates[priceId]) && rates[priceId] > 0,
+    )
+  ) {
+    throw new Error("行情接口没有返回完整价格");
+  }
+}
+
+function buildBinancePriceRequestUrl() {
   const configuredUrl =
     globalThis.ONCHAIN_API_CONFIG?.marketPrices || DEFAULT_PRICE_API;
   const url = new URL(configuredUrl, globalThis.location?.href || DEFAULT_PRICE_API);
+  url.searchParams.set("symbols", JSON.stringify(BINANCE_SYMBOLS));
+  return url.href;
+}
+
+function buildCoinGeckoPriceRequestUrl() {
+  const configuredUrl =
+    globalThis.ONCHAIN_API_CONFIG?.marketPricesFallback || FALLBACK_PRICE_API;
+  const url = new URL(
+    configuredUrl,
+    globalThis.location?.href || FALLBACK_PRICE_API,
+  );
   url.searchParams.set("ids", REQUESTED_PRICE_IDS.join(","));
   url.searchParams.set("vs_currencies", "usd");
   url.searchParams.set("include_last_updated_at", "true");
+  return url.href;
+}
+
+function buildGatePriceRequestUrl(pair) {
+  const configuredUrl =
+    globalThis.ONCHAIN_API_CONFIG?.marketPricesSecondary || SECONDARY_PRICE_API;
+  const url = new URL(
+    configuredUrl,
+    globalThis.location?.href || SECONDARY_PRICE_API,
+  );
+  url.searchParams.set("currency_pair", pair);
   return url.href;
 }
 
@@ -187,7 +347,7 @@ function isFreshSnapshot(snapshot, now) {
   if (!snapshot || !Number.isFinite(snapshot.fetchedAt)) return false;
   if (now - snapshot.fetchedAt >= CACHE_TTL_MS) return false;
   return REQUESTED_PRICE_IDS.every((priceId) =>
-    Number.isFinite(snapshot.rates?.[priceId]),
+    Number.isFinite(snapshot.rates?.[priceId]) && snapshot.rates[priceId] > 0,
   );
 }
 
