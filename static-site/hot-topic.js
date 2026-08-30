@@ -1,7 +1,15 @@
 (function () {
   "use strict";
 
-  const state = { index: null, data: null, activeFigureId: null, activeThemeId: null, toastTimer: null };
+  const initialContext = readContext();
+  const state = {
+    index: null,
+    data: null,
+    activeFigureId: initialContext.figureId,
+    activeThemeId: null,
+    requestedThemeKey: initialContext.theme,
+    toastTimer: null,
+  };
   const elements = {
     sourceSignal: document.getElementById("source-signal"), sourceTitle: document.getElementById("source-title"),
     sourceDescription: document.getElementById("source-description"), sourceMode: document.getElementById("source-mode"),
@@ -19,7 +27,7 @@
   elements.snapshotVersion.addEventListener("change", () => loadData(true, elements.snapshotVersion.value));
   window.addEventListener("resize", syncEvidenceHeight);
   if (window.ResizeObserver) new ResizeObserver(syncEvidenceHeight).observe(elements.themePanel);
-  loadData(false, new URLSearchParams(location.search).get("snapshot"));
+  loadData(false, initialContext.snapshot);
 
   async function loadData(showLoading, requestedId) {
     elements.refresh.disabled = true;
@@ -32,10 +40,16 @@
       if (showLoading) await advanceLoading(2, "正在装载主题、证据与数据故事");
       state.data = payload;
       if (!payload.figures.some((item) => item.id === state.activeFigureId)) state.activeFigureId = payload.figures[0].id;
-      state.activeThemeId = activeFigure().themes[0]?.id || null;
+      const figure = activeFigure();
+      const preservedTheme = figure.themes.find((item) => item.id === state.activeThemeId);
+      const requestedTheme = figure.themes.find(
+        (item) => item.id === state.requestedThemeKey || item.storyId === state.requestedThemeKey,
+      );
+      state.activeThemeId = (preservedTheme || requestedTheme || figure.themes[0])?.id || null;
+      state.requestedThemeKey = null;
       window.SocialRadarSnapshots.populateVersionSelect(elements.snapshotVersion, state.index, payload.snapshotId);
-      const nextUrl = new URL(location.href); nextUrl.searchParams.set("snapshot", payload.snapshotId); history.replaceState(null, "", nextUrl);
       renderAll();
+      syncSelectionUrl();
       if (showLoading) showToast(payload.snapshotId === state.index.latest ? "已读取最近一份成功快照。" : "已切换到历史分析版本。");
     } catch (error) {
       renderError(error);
@@ -80,7 +94,7 @@
 
   function selectFigure(id) {
     state.activeFigureId = id; state.activeThemeId = activeFigure().themes[0]?.id || null;
-    renderPeople(); renderFigure(); renderThemes();
+    renderPeople(); renderFigure(); renderThemes(); syncSelectionUrl();
   }
 
   function renderFigure() {
@@ -110,7 +124,7 @@
       copy.append(top, createElement("p", null, theme.summary), keywords);
       const score = createElement("div", "theme-score"); score.append(createElement("strong", null, String(theme.score)), createElement("small", null, "关注度"));
       const bar = createElement("i", "score-bar"); bar.style.setProperty("--score", `${theme.score}%`); score.appendChild(bar);
-      button.append(rank, copy, score); button.addEventListener("click", () => { state.activeThemeId = theme.id; renderThemes(); });
+      button.append(rank, copy, score); button.addEventListener("click", () => { state.activeThemeId = theme.id; renderThemes(); syncSelectionUrl(); });
       elements.themeList.appendChild(button);
     });
     renderEvidence(activeTheme());
@@ -157,6 +171,17 @@
     return `./event-explorer.html?${new URLSearchParams({ figureId: figure.id, theme: theme.storyId, snapshot: state.data.snapshotId }).toString()}`;
   }
 
+  function syncSelectionUrl() {
+    const figure = activeFigure();
+    const theme = activeTheme();
+    if (!figure || !theme || !state.data?.snapshotId) return;
+    const nextUrl = new URL(location.href);
+    nextUrl.searchParams.set("snapshot", state.data.snapshotId);
+    nextUrl.searchParams.set("figureId", figure.id);
+    nextUrl.searchParams.set("theme", theme.storyId || theme.id);
+    history.replaceState(null, "", nextUrl);
+  }
+
   function activeFigure() { return state.data?.figures.find((item) => item.id === state.activeFigureId) || null; }
   function activeTheme() { return activeFigure()?.themes.find((item) => item.id === state.activeThemeId) || null; }
   function activePostDays(figure) { return new Set(figure.themes.flatMap((theme) => theme.evidence.map((item) => String(item.time).slice(0, 10)))).size; }
@@ -172,6 +197,10 @@
   function createElement(tag, className, text) { const element = document.createElement(tag); if (className) element.className = className; if (text !== undefined) element.textContent = text; return element; }
   function formatTime(value) { const date = new Date(value); return Number.isNaN(date.getTime()) ? "—" : new Intl.DateTimeFormat("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false }).format(date); }
   function formatDateTime(value) { return formatTime(value); }
+  function readContext() {
+    const params = new URLSearchParams(location.search);
+    return { snapshot: params.get("snapshot"), figureId: params.get("figureId"), theme: params.get("theme") };
+  }
   function openLoading() { elements.syncOverlay.hidden = false; elements.syncDetail.textContent = "正在读取已发布快照索引"; setLoadingStep(0); }
   function closeLoading() { elements.syncOverlay.hidden = true; }
   async function advanceLoading(step, detail) { await new Promise((resolve) => window.setTimeout(resolve, 320)); setLoadingStep(step); elements.syncDetail.textContent = detail; }

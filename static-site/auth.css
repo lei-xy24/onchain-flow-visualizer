@@ -52,6 +52,42 @@ html[data-auth-required]:not([data-auth-ready]) body {
   transform: rotate(135deg);
 }
 
+.page-back-link {
+  align-items: center;
+  background: var(--page-back-background, #ffffff);
+  border: 1px solid var(--page-back-border, #cfdadd);
+  border-radius: 7px;
+  color: var(--page-back-color, #354448);
+  display: inline-flex;
+  flex: 0 0 auto;
+  font: 800 0.82rem/1 Inter, ui-sans-serif, system-ui, -apple-system,
+    BlinkMacSystemFont, "Segoe UI", sans-serif;
+  justify-content: center;
+  min-height: 38px;
+  padding: 0 14px;
+  text-decoration: none;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+}
+
+.page-back-link:hover {
+  background: var(--page-back-hover-background, #eef4f4);
+  border-color: var(--page-back-hover-border, #8fb7b5);
+  color: var(--page-back-hover-color, #075d5b);
+}
+
+.page-back-link:focus-visible {
+  outline: 3px solid var(--page-back-focus, rgba(8, 127, 123, 0.2));
+  outline-offset: 2px;
+}
+
+.page-back-link:active {
+  transform: translateY(1px);
+}
+
 .auth-logout-floating {
   box-shadow: 0 12px 32px rgba(20, 32, 36, 0.16);
   position: fixed;

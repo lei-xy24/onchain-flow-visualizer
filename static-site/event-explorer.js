@@ -7,7 +7,7 @@
     "figure-avatar","story-category","story-title","story-lead","data-mode","interest-score","origin-copy","origin-theme","boundary-label","boundary-copy","snapshot-grid",
     "chapter-list","chapter-kicker","chapter-title","chapter-number","chapter-body",
     "signal-view","signal-count","signal-keywords","signal-evidence","trend-view","trend-kicker","trend-title","trend-mode-label","event-market-panel","event-timeline","event-summary","trend-chart","ranking-view","ranking-kicker","ranking-title","ranking-list","ranking-detail",
-    "watch-view","watch-grid","note-figure","note-theme","note-score","note-confidence","snapshot-version","loading-overlay","loading-title","loading-detail","loading-steps"
+    "watch-view","watch-grid","note-figure","note-theme","note-score","note-confidence","snapshot-version","story-back-link","loading-overlay","loading-title","loading-detail","loading-steps"
   ].map((id) => [toCamel(id), document.getElementById(id)]));
 
   elements.snapshotVersion.addEventListener("change", () => {
@@ -22,11 +22,12 @@
       state.snapshot = await window.SocialRadarSnapshots.loadSnapshot(state.index, state.context.snapshot);
       state.figure = state.snapshot.figures.find((item) => item.id === state.context.figureId) || state.snapshot.figures[0];
       state.theme = state.figure.themes.find((item) => item.storyId === state.context.theme) || state.figure.themes[0];
+      state.context.figureId = state.figure.id;
       state.context.theme = state.theme.storyId;
       state.context.snapshot = state.snapshot.snapshotId;
       state.story = prepareStory(state.theme, state.figure, state.snapshot);
       window.SocialRadarSnapshots.populateVersionSelect(elements.snapshotVersion, state.index, state.snapshot.snapshotId);
-      const currentUrl = new URL(location.href); currentUrl.searchParams.set("snapshot", state.snapshot.snapshotId); history.replaceState(null, "", currentUrl);
+      syncContextLinks();
       await wait(320); advanceLoading(2, "正在组合兴趣证据与四个故事章节"); await wait(320);
       renderAll(); elements.loadingOverlay.classList.add("is-hidden");
     } catch (error) {
@@ -208,6 +209,18 @@
   function relativeHour(value) { const hours = Number(value); if (!Number.isFinite(hours)) return "—"; if (Math.abs(hours) < .1) return "T=0"; return `T${hours > 0 ? "+" : ""}${Number.isInteger(hours) ? hours : hours.toFixed(1)}h`; }
   function shouldLabelEventPoint(hours, index, length) { return index === 0 || index === length - 1 || Math.abs(hours) < 1 || [24, 48, 72].some((target) => Math.abs(hours - target) < .6); }
   function readContext() { const params = new URLSearchParams(location.search); return { figureId: params.get("figureId") || "donald-trump", theme: params.get("theme") || "stablecoin", snapshot: params.get("snapshot") }; }
+  function syncContextLinks() {
+    const currentUrl = new URL(location.href);
+    currentUrl.searchParams.set("figureId", state.context.figureId);
+    currentUrl.searchParams.set("theme", state.context.theme);
+    currentUrl.searchParams.set("snapshot", state.context.snapshot);
+    history.replaceState(null, "", currentUrl);
+    elements.storyBackLink.href = `./hot-topic.html?${new URLSearchParams({
+      figureId: state.context.figureId,
+      theme: state.context.theme,
+      snapshot: state.context.snapshot,
+    }).toString()}`;
+  }
   function advanceLoading(step, detail) { [...elements.loadingSteps.children].forEach((item, index) => { item.classList.toggle("is-active", index === step); item.classList.toggle("is-done", index < step); }); elements.loadingDetail.textContent = detail; }
   function formatTime(value) { const date = new Date(value); return Number.isNaN(date.getTime()) ? "—" : new Intl.DateTimeFormat("zh-CN", { month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hour12: false }).format(date); }
   function create(tag, className, text) { const element = document.createElement(tag); if (className) element.className = className; if (text !== undefined) element.textContent = text; return element; }
