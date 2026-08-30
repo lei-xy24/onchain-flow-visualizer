@@ -1,16 +1,18 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-auth-required="true">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>地址关联交易查询</title>
+    <title>地址关联查询</title>
     <meta
       name="description"
       content="给定两个链上地址，查询示例资金流数据中的直接关联交易"
     />
-    <link rel="stylesheet" href="./live.css?v=20260731-history-boundary" />
+    <link rel="stylesheet" href="./auth.css?v=20260830" />
+    <link rel="stylesheet" href="./live.css?v=20260830-units" />
+    <script src="./auth.js?v=20260830"></script>
     <script src="./runtime-config.js?v=20260815-frontend-only"></script>
-    <script type="module" src="./relation.js?v=20260731-history-boundary"></script>
+    <script type="module" src="./relation.js?v=20260830-units"></script>
   </head>
   <body class="analysis-body">
     <header class="site-header">
@@ -30,7 +32,7 @@
       <section class="analysis-hero">
         <div>
           <p class="section-kicker">Address relation</p>
-          <h1>地址关联交易查询</h1>
+          <h1>地址关联查询</h1>
           <p>
             聚焦两个链上账户之间的资金往来，快速识别是否存在直接转账路径和对应交易记录。
           </p>

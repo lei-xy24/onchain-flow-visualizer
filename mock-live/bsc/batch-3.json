@@ -1,8 +1,8 @@
 {
   "chain": "bsc",
   "window": {
-    "from": "2026-07-16T08:01:20Z",
-    "to": "2026-07-16T08:01:30Z"
+    "from": "2026-07-16T08:03:00Z",
+    "to": "2026-07-16T08:04:00Z"
   },
   "transfers": [
     {
@@ -11,7 +11,7 @@
       "to": "0x1111111111111111111111111111111111111111",
       "fromLabel": "Demo Exchange",
       "toLabel": "Whale Wallet",
-      "time": "2026-07-16T08:01:21Z",
+      "time": "2026-07-16T08:03:05Z",
       "rawAmount": "46666666666666666666",
       "decimals": 18,
       "asset": "BNB",
@@ -24,11 +24,11 @@
       "to": "0x2222222222222222222222222222222222222222",
       "fromLabel": "Whale Wallet",
       "toLabel": "Lending Pool",
-      "time": "2026-07-16T08:01:23Z",
+      "time": "2026-07-16T08:03:15Z",
       "rawAmount": "420000000000000000000000",
       "decimals": 18,
-      "asset": "BNB",
-      "assetAddress": null,
+      "asset": "USDT",
+      "assetAddress": "0x55d398326f99059fF775485246999027B3197955",
       "txHash": "0xcd73d8a5d9e3420e075a810c813618b126ccf18c890e9a4991fb3bc274f114e1"
     },
     {
@@ -37,7 +37,7 @@
       "to": "0x7b3E86178f3c2C5D8b57a322A3f8aD5D7c3118Be",
       "fromLabel": "Lending Pool",
       "toLabel": "Market Maker",
-      "time": "2026-07-16T08:01:24Z",
+      "time": "2026-07-16T08:03:25Z",
       "rawAmount": "1400000000000000000",
       "decimals": 18,
       "asset": "BNB",
@@ -50,7 +50,7 @@
       "to": "0x44Fb3B9fF2fB3D0Fe4b3D837a9E0b2F07f5DA443",
       "fromLabel": "DeFi Router",
       "toLabel": "Fresh Wallet",
-      "time": "2026-07-16T08:01:26Z",
+      "time": "2026-07-16T08:03:35Z",
       "rawAmount": "11666666666666666666",
       "decimals": 18,
       "asset": "BNB",
@@ -63,7 +63,7 @@
       "to": "0x79165aAB3F8305cFC771B5Ea5986D9a6f958a5B0",
       "fromLabel": "Treasury",
       "toLabel": "Custody Wallet",
-      "time": "2026-07-16T08:01:28Z",
+      "time": "2026-07-16T08:03:45Z",
       "rawAmount": "2916666666666666666666",
       "decimals": 18,
       "asset": "BNB",
@@ -76,11 +76,11 @@
       "to": "0xB5C0000000000000000000000000000000000001",
       "fromLabel": "Bridge Vault",
       "toLabel": "Demo Exchange",
-      "time": "2026-07-16T08:01:29Z",
+      "time": "2026-07-16T08:03:55Z",
       "rawAmount": "85000000000000000000000",
       "decimals": 18,
-      "asset": "BNB",
-      "assetAddress": null,
+      "asset": "USDT",
+      "assetAddress": "0x55d398326f99059fF775485246999027B3197955",
       "txHash": "0x92d235c619d5cbcf334fe7d179c0c91e6facbf3964e54e26acf4e08746c8bcec"
     }
   ]

@@ -1,8 +1,8 @@
 {
   "chain": "eth",
   "window": {
-    "from": "2026-07-16T08:00:30Z",
-    "to": "2026-07-16T08:00:40Z"
+    "from": "2026-07-16T08:03:00Z",
+    "to": "2026-07-16T08:04:00Z"
   },
   "transfers": [
     {
@@ -11,7 +11,7 @@
       "to": "0x3333333333333333333333333333333333333333",
       "fromLabel": "Custody Wallet",
       "toLabel": "Staking Vault",
-      "time": "2026-07-16T08:00:31Z",
+      "time": "2026-07-16T08:03:05Z",
       "rawAmount": "800000000000000000000",
       "decimals": 18,
       "asset": "ETH",
@@ -24,7 +24,7 @@
       "to": "0x5E34cB1aef9E5B0E0E6C23d27D087F23E8bd3c70",
       "fromLabel": "Staking Vault",
       "toLabel": "Treasury",
-      "time": "2026-07-16T08:00:33Z",
+      "time": "2026-07-16T08:03:15Z",
       "rawAmount": "90000000000000000000",
       "decimals": 18,
       "asset": "ETH",
@@ -37,11 +37,11 @@
       "to": "0x1111111111111111111111111111111111111111",
       "fromLabel": "Market Maker",
       "toLabel": "Whale Wallet",
-      "time": "2026-07-16T08:00:34Z",
-      "rawAmount": "95000000000000000000000",
-      "decimals": 18,
-      "asset": "ETH",
-      "assetAddress": null,
+      "time": "2026-07-16T08:03:25Z",
+      "rawAmount": "95000000000",
+      "decimals": 6,
+      "asset": "USDC",
+      "assetAddress": "0xA0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
       "txHash": "0xd38f7836b5b973fb5b579665108ebeeec987930ce26ff533b893065bf1b77d4f"
     },
     {
@@ -50,7 +50,7 @@
       "to": "0xA91c7F2b2f32E7d42A61A0C4A53e80B3d8D7C91A",
       "fromLabel": "Fresh Wallet",
       "toLabel": "Bridge Vault",
-      "time": "2026-07-16T08:00:36Z",
+      "time": "2026-07-16T08:03:35Z",
       "rawAmount": "200000000000000000",
       "decimals": 18,
       "asset": "ETH",
@@ -63,11 +63,11 @@
       "to": "0x3DcA2a336a29C02E4c2d06b0940Bf338c5d07001",
       "fromLabel": "Demo Exchange",
       "toLabel": "DeFi Router",
-      "time": "2026-07-16T08:00:38Z",
-      "rawAmount": "12500000000000000000000",
-      "decimals": 18,
-      "asset": "ETH",
-      "assetAddress": null,
+      "time": "2026-07-16T08:03:45Z",
+      "rawAmount": "12500000000",
+      "decimals": 6,
+      "asset": "USDC",
+      "assetAddress": "0xA0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
       "txHash": "0x1c1f7701ebf864c3f51653ad9c89f618c5230aa8b99b50244df10ae3cbf00cb0"
     },
     {
@@ -76,7 +76,7 @@
       "to": "0x4838B106FCe9647Bdf1E7877BF73cE8B0BAD5f97",
       "fromLabel": "Lending Pool",
       "toLabel": "Demo Exchange",
-      "time": "2026-07-16T08:00:39Z",
+      "time": "2026-07-16T08:03:55Z",
       "rawAmount": "1200000000000000000",
       "decimals": 18,
       "asset": "ETH",

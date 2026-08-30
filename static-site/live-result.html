@@ -1,18 +1,20 @@
 <!doctype html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-auth-required="true">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>实时交易图谱</title>
     <meta
       name="description"
-      content="每 10 秒更新一次的链上账户交易动态图谱"
+      content="每 60 秒更新一次的链上账户交易动态图谱"
     />
-    <link rel="stylesheet" href="./live.css?v=20260730-sync-copy" />
+    <link rel="stylesheet" href="./auth.css?v=20260830" />
+    <link rel="stylesheet" href="./live.css?v=20260830-live-60s" />
+    <script src="./auth.js?v=20260830"></script>
     <script src="./runtime-config.js?v=20260815-frontend-only"></script>
     <script
       type="module"
-      src="./live-result.js?v=20260724-native-usd"
+      src="./live-result.js?v=20260830-live-60s"
     ></script>
   </head>
   <body class="monitor-body">
@@ -27,7 +29,7 @@
       </nav>
       <div class="monitor-title">
         <strong>实时交易图谱</strong>
-        <span id="window-label">正在准备最近 10 秒数据</span>
+        <span id="window-label">正在准备最近 60 秒数据</span>
         </div>
       </div>
 
@@ -50,6 +52,17 @@
         </div>
 
         <div class="monitor-actions">
+          <div class="monitor-unit-control">
+            <button
+              class="monitor-action"
+              id="live-unit-toggle"
+              type="button"
+              aria-pressed="false"
+            >
+              单位转换：美元
+            </button>
+            <span id="live-unit-status" role="status" hidden></span>
+          </div>
           <button class="monitor-action" id="pause-button" type="button">暂停</button>
           <button
             class="monitor-action monitor-action-primary"
@@ -111,7 +124,7 @@
               <span></span><span></span><span></span>
             </div>
             <strong>正在请求交易数据</strong>
-            <p>首次请求完成后，这里会显示最近 10 秒的账户和转账路径。</p>
+            <p>首次请求完成后，这里会显示最近 60 秒的账户和转账路径。</p>
           </div>
           <div class="graph-tooltip" id="graph-tooltip" role="status" hidden></div>
         </div>
@@ -121,7 +134,7 @@
 
       <aside class="activity-panel" aria-labelledby="activity-title">
         <div class="activity-header">
-          <h2 id="activity-title">当前 10 秒交易</h2>
+          <h2 id="activity-title">当前 60 秒交易</h2>
           <p>点击交易或账户可以在图中突出显示对应路径。</p>
         </div>
 

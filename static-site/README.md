@@ -3,15 +3,17 @@
 静态版包含两套独立功能：
 
 - `index.html`：首页，展示各链基础数据，右上角是四个功能入口。
+- `login.html` / `auth.js` / `auth.css`：统一演示登录、当前会话门禁与退出控件。
 - `runtime-config.js`：统一配置后端团队提供的公开接口地址；留空时使用演示数据。
+- `currency-rates.js`：通过公开行情接口读取实时美元价格，并提供 60 秒浏览器缓存。
 - `track.html`：显示地址搜索框与本机搜索历史，不读取资金流 JSON。
 - `search-history.js`：管理最近 10 条搜索记录、筛选、复用和清除操作。
 - `address-history.js`：让用户画像和地址关联共用同一份地址搜索历史。
 - `result.html`：接收链和地址，向后端请求该地址的数据并显示结果。
 - `mock-api/`：后端尚未完成时使用的逐地址模拟响应。
 - `live.html`：通过选择框进入 ETH、BSC 或 Polygon 实时图谱。
-- `live-result.html`：每 10 秒请求一次最近 10 秒交易并绘制动态图谱。
-- `mock-live/`：ETH、BSC 和 Polygon 各五批、共 50 秒的实时交易演示数据。
+- `live-result.html`：每 60 秒请求一次最近 60 秒交易并绘制动态图谱。
+- `mock-live/`：ETH、BSC 和 Polygon 各五批、共 5 分钟的实时交易演示数据。
 - `profile.html` / `profile.js`：生成账户画像。
 - `relation.html` / `relation.js`：查询两个地址的直接关联交易。
 - `analysis-loading.js`：用户画像与地址关联共用的全屏加载过渡页。
@@ -132,6 +134,7 @@ window.ONCHAIN_API_CONFIG = Object.freeze({
   overview: "https://api.example.com/overview",
   flow: "https://api.example.com/flow",
   liveTransfers: "https://api.example.com/live-transfers",
+  marketPrices: "https://api.coingecko.com/api/v3/simple/price",
 });
 ```
 
@@ -215,13 +218,13 @@ Accept: application/json
 
 ```text
 live.html
-  -> 用户搜索或选择币种
+  -> 用户搜索或选择网络
   -> live-result.html?chain=eth
-  -> 立即请求最近 10 秒交易
-  -> 每 10 秒替换当前交易线，并把新账户增量加入已有图谱
+  -> 立即请求最近 60 秒交易
+  -> 每 60 秒替换当前交易线，并把新账户增量加入已有图谱
 ```
 
-账户节点在当前页面会话中只增不减。某个账户在后续 10 秒没有新交易时，节点仍保留在原位置并显示为历史账户；只有当前窗口的交易线会更新。新增账户优先放在其交易对手附近的空闲位置，已有节点保持原坐标。节点持续增加导致空间不足时，布局只围绕画布中心做等比例压缩，不重新排序。
+账户节点在当前页面会话中只增不减。某个账户在后续 60 秒没有新交易时，节点仍保留在原位置并显示为历史账户；只有当前窗口的交易线会更新。新增账户优先放在其交易对手附近的空闲位置，已有节点保持原坐标。节点持续增加导致空间不足时，布局只围绕画布中心做等比例压缩，不重新排序。
 
 实时交易同样读取 `runtime-config.js`：
 
@@ -229,18 +232,18 @@ live.html
 liveTransfers: "https://api.example.com/live-transfers"
 ```
 
-前端会每 10 秒发送：
+前端会每 60 秒发送：
 
 ```http
-GET https://api.example.com/live-transfers?chain=eth&from=2026-07-16T08%3A00%3A00.000Z&to=2026-07-16T08%3A00%3A10.000Z
+GET https://api.example.com/live-transfers?chain=eth&from=2026-07-16T08%3A00%3A00.000Z&to=2026-07-16T08%3A01%3A00.000Z
 Accept: application/json
 ```
 
-`from` 和 `to` 相差 10 秒。后端应返回这个时间窗口内的全部转账，不要分页或只返回大额交易。
+`from` 和 `to` 相差 60 秒。后端应返回这个时间窗口内的全部转账，不要分页或只返回大额交易。
 
 `id` 必须在持续数据流中稳定且唯一。前端使用它去重累计统计；即使接口因为重试重复返回一笔交易，也不会重复增加账户的累计金额和交易次数。
 
-当 `BACKEND_API_URL` 为空时，页面每次从下面路径读取一批数据。每批覆盖 10 秒，五批连续播放 50 秒后重新循环：
+当 `BACKEND_API_URL` 为空时，页面每次从下面路径读取一批数据。每批覆盖 60 秒，五批连续播放 5 分钟后重新循环：
 
 ```text
 ./mock-live/{chain}/batch-1.json
@@ -257,7 +260,7 @@ Accept: application/json
   "chain": "eth",
   "window": {
     "from": "2026-07-16T08:00:00Z",
-    "to": "2026-07-16T08:00:10Z"
+    "to": "2026-07-16T08:01:00Z"
   },
   "transfers": [
     {
@@ -311,7 +314,13 @@ Accept: application/json
 
 ### 资金追踪金额显示
 
-资金追踪结果页默认只按查询链的原生币种显示样例资金，例如 ETH 链只显示 ETH，BSC 只显示 BNB，Polygon 只显示 POL。页面上的“单位转换：美元”按钮使用前端固定演示汇率估算，不请求行情接口；后端仍只需要返回链上原始金额字段。
+资金追踪、实时交易、用户画像和地址关联默认显示链上原币金额。点击“单位转换：美元”后，前端通过 `runtime-config.js` 的 `marketPrices` 地址查询实时美元价格，并在当前浏览器中缓存 60 秒；转换失败或资产没有可靠映射时继续显示原币，不会用 `$0` 代替未知价格。默认地址使用 CoinGecko Keyless Public API，不携带任何 Key；生产环境也可以把 `marketPrices` 指向后端团队提供的同参数代理。后端资金流接口仍只需返回链上原始金额字段。
+
+## 演示登录边界
+
+业务页面会先检查当前浏览器会话中的登录状态，未登录时跳转到 `login.html`，登录成功后回到原页面；右上角“退出”会立即清除该会话。凭据只以校验摘要存在源码中，不在文档重复明文。
+
+GitHub Pages 是纯静态站，浏览器端门禁只能用于演示流程，不能保护 HTML、JSON、接口地址或阻止懂技术的访问者绕过页面校验。真实生产环境必须在服务器、反向代理和业务 API 层再次验证身份与权限。
 
 ## 用户画像与地址关联
 

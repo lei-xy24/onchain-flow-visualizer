@@ -1109,6 +1109,62 @@ a {
   margin-bottom: 16px;
 }
 
+.analysis-panel-controls {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.analysis-panel-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.analysis-unit-toggle {
+  background: #ffffff;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  color: #354448;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 850;
+  min-height: 48px;
+  padding: 0 14px;
+}
+
+.analysis-unit-toggle:hover:not(:disabled) {
+  border-color: var(--teal);
+  color: var(--teal-dark);
+}
+
+.analysis-unit-toggle[aria-pressed="true"] {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: #ffffff;
+}
+
+.analysis-unit-toggle:disabled {
+  cursor: wait;
+  opacity: 0.62;
+}
+
+.analysis-unit-status {
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  max-width: 260px;
+  text-align: right;
+}
+
+.analysis-unit-status.is-error {
+  color: var(--red);
+}
+
 .analysis-panel-heading h2,
 .analysis-subsection h3,
 .relation-summary-panel h2 {
@@ -1373,6 +1429,31 @@ a {
 
 .monitor-actions {
   gap: 7px;
+}
+
+.monitor-unit-control {
+  align-items: flex-end;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.monitor-unit-control > span {
+  color: var(--muted);
+  font-size: 0.62rem;
+  line-height: 1.2;
+  max-width: 180px;
+  text-align: right;
+}
+
+.monitor-unit-control > span.is-error {
+  color: var(--red);
+}
+
+#live-unit-toggle[aria-pressed="true"] {
+  background: var(--teal);
+  border-color: var(--teal);
+  color: #ffffff;
 }
 
 .monitor-action {
@@ -2062,6 +2143,21 @@ a {
     align-items: start;
     grid-template-columns: 1fr;
   }
+
+  .analysis-panel-heading {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .analysis-panel-controls,
+  .analysis-unit-status {
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .analysis-panel-actions {
+    justify-content: flex-start;
+  }
 }
 
 @media (max-width: 680px) {
@@ -2214,7 +2310,22 @@ a {
   }
 
   .monitor-actions {
+    flex-wrap: wrap;
     grid-column: 1 / -1;
+  }
+
+  .monitor-unit-control {
+    align-items: flex-start;
+    flex: 1 1 170px;
+  }
+
+  .monitor-unit-control > span {
+    text-align: left;
+  }
+
+  #live-unit-toggle {
+    flex: none;
+    width: 100%;
   }
 
   .monitor-action {
