@@ -1,5 +1,9 @@
 <!doctype html>
-<html lang="zh-CN" data-auth-required="true">
+<html
+  lang="zh-CN"
+  data-auth-required="true"
+  data-auth-show-logout="false"
+>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,28 +12,24 @@
       name="description"
       content="每 60 秒更新一次的链上账户交易动态图谱"
     />
-    <link rel="stylesheet" href="./auth.css?v=20260830" />
-    <link rel="stylesheet" href="./live.css?v=20260830-live-60s" />
-    <script src="./auth.js?v=20260830"></script>
-    <script src="./runtime-config.js?v=20260815-frontend-only"></script>
+    <link rel="stylesheet" href="./auth.css?v=20260830-ui-fix" />
+    <link rel="stylesheet" href="./live.css?v=20260830-ui-fix" />
+    <script src="./auth.js?v=20260830-ui-fix"></script>
+    <script src="./runtime-config.js?v=20260830-rates-fallback"></script>
     <script
       type="module"
-      src="./live-result.js?v=20260830-live-60s"
+      src="./live-result.js?v=20260830-rates-fallback"
     ></script>
   </head>
   <body class="monitor-body">
     <header class="monitor-header">
       <div class="monitor-header-main">
-      <nav class="tool-nav monitor-nav" aria-label="分析工具">
-        <a href="./index.html">首页</a>
-        <a href="./track.html">地址追踪</a>
-        <a href="./live.html" aria-current="page">实时交易</a>
-        <a href="./profile.html">用户画像</a>
-        <a href="./relation.html">地址关联</a>
-      </nav>
-      <div class="monitor-title">
-        <strong>实时交易图谱</strong>
-        <span id="window-label">正在准备最近 60 秒数据</span>
+        <nav class="tool-nav monitor-nav" aria-label="返回实时交易">
+          <a href="./live.html">← 返回实时交易</a>
+        </nav>
+        <div class="monitor-title">
+          <strong>实时交易图谱</strong>
+          <span id="window-label">正在准备最近 60 秒数据</span>
         </div>
       </div>
 

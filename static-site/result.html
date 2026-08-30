@@ -1,5 +1,9 @@
 <!doctype html>
-<html lang="zh-CN" data-auth-required="true">
+<html
+  lang="zh-CN"
+  data-auth-required="true"
+  data-auth-show-logout="false"
+>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -8,8 +12,8 @@
       name="description"
       content="链上账户资金流入、流出关系分析前端原型"
     />
-    <link rel="stylesheet" href="./auth.css?v=20260830" />
-    <script src="./auth.js?v=20260830"></script>
+    <link rel="stylesheet" href="./auth.css?v=20260830-ui-fix" />
+    <script src="./auth.js?v=20260830-ui-fix"></script>
     <style>
       :root {
         --background: #f3f6f8;
@@ -1314,17 +1318,17 @@
         }
       }
     </style>
-    <script src="./runtime-config.js?v=20260815-frontend-only"></script>
+    <script src="./runtime-config.js?v=20260830-rates-fallback"></script>
   </head>
   <body>
     <div id="app"></div>
     <script type="module">
       import {
-        formatRateTime,
+        formatRateStatus,
         formatTransferUsd as formatRealtimeTransferUsd,
         formatTransfersUsdTotal as formatRealtimeTransfersUsdTotal,
         loadUsdRates,
-      } from "./currency-rates.js?v=20260830";
+      } from "./currency-rates.js?v=20260830-rates-fallback";
 
       // 后端团队提供接口后，只修改 runtime-config.js，不在页面中放密钥。
       const BACKEND_API_URL = globalThis.ONCHAIN_API_CONFIG?.flow || "";
@@ -1914,7 +1918,7 @@
 
       function renderUnitToggle() {
         const isUsdMode = amountDisplayMode === "usd";
-        const rateTime = isUsdMode ? formatRateTime(usdRateSnapshot) : "";
+        const rateStatus = isUsdMode ? formatRateStatus(usdRateSnapshot) : "";
         return `
           <button
             class="unit-toggle-button"
@@ -1928,8 +1932,8 @@
           ${
             unitRateError
               ? `<span class="unit-rate-status is-error" role="status">${escapeHtml(unitRateError)}</span>`
-              : rateTime
-                ? `<span class="unit-rate-status">实时汇率 · ${escapeHtml(rateTime)}</span>`
+              : rateStatus
+                ? `<span class="unit-rate-status">${escapeHtml(rateStatus)}</span>`
                 : ""
           }
         `;

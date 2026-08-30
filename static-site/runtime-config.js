@@ -7,6 +7,8 @@
     overview: "",
     flow: "",
     liveTransfers: "",
-    marketPrices: "https://api.coingecko.com/api/v3/simple/price",
+    marketPrices: "https://data-api.binance.vision/api/v3/ticker/price",
+    marketPricesSecondary: "https://api.gateio.ws/api/v4/spot/tickers",
+    marketPricesFallback: "https://api.coingecko.com/api/v3/simple/price",
   });
 })(globalThis);

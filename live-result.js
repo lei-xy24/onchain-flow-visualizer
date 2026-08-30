@@ -9,11 +9,11 @@ import {
   shortHash,
 } from "./live-core.js?v=20260724-native-usd";
 import {
-  formatRateTime,
+  formatRateStatus,
   formatTransferUsd as formatRealtimeTransferUsd,
   formatTransfersUsdTotal as formatRealtimeTransfersUsdTotal,
   loadUsdRates,
-} from "./currency-rates.js?v=20260830";
+} from "./currency-rates.js?v=20260830-rates-fallback";
 
 // 后端团队提供接口后，只修改 runtime-config.js，不在前端放密钥。
 const BACKEND_API_URL = globalThis.ONCHAIN_API_CONFIG?.liveTransfers || "";
@@ -567,11 +567,11 @@ function renderUnitControl() {
 }
 
 function setUnitStatus(message = "", isError = false) {
-  const rateTime =
+  const rateStatus =
     state.amountDisplayMode === "usd"
-      ? formatRateTime(state.usdRateSnapshot)
+      ? formatRateStatus(state.usdRateSnapshot)
       : "";
-  const text = message || (rateTime ? `实时汇率 · ${rateTime}` : "");
+  const text = message || rateStatus;
   elements.unitStatus.textContent = text;
   elements.unitStatus.hidden = !text;
   elements.unitStatus.classList.toggle("is-error", isError);

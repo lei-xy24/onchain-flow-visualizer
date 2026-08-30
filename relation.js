@@ -15,10 +15,10 @@ import {
 } from "./address-history.js?v=20260731-history-boundary";
 import { createAnalysisLoading } from "./analysis-loading.js?v=20260731";
 import {
-  formatRateTime,
+  formatRateStatus,
   formatTransferUsd as formatRealtimeTransferUsd,
   loadUsdRates,
-} from "./currency-rates.js?v=20260830";
+} from "./currency-rates.js?v=20260830-rates-fallback";
 
 const elements = {
   form: document.getElementById("relation-form"),
@@ -319,10 +319,10 @@ function renderUnitRateStatus() {
   if (unitRateError) {
     return `<span class="analysis-unit-status is-error" role="status">${escapeHtml(unitRateError)}</span>`;
   }
-  const rateTime =
-    amountDisplayMode === "usd" ? formatRateTime(usdRateSnapshot) : "";
-  return rateTime
-    ? `<span class="analysis-unit-status">实时汇率 · ${escapeHtml(rateTime)}</span>`
+  const rateStatus =
+    amountDisplayMode === "usd" ? formatRateStatus(usdRateSnapshot) : "";
+  return rateStatus
+    ? `<span class="analysis-unit-status">${escapeHtml(rateStatus)}</span>`
     : "";
 }
 

@@ -28,6 +28,7 @@
   }
 
   document.documentElement.setAttribute("data-auth-ready", "true");
+  if (document.documentElement.dataset.authShowLogout === "false") return;
   if (document.readyState === "loading") {
     document.addEventListener("DOMContentLoaded", installLogoutControl, {
       once: true,
