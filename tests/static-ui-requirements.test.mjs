@@ -156,6 +156,42 @@ test("四类分析页使用实时单位转换且结果页不再显示地址快�
   assert.match(runtimeConfig, /marketPricesFallback:\s*"https:\/\/api\.coingecko\.com\/api\/v3\/simple\/price"/);
 });
 
+test("实时交易单位转换状态不会再挤乱三个操作按钮", async () => {
+  const [liveResult, liveCss] = await Promise.all([
+    readFile(path.join(root, "live-result.html"), "utf8"),
+    readFile(path.join(root, "live.css"), "utf8"),
+  ]);
+  assert.doesNotMatch(liveResult, /monitor-unit-control/);
+  assert.match(
+    liveResult,
+    /<div class="monitor-actions">\s*<div class="monitor-action-row">[\s\S]*?id="live-unit-toggle"[\s\S]*?id="pause-button"[\s\S]*?id="refresh-button"[\s\S]*?<\/div>\s*<span class="monitor-rate-status" id="live-unit-status"/,
+  );
+  assert.match(
+    liveCss,
+    /\.monitor-action-row\s*\{[^}]*display:\s*grid[^}]*grid-template-columns:\s*minmax\(156px,\s*auto\)\s+72px\s+108px/s,
+  );
+  assert.match(liveCss, /\.monitor-rate-status\s*\{[^}]*white-space:\s*nowrap/s);
+  assert.match(liveCss, /\.monitor-rate-status\s*\{[^}]*text-overflow:\s*ellipsis/s);
+  assert.match(liveCss, /@media\s*\(max-width:\s*440px\)[\s\S]*?#live-unit-toggle\s*\{[^}]*grid-column:\s*1\s*\/\s*-1/s);
+});
+
+test("人物雷达和主题故事不再展示分析边界或结论边界模块", async () => {
+  const [hotTopic, hotTopicScript, hotTopicCss, story, storyScript, storyCss] = await Promise.all([
+    readFile(path.join(root, "hot-topic.html"), "utf8"),
+    readFile(path.join(root, "hot-topic.js"), "utf8"),
+    readFile(path.join(root, "hot-topic.css"), "utf8"),
+    readFile(path.join(root, "event-explorer.html"), "utf8"),
+    readFile(path.join(root, "event-explorer.js"), "utf8"),
+    readFile(path.join(root, "event-explorer.css"), "utf8"),
+  ]);
+  for (const source of [hotTopic, hotTopicScript, hotTopicCss]) {
+    assert.doesNotMatch(source, /boundary-note|boundaryCopy|结论边界/);
+  }
+  for (const source of [story, storyScript, storyCss]) {
+    assert.doesNotMatch(source, /boundary-banner|boundaryLabel|boundaryCopy|分析边界|演示边界/);
+  }
+});
+
 test("四个下级页只保留同款返回入口并回到直接上级", async () => {
   const [result, liveResult, hotTopic, storyResult, auth, authCss] = await Promise.all([
     readFile(path.join(root, "result.html"), "utf8"),

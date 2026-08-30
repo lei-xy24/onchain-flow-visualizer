@@ -176,8 +176,7 @@ a:focus-visible {
 .source-card,
 .people-section,
 .theme-panel,
-.evidence-panel,
-.boundary-note {
+.evidence-panel {
   border: 1px solid var(--line);
   background: var(--surface);
   box-shadow: 0 16px 40px rgba(35, 58, 61, 0.055);
@@ -1569,29 +1568,6 @@ a:focus-visible {
   line-height: 1.65;
 }
 
-.boundary-note {
-  display: grid;
-  grid-template-columns: 90px 1fr;
-  gap: 16px;
-  margin-top: 15px;
-  padding: 14px 18px;
-  border-color: #e6dac8;
-  border-radius: 10px;
-  background: #fffaf3;
-}
-
-.boundary-note strong {
-  color: #a76618;
-  font-size: 10px;
-}
-
-.boundary-note p {
-  margin: 0;
-  color: #8b765b;
-  font-size: 9px;
-  line-height: 1.65;
-}
-
 .sync-overlay[hidden],
 .toast[hidden] {
   display: none;
@@ -1908,11 +1884,6 @@ a:focus-visible {
 
   .change-status {
     padding-left: 54px;
-  }
-
-  .boundary-note {
-    grid-template-columns: 1fr;
-    gap: 5px;
   }
 
   .theme-select {

@@ -20,7 +20,7 @@
     peopleList: document.getElementById("people-list"), selectedFigure: document.getElementById("selected-figure"),
     themePanel: document.getElementById("theme-panel"), themeList: document.getElementById("theme-list"), evidencePanel: document.getElementById("evidence-panel"),
     headerContext: document.getElementById("radar-header-context"), headerStatus: document.getElementById("radar-header-status"), headerTime: document.getElementById("radar-header-time"),
-    boundaryCopy: document.getElementById("boundary-copy"), syncOverlay: document.getElementById("sync-overlay"),
+    syncOverlay: document.getElementById("sync-overlay"),
     syncDetail: document.getElementById("sync-detail"), syncSteps: document.getElementById("sync-steps"),
     toast: document.getElementById("radar-toast"),
   };
@@ -61,7 +61,6 @@
 
   function renderAll() {
     renderSource(); renderPeople(); renderFigure(); renderThemes();
-    elements.boundaryCopy.textContent = state.data.disclaimer;
   }
 
   function renderSource() {

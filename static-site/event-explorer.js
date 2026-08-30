@@ -4,7 +4,7 @@
   const SVG_NS = "http://www.w3.org/2000/svg";
   const state = { context: readContext(), index: null, snapshot: null, story: null, figure: null, theme: null, chapter: 0, selectedReactionId: null };
   const elements = Object.fromEntries([
-    "figure-avatar","story-category","story-title","story-lead","data-mode","interest-score","origin-copy","origin-theme","boundary-label","boundary-copy","snapshot-grid",
+    "figure-avatar","story-category","story-title","story-lead","data-mode","interest-score","origin-copy","origin-theme","snapshot-grid",
     "chapter-list","chapter-kicker","chapter-title","chapter-number","chapter-body",
     "signal-view","signal-count","signal-keywords","signal-evidence","trend-view","trend-kicker","trend-title","trend-mode-label","event-market-panel","event-timeline","event-summary","trend-chart","ranking-view","ranking-kicker","ranking-title","ranking-list","ranking-detail",
     "watch-view","watch-grid","note-figure","note-theme","note-score","note-confidence","snapshot-version","story-back-link","story-header-context","story-header-status","story-header-time","loading-overlay","loading-title","loading-detail","loading-steps"
@@ -53,14 +53,13 @@
     elements.storyCategory.textContent = usesEventMarket ? `${state.story.category} · ${state.figure.nameZh}事件验证` : `${state.story.category} · ${state.figure.nameZh}兴趣主题`;
     elements.storyTitle.textContent = state.story.headline; elements.storyLead.textContent = state.story.lead;
     elements.interestScore.textContent = `${state.theme.score} 关注度`;
-    elements.boundaryLabel.textContent = state.snapshot.isLive ? "分析边界" : "演示边界";
     const usesMarketData = state.story.dataMode === "market";
     elements.dataMode.textContent = hasRelatedMarket ? "主题证据 × 相关事件小时行情" : usesMarketData ? state.snapshot.modeLabel : "DeepSeek 定时快照 · 公开动态证据分析";
     elements.trendKicker.textContent = hasRelatedMarket ? "Event price reaction" : usesMarketData ? "Market trend" : "Discussion trend";
     elements.rankingKicker.textContent = usesEventMarket ? "Historical event comparison" : usesMarketData ? "Market landscape" : "Topic priorities";
     elements.trendModeLabel.textContent = hasRelatedMarket ? "T-24h → T+72h" : usesMarketData ? (state.snapshot.marketMode === "live-api" ? "直接相关市场数据" : "主题市场快照") : "公开动态时间分布";
     elements.originCopy.textContent = hasRelatedMarket ? `${state.figure.nameZh}围绕“${state.theme.name}”的动态形成主题，页面再按动态来源精确匹配候选资产行情。` : `${state.figure.nameZh}最近 7 天的多条公开动态中，“${state.theme.name}”相关关键词形成稳定主题簇。`;
-    elements.originTheme.textContent = state.theme.name; elements.boundaryCopy.textContent = hasRelatedMarket ? "行情只关联到同一条公开动态所属的主题；T=0 前后波动仍是时间相关性，不是因果结论。" : usesMarketData ? state.snapshot.disclaimer : "本主题只分析人物近 7 天的公开动态证据，不展示与主题无关的公链、代币、市值或市场排名。";
+    elements.originTheme.textContent = state.theme.name;
     elements.noteFigure.textContent = state.figure.nameZh; elements.noteTheme.textContent = state.theme.name;
     elements.noteScore.textContent = `${state.theme.score} / 100 · ${state.theme.trend}`; elements.noteConfidence.textContent = state.theme.confidence;
   }
