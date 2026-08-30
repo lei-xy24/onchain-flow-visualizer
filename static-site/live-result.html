@@ -13,12 +13,12 @@
       content="每 60 秒更新一次的链上账户交易动态图谱"
     />
     <link rel="stylesheet" href="./auth.css?v=20260830-back-nav" />
-    <link rel="stylesheet" href="./live.css?v=20260830-ui-fix" />
+    <link rel="stylesheet" href="./live.css?v=20260830-monitor-toolbar" />
     <script src="./auth.js?v=20260830-ui-fix"></script>
     <script src="./runtime-config.js?v=20260830-rates-fallback"></script>
     <script
       type="module"
-      src="./live-result.js?v=20260830-back-nav"
+      src="./live-result.js?v=20260830-monitor-toolbar"
     ></script>
   </head>
   <body class="monitor-body">
@@ -50,7 +50,7 @@
         </div>
 
         <div class="monitor-actions">
-          <div class="monitor-unit-control">
+          <div class="monitor-action-row">
             <button
               class="monitor-action"
               id="live-unit-toggle"
@@ -59,16 +59,16 @@
             >
               单位转换：美元
             </button>
-            <span id="live-unit-status" role="status" hidden></span>
+            <button class="monitor-action" id="pause-button" type="button">暂停</button>
+            <button
+              class="monitor-action monitor-action-primary"
+              id="refresh-button"
+              type="button"
+            >
+              立即刷新
+            </button>
           </div>
-          <button class="monitor-action" id="pause-button" type="button">暂停</button>
-          <button
-            class="monitor-action monitor-action-primary"
-            id="refresh-button"
-            type="button"
-          >
-            立即刷新
-          </button>
+          <span class="monitor-rate-status" id="live-unit-status" role="status" hidden></span>
         </div>
       </div>
     </header>
