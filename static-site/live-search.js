@@ -4,6 +4,11 @@ const liveSearchForm = document.getElementById("live-search-form");
 const liveChainSelect = document.getElementById("live-chain-select");
 const liveSearchError = document.getElementById("live-search-error");
 
+const requestedChain = new URLSearchParams(location.search).get("chain")?.toLowerCase();
+if (requestedChain && LIVE_CHAINS.has(requestedChain)) {
+  liveChainSelect.value = requestedChain;
+}
+
 liveSearchForm.addEventListener("submit", (event) => {
   event.preventDefault();
   const chain = liveChainSelect.value;

@@ -21,19 +21,39 @@ const mirroredFiles = [
   "auth.css",
   "auth.js",
   "currency-rates.js",
+  "event-explorer.css",
+  "event-explorer.js",
+  "hot-topic.css",
+  "hot-topic.js",
   "login.html",
   "live.css",
   "live-result.js",
+  "live-search.js",
   "profile.js",
   "relation.js",
   "runtime-config.js",
 ];
 
+function readAnchors(html) {
+  return [...html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)].map((match) => {
+    const attributes = match[1];
+    const readAttribute = (name) => {
+      const value = attributes.match(new RegExp(`\\b${name}=(['\"])(.*?)\\1`, "i"));
+      return value?.[2] ?? "";
+    };
+    return {
+      className: readAttribute("class").replace(/\s+/g, " ").trim(),
+      href: readAttribute("href"),
+      text: match[2].replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim(),
+    };
+  });
+}
+
 test("所有业务页先执行登录门禁并提供根目录静态镜像", async () => {
   for (const file of protectedPages) {
     const html = await readFile(path.join(root, file), "utf8");
     assert.match(html, /<html[^>]+data-auth-required="true"/i, file);
-    assert.match(html, /\.\/auth\.css\?v=20260830-ui-fix/, file);
+    assert.match(html, /\.\/auth\.css\?v=[^"']+/, file);
     assert.match(html, /\.\/auth\.js\?v=20260830-ui-fix/, file);
   }
 
@@ -130,32 +150,88 @@ test("四类分析页使用实时单位转换且结果页不再显示地址快�
   assert.match(runtimeConfig, /marketPricesFallback:\s*"https:\/\/api\.coingecko\.com\/api\/v3\/simple\/price"/);
 });
 
-test("退出只在一级页显示，实时交易二级页只保留返回入口", async () => {
-  const [result, liveResult, storyResult, auth] = await Promise.all([
+test("四个下级页只保留同款返回入口并回到直接上级", async () => {
+  const [result, liveResult, hotTopic, storyResult, auth, authCss] = await Promise.all([
     readFile(path.join(root, "result.html"), "utf8"),
     readFile(path.join(root, "live-result.html"), "utf8"),
+    readFile(path.join(root, "hot-topic.html"), "utf8"),
     readFile(path.join(root, "event-explorer.html"), "utf8"),
     readFile(path.join(root, "auth.js"), "utf8"),
+    readFile(path.join(root, "auth.css"), "utf8"),
   ]);
-  assert.match(result, /data-auth-show-logout="false"/);
-  assert.match(liveResult, /data-auth-show-logout="false"/);
-  assert.match(storyResult, /data-auth-show-logout="false"/);
+
+  const cases = [
+    ["result.html", result, "./track.html", false],
+    ["live-result.html", liveResult, "./live.html", true],
+    ["hot-topic.html", hotTopic, "./index.html", true],
+    ["event-explorer.html", storyResult, "./hot-topic.html", true],
+  ];
+  for (const [file, html, expectedHref, exactlyOne] of cases) {
+    assert.match(html, /data-auth-show-logout="false"/, `${file} 不应显示退出按钮`);
+    const returnAnchors = readAnchors(html).filter((anchor) => anchor.text.includes("返回"));
+    assert.ok(returnAnchors.length > 0, `${file} 缺少返回入口`);
+    if (exactlyOne) {
+      assert.equal(returnAnchors.length, 1, `${file} 只能保留一个返回入口`);
+    }
+    for (const anchor of returnAnchors) {
+      assert.equal(anchor.className, "page-back-link", `${file} 返回入口样式不统一`);
+      assert.equal(anchor.text, "返回", `${file} 返回文案必须精确为“返回”`);
+      assert.equal(anchor.href, expectedHref, `${file} 应返回直接上级`);
+    }
+  }
+
   assert.match(auth, /dataset\.authShowLogout === "false"/);
+  assert.match(
+    authCss,
+    /\.page-back-link\s*\{[^}]*border:\s*1px\s+solid/s,
+    "四个下级页的返回入口应共用有边框的 page-back-link",
+  );
 
-  const navigation = liveResult.match(
-    /<nav class="tool-nav monitor-nav"[\s\S]*?<\/nav>/,
-  )?.[0];
-  assert.ok(navigation, "实时交易二级页应保留返回导航");
-  assert.deepEqual([...navigation.matchAll(/href="([^"]+)"/g)].map((item) => item[1]), [
-    "./live.html",
-  ]);
-  assert.match(navigation, /← 返回实时交易/);
-  assert.doesNotMatch(navigation, /index\.html|track\.html|profile\.html|relation\.html/);
+  assert.doesNotMatch(hotTopic, /class="radar-(?:brand|nav)"/);
+  assert.doesNotMatch(storyResult, /class="story-(?:brand|nav)"|class="breadcrumb"/);
+  assert.doesNotMatch(storyResult, /返回查看其他人物或主题/);
 
-  for (const page of ["index.html", "track.html", "live.html", "profile.html", "relation.html", "hot-topic.html"]) {
+  for (const page of ["index.html", "track.html", "live.html", "profile.html", "relation.html"]) {
     const html = await readFile(path.join(root, page), "utf8");
     assert.doesNotMatch(html, /data-auth-show-logout="false"/, page);
   }
+});
+
+test("故事页返回人物兴趣雷达时保留上下文，雷达页可恢复人物和主题", async () => {
+  const [hotTopicScript, storyScript] = await Promise.all([
+    readFile(path.join(root, "hot-topic.js"), "utf8"),
+    readFile(path.join(root, "event-explorer.js"), "utf8"),
+  ]);
+
+  const returnUrlIndex = storyScript.indexOf("./hot-topic.html");
+  assert.ok(returnUrlIndex >= 0, "故事页脚本应构造人物兴趣雷达的返回 URL");
+  const returnUrlBuilder = storyScript.slice(
+    Math.max(0, returnUrlIndex - 400),
+    returnUrlIndex + 1_600,
+  );
+  for (const parameter of ["figureId", "theme", "snapshot"]) {
+    assert.match(
+      returnUrlBuilder,
+      new RegExp(`(?:searchParams\\.set\\(\\s*['\"]${parameter}['\"]|\\b${parameter}\\s*:)`),
+      `故事页返回 URL 缺少 ${parameter}`,
+    );
+  }
+  assert.match(
+    storyScript,
+    /(?:\.href\s*=|setAttribute\(\s*["']href["'])/,
+    "故事页应把带上下文的 URL 设置到返回入口",
+  );
+
+  for (const parameter of ["figureId", "theme", "snapshot"]) {
+    assert.match(
+      hotTopicScript,
+      new RegExp(`\\.get\\(\\s*['\"]${parameter}['\"]\\s*\\)`),
+      `人物兴趣雷达应读取 ${parameter}`,
+    );
+  }
+  assert.match(hotTopicScript, /activeFigureId\s*=/);
+  assert.match(hotTopicScript, /activeThemeId\s*=/);
+  assert.match(hotTopicScript, /storyId/);
 });
 
 test("地址关联页使用不会在桌面端断成两行的短标题", async () => {

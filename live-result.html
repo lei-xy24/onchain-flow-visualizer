@@ -12,21 +12,19 @@
       name="description"
       content="每 60 秒更新一次的链上账户交易动态图谱"
     />
-    <link rel="stylesheet" href="./auth.css?v=20260830-ui-fix" />
+    <link rel="stylesheet" href="./auth.css?v=20260830-back-nav" />
     <link rel="stylesheet" href="./live.css?v=20260830-ui-fix" />
     <script src="./auth.js?v=20260830-ui-fix"></script>
     <script src="./runtime-config.js?v=20260830-rates-fallback"></script>
     <script
       type="module"
-      src="./live-result.js?v=20260830-rates-fallback"
+      src="./live-result.js?v=20260830-back-nav"
     ></script>
   </head>
   <body class="monitor-body">
     <header class="monitor-header">
       <div class="monitor-header-main">
-        <nav class="tool-nav monitor-nav" aria-label="返回实时交易">
-          <a href="./live.html">← 返回实时交易</a>
-        </nav>
+        <a id="live-back-link" class="page-back-link" href="./live.html" aria-label="返回实时交易">返回</a>
         <div class="monitor-title">
           <strong>实时交易图谱</strong>
           <span id="window-label">正在准备最近 60 秒数据</span>

@@ -9,21 +9,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>主题数据故事 · 区块链安全监控平台</title>
     <meta name="description" content="从人物公开动态出发，围绕真实关注主题分析信号、趋势、重点和后续观察" />
-    <link rel="stylesheet" href="./auth.css?v=20260830-ui-fix" />
-    <link rel="stylesheet" href="./event-explorer.css?v=20260825-v1" />
+    <link rel="stylesheet" href="./auth.css?v=20260830-back-nav" />
+    <link rel="stylesheet" href="./event-explorer.css?v=20260830-back-nav" />
     <script src="./auth.js?v=20260830-ui-fix"></script>
     <script src="./snapshot-store.js?v=20260813-v1" defer></script>
-    <script src="./event-explorer.js?v=20260825-v1" defer></script>
+    <script src="./event-explorer.js?v=20260830-back-nav" defer></script>
   </head>
   <body>
     <header class="story-header">
-      <a class="story-brand" href="./index.html"><span class="brand-mark" aria-hidden="true">◎</span><span><strong>区块链安全监控平台</strong><small>Topic intelligence</small></span></a>
-      <nav class="story-nav" aria-label="分析工具"><a class="is-active" href="./hot-topic.html">人物兴趣雷达</a><a href="./track.html">地址追踪</a><a href="./profile.html">用户画像</a><a href="./relation.html">地址关联</a></nav>
+      <a id="story-back-link" class="page-back-link" href="./hot-topic.html" aria-label="返回人物兴趣雷达">返回</a>
     </header>
 
     <main class="story-shell">
-      <nav class="breadcrumb" aria-label="面包屑"><a href="./hot-topic.html">人物兴趣雷达</a><span>/</span><span>主题数据故事</span></nav>
-
       <section class="story-hero" aria-labelledby="story-title">
         <div class="story-identity">
           <span class="figure-avatar" id="figure-avatar" aria-hidden="true"></span>
@@ -78,7 +75,6 @@
 
         <aside class="context-panel" aria-label="当前主题信息">
           <dl><div><dt>人物</dt><dd id="note-figure">—</dd></div><div><dt>主题</dt><dd id="note-theme">—</dd></div><div><dt>主题 / 事件强度</dt><dd id="note-score">—</dd></div><div><dt>结论置信度</dt><dd id="note-confidence">—</dd></div></dl>
-          <a href="./hot-topic.html">返回查看其他人物或主题</a>
         </aside>
       </section>
 

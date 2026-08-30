@@ -12,7 +12,7 @@
       name="description"
       content="链上账户资金流入、流出关系分析前端原型"
     />
-    <link rel="stylesheet" href="./auth.css?v=20260830-ui-fix" />
+    <link rel="stylesheet" href="./auth.css?v=20260830-back-nav" />
     <script src="./auth.js?v=20260830-ui-fix"></script>
     <style>
       :root {
@@ -1392,7 +1392,7 @@
         document.getElementById("app").innerHTML = `
           <main class="loading-shell" aria-busy="true">
             <header class="loading-topbar">
-              <a class="loading-back" href="./track.html">← 返回搜索</a>
+              <a class="page-back-link" href="./track.html" aria-label="返回地址追踪">返回</a>
               <span class="loading-security">安全查询通道</span>
             </header>
             <section class="loading-layout" role="status" aria-live="polite">
@@ -1494,7 +1494,7 @@
             ? '<div class="quick-examples"><button id="retry-data" type="button">重新读取</button></div>'
             : "") +
           (showHome
-            ? '<div class="quick-examples"><a class="back-link" href="./track.html">返回搜索</a></div>'
+            ? '<div class="quick-examples"><a class="page-back-link" href="./track.html" aria-label="返回地址追踪">返回</a></div>'
             : "") +
           "</section></main>";
 
@@ -1708,7 +1708,7 @@
         document.getElementById("app").innerHTML = `
           <main class="result-shell">
             <header class="result-header">
-              <a class="back-link" href="./track.html">返回搜索</a>
+              <a class="page-back-link" href="./track.html" aria-label="返回地址追踪">返回</a>
               <div>
                 <p class="eyebrow">链上分析 / ${escapeHtml(chainKey.toUpperCase())}</p>
                 <h1>资金流分析结果</h1>

@@ -22,6 +22,7 @@ const POLL_INTERVAL_MS = 60_000;
 const MOCK_BATCH_COUNTS = Object.freeze({ eth: 5, bsc: 5, polygon: 5 });
 
 const elements = {
+  backLink: document.getElementById("live-back-link"),
   chainSelect: document.getElementById("live-chain-select"),
   statusDot: document.getElementById("status-dot"),
   statusLabel: document.getElementById("status-label"),
@@ -83,6 +84,9 @@ function initialize() {
   }
 
   state.chain = requestedChain;
+  const backUrl = new URL("./live.html", location.href);
+  backUrl.searchParams.set("chain", state.chain);
+  elements.backLink.href = backUrl.href;
   elements.chainSelect.value = state.chain;
   document.title = `${LIVE_CHAINS[state.chain].label} · 实时交易图谱`;
   bindEvents();

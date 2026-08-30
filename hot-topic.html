@@ -1,28 +1,23 @@
 <!doctype html>
-<html lang="zh-CN" data-auth-required="true">
+<html
+  lang="zh-CN"
+  data-auth-required="true"
+  data-auth-show-logout="false"
+>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>人物兴趣雷达 · 区块链安全监控平台</title>
     <meta name="description" content="从公众人物最近 7 天的公开动态中提取关键词，归纳近期讨论的区块链主题" />
-    <link rel="stylesheet" href="./auth.css?v=20260830-ui-fix" />
+    <link rel="stylesheet" href="./auth.css?v=20260830-back-nav" />
     <link rel="stylesheet" href="./hot-topic.css?v=20260813-v4" />
     <script src="./auth.js?v=20260830-ui-fix"></script>
     <script src="./snapshot-store.js?v=20260813-v1" defer></script>
-    <script src="./hot-topic.js?v=20260813-v5" defer></script>
+    <script src="./hot-topic.js?v=20260830-back-nav" defer></script>
   </head>
   <body>
     <header class="radar-header">
-      <a class="radar-brand" href="./index.html">
-        <span class="brand-mark" aria-hidden="true">◎</span>
-        <span><strong>区块链安全监控平台</strong><small>Social intelligence</small></span>
-      </a>
-      <nav class="radar-nav" aria-label="分析工具">
-        <a href="./index.html">链上概览</a>
-        <a href="./track.html">地址追踪</a>
-        <a href="./profile.html">用户画像</a>
-        <a href="./relation.html">地址关联</a>
-      </nav>
+      <a class="page-back-link" href="./index.html" aria-label="返回链上概览">返回</a>
     </header>
 
     <main class="radar-shell">
