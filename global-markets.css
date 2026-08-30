@@ -80,8 +80,8 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--teal); outline-
 
 .market-hero-copy { padding: 34px 36px; }
 .market-eyebrow { margin: 0 0 7px; color: var(--teal); font-size: 9px; font-weight: 850; letter-spacing: 0.15em; text-transform: uppercase; }
-.market-title-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; }
-.market-title-row h1 { max-width: 840px; margin: 0; font-size: clamp(28px, 4.4vw, 50px); line-height: 1.12; letter-spacing: -0.045em; }
+.market-title-row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; min-width: 0; }
+.market-title-row h1 { flex: 1 1 auto; min-width: 0; max-width: none; margin: 0; font-size: clamp(18px, 2.8vw, 46px); line-height: 1.12; letter-spacing: -0.045em; white-space: nowrap; }
 .market-mode { padding: 6px 9px; border: 1px solid rgba(66, 214, 199, 0.25); border-radius: 999px; color: var(--teal); background: rgba(66, 214, 199, 0.08); font-size: 8px; font-weight: 850; }
 .market-mode.is-demo { border-color: rgba(242, 162, 58, 0.3); color: #f8c97e; background: rgba(242, 162, 58, 0.09); }
 .market-lead { max-width: 820px; margin: 15px 0 0; color: #a9bfc0; font-size: 12px; line-height: 1.75; }
@@ -170,7 +170,6 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--teal); outline-
 .story-card dl div { padding: 8px; border: 1px solid #233c40; border-radius: 7px; }
 .story-card dt { color: #617d80; font-size: 6px; }
 .story-card dd { margin: 4px 0 0; color: #d1e0df; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 9px; }
-.method-note { margin: 15px 0 0; color: #617b7e; font-size: 8px; line-height: 1.65; text-align: center; }
 
 .market-loading, .market-error { position: fixed; z-index: 100; inset: 0; display: grid; place-items: center; padding: 24px; background: rgba(4, 11, 12, 0.91); backdrop-filter: blur(12px); }
 .market-loading.is-hidden { visibility: hidden; opacity: 0; pointer-events: none; transition: opacity 220ms, visibility 220ms; }
@@ -216,7 +215,7 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--teal); outline-
   .market-shell { width: calc(100% - 20px); padding-top: 10px; }
   .market-hero-copy { padding: 24px 19px; }
   .market-title-row { display: block; }
-  .market-title-row h1 { font-size: 28px; }
+  .market-title-row h1 { font-size: clamp(14px, 4.2vw, 24px); }
   .market-mode { display: inline-block; margin-top: 10px; }
   .snapshot-meta { padding: 20px; }
   .market-relay-section, .story-section, .benchmark-panel, .correlation-panel, .pair-panel { padding: 16px; }

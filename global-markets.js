@@ -20,7 +20,7 @@
     "data-through", "asset-count", "market-regime", "source-label", "market-relay", "range-control",
     "asset-switches", "benchmark-chart", "chart-readout", "correlation-control", "correlation-matrix",
     "pair-title", "pair-sample", "pair-metrics", "pair-chart", "lag-profile", "pair-conclusion",
-    "story-grid", "method-note", "market-loading", "loading-title", "loading-steps", "market-error",
+    "story-grid", "market-loading", "loading-title", "loading-steps", "market-error",
     "market-error-copy", "market-retry",
   ].map((id) => [toCamel(id), document.getElementById(id)]));
 
@@ -71,7 +71,6 @@
     renderCorrelationMatrix();
     renderPair();
     renderStories();
-    renderMethod();
   }
 
   function renderHero() {
@@ -290,11 +289,6 @@
       });
       elements.storyGrid.appendChild(button);
     });
-  }
-
-  function renderMethod() {
-    const method = state.snapshot.methodology;
-    elements.methodNote.textContent = `走势图基准 ${method.normalizedBase}；相关窗口 ${method.correlationWindows.join("/")} 日；${method.correlationInput}。领先滞后只在样本和提升阈值同时达标时展示，不认定因果。`;
   }
 
   function handleRangeChange(event) {
