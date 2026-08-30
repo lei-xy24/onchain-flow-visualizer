@@ -180,6 +180,7 @@
         display: grid;
         gap: 24px;
         grid-template-columns: 132px minmax(0, 1fr) auto;
+        min-height: 205px;
         overflow: hidden;
         padding: 22px;
         position: relative;
@@ -195,6 +196,53 @@
         top: -138px;
         width: 260px;
       }
+
+      .cross-market-card {
+        background:
+          radial-gradient(circle at 82% 18%, rgba(96, 126, 233, 0.18), transparent 34%),
+          linear-gradient(125deg, #111b1f, #101d25);
+      }
+
+      .cross-market-card::after {
+        border-color: rgba(112, 144, 240, 0.2);
+      }
+
+      .cross-market-visual {
+        display: grid;
+        gap: 7px;
+        grid-template-columns: repeat(2, 1fr);
+        height: 132px;
+        width: 132px;
+      }
+
+      .cross-market-visual span {
+        align-items: center;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        font-size: 0.84rem;
+        font-weight: 850;
+        gap: 4px;
+        justify-content: center;
+      }
+
+      .cross-market-visual span small {
+        color: rgba(255, 255, 255, 0.58);
+        font-size: 0.52rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+      }
+
+      .cross-market-visual span:nth-child(1) { background: linear-gradient(145deg, #5f2027, #c8515c); }
+      .cross-market-visual span:nth-child(2) { background: linear-gradient(145deg, #20356d, #5f82e6); }
+      .cross-market-visual span:nth-child(3) { background: linear-gradient(145deg, #124c41, #28a77d); }
+      .cross-market-visual span:nth-child(4) { background: linear-gradient(145deg, #754712, #e39b35); }
+
+      .cross-market-card .hot-topic-kicker { color: #91a9ff; }
+      .cross-market-card .hot-topic-action a { color: #ffffff; background: #5877df; }
+      .cross-market-card .hot-topic-action a:hover { background: #7893ed; }
 
       .hot-topic-people {
         display: grid;
@@ -433,13 +481,15 @@
           grid-template-columns: 112px minmax(0, 1fr);
         }
 
-        .hot-topic-people {
+        .hot-topic-people,
+        .cross-market-visual {
           height: 112px;
           width: 112px;
         }
 
         .hot-topic-people img,
-        .hot-topic-people span {
+        .hot-topic-people span,
+        .cross-market-visual span {
           height: 52px;
           width: 52px;
         }
@@ -460,20 +510,26 @@
       @media (max-width: 760px) {
         .hot-topic-card {
           grid-template-columns: 76px minmax(0, 1fr);
+          min-height: 0;
           padding: 16px;
         }
 
-        .hot-topic-people {
+        .hot-topic-people,
+        .cross-market-visual {
           height: 76px;
           width: 76px;
         }
 
         .hot-topic-people img,
-        .hot-topic-people span {
+        .hot-topic-people span,
+        .cross-market-visual span {
           border-radius: 7px;
           height: 35px;
           width: 35px;
         }
+
+        .cross-market-visual span { font-size: 0.66rem; }
+        .cross-market-visual span small { display: none; }
 
         .site-header {
           align-items: flex-start;
@@ -547,6 +603,32 @@
         <div class="hot-topic-action">
           <a href="./hot-topic.html">查看人物兴趣雷达 →</a>
           <small>读取最近一份校验通过的每周快照；主题归纳不代表人物立场、投资或背书</small>
+        </div>
+      </section>
+
+      <section class="hot-topic-card cross-market-card section-gap" aria-labelledby="cross-market-title">
+        <div class="cross-market-visual" aria-label="覆盖市场：A 股、欧洲股市、美股和加密货币">
+          <span>A 股<small>China</small></span>
+          <span>欧股<small>Europe</small></span>
+          <span>美股<small>United States</small></span>
+          <span>加密<small>Crypto</small></span>
+        </div>
+        <div class="hot-topic-copy">
+          <p class="hot-topic-kicker">Cross-market intelligence · Daily close</p>
+          <h2 id="cross-market-title">全球市场联动</h2>
+          <p>
+            把 A 股、欧洲、美股与加密货币放在同一条时间线上，观察风险偏好的共振、先后与脱钩。
+          </p>
+          <div class="hot-topic-tags" aria-label="分析范围">
+            <span>基准 100 走势</span>
+            <span>20 / 60 日相关</span>
+            <span>领先滞后关系</span>
+            <span>三段历史故事</span>
+          </div>
+        </div>
+        <div class="hot-topic-action">
+          <a href="./global-markets.html">查看全球市场联动 →</a>
+          <small>每个交易日收盘后读取最近成功快照；指标由规则计算，不使用价格相关性冒充因果</small>
         </div>
       </section>
 

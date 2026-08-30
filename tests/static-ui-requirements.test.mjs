@@ -15,6 +15,7 @@ const protectedPages = [
   "relation.html",
   "hot-topic.html",
   "event-explorer.html",
+  "global-markets.html",
 ];
 const mirroredFiles = [
   ...protectedPages,
@@ -23,6 +24,8 @@ const mirroredFiles = [
   "currency-rates.js",
   "event-explorer.css",
   "event-explorer.js",
+  "global-markets.css",
+  "global-markets.js",
   "hot-topic.css",
   "hot-topic.js",
   "login.html",
@@ -65,6 +68,54 @@ test("所有业务页先执行登录门禁并提供根目录静态镜像", async
     ]);
     assert.equal(staticContent, rootContent, `${file} 的两份发布镜像不一致`);
   }
+});
+
+test("全球市场联动入口紧跟人物兴趣雷达并复用同尺寸卡片骨架", async () => {
+  const index = await readFile(path.join(root, "index.html"), "utf8");
+  const radarIndex = index.indexOf('aria-labelledby="hot-topic-title"');
+  const marketIndex = index.indexOf('aria-labelledby="cross-market-title"');
+  const chainIndex = index.indexOf('aria-labelledby="chain-title"');
+
+  assert.ok(radarIndex >= 0, "首页缺少人物兴趣雷达卡片");
+  assert.ok(marketIndex > radarIndex, "全球市场联动应排在人物兴趣雷达之后");
+  assert.ok(chainIndex > marketIndex, "全球市场联动应位于后续链上概览模块之前");
+  assert.match(
+    index.slice(radarIndex - 120, marketIndex),
+    /<section class="hot-topic-card section-gap"/,
+    "人物兴趣雷达应使用 hot-topic-card 骨架",
+  );
+  assert.match(
+    index.slice(marketIndex - 120, chainIndex),
+    /<section class="hot-topic-card cross-market-card section-gap"/,
+    "全球市场联动应复用 hot-topic-card 骨架",
+  );
+  assert.match(index, /\.hot-topic-card\s*\{[^}]*min-height:\s*205px/s);
+  assert.match(index, /href="\.\/global-markets\.html"/);
+});
+
+test("全球市场联动页只保留返回上级入口且提供可访问的数据探索控件", async () => {
+  const [html, script] = await Promise.all([
+    readFile(path.join(root, "global-markets.html"), "utf8"),
+    readFile(path.join(root, "global-markets.js"), "utf8"),
+  ]);
+  const anchors = readAnchors(html);
+
+  assert.match(html, /data-auth-required="true"/);
+  assert.match(html, /data-auth-show-logout="false"/);
+  assert.equal(anchors.length, 1, "全球市场联动页不应提供跨一级页面导航");
+  assert.deepEqual(anchors[0], {
+    className: "page-back-link",
+    href: "./index.html",
+    text: "返回",
+  });
+  assert.doesNotMatch(html, /<nav\b|data-auth-logout|>退出</i);
+  assert.match(html, /<svg[^>]+id="benchmark-chart"[^>]+role="img"[^>]+aria-labelledby="benchmark-chart-title benchmark-chart-desc"/);
+  assert.match(html, /<title id="benchmark-chart-title">/);
+  assert.match(html, /<desc id="benchmark-chart-desc">/);
+  assert.match(html, /id="correlation-control"[^>]+aria-label="选择相关窗口"/);
+  assert.match(html, /data-window="20" aria-pressed="true"/);
+  assert.match(script, /create\("caption", null, `\$\{state\.correlationWindow\} 日收益率相关矩阵`\)/);
+  assert.match(script, /button\.setAttribute\("aria-pressed", String\(pair\?\.id === state\.selectedPairId\)\)/);
 });
 
 test("登录页不预填凭据且门禁使用短期会话和安全返回路径", async () => {

@@ -21,6 +21,10 @@
     "radar:cycle": "node scripts/run-social-radar-cycle.mjs",
     "radar:publish": "node scripts/publish-radar-to-github.mjs",
     "radar:publish:check": "node scripts/publish-radar-to-github.mjs --check-only",
+    "market:snapshot": "node scripts/generate-cross-market-snapshot.mjs",
+    "market:demo": "node scripts/generate-cross-market-snapshot.mjs --demo",
+    "market:publish": "node scripts/publish-cross-market-to-github.mjs",
+    "market:publish:check": "node scripts/publish-cross-market-to-github.mjs --check-only",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
     "typecheck": "tsc --noEmit",
     "db:generate": "drizzle-kit generate"
