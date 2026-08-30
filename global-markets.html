@@ -1,0 +1,130 @@
+<!doctype html>
+<html lang="zh-CN" data-auth-required="true" data-auth-show-logout="false">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>全球市场联动 · 区块链安全监控平台</title>
+    <meta name="description" content="比较 A 股、欧洲股市、美股与加密货币的归一化走势、滚动相关和领先滞后关系" />
+    <link rel="stylesheet" href="./auth.css?v=20260830-back-nav" />
+    <link rel="stylesheet" href="./global-markets.css?v=20260830-first" />
+    <script src="./auth.js?v=20260830-ui-fix"></script>
+    <script src="./global-markets.js?v=20260830-first" defer></script>
+  </head>
+  <body>
+    <header class="market-header">
+      <a class="page-back-link" href="./index.html" aria-label="返回链上概览">返回</a>
+      <div class="market-header-context">
+        <strong>全球市场联动</strong>
+        <span>股市与加密资产的每日收盘故事</span>
+      </div>
+      <div class="market-header-status">
+        <span id="header-status">正在读取快照</span>
+        <time id="header-time">—</time>
+      </div>
+    </header>
+
+    <main class="market-shell">
+      <section class="market-hero" aria-labelledby="market-title">
+        <div class="market-hero-copy">
+          <p class="market-eyebrow">Cross-market narrative</p>
+          <div class="market-title-row">
+            <h1 id="market-title">正在识别最新市场主线</h1>
+            <span class="market-mode is-demo" id="market-mode">读取中</span>
+          </div>
+          <p class="market-lead" id="market-lead">正在对齐 A 股、欧洲、美股和加密货币的最近交易日。</p>
+          <ul class="market-conclusions" id="market-conclusions" aria-label="本期结论"></ul>
+        </div>
+        <aside class="snapshot-meta" aria-label="快照信息">
+          <p>Latest close snapshot</p>
+          <dl>
+            <div><dt>数据截止</dt><dd id="data-through">—</dd></div>
+            <div><dt>覆盖资产</dt><dd id="asset-count">—</dd></div>
+            <div><dt>当前状态</dt><dd id="market-regime">—</dd></div>
+            <div><dt>数据来源</dt><dd id="source-label">—</dd></div>
+          </dl>
+        </aside>
+      </section>
+
+      <section class="market-relay-section" aria-labelledby="relay-title">
+        <div class="section-heading">
+          <div><p class="market-eyebrow">Trading-session relay</p><h2 id="relay-title">最近交易日市场接力</h2></div>
+          <p>A 股 → 欧洲 → 美股 → 24 小时加密市场；顺序表示交易时段，不代表因果。</p>
+        </div>
+        <div class="market-relay" id="market-relay"></div>
+      </section>
+
+      <section class="market-panel benchmark-panel" aria-labelledby="benchmark-title">
+        <header class="panel-heading">
+          <div><p class="market-eyebrow">Same starting line</p><h2 id="benchmark-title">起点归一为 100，看谁走得更快</h2></div>
+          <div class="segmented-control" id="range-control" aria-label="选择走势图区间">
+            <button type="button" data-range="30">1M</button>
+            <button type="button" data-range="90" aria-pressed="true">3M</button>
+            <button type="button" data-range="180">6M</button>
+            <button type="button" data-range="365">1Y</button>
+          </div>
+        </header>
+        <div class="asset-switches" id="asset-switches" aria-label="选择走势图资产"></div>
+        <div class="chart-scroll">
+          <svg class="benchmark-chart" id="benchmark-chart" viewBox="0 0 1080 430" role="img" aria-labelledby="benchmark-chart-title benchmark-chart-desc">
+            <title id="benchmark-chart-title">跨市场归一化走势图</title>
+            <desc id="benchmark-chart-desc">将所选区间第一个有效收盘值设为 100，对比八类资产的相对表现。</desc>
+          </svg>
+        </div>
+        <p class="chart-readout" id="chart-readout" aria-live="polite">选择市场或历史故事后，这里会说明当前观察区间。</p>
+      </section>
+
+      <section class="relationship-layout" aria-label="跨市场关联关系">
+        <article class="market-panel correlation-panel" aria-labelledby="correlation-title">
+          <header class="panel-heading">
+            <div><p class="market-eyebrow">Return correlation</p><h2 id="correlation-title">谁和谁正在一起动？</h2></div>
+            <div class="segmented-control" id="correlation-control" aria-label="选择相关窗口">
+              <button type="button" data-window="20" aria-pressed="true">20 日</button>
+              <button type="button" data-window="60">60 日</button>
+            </div>
+          </header>
+          <p class="panel-description">相关性使用共同交易日期间的日对数收益率，点击任意非对角单元格查看配对。</p>
+          <div class="matrix-scroll" id="correlation-matrix"></div>
+        </article>
+
+        <article class="market-panel pair-panel" aria-labelledby="pair-title">
+          <header class="pair-heading">
+            <div><p class="market-eyebrow">Pair explorer</p><h2 id="pair-title">配对关系</h2></div>
+            <span id="pair-sample">—</span>
+          </header>
+          <div class="pair-metrics" id="pair-metrics"></div>
+          <div class="pair-chart-scroll">
+            <svg class="pair-chart" id="pair-chart" viewBox="0 0 720 260" role="img" aria-labelledby="pair-chart-title pair-chart-desc">
+              <title id="pair-chart-title">所选资产配对走势</title>
+              <desc id="pair-chart-desc">展示所选两类资产在当前区间内的归一化相对走势。</desc>
+            </svg>
+          </div>
+          <div class="lag-profile" id="lag-profile" aria-label="领先滞后相关系数"></div>
+          <p class="pair-conclusion" id="pair-conclusion">请选择相关矩阵中的一组资产。</p>
+        </article>
+      </section>
+
+      <section class="story-section" aria-labelledby="story-title">
+        <div class="section-heading">
+          <div><p class="market-eyebrow">Three market chapters</p><h2 id="story-title">一年里最值得讲的三段市场故事</h2></div>
+          <p>自动选择同步最强、分化最大和波动压力最高的区间；结论完全来自已发布行情规则。</p>
+        </div>
+        <div class="story-grid" id="story-grid"></div>
+      </section>
+
+      <p class="method-note" id="method-note">跨市场比较只使用百分比、基准 100 与共同交易日收益率；领先滞后用于观察时间关系，不认定因果。</p>
+    </main>
+
+    <div class="market-loading" id="market-loading">
+      <div class="loading-dialog" role="status" aria-live="polite">
+        <div class="loading-pulse" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <p>Global market snapshot</p>
+        <h2 id="loading-title">正在读取已发布市场快照</h2>
+        <ol id="loading-steps"><li class="is-active">读取快照</li><li>校验交易日</li><li>绘制联动关系</li></ol>
+      </div>
+    </div>
+
+    <div class="market-error" id="market-error" hidden>
+      <div><strong>暂时无法读取全球市场快照</strong><p id="market-error-copy">请稍后重试。</p><button type="button" id="market-retry">重新读取</button></div>
+    </div>
+  </body>
+</html>

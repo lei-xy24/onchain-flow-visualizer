@@ -35,6 +35,8 @@ test("静态站点不包含常见密钥或服务器密码格式", async () => {
   for (const file of files.filter((item) => /\.(?:html|js|json|css)$/i.test(item))) {
     const content = await readFile(file, "utf8");
     assert.doesNotMatch(content, /(?:DEEPSEEK|ETHERSCAN|X_BEARER)_API_KEY\s*=/i, path.relative(root, file));
+    assert.doesNotMatch(content, /\b(?:EODHD_API_TOKEN|COINGECKO_(?:API_KEY|DEMO_KEY))\s*=/i, path.relative(root, file));
+    assert.doesNotMatch(content, /[?&]api_token=[^&\s"']+/i, path.relative(root, file));
     assert.doesNotMatch(content, /\bsk-[a-z0-9]{20,}\b/i, path.relative(root, file));
   }
 });
@@ -96,6 +98,25 @@ test("GitHub Actions 每周一生成快照且只通过 Secrets 注入密钥", as
   assert.equal(config.eventWindowBeforeHours, 24);
   assert.equal(config.eventWindowAfterHours, 72);
   assert.equal(config.eventBaselineHours, 168);
+});
+
+test("全球市场工作流按交易日更新且不复用社交分析或服务器凭据", async () => {
+  const workflow = await readFile(path.join(root, ".github/workflows/cross-market-snapshot.yml"), "utf8");
+
+  assert.match(workflow, /cron:\s*["']30 0 \* \* 2-6["']/);
+  assert.match(workflow, /EODHD_API_TOKEN:\s*\$\{\{\s*secrets\.EODHD_API_TOKEN\s*\}\}/);
+  assert.match(workflow, /COINGECKO_DEMO_KEY:\s*\$\{\{\s*secrets\.COINGECKO_API_KEY\s*\}\}/);
+  assert.match(workflow, /EODHD_BASE_URL:\s*\$\{\{\s*vars\.EODHD_BASE_URL\s*\}\}/);
+  assert.match(workflow, /COINGECKO_BASE_URL:\s*\$\{\{\s*vars\.COINGECKO_BASE_URL\s*\}\}/);
+  assert.match(workflow, /PUBLIC_DISPLAY_APPROVED:\s*\$\{\{\s*vars\.EODHD_PUBLIC_DISPLAY_APPROVED\s*\}\}/);
+  assert.match(workflow, /Generate global market snapshot[\s\S]*?PUBLIC_DISPLAY_APPROVED == 'true'/);
+  assert.match(workflow, /Publish global market snapshot[\s\S]*?PUBLIC_DISPLAY_APPROVED == 'true'/);
+  assert.match(workflow, /Validate demo calculation[\s\S]*?--demo --check-only/);
+  assert.match(workflow, /Publish global market snapshot[\s\S]*?if:\s*env\.DEMO_MODE != 'true'/);
+  assert.match(workflow, /node scripts\/publish-cross-market-to-github\.mjs/);
+  assert.doesNotMatch(workflow, /X_BEARER_TOKEN|DEEPSEEK_API_KEY|SSH_PRIVATE_KEY|SERVER_(?:HOST|USER|PASSWORD)/);
+  assert.doesNotMatch(workflow, /\bssh\b|scp\s|rsync\s/i);
+  assert.doesNotMatch(workflow, /git add|git commit|git push/);
 });
 
 test("静态页面引用的本地文件都存在", async () => {
