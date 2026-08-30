@@ -86,6 +86,11 @@ test("登录页不预填凭据且门禁使用短期会话和安全返回路径",
   );
   assert.match(auth, /button\.parentElement === resultActions/);
   assert.match(authCss, /\.login-page \*[^}]+box-sizing:\s*border-box/s);
+  assert.match(login, /<h1><span>看清链上资金<\/span><span>流向与风险信号<\/span><\/h1>/);
+  assert.doesNotMatch(login, /<h1>[^<]*<br\s*\/?>/i);
+  assert.match(authCss, /\.login-brand-copy h1\s*\{[^}]*font-size:\s*clamp\(2\.4rem,\s*3\.8vw,\s*3\.25rem\)[^}]*word-break:\s*keep-all/s);
+  assert.match(authCss, /\.login-brand-copy h1 span\s*\{[^}]*display:\s*block[^}]*white-space:\s*nowrap/s);
+  assert.match(authCss, /@media\s*\(max-width:\s*960px\)[\s\S]*?\.login-card\s*\{[^}]*grid-template-columns:\s*1fr/s);
 });
 
 test("实时交易界面、轮询和演示窗口统一为 60 秒", async () => {

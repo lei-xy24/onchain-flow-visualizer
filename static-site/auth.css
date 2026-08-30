@@ -137,9 +137,9 @@ html[data-auth-required]:not([data-auth-ready]) body {
   border-radius: 18px;
   box-shadow: 0 30px 90px rgba(20, 32, 36, 0.16);
   display: grid;
-  grid-template-columns: minmax(340px, 0.9fr) minmax(420px, 1.1fr);
+  grid-template-columns: minmax(470px, 1.05fr) minmax(420px, 0.95fr);
   margin: 0 auto;
-  max-width: 1040px;
+  max-width: 1120px;
   min-height: 620px;
   overflow: hidden;
   width: 100%;
@@ -158,7 +158,7 @@ html[data-auth-required]:not([data-auth-ready]) body {
   justify-content: space-between;
   min-height: 620px;
   overflow: hidden;
-  padding: 46px;
+  padding: 48px clamp(40px, 4.5vw, 56px);
   position: relative;
 }
 
@@ -212,7 +212,7 @@ html[data-auth-required]:not([data-auth-ready]) body {
 }
 
 .login-brand-copy {
-  max-width: 420px;
+  max-width: 100%;
   position: relative;
   z-index: 1;
 }
@@ -227,10 +227,22 @@ html[data-auth-required]:not([data-auth-ready]) body {
 }
 
 .login-brand-copy h1 {
-  font-size: clamp(2.25rem, 5vw, 4.2rem);
-  letter-spacing: -0.04em;
-  line-height: 0.98;
+  font-size: clamp(2.4rem, 3.8vw, 3.25rem);
+  letter-spacing: -0.035em;
+  line-height: 1.06;
   margin: 0;
+  overflow-wrap: normal;
+  text-wrap: balance;
+  word-break: keep-all;
+}
+
+.login-brand-copy h1 span {
+  display: block;
+  white-space: nowrap;
+}
+
+.login-brand-copy h1 span + span {
+  margin-top: 0.13em;
 }
 
 .login-brand-copy p:last-child {
@@ -406,22 +418,23 @@ html[data-auth-required]:not([data-auth-ready]) body {
   width: 22px;
 }
 
-@media (max-width: 820px) {
+@media (max-width: 960px) {
   .login-shell {
     padding: 18px;
   }
 
   .login-card {
     grid-template-columns: 1fr;
+    min-height: auto;
   }
 
   .login-brand-panel {
-    min-height: 280px;
-    padding: 30px;
+    min-height: 250px;
+    padding: 28px 34px;
   }
 
   .login-brand-copy h1 {
-    font-size: 2.5rem;
+    font-size: 2.35rem;
   }
 
   .login-brand-copy p:last-child,
@@ -430,7 +443,7 @@ html[data-auth-required]:not([data-auth-ready]) body {
   }
 
   .login-form-panel {
-    padding: 42px 28px;
+    padding: 40px 34px;
   }
 }
 
@@ -470,12 +483,12 @@ html[data-auth-required]:not([data-auth-ready]) body {
   }
 
   .login-brand-panel {
-    min-height: 220px;
+    min-height: 210px;
     padding: 24px;
   }
 
   .login-brand-copy h1 {
-    font-size: 2.1rem;
+    font-size: clamp(1.85rem, 8.4vw, 2.15rem);
   }
 
   .login-form-panel {
