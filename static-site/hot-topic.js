@@ -65,10 +65,14 @@
 
   function renderSource() {
     const snapshot = state.data;
-    elements.sourceTitle.textContent = snapshot.title; elements.sourceDescription.textContent = "每周一北京时间 08:00 自动更新；本页只读取最近一份校验通过并发布的结果。";
+    const eventMarketNotCollected = snapshot.eventMarketMode === "not-collected";
+    elements.sourceTitle.textContent = snapshot.title;
+    elements.sourceDescription.textContent = eventMarketNotCollected
+      ? `${snapshot.eventMarketNotice || "当期未采集事件行情"}；主题与公开动态分析仍按原快照展示，不补造价格曲线。`
+      : "每周一北京时间 08:15 自动更新；本页只读取最近一份校验通过并发布的结果。";
     elements.sourceMode.textContent = snapshot.modeLabel; elements.sourceTime.textContent = formatTime(snapshot.generatedAt);
-    elements.sourceCadence.textContent = "每周一 08:00"; elements.sourceSignal.classList.toggle("is-demo", !snapshot.isLive);
-    elements.headerStatus.textContent = "已发布快照";
+    elements.sourceCadence.textContent = "每周一 08:15"; elements.sourceSignal.classList.toggle("is-demo", !snapshot.isLive);
+    elements.headerStatus.textContent = eventMarketNotCollected ? "历史快照 · 未采集行情" : "已发布快照";
     elements.headerTime.textContent = formatTime(snapshot.generatedAt);
     elements.headerTime.dateTime = snapshot.generatedAt;
   }
@@ -143,6 +147,11 @@
     const heading = createElement("div", "market-preview-heading");
     heading.append(createElement("strong", null, "事件 × 市场反应"));
     if (!impact) {
+      if (state.data?.eventMarketMode === "not-collected") {
+        heading.append(createElement("span", "market-status insufficient", "当期未采集"));
+        panel.append(heading, createElement("p", "market-preview-empty insufficient", "该历史版本生成时尚未采集事件小时行情，因此不补画价格曲线。"));
+        return panel;
+      }
       heading.append(createElement("span", "market-status neutral", "未建立可信映射"));
       panel.append(heading, createElement("p", "market-preview-empty", "本期动态没有可精确归属到该主题的币价事件，不补画无关行情。"));
       return panel;
