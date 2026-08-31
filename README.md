@@ -82,7 +82,7 @@ npm run market:publish:check
 - 可以提交源代码、演示 JSON、人物插画、测试、部署模板和 `.env.example`。
 - 不要提交 `.env`、真实 API Key、X Token、服务器地址与登录信息、SSH 私钥、日志或本地增量状态文件。
 - `.gitignore` 已覆盖常见环境文件、证书、私钥、日志，以及 `data/social-input/*-state.json`。
-- `.github/workflows/social-radar-snapshot.yml` 每周一北京时间 08:00 运行，也保留手动验收入口。手动运行默认复用最近已采集动态并跳过 X/Trump 请求，适合生成失败后低成本重试；取消勾选 `reuse_social_input` 才会重新采集。定时运行始终采集最新动态。工作流通过 Repository Secrets 读取 X、DeepSeek 和可选的 CoinGecko Demo Key，并用路径白名单发布根目录和 `static-site/` 两份公开快照；网页前端和提交内容都不会包含密钥。
+- `.github/workflows/social-radar-snapshot.yml` 每周一北京时间 08:15 运行，也保留手动验收入口。手动运行默认复用最近已采集动态并跳过 X/Trump 请求，适合生成失败后低成本重试；取消勾选 `reuse_social_input` 才会重新采集。定时运行始终采集最新动态。工作流通过 Repository Secrets 读取 X、DeepSeek 和可选的 CoinGecko Demo Key，并用路径白名单发布根目录和 `static-site/` 两份公开快照；网页前端和提交内容都不会包含密钥。
 - `.github/workflows/cross-market-snapshot.yml` 在北京时间周二至周六 08:30 运行。真实运行只读取 Repository Secrets 中的 `EODHD_API_TOKEN` 与现有 `COINGECKO_API_KEY`；手动勾选演示模式只做校验、不覆盖线上真实快照。工作流默认受 `EODHD_PUBLIC_DISPLAY_APPROVED` Repository Variable 保护，只有确认公开展示授权并将其设为 `true` 后才生成和发布真实行情。发布器只允许更新 `data/cross-market/latest.json` 及其 `static-site/` 镜像。
 - 上线或对外商用前需按数据供应商条款确认历史行情的展示与再分发授权；公开快照刻意不保存供应商原始开盘价、收盘价或响应体。
 - `.openai/hosting.json` 只包含 Sites 项目标识和逻辑绑定，不包含访问凭证。

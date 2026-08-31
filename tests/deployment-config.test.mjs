@@ -79,7 +79,7 @@ test("GitHub 上传候选文件不包含真实凭证且本地状态被忽略", a
 test("GitHub Actions 每周一生成快照且只通过 Secrets 注入密钥", async () => {
   const workflow = await readFile(path.join(root, ".github/workflows/social-radar-snapshot.yml"), "utf8");
   const config = JSON.parse(await readFile(path.join(root, "social-radar.config.json"), "utf8"));
-  assert.match(workflow, /cron:\s*["']0 0 \* \* 1["']/);
+  assert.match(workflow, /cron:\s*["']15 0 \* \* 1["']/);
   assert.match(workflow, /DEEPSEEK_API_KEY:\s*\$\{\{\s*secrets\.DEEPSEEK_API_KEY\s*\}\}/);
   assert.match(workflow, /X_BEARER_TOKEN:\s*\$\{\{\s*secrets\.X_BEARER_TOKEN\s*\}\}/);
   assert.match(workflow, /COINGECKO_API_KEY:\s*\$\{\{\s*secrets\.COINGECKO_API_KEY\s*\}\}/);
