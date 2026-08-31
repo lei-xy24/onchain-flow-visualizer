@@ -27,7 +27,7 @@
       state.context.snapshot = state.snapshot.snapshotId;
       state.story = prepareStory(state.theme, state.figure, state.snapshot);
       elements.storyHeaderContext.textContent = `${state.figure.nameZh} · ${state.theme.name}`;
-      elements.storyHeaderStatus.textContent = "已发布快照";
+      elements.storyHeaderStatus.textContent = state.snapshot.eventMarketMode === "not-collected" ? "当期未采集事件行情" : "已发布快照";
       elements.storyHeaderTime.textContent = formatTime(state.snapshot.generatedAt);
       elements.storyHeaderTime.dateTime = state.snapshot.generatedAt;
       window.SocialRadarSnapshots.populateVersionSelect(elements.snapshotVersion, state.index, state.snapshot.snapshotId);
@@ -54,7 +54,8 @@
     elements.storyTitle.textContent = state.story.headline; elements.storyLead.textContent = state.story.lead;
     elements.interestScore.textContent = `${state.theme.score} 关注度`;
     const usesMarketData = state.story.dataMode === "market";
-    elements.dataMode.textContent = hasRelatedMarket ? "主题证据 × 相关事件小时行情" : usesMarketData ? state.snapshot.modeLabel : "DeepSeek 定时快照 · 公开动态证据分析";
+    const dataMode = hasRelatedMarket ? "主题证据 × 相关事件小时行情" : usesMarketData ? state.snapshot.modeLabel : "DeepSeek 定时快照 · 公开动态证据分析";
+    elements.dataMode.textContent = state.snapshot.eventMarketMode === "not-collected" ? `${dataMode} · 当期未采集事件行情` : dataMode;
     elements.trendKicker.textContent = hasRelatedMarket ? "Event price reaction" : usesMarketData ? "Market trend" : "Discussion trend";
     elements.rankingKicker.textContent = usesEventMarket ? "Historical event comparison" : usesMarketData ? "Market landscape" : "Topic priorities";
     elements.trendModeLabel.textContent = hasRelatedMarket ? "T-24h → T+72h" : usesMarketData ? (state.snapshot.marketMode === "live-api" ? "直接相关市场数据" : "主题市场快照") : "公开动态时间分布";

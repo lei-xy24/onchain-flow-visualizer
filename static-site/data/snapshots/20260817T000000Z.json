@@ -2295,5 +2295,7 @@
       ]
     }
   ],
-  "digest": "b6ea6a22f937ebf5"
+  "digest": "cf858e843b4eb471",
+  "eventMarketMode": "not-collected",
+  "eventMarketNotice": "当期未采集事件行情"
 }

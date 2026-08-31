@@ -15,7 +15,7 @@ async function loadStore() {
   return context.window.SocialRadarSnapshots;
 }
 
-test("旧版独立行情主题按 sourceId 精确迁回真实主题", async () => {
+test("离线迁移后的历史快照不再依赖运行时修复", async () => {
   const [store, raw] = await Promise.all([
     loadStore(),
     readFile(path.join(root, "data/snapshots/20260824T000000Z.json"), "utf8").then(JSON.parse),
@@ -25,10 +25,11 @@ test("旧版独立行情主题按 sourceId 精确迁回真实主题", async () =
   const cz = snapshot.figures.find((figure) => figure.id === "changpeng-zhao");
   assert.ok(trump.themes.every((theme) => theme.topicType !== "market_impact_events"));
   assert.ok(cz.themes.every((theme) => theme.topicType !== "market_impact_events"));
-  assert.equal(trump.themes.find((theme) => theme.topicType === "iran_pressure_campaign").marketImpact.reactions.length, 2);
+  assert.equal(trump.themes.find((theme) => theme.topicType === "iran_pressure_campaign").marketImpact.reactions.length, 5);
   assert.equal(cz.themes.find((theme) => theme.topicType === "tokenization_advocacy").marketImpact.reactions.length, 3);
   assert.equal(trump.themes.find((theme) => theme.topicType === "midterm_endorsements").marketImpact, undefined);
-  assert.equal(raw.figures.find((figure) => figure.id === "donald-trump").themes.some((theme) => theme.topicType === "market_impact_events"), true);
+  assert.ok(raw.figures.every((figure) => figure.themes.every((theme) => theme.topicType !== "market_impact_events")));
+  assert.deepEqual(snapshot, raw, "已迁移快照再次归一化必须保持幂等");
 });
 
 test("新版主题行情结构归一化时保持幂等", async () => {
