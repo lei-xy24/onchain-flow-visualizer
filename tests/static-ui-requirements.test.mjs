@@ -26,6 +26,7 @@ const mirroredFiles = [
   "event-explorer.js",
   "global-markets.css",
   "global-markets.js",
+  "market-insights.js",
   "hot-topic.css",
   "hot-topic.js",
   "login.html",
@@ -78,14 +79,14 @@ test("全球市场联动入口紧跟人物兴趣雷达并复用同尺寸卡片�
 
   assert.ok(radarIndex >= 0, "首页缺少人物兴趣雷达卡片");
   assert.ok(marketIndex > radarIndex, "全球市场联动应排在人物兴趣雷达之后");
-  assert.ok(chainIndex > marketIndex, "全球市场联动应位于后续链上概览模块之前");
+  assert.ok(chainIndex < radarIndex, "多链运行状态应归入第一组链上运行态势");
   assert.match(
     index.slice(radarIndex - 120, marketIndex),
     /<section class="hot-topic-card section-gap"/,
     "人物兴趣雷达应使用 hot-topic-card 骨架",
   );
   assert.match(
-    index.slice(marketIndex - 120, chainIndex),
+    index.slice(marketIndex - 120),
     /<section class="hot-topic-card cross-market-card section-gap"/,
     "全球市场联动应复用 hot-topic-card 骨架",
   );

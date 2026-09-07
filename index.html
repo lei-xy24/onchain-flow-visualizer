@@ -169,14 +169,19 @@
         margin-top: 20px;
       }
 
+      .overview-chapter { margin-top: 32px; }
+      .chapter-heading { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+      .chapter-heading > span { display: grid; place-items: center; flex: 0 0 40px; height: 40px; border: 1px solid #cbdada; border-radius: 10px; color: var(--teal-dark); background: #e8f0f0; font: 700 0.9rem ui-monospace, monospace; }
+      .chapter-heading h2 { margin: 0; font-size: 1.15rem; }
+      .chapter-heading p { margin: 4px 0 0; color: var(--muted); font-size: 0.875rem; line-height: 1.6; }
+      .overview-chapter .metric-strip { margin-top: 0; }
+
       .hot-topic-card {
-        background:
-          radial-gradient(circle at 78% 22%, rgba(15, 139, 141, 0.13), transparent 34%),
-          #111b1f;
-        border: 1px solid #253438;
+        background: #e9eeef;
+        border: 1px solid #d2dddf;
         border-radius: 14px;
-        box-shadow: 0 22px 64px rgba(20, 32, 36, 0.18);
-        color: #ffffff;
+        box-shadow: 0 8px 24px rgba(20, 32, 36, 0.045);
+        color: var(--foreground);
         display: grid;
         gap: 24px;
         grid-template-columns: 132px minmax(0, 1fr) 360px;
@@ -187,20 +192,11 @@
       }
 
       .hot-topic-card::after {
-        border: 1px solid rgba(113, 226, 215, 0.15);
-        border-radius: 50%;
-        content: "";
-        height: 260px;
-        position: absolute;
-        right: -80px;
-        top: -138px;
-        width: 260px;
+        content: none;
       }
 
       .cross-market-card {
-        background:
-          radial-gradient(circle at 82% 18%, rgba(96, 126, 233, 0.18), transparent 34%),
-          linear-gradient(125deg, #111b1f, #101d25);
+        background: #e9edf2;
       }
 
       .cross-market-card::after {
@@ -216,6 +212,7 @@
       }
 
       .cross-market-visual span {
+        color: #ffffff;
         align-items: center;
         border: 1px solid rgba(255, 255, 255, 0.12);
         border-radius: 10px;
@@ -228,15 +225,16 @@
       }
 
       .cross-market-visual span small {
-        color: rgba(255, 255, 255, 0.58);
+        color: rgba(255, 255, 255, 0.85);
         display: block;
-        font-size: 0.52rem;
+        font-size: 0.625rem;
         font-weight: 700;
         letter-spacing: 0.06em;
         line-height: 1.2;
         text-align: center;
         text-transform: uppercase;
         width: 100%;
+        white-space: nowrap;
       }
 
       .cross-market-visual span:nth-child(1) { background: linear-gradient(145deg, #5f2027, #c8515c); }
@@ -244,9 +242,9 @@
       .cross-market-visual span:nth-child(3) { background: linear-gradient(145deg, #124c41, #28a77d); }
       .cross-market-visual span:nth-child(4) { background: linear-gradient(145deg, #754712, #e39b35); }
 
-      .cross-market-card .hot-topic-kicker { color: #91a9ff; }
-      .cross-market-card .hot-topic-action a { color: #ffffff; background: #5877df; }
-      .cross-market-card .hot-topic-action a:hover { background: #7893ed; }
+      .cross-market-card .hot-topic-kicker { color: #405b9b; }
+      .cross-market-card .hot-topic-action a { color: #ffffff; background: #4565c4; }
+      .cross-market-card .hot-topic-action a:hover { background: #354f9d; }
 
       .hot-topic-people {
         display: grid;
@@ -291,7 +289,7 @@
       }
 
       .hot-topic-kicker {
-        color: #71e2d7;
+        color: var(--teal-dark);
         font-size: 0.72rem;
         font-weight: 800;
         letter-spacing: 0.08em;
@@ -305,8 +303,8 @@
       }
 
       .hot-topic-copy > p:not(.hot-topic-kicker) {
-        color: #b7c5c8;
-        font-size: 0.88rem;
+        color: #526569;
+        font-size: 1rem;
         line-height: 1.65;
         margin: 10px 0 0;
         max-width: 620px;
@@ -320,11 +318,11 @@
       }
 
       .hot-topic-tags span {
-        background: rgba(255, 255, 255, 0.07);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(255, 255, 255, 0.7);
+        border: 1px solid #cfdadb;
         border-radius: 999px;
-        color: #dce5e7;
-        font-size: 0.72rem;
+        color: #476065;
+        font-size: 0.875rem;
         padding: 6px 9px;
       }
 
@@ -338,10 +336,10 @@
       }
 
       .hot-topic-action a {
-        background: #71e2d7;
+        background: #087f79;
         border-radius: 8px;
-        color: #102023;
-        font-size: 0.88rem;
+        color: #ffffff;
+        font-size: 1rem;
         font-weight: 850;
         padding: 13px 16px;
         text-align: center;
@@ -349,12 +347,12 @@
       }
 
       .hot-topic-action a:hover {
-        background: #a0f0e8;
+        background: #075f5b;
       }
 
       .hot-topic-action small {
-        color: #91a1a5;
-        font-size: 0.68rem;
+        color: #617477;
+        font-size: 0.875rem;
         line-height: 1.45;
         text-align: center;
       }
@@ -583,7 +581,20 @@
         <p class="data-note" id="data-note" aria-live="polite">正在加载数据。</p>
       </section>
 
-      <section class="metric-strip" id="metric-strip" aria-label="核心指标"></section>
+      <section class="overview-chapter" aria-labelledby="operations-title">
+        <header class="chapter-heading"><span aria-hidden="true">01</span><div><h2 id="operations-title">链上运行态势</h2><p>先看网络是否繁忙、交易成本如何。</p></div></header>
+        <section class="metric-strip" id="metric-strip" aria-label="核心指标"></section>
+        <section class="panel section-gap" aria-labelledby="chain-title">
+          <h2 id="chain-title">多链运行状态</h2>
+          <table>
+            <thead><tr><th>链</th><th class="num">最新区块</th><th class="num">平均出块时间</th><th class="num">最新区块燃料占用</th></tr></thead>
+            <tbody id="chain-rows"></tbody>
+          </table>
+        </section>
+      </section>
+
+      <section class="overview-chapter" aria-labelledby="intelligence-title">
+      <header class="chapter-heading"><span aria-hidden="true">02</span><div><h2 id="intelligence-title">人物与市场洞察</h2><p>再看热点事件与市场表现，寻找值得追踪的线索。</p></div></header>
 
       <section class="hot-topic-card section-gap" aria-labelledby="hot-topic-title">
         <div class="hot-topic-people" aria-label="已配置观察人物：特朗普、马斯克、Vitalik 和赵长鹏">
@@ -615,7 +626,7 @@
         <div class="cross-market-visual" aria-label="覆盖市场：A 股、欧洲股市、美股和加密货币">
           <span>A 股<small>China</small></span>
           <span>欧股<small>Europe</small></span>
-          <span>美股<small>United States</small></span>
+          <span>美股<small>USA</small></span>
           <span>加密<small>Crypto</small></span>
         </div>
         <div class="hot-topic-copy">
@@ -637,21 +648,10 @@
         </div>
       </section>
 
-      <section class="panel section-gap" aria-labelledby="chain-title">
-        <h2 id="chain-title">多链运行状态</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>链</th>
-              <th class="num">最新区块</th>
-              <th class="num">平均出块时间</th>
-              <th class="num">最新区块燃料占用</th>
-            </tr>
-          </thead>
-          <tbody id="chain-rows"></tbody>
-        </table>
       </section>
 
+      <section class="overview-chapter" aria-labelledby="capital-title">
+      <header class="chapter-heading"><span aria-hidden="true">03</span><div><h2 id="capital-title">资金流向与协议活动</h2><p>最后落到大额转账与协议交互，点击地址继续追踪。</p></div></header>
       <section class="split section-gap">
         <div class="panel" aria-labelledby="transfer-title">
           <h2 id="transfer-title">稳定币大额转账（以太坊）</h2>
@@ -661,6 +661,7 @@
           <h2 id="protocol-title">重点协议活动（以太坊）</h2>
           <div class="protocol-list" id="protocol-list"></div>
         </div>
+      </section>
       </section>
     </main>
 

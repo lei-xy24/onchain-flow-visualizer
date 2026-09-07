@@ -1,3 +1,5 @@
+import { prepareBenchmark, buildBenchmarkInsights } from "./market-insights.js?v=20260908-insights";
+
 (function () {
   "use strict";
 
@@ -132,10 +134,12 @@
   function renderBenchmark() {
     const svg = elements.benchmarkChart;
     const assets = state.snapshot.assets.filter((asset) => state.selectedAssets.has(asset.id));
-    const range = resolveRange(assets);
-    svg.replaceChildren(svgTitle("跨市场归一化走势图"), svgDescription(`展示 ${range.from} 至 ${range.to} 的基准 100 走势。`));
-    const plot = { left: 58, top: 28, right: 990, bottom: 375 };
-    const normalized = assets.map((asset) => ({ asset, points: normalizeRange(asset.series, range.from, range.to) })).filter((item) => item.points.length > 1);
+    const prepared = prepareBenchmark(assets, resolveRange(assets));
+    const range = prepared.range;
+    svg.replaceChildren(svgTitle("跨市场归一化走势图", "benchmark-chart-title"), svgDescription(`展示 ${range.from} 至 ${range.to} 的基准 100 走势。`, "benchmark-chart-desc"));
+    const plot = { left: 64, top: 28, right: 960, bottom: 375 };
+    const normalized = prepared.series;
+    renderBenchmarkReadout(prepared);
     const allValues = normalized.flatMap((item) => item.points.map((point) => point.value));
     if (!allValues.length) return renderEmptyChart(svg, "当前区间没有足够数据");
     let min = Math.min(...allValues);
@@ -156,11 +160,23 @@
       const path = svgEl("path", { d: linePath(points, x, y), class: `chart-line${state.focusRegion && state.focusRegion !== asset.region ? " is-muted" : ""}`, stroke: asset.color });
       path.appendChild(svgEl("title", {}, `${asset.name}：区间 ${formatSigned(points.at(-1).value - 100)}`));
       svg.appendChild(path);
-      const last = points.at(-1);
-      svg.append(svgText(Math.min(plot.right + 7, 1_050), y(last.value) + 3, asset.shortName, "chart-end-label", "start", { fill: asset.color }));
     });
+    appendEndLabels(svg, normalized, plot, y);
+  }
+
+  function renderBenchmarkReadout(prepared) {
+    const { cards, notices } = buildBenchmarkInsights(prepared);
+    const heading = create("div", "readout-heading");
     const story = state.snapshot.stories.find((item) => item.id === state.activeStoryId);
-    elements.chartReadout.textContent = story ? `正在查看“${story.label}”区间：${formatDate(story.from)} 至 ${formatDate(story.to)}。` : `${formatDate(range.from)} 至 ${formatDate(range.to)}；每条曲线均以区间第一个有效值为 100。`;
+    heading.append(create("strong", null, story ? `${story.label} · 这段走势告诉我们` : "这段走势告诉我们"));
+    if (prepared.series.length) heading.append(create("span", null, `${prepared.series.length} 项资产 · 区间收盘表现${state.snapshot.isLive ? "" : " · 演示数据"}`));
+    const grid = create("div", "insight-grid");
+    for (const card of cards) {
+      const article = create("article", "insight-card");
+      article.append(create("small", null, card.label), create("h3", null, card.title), create("p", null, card.text));
+      grid.append(article);
+    }
+    elements.chartReadout.replaceChildren(heading, grid, ...notices.map((message) => create("p", "insight-notice", message)));
   }
 
   function renderCorrelationMatrix() {
@@ -227,10 +243,10 @@
     const range = resolveRange([left, right]);
     const leftPoints = normalizeRange(left.series, range.from, range.to);
     const rightPoints = normalizeRange(right.series, range.from, range.to);
-    svg.replaceChildren(svgTitle(`${left.name}与${right.name}归一化走势`), svgDescription(`展示 ${range.from} 至 ${range.to} 的两资产配对走势。`));
+    svg.replaceChildren(svgTitle(`${left.name}与${right.name}归一化走势`, "pair-chart-title"), svgDescription(`展示 ${range.from} 至 ${range.to} 的两资产配对走势。`, "pair-chart-desc"));
     const all = [...leftPoints, ...rightPoints];
-    if (!all.length) return renderEmptyChart(svg, "当前配对没有足够数据");
-    const plot = { left: 45, top: 20, right: 650, bottom: 210 };
+    if (leftPoints.length < 2 || rightPoints.length < 2) return renderEmptyChart(svg, "当前配对没有足够数据");
+    const plot = { left: 45, top: 20, right: 600, bottom: 210 };
     let min = Math.min(...all.map((point) => point.value));
     let max = Math.max(...all.map((point) => point.value));
     const padding = Math.max((max - min) * 0.12, 1.5);
@@ -240,8 +256,21 @@
     [0, 0.5, 1].forEach((ratio) => svg.append(svgEl("line", { x1: plot.left, y1: plot.top + ratio * (plot.bottom - plot.top), x2: plot.right, y2: plot.top + ratio * (plot.bottom - plot.top), class: "chart-grid" })));
     [[left, leftPoints], [right, rightPoints]].forEach(([asset, points]) => {
       svg.append(svgEl("path", { d: linePath(points, x, y), class: "chart-line", stroke: asset.color }));
-      svg.append(svgText(plot.right + 8, y(points.at(-1).value) + 3, asset.shortName, "chart-end-label", "start", { fill: asset.color }));
     });
+    appendEndLabels(svg, [{ asset: left, points: leftPoints }, { asset: right, points: rightPoints }], plot, y);
+  }
+
+  // Separate nearby end labels after increasing type size, without moving data.
+  function appendEndLabels(svg, series, plot, y) {
+    const labels = series.map(({ asset, points }) => ({ asset, target: y(points.at(-1).value) })).sort((a, b) => a.target - b.target);
+    labels.forEach((label, index) => { label.position = Math.max(label.target, index ? labels[index - 1].position + 24 : plot.top + 12); });
+    for (let index = labels.length - 1; index >= 0; index--) {
+      labels[index].position = Math.min(labels[index].position, index === labels.length - 1 ? plot.bottom : labels[index + 1].position - 24);
+    }
+    for (const { asset, target, position } of labels) {
+      svg.append(svgEl("line", { x1: plot.right + 2, y1: target, x2: plot.right + 14, y2: position, stroke: asset.color, "stroke-width": 1 }));
+      svg.append(svgText(plot.right + 18, position + 4, asset.shortName, "chart-end-label", "start", { fill: asset.color }));
+    }
   }
 
   function renderLagProfile(leadLag) {
@@ -313,7 +342,7 @@
 
   function resolveRange(assets) {
     if (state.customRange) return state.customRange;
-    const to = assets.flatMap((asset) => asset.series.map((point) => point.date)).sort().at(-1);
+    const to = assets.flatMap((asset) => asset.series.map((point) => point.date)).sort().at(-1) || state.snapshot.dataThrough;
     const fromDate = new Date(`${to}T00:00:00Z`);
     fromDate.setUTCDate(fromDate.getUTCDate() - state.rangeDays);
     return { from: fromDate.toISOString().slice(0, 10), to };
@@ -378,8 +407,8 @@
     return element;
   }
 
-  function svgTitle(text) { return svgEl("title", {}, text); }
-  function svgDescription(text) { return svgEl("desc", {}, text); }
+  function svgTitle(text, id) { return svgEl("title", id ? { id } : {}, text); }
+  function svgDescription(text, id) { return svgEl("desc", id ? { id } : {}, text); }
   function svgText(x, y, text, className, anchor = "start", extra = {}) { return svgEl("text", { x, y, class: className, "text-anchor": anchor, ...extra }, text); }
 
   function midpointDate(from, to) {
