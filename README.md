@@ -17,6 +17,7 @@
 - `static-site/currency-rates.js`：链上分析、实时交易、用户画像和地址关联共用的实时美元汇率模块。
 - `scripts/`、`data/`：人物兴趣雷达的采集逻辑，以及全球市场每日快照的采集、派生计算和安全发布逻辑。
 - `static-site/global-markets.html`、`global-markets.css`、`global-markets.js`：全球市场联动故事页。
+- `static-site/market-insights.js`：走势图下方的即时结论。纯前端读取现有行情快照，随资产/区间/历史故事选择重新计算区间收益、收益差和最大回撤，不调用 LLM 或行情 API。不同市场按共同交易日的首尾对齐，与图线使用同一组数据；数据不足时提示，不强行生成排名。
 - `.github/workflows/cross-market-snapshot.yml`：独立的全球市场收盘快照任务，不读取 X 或 DeepSeek Secret。
 - `deploy/`：人物雷达可选的自托管 systemd 模板；当前线上定时任务使用 GitHub Actions。
 - `app/`、`worker/`：保留的 Sites/Cloudflare 构建入口，用于另一套地址追踪原型和构建验证，不是链上业务后端。

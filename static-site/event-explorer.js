@@ -123,6 +123,9 @@
     const reaction = hasMarketReactions() ? selectedReaction() : null;
     const trend = reaction ? { label: `${reaction.asset.symbol} · ${reaction.eventTitle}`, unit: "%", points: reaction.points.map((point) => ({ ...point, label: relativeHour(point.hours), value: point.change })) } : state.story.trend;
     elements.trendTitle.textContent = trend.label; const svg = elements.trendChart; svg.replaceChildren();
+    const chartTitle = svgEl("title", { id: "trend-chart-title" }); chartTitle.textContent = trend.label;
+    const chartDescription = svgEl("desc", { id: "trend-chart-desc" }); chartDescription.textContent = reaction ? "展示所选事件前后的价格变化曲线。" : "展示主题快照中保存的核心指标变化曲线。";
+    svg.append(chartTitle, chartDescription);
     const points = trend.points.map((point) => ({ ...point, value: Number(point.value), hours: Number(point.hours) })).filter((point) => Number.isFinite(point.value));
     if (points.length < 2) { const message = svgEl("text", { class: "point-label", x: 450, y: 170, "text-anchor": "middle" }); message.textContent = "当前快照缺少可绘制的趋势数据"; svg.appendChild(message); return; }
     const values = points.map((p) => p.value); const rawMin = Math.min(...values, reaction ? 0 : Infinity); const rawMax = Math.max(...values, reaction ? 0 : -Infinity); const padding = Math.max((rawMax - rawMin) * 0.12, Math.abs(rawMax) * 0.04, 1); const min = rawMin - padding; const max = rawMax + padding;

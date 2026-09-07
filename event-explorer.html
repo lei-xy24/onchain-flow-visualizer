@@ -10,10 +10,10 @@
     <title>主题数据故事 · 区块链安全监控平台</title>
     <meta name="description" content="从人物公开动态出发，围绕真实关注主题分析信号、趋势、重点和后续观察" />
     <link rel="stylesheet" href="./auth.css?v=20260830-back-nav" />
-    <link rel="stylesheet" href="./event-explorer.css?v=20260830-toolbar-boundary" />
+    <link rel="stylesheet" href="./event-explorer.css?v=20260908-readable" />
     <script src="./auth.js?v=20260830-ui-fix"></script>
     <script src="./snapshot-store.js?v=20260830-theme-market" defer></script>
-    <script src="./event-explorer.js?v=20260831-history-backfill" defer></script>
+    <script src="./event-explorer.js?v=20260908-readable" defer></script>
   </head>
   <body>
     <header class="story-header">
@@ -64,7 +64,7 @@
               <div class="event-timeline" id="event-timeline"></div>
               <div class="event-summary" id="event-summary"></div>
             </section>
-            <svg id="trend-chart" viewBox="0 0 880 340" role="img" aria-labelledby="trend-chart-title trend-chart-desc"><title id="trend-chart-title">主题趋势图</title><desc id="trend-chart-desc">展示主题快照中保存的核心指标变化曲线。</desc></svg>
+            <div class="trend-scroll" tabindex="0" role="region" aria-label="主题趋势图，可横向滚动"><svg id="trend-chart" viewBox="0 0 880 340" role="img" aria-labelledby="trend-chart-title trend-chart-desc"><title id="trend-chart-title">主题趋势图</title><desc id="trend-chart-desc">展示主题快照中保存的核心指标变化曲线。</desc></svg></div>
           </div>
 
           <div class="visual-card ranking-view" id="ranking-view" hidden>

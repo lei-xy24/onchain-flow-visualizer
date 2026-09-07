@@ -6,9 +6,9 @@
     <title>全球市场联动 · 区块链安全监控平台</title>
     <meta name="description" content="比较 A 股、欧洲股市、美股与加密货币的归一化走势、滚动相关和领先滞后关系" />
     <link rel="stylesheet" href="./auth.css?v=20260830-back-nav" />
-    <link rel="stylesheet" href="./global-markets.css?v=20260830-ui-polish" />
+    <link rel="stylesheet" href="./global-markets.css?v=20260908-light-insights" />
     <script src="./auth.js?v=20260830-ui-fix"></script>
-    <script src="./global-markets.js?v=20260830-ui-polish" defer></script>
+    <script src="./global-markets.js?v=20260908-light-insights" type="module"></script>
   </head>
   <body>
     <header class="market-header">
@@ -55,7 +55,7 @@
 
       <section class="market-panel benchmark-panel" aria-labelledby="benchmark-title">
         <header class="panel-heading">
-          <div><p class="market-eyebrow">Same starting line</p><h2 id="benchmark-title">起点归一为 100，看谁走得更快</h2></div>
+          <div><p class="market-eyebrow">Same starting line</p><h2 id="benchmark-title">起点归一为 100</h2></div>
           <div class="segmented-control" id="range-control" aria-label="选择走势图区间">
             <button type="button" data-range="30">1M</button>
             <button type="button" data-range="90" aria-pressed="true">3M</button>
@@ -64,13 +64,13 @@
           </div>
         </header>
         <div class="asset-switches" id="asset-switches" aria-label="选择走势图资产"></div>
-        <div class="chart-scroll">
+        <div class="chart-scroll" tabindex="0" role="region" aria-label="市场走势图，可横向滚动">
           <svg class="benchmark-chart" id="benchmark-chart" viewBox="0 0 1080 430" role="img" aria-labelledby="benchmark-chart-title benchmark-chart-desc">
             <title id="benchmark-chart-title">跨市场归一化走势图</title>
             <desc id="benchmark-chart-desc">将所选区间第一个有效收盘值设为 100，对比八类资产的相对表现。</desc>
           </svg>
         </div>
-        <p class="chart-readout" id="chart-readout" aria-live="polite">选择市场或历史故事后，这里会说明当前观察区间。</p>
+        <section class="chart-readout" id="chart-readout" aria-live="polite" aria-label="当前区间的走势结论"></section>
       </section>
 
       <section class="relationship-layout" aria-label="跨市场关联关系">
@@ -92,7 +92,7 @@
             <span id="pair-sample">—</span>
           </header>
           <div class="pair-metrics" id="pair-metrics"></div>
-          <div class="pair-chart-scroll">
+          <div class="pair-chart-scroll" tabindex="0" role="region" aria-label="配对走势图，可横向滚动">
             <svg class="pair-chart" id="pair-chart" viewBox="0 0 720 260" role="img" aria-labelledby="pair-chart-title pair-chart-desc">
               <title id="pair-chart-title">所选资产配对走势</title>
               <desc id="pair-chart-desc">展示所选两类资产在当前区间内的归一化相对走势。</desc>
