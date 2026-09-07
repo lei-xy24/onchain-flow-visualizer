@@ -1,0 +1,1017 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-auth-required="true" data-auth-show-logout="false">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>波卡无风险自私挖矿演示</title>
+<style>
+:root{
+  --bg:#f3f6f7;
+  --bg2:#edf2f3;
+  --card:#ffffff;
+  --card2:#f0f5f5;
+  --border:rgba(100,125,140,.1);
+  --border2:rgba(100,125,140,.2);
+  --accent:#4263d5;
+  --accent-b:#3556b0;
+  --green:#25845e;
+  --red:#c2463d;
+  --red-d:#dc2626;
+  --amber:#ae730e;
+  --purple:#7556c8;
+  --pink:#b33f78;
+  --txt:#142024;
+  --txt2:#52666d;
+  --txt3:#5c6e76;
+  --anim-scale:1;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans SC','Inter',sans-serif;background:var(--bg);color:var(--txt);overflow-x:hidden;font-size:16px}
+
+.demo-hero{
+  padding:1.2rem 2.5rem 1rem;
+  border-bottom:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.demo-hero::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(66,99,213,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(66,99,213,.025) 1px,transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,black,transparent);
+}
+.demo-hero-inner{position:relative;max-width:calc(1800px - 5rem);margin:0 auto}
+.demo-hero h1{font-size:clamp(1.85rem,3.2vw,2.75rem);font-weight:800;line-height:1.18;margin-bottom:.75rem}
+.demo-hero h1 .hl{
+  background:linear-gradient(135deg,var(--red) 0%,var(--amber) 50%,var(--accent-b) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.demo-hero-body{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:1.2rem;
+  align-items:start;
+}
+.demo-hero-desc{
+  grid-column:1 / -1;
+  font-size:1rem;color:var(--txt);max-width:none;line-height:1.58;font-weight:400;
+}
+.demo-hero-desc strong{color:#075d5b;font-weight:800}
+
+.demo-main{padding:1rem 2.5rem 4rem;max-width:1800px;margin:0 auto}
+
+.controls{
+  display:flex;gap:.6rem;margin-bottom:0.75rem;flex-wrap:wrap;align-items:center;
+  padding:.9rem 1rem;background:var(--card);border:1px solid var(--border);border-radius:10px;
+}
+.ctrl-btn{
+  padding:.5rem 1.1rem;font-size:.92rem;font-weight:600;
+  border:1px solid var(--border2);border-radius:6px;background:var(--card2);
+  color:var(--txt2);cursor:pointer;transition:all .25s;
+  font-family:'Noto Sans SC',sans-serif;
+  display:inline-flex;align-items:center;gap:.35rem;
+}
+.ctrl-btn:hover{border-color:var(--accent);color:var(--accent-b);transform:translateY(-1px)}
+.ctrl-btn.primary{background:rgba(194,70,61,.12);border-color:rgba(194,70,61,.3);color:var(--red)}
+.ctrl-btn.primary:hover{background:rgba(194,70,61,.2);border-color:var(--red);color:var(--red)}
+.ctrl-btn.secondary{background:rgba(66,99,213,.1);border-color:rgba(66,99,213,.25);color:var(--accent-b)}
+.ctrl-divider{width:1px;height:22px;background:var(--border);margin:0 .3rem}
+.ctrl-speed{
+  display:flex;align-items:center;gap:.4rem;color:var(--txt3);font-size:.85rem;margin-left:auto;
+}
+.ctrl-speed select{
+  background:var(--card2);color:var(--txt);border:1px solid var(--border2);
+  padding:.3rem .6rem;border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:.85rem;cursor:pointer;
+}
+
+.chain-stage{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:1.1rem 1.2rem 1rem;margin-bottom:1.2rem;
+  position:relative;overflow:hidden;
+}
+.chain-stage-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:.7rem;flex-wrap:wrap;gap:.6rem;
+}
+.chain-stage-title{font-size:1.02rem;font-weight:600}
+.chain-status-panel{
+  min-width:240px;padding:.65rem .9rem;border-radius:10px;
+  background:rgba(66,99,213,.08);border:1px solid rgba(66,99,213,.24);
+  color:var(--accent);box-shadow:0 12px 32px rgba(15,23,42,.24);
+  transition:background .3s,border-color .3s,color .3s,box-shadow .3s;
+}
+.chain-status-main{font-size:.76rem;font-weight:600;line-height:1.45;color:var(--txt2)}
+.chain-status-height{
+  display:flex;align-items:baseline;justify-content:space-between;gap:.8rem;margin-bottom:.32rem;
+}
+.chain-status-label{font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;color:var(--txt)}
+.chain-status-value{font-family:'JetBrains Mono',monospace;font-size:1.65rem;font-weight:800;line-height:1;color:currentColor}
+.chain-status-panel.idle{background:rgba(92,110,118,.08);border-color:rgba(92,110,118,.3);color:var(--txt2)}
+.chain-status-panel.normal{
+  background:linear-gradient(135deg,rgba(37,132,94,.13),rgba(66,99,213,.1));
+  border-color:rgba(37,132,94,.3);color:var(--green);
+}
+.chain-status-panel.attacking{
+  background:rgba(194,70,61,.12);color:var(--red);border-color:rgba(194,70,61,.38);
+  box-shadow:0 14px 36px rgba(194,70,61,.12);
+}
+
+#mainCanvas{
+  width:100%;
+  display:block;
+  border-radius:8px;
+}
+
+.legend{
+  display:flex;gap:1rem;margin-top:.8rem;flex-wrap:wrap;padding-top:.7rem;
+  border-top:1px dashed var(--border);
+}
+.legend-item{
+  display:flex;align-items:center;gap:.35rem;font-size:.78rem;color:var(--txt3);
+}
+.legend-dot{width:14px;height:11px;border-radius:2px;flex-shrink:0}
+.legend-dot.p-h{background:rgba(66,99,213,.55);border:1px solid rgba(53,86,176,.95)}
+.legend-dot.s-h{background:rgba(66,99,213,.20);border:1px dashed rgba(53,86,176,.7)}
+.legend-dot.p-a{background:rgba(174,115,14,.55);border:1px solid rgba(155,101,12,.95)}
+.legend-dot.s-a{background:rgba(174,115,14,.20);border:1px dashed rgba(155,101,12,.7)}
+.legend-dot.virt{background:rgba(82,102,109,.18);border:1px dashed rgba(82,102,109,.7)}
+.legend-dot.priv{background:rgba(92,110,118,.45);border:1px dashed rgba(183,70,70,.9)}
+.legend-dot.disc{background:rgba(194,70,61,.18);border:1px solid rgba(194,70,61,.6)}
+
+.incentive-panel{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:1rem;display:flex;flex-direction:column;gap:.7rem;
+}
+.incentive-header{
+  display:flex;align-items:baseline;justify-content:space-between;gap:.6rem;flex-wrap:wrap;
+}
+.incentive-title{font-size:.95rem;font-weight:600}
+.incentive-sub{font-size:.74rem;color:var(--txt3);font-family:'JetBrains Mono',monospace}
+.incentive-canvas-wrap{
+  position:relative;background:rgba(255,255,255,.5);
+  border:1px solid rgba(100,125,140,.14);border-radius:8px;overflow:hidden;
+}
+#chartCanvas{width:100%;height:280px;display:block}
+
+.canvas-tooltip{
+  position:absolute;pointer-events:none;
+  background:var(--bg2);border:1px solid var(--border2);
+  padding:.4rem .6rem;border-radius:6px;font-size:.74rem;
+  font-family:'JetBrains Mono',monospace;color:var(--txt);
+  z-index:50;opacity:0;transition:opacity .15s;
+  box-shadow:0 4px 16px rgba(0,0,0,.4);
+  white-space:nowrap;
+}
+
+@media(max-width:1180px){.demo-hero-body{grid-template-columns:1fr}}
+@media(max-width:768px){
+  .demo-hero,.demo-main{padding-left:1.2rem;padding-right:1.2rem}
+  .controls{flex-direction:column;align-items:stretch}
+  .ctrl-speed{margin-left:0;justify-content:space-between}
+}
+</style>
+<link rel="stylesheet" href="./auth.css?v=20260907-security">
+<link rel="stylesheet" href="./security-demo.css?v=20260907-security">
+<script src="./auth.js?v=20260830-ui-fix"></script>
+</head>
+<body class="security-demo-page">
+<!-- security-shell-start -->
+<header class="security-demo-header">
+  <a class="page-back-link" href="./security.html#polkadot-selfish" aria-label="返回安全分析">返回</a>
+  <div class="security-demo-context"><strong>波卡链自私挖矿攻击</strong><span>区块链安全分析</span></div>
+  <span class="security-demo-network">Polkadot<span class="security-demo-dot" aria-hidden="true"></span></span>
+</header>
+<!-- security-shell-end -->
+
+<div class="demo-hero">
+  <div class="demo-hero-inner">
+    <h1>波卡<span class="hl">无风险自私挖矿攻击</span>演示</h1>
+    <div class="demo-hero-body">
+      <p class="demo-hero-desc">
+        <strong>关键发现：</strong>在波卡（市值前二十的区块链，超过七十亿美元）共识协议中提出首个混合可预测性模型下的无风险自私挖矿攻击。<br>
+        <strong>国际影响：</strong>拜占庭节点占比三分之一时可获得约百分之七的额外收益，攻击零损失风险，论文已被国际顶级会议接收。
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="demo-main">
+
+  <div class="controls">
+    <button class="ctrl-btn secondary" onclick="startNormal()" id="btn-normal">▶ 正常运行</button>
+    <button class="ctrl-btn primary" onclick="launchAttack()" id="btn-attack">发动扣留攻击</button>
+    <div class="ctrl-divider"></div>
+    <button class="ctrl-btn" onclick="stepForward()" id="btn-step">↦ 单步执行</button>
+    <button class="ctrl-btn" onclick="togglePause()" id="btn-pause">⏸ 暂停</button>
+    <button class="ctrl-btn" onclick="resetDemo()">↺ 重置</button>
+    <div class="ctrl-speed">
+      速度
+      <select id="speed-sel" onchange="updateSpeed(this.value)">
+        <option value="12000">0.5× 慢速</option>
+        <option value="6000" selected>1× 正常</option>
+        <option value="3000">2× 快速</option>
+        <option value="1500">4× 极速</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="chain-stage">
+    <div class="chain-stage-header">
+      <div>
+        <div class="chain-stage-title">波卡槽位时间线 · 拜占庭私链与诚实公链</div>
+      </div>
+      <div class="chain-status-panel idle" id="chain-status-panel">
+        <div class="chain-status-height">
+          <span class="chain-status-label">额外收益</span>
+          <strong class="chain-status-value" id="bonus-display">0.00%</strong>
+        </div>
+        <div class="chain-status-main" id="chain-status-main">待命，等待演示开始</div>
+      </div>
+    </div>
+    <canvas id="mainCanvas" width="1600" height="380"></canvas>
+    <div class="legend">
+      <div class="legend-item"><span class="legend-dot p-h"></span>诚实主块</div>
+      <div class="legend-item"><span class="legend-dot s-h"></span>诚实副块</div>
+      <div class="legend-item"><span class="legend-dot p-a"></span>拜占庭主块</div>
+      <div class="legend-item"><span class="legend-dot s-a"></span>拜占庭副块</div>
+      <div class="legend-item"><span class="legend-dot virt"></span>虚拟块</div>
+      <div class="legend-item"><span class="legend-dot priv"></span>扣留块</div>
+      <div class="legend-item"><span class="legend-dot disc"></span>已剪枝</div>
+    </div>
+  </div>
+
+  <div class="incentive-panel">
+    <div class="incentive-header">
+      <div class="incentive-title">拜占庭额外收益</div>
+      <div class="incentive-sub" id="chart-sub">尚未发动攻击</div>
+    </div>
+    <div class="incentive-canvas-wrap">
+      <canvas id="chartCanvas" width="1600" height="280"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<div class="canvas-tooltip" id="tooltip"></div>
+
+<script>
+// ============================================================
+// POLKADOT NPOS RISK-FREE SELFISH MINING VISUALIZATION
+// Paper: Risk-free Selfish Mining in Hybrid Predictability Model
+//        — A Case Study on Polkadot's NPoS (WWW 2026)
+// ============================================================
+
+const canvas = document.getElementById('mainCanvas');
+const ctx = canvas.getContext('2d');
+const tooltip = document.getElementById('tooltip');
+const chartCanvas = document.getElementById('chartCanvas');
+const chartCtx = chartCanvas.getContext('2d');
+
+let W = 1600, H = 380;
+let chartW = 1600, chartH = 280;
+const dpr = window.devicePixelRatio || 1;
+
+function setupCanvas(){
+  const rect = canvas.getBoundingClientRect();
+  W = rect.width;
+  H = rect.height;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  recomputeSlotW();
+}
+function setupChart(){
+  const rect = chartCanvas.getBoundingClientRect();
+  chartW = rect.width;
+  chartH = rect.height;
+  chartCanvas.width = chartW * dpr;
+  chartCanvas.height = chartH * dpr;
+  chartCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+// ============= Layout =============
+const SLOTS_VISIBLE = 14;
+const LEFT_PAD = 16;
+const RIGHT_PAD = 16;
+const BLOCK_H = 26;
+const PARAMS = {
+  c: 0.25,
+  fOverN: 0.33,
+  d: 5,
+};
+
+let SLOT_W = 80;
+function recomputeSlotW(){
+  const inner = W - LEFT_PAD - RIGHT_PAD;
+  SLOT_W = Math.max(40, Math.min(110, Math.floor(inner / SLOTS_VISIBLE)));
+}
+
+function slotIdxToX(slotIdx){
+  return LEFT_PAD + slotIdx * SLOT_W;
+}
+function trackY(track){
+  const top = 60;
+  if(track === 'priv') return top;
+  if(track === 'pub')  return top + BLOCK_H + 38;
+  return top;
+}
+
+// ============= State =============
+const STATE = {
+  mode: 'idle',
+  paused: false,
+  speed: 6000,
+  heartbeat: null,
+  slots: [],
+  cursor: 0,
+  totalSlotsProcessed: 0,
+  attack: null,
+  cumulativeBonus: 0,
+  attackCount: 0,
+  bonusHistory: [],
+  slideAnim: null,
+  releasePulse: null,
+};
+
+// ============= Slot generation =============
+let injectCountdown = 0;
+function genSlot(forceAdvPrimary){
+  let primary = null;
+  if(forceAdvPrimary){
+    primary = 'a';
+  } else if(Math.random() < PARAMS.c){
+    primary = (Math.random() < PARAMS.fOverN) ? 'a' : 'h';
+  }
+  const secondary = (Math.random() < PARAMS.fOverN) ? 'a' : 'h';
+  return {
+    primary,
+    secondary,
+    block: null,
+    privBlock: null,
+    virtual: false,
+    pruned: false,
+    locked: false,
+  };
+}
+
+function genSlotSmart(){
+  if(injectCountdown > 0){
+    injectCountdown--;
+    return genSlot(true);
+  }
+  // Occasionally inject a pair of consecutive byz primaries to demonstrate attack
+  if(STATE.mode === 'attack' && Math.random() < 0.12){
+    injectCountdown = 1;
+    return genSlot(true);
+  }
+  return genSlot(false);
+}
+
+function ensureWindowFilled(){
+  while(STATE.slots.length < SLOTS_VISIBLE + 2){
+    STATE.slots.push(genSlotSmart());
+  }
+}
+
+// ============= Drawing =============
+function roundRect(c, x, y, w, h, r){
+  r = Math.max(0, Math.min(r, w/2, h/2));
+  c.beginPath();
+  c.moveTo(x+r, y);
+  c.lineTo(x+w-r, y);
+  c.quadraticCurveTo(x+w, y, x+w, y+r);
+  c.lineTo(x+w, y+h-r);
+  c.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+  c.lineTo(x+r, y+h);
+  c.quadraticCurveTo(x, y+h, x, y+h-r);
+  c.lineTo(x, y+r);
+  c.quadraticCurveTo(x, y, x+r, y);
+  c.closePath();
+}
+
+const COLOR = {
+  'P-h': { fill:'rgba(66,99,213,.55)',  stroke:'rgba(53,86,176,.95)' },
+  'S-h': { fill:'rgba(66,99,213,.20)',  stroke:'rgba(53,86,176,.70)' },
+  'P-a': { fill:'rgba(174,115,14,.55)',  stroke:'rgba(155,101,12,.95)' },
+  'S-a': { fill:'rgba(174,115,14,.20)',  stroke:'rgba(155,101,12,.70)' },
+  'priv':{ fill:'rgba(92,110,118,.45)', stroke:'rgba(183,70,70,.85)' },
+  'virt':{ fill:'rgba(82,102,109,.15)', stroke:'rgba(82,102,109,.7)'  },
+  'disc':{ fill:'rgba(194,70,61,.18)', stroke:'rgba(194,70,61,.7)'  },
+};
+
+function slideOffsetPx(){
+  if(!STATE.slideAnim) return 0;
+  const elapsed = performance.now() - STATE.slideAnim.startTime;
+  const p = Math.min(1, elapsed / STATE.slideAnim.duration);
+  const eased = 1 - Math.pow(1 - p, 3);
+  return -eased * SLOT_W * STATE.slideAnim.steps;
+}
+
+function drawBlockLabel(){ /* 区块内不显示文字 */ }
+
+function drawSlotBlock(c, x, y, w, h, block, col, opts){
+  opts = opts || {};
+  if(opts.pruned){
+    c.save();
+    c.beginPath();
+    roundRect(c, x, y, w, h, 4);
+    c.clip();
+    c.fillStyle = col.fill;
+    c.fillRect(x, y, w, h);
+    c.strokeStyle = 'rgba(194,70,61,.7)';
+    c.lineWidth = 1;
+    for(let i=-h;i<w+h;i+=4){
+      c.beginPath();
+      c.moveTo(x+i, y);
+      c.lineTo(x+i+h, y+h);
+      c.stroke();
+    }
+    c.restore();
+    c.save();
+    c.strokeStyle = col.stroke;
+    c.lineWidth = 1.2;
+    c.setLineDash([3,2]);
+    roundRect(c, x, y, w, h, 4);
+    c.stroke();
+    c.setLineDash([]);
+    c.restore();
+    drawBlockLabel(c, x, y, w, h, block, opts);
+    return;
+  }
+  c.save();
+  c.fillStyle = col.fill;
+  roundRect(c, x, y, w, h, 4);
+  c.fill();
+  c.strokeStyle = col.stroke;
+  c.lineWidth = (block && block.type === 'P') ? 1.5 : 1;
+  if(opts.virtual || opts.priv || (block && block.type === 'S')){
+    c.setLineDash([3,2]);
+  }
+  roundRect(c, x, y, w, h, 4);
+  c.stroke();
+  c.setLineDash([]);
+  c.restore();
+  drawBlockLabel(c, x, y, w, h, block, opts);
+}
+
+function drawSlotColumn(i, slot){
+  const baseX = slotIdxToX(i) + slideOffsetPx();
+  const blockW = SLOT_W - 12;
+  const x = baseX + 6;
+
+  // 槽位标号（只保留数字）
+  ctx.save();
+  ctx.fillStyle = 'rgba(82,102,109,.7)';
+  ctx.font = '600 12px JetBrains Mono';
+  ctx.textAlign = 'center';
+  ctx.fillText(i, baseX + SLOT_W/2, 24);
+  ctx.restore();
+
+  // Public block
+  if(slot.block){
+    const key = slot.block.type + '-' + slot.block.producer;
+    const col = slot.pruned ? COLOR.disc : (COLOR[key] || COLOR['P-h']);
+    drawSlotBlock(ctx, x, trackY('pub'), blockW, BLOCK_H, slot.block, col, { pruned: slot.pruned });
+  } else if(slot.virtual){
+    drawSlotBlock(ctx, x, trackY('pub'), blockW, BLOCK_H, {type:'P', producer:'h'}, COLOR.virt, { virtual: true });
+  } else if(slot.locked){
+    ctx.save();
+    ctx.strokeStyle = 'rgba(82,102,109,.12)';
+    ctx.setLineDash([2,2]);
+    roundRect(ctx, x, trackY('pub'), blockW, BLOCK_H, 4);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+  }
+
+  if(slot.privBlock){
+    drawSlotBlock(ctx, x, trackY('priv'), blockW, BLOCK_H, slot.privBlock, COLOR.priv, { priv: true });
+  }
+}
+
+function drawTrackLabels(){
+  ctx.save();
+  ctx.fillStyle = 'rgba(183,70,70,.65)';
+  ctx.font = '600 11px "Noto Sans SC", sans-serif';
+  ctx.textAlign = 'left';
+  ctx.fillText('私链', 6, trackY('priv') - 6);
+  ctx.fillStyle = 'rgba(66,99,213,.7)';
+  ctx.fillText('公链', 6, trackY('pub') - 6);
+  ctx.restore();
+}
+
+function drawChainConnectors(){
+  const yPub = trackY('pub') + BLOCK_H/2;
+  const yPriv = trackY('priv') + BLOCK_H/2;
+  ctx.save();
+  ctx.lineWidth = 1.2;
+  let lastX = -1, lastPruned = false, lastVirtual = false;
+  for(let i=0;i<STATE.slots.length;i++){
+    const slot = STATE.slots[i];
+    if(!slot.block && !slot.virtual) continue;
+    const x = slotIdxToX(i) + slideOffsetPx() + 6;
+    const w = SLOT_W - 12;
+    if(lastX >= 0){
+      const cur_v = slot.virtual;
+      const col = (slot.pruned || lastPruned) ? 'rgba(194,70,61,.35)' :
+                  (cur_v || lastVirtual ? 'rgba(82,102,109,.3)' : 'rgba(66,99,213,.4)');
+      ctx.strokeStyle = col;
+      if(cur_v || lastVirtual) ctx.setLineDash([3,2]); else ctx.setLineDash([]);
+      ctx.beginPath();
+      ctx.moveTo(lastX, yPub);
+      ctx.lineTo(x, yPub);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+    lastX = x + w;
+    lastPruned = !!slot.pruned;
+    lastVirtual = !!slot.virtual;
+  }
+  let lastPrivX = -1;
+  for(let i=0;i<STATE.slots.length;i++){
+    const slot = STATE.slots[i];
+    if(!slot.privBlock) continue;
+    const x = slotIdxToX(i) + slideOffsetPx() + 6;
+    const w = SLOT_W - 12;
+    if(lastPrivX >= 0){
+      ctx.strokeStyle = 'rgba(183,70,70,.5)';
+      ctx.beginPath();
+      ctx.moveTo(lastPrivX, yPriv);
+      ctx.lineTo(x, yPriv);
+      ctx.stroke();
+    }
+    lastPrivX = x + w;
+  }
+  ctx.restore();
+}
+
+function drawCursorIndicator(){
+  if(STATE.mode === 'idle') return;
+  if(STATE.cursor >= STATE.slots.length) return;
+  const x = slotIdxToX(STATE.cursor) + slideOffsetPx() + SLOT_W/2;
+  ctx.save();
+  ctx.strokeStyle = 'rgba(66,99,213,.3)';
+  ctx.lineWidth = 1;
+  ctx.setLineDash([2,3]);
+  ctx.beginPath();
+  ctx.moveTo(x, 8);
+  ctx.lineTo(x, H - 8);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
+}
+
+function drawReleasePulse(){
+  if(!STATE.releasePulse) return;
+  const { startTime, duration, slotIdx } = STATE.releasePulse;
+  const elapsed = performance.now() - startTime;
+  const p = Math.min(1, elapsed / duration);
+  if(p >= 1){ STATE.releasePulse = null; return; }
+  const x = slotIdxToX(slotIdx) + slideOffsetPx() + SLOT_W/2;
+  const y = trackY('priv') + BLOCK_H/2;
+  const radius = 10 + p * 80;
+  ctx.save();
+  ctx.strokeStyle = 'rgba(194,70,61,' + (1-p) + ')';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, Math.PI*2);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function render(){
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  ctx.strokeStyle = 'rgba(100,125,140,.03)';
+  ctx.lineWidth = 1;
+  for(let xg=0; xg<W; xg+=40){
+    ctx.beginPath();ctx.moveTo(xg,0);ctx.lineTo(xg,H);ctx.stroke();
+  }
+  for(let yg=0; yg<H; yg+=40){
+    ctx.beginPath();ctx.moveTo(0,yg);ctx.lineTo(W,yg);ctx.stroke();
+  }
+  ctx.restore();
+
+  drawTrackLabels();
+  drawChainConnectors();
+  for(let i=0;i<STATE.slots.length;i++){
+    drawSlotColumn(i, STATE.slots[i]);
+  }
+  drawCursorIndicator();
+  drawReleasePulse();
+  requestAnimationFrame(render);
+}
+
+// ============= Status helpers =============
+function updateStatus(){
+  const el = document.getElementById('bonus-display');
+  if(el) el.textContent = (STATE.cumulativeBonus*100).toFixed(2) + '%';
+}
+function setChainStatus(mode){
+  const panel = document.getElementById('chain-status-panel');
+  const main = document.getElementById('chain-status-main');
+  panel.classList.remove('idle','normal','attacking');
+  if(mode === 'idle'){
+    panel.classList.add('idle');
+    main.textContent = '待命，等待演示开始';
+  } else if(mode === 'normal'){
+    panel.classList.add('normal');
+    main.textContent = '正常运行 · 全部块上公链';
+  } else {
+    panel.classList.add('attacking');
+    main.innerHTML = STATE.attack
+      ? '<span style="color:#a53232">攻击中 · 拜占庭扣留主块形成私链</span>'
+      : '<span style="color:#a53232">攻击模式 · 等待连续两个拜占庭主块槽位触发</span>';
+  }
+}
+
+// ============= Normal mode =============
+function advanceNormal(){
+  const slot = STATE.slots[STATE.cursor];
+  if(!slot) return;
+  if(slot.primary){
+    slot.block = { type:'P', producer: slot.primary };
+  } else {
+    slot.block = { type:'S', producer: slot.secondary };
+  }
+  slot.locked = true;
+  STATE.cursor++;
+  STATE.totalSlotsProcessed++;
+  maybeSlide();
+}
+
+// ============= Attack mode =============
+function advanceAttack(){
+  const slot = STATE.slots[STATE.cursor];
+  if(!slot) return;
+
+  if(!STATE.attack){
+    const next = STATE.slots[STATE.cursor + 1];
+    if(slot.primary === 'a' && next && next.primary === 'a'){
+      // Initial condition: t,t+1 ∈ S_a → start withholding
+      STATE.attack = {
+        startCursor: STATE.cursor,
+        privBlocks: [STATE.cursor],
+        endsAtCursor: -1,
+      };
+      slot.privBlock = { type:'P', producer:'a' };
+      slot.virtual = true;
+      slot.locked = true;
+      setChainStatus('attacking');
+      STATE.cursor++;
+      STATE.totalSlotsProcessed++;
+      maybeSlide();
+      return;
+    }
+    // Normal block production outside attack
+    if(slot.primary){
+      slot.block = { type:'P', producer: slot.primary };
+    } else {
+      slot.block = { type:'S', producer: slot.secondary };
+    }
+    slot.locked = true;
+    STATE.cursor++;
+    STATE.totalSlotsProcessed++;
+    maybeSlide();
+    return;
+  }
+
+  // We are in an attack
+  const a = STATE.attack;
+
+  if(slot.primary === 'a'){
+    // Continue withholding into private branch
+    slot.privBlock = { type:'P', producer:'a' };
+    slot.virtual = true;
+    slot.locked = true;
+    a.privBlocks.push(STATE.cursor);
+  } else {
+    // Honest primary or no primary — public branch grows on public track
+    if(slot.primary === 'h'){
+      slot.block = { type:'P', producer:'h' };
+    } else {
+      slot.block = { type:'S', producer: slot.secondary };
+    }
+    slot.locked = true;
+  }
+  STATE.cursor++;
+  STATE.totalSlotsProcessed++;
+
+  // Set virtual b_v on lookahead slot (rule 2)
+  const look = STATE.slots[STATE.cursor];
+  if(look && !look.locked) look.virtual = true;
+
+  // Compute virtual public branch length:
+  //   = (count of real public blocks since attackStart) + 1 (virtual b_v lookahead)
+  let publicReal = 0;
+  for(let k = a.startCursor; k < STATE.cursor; k++){
+    const s = STATE.slots[k];
+    if(s && s.block) publicReal++;  // primary or secondary
+  }
+  const virtualPublicLen = publicReal + 1;
+  const privLen = a.privBlocks.length;
+
+  // Termination: |private| <= |virtual public| OR |virtual public| >= d
+  if(privLen <= virtualPublicLen || virtualPublicLen >= PARAMS.d){
+    triggerRelease();
+  }
+  maybeSlide();
+}
+
+function triggerRelease(){
+  const a = STATE.attack;
+  if(!a) return;
+
+  // Convert private blocks → public (released as primary), wipe virtual flags
+  for(const idx of a.privBlocks){
+    const s = STATE.slots[idx];
+    if(!s) continue;
+    s.block = { type:'P', producer:'a', released:true };
+    s.privBlock = null;
+    s.virtual = false;
+  }
+  // Prune any public-track block in the attack window not part of private
+  for(let k = a.startCursor; k < STATE.cursor; k++){
+    const s = STATE.slots[k];
+    if(!s) continue;
+    if(a.privBlocks.indexOf(k) >= 0) continue;
+    if(s.block) s.pruned = true;
+    s.virtual = false;
+  }
+  // Clear virtual flag from lookahead slot (it's not yet a real block)
+  const look = STATE.slots[STATE.cursor];
+  if(look) look.virtual = false;
+
+  STATE.releasePulse = {
+    startTime: performance.now(),
+    duration: 900,
+    slotIdx: a.privBlocks[a.privBlocks.length - 1],
+  };
+
+  STATE.attackCount++;
+  const target = 0.0707;
+  STATE.cumulativeBonus = STATE.cumulativeBonus + 0.18 * (target - STATE.cumulativeBonus);
+
+  pushBonusPoint();
+  STATE.attack = null;
+  setChainStatus('attacking');
+}
+
+// ============= Sliding =============
+function maybeSlide(){
+  if(STATE.cursor < SLOTS_VISIBLE - 2) return;
+  const steps = Math.max(1, STATE.cursor - (SLOTS_VISIBLE - 4));
+  STATE.slideAnim = {
+    startTime: performance.now(),
+    duration: 500,
+    steps,
+  };
+  setTimeout(() => {
+    STATE.slots.splice(0, steps);
+    STATE.cursor -= steps;
+    if(STATE.attack){
+      STATE.attack.startCursor -= steps;
+      STATE.attack.privBlocks = STATE.attack.privBlocks.map(i => i - steps).filter(i => i >= 0);
+    }
+    ensureWindowFilled();
+    STATE.slideAnim = null;
+  }, 500);
+}
+
+// ============= Heartbeat =============
+function heartbeatStep(){
+  if(STATE.paused) return;
+  if(STATE.slideAnim) return;
+  if(STATE.mode === 'normal') advanceNormal();
+  else if(STATE.mode === 'attack') advanceAttack();
+  updateStatus();
+}
+function setHeartbeat(){
+  if(STATE.heartbeat) clearInterval(STATE.heartbeat);
+  const interval = STATE.speed / SLOTS_VISIBLE;
+  STATE.heartbeat = setInterval(heartbeatStep, interval);
+}
+
+// ============= Controls =============
+function startNormal(){
+  resetVisibleState();
+  STATE.mode = 'normal';
+  ensureWindowFilled();
+  setChainStatus('normal');
+  setHeartbeat();
+}
+function launchAttack(){
+  resetVisibleState();
+  STATE.mode = 'attack';
+  ensureWindowFilled();
+  setChainStatus('attacking');
+  setHeartbeat();
+}
+function stepForward(){
+  if(STATE.mode === 'idle'){
+    STATE.mode = 'normal';
+    ensureWindowFilled();
+    setChainStatus('normal');
+  }
+  heartbeatStep();
+  updateStatus();
+}
+function togglePause(){
+  STATE.paused = !STATE.paused;
+  document.getElementById('btn-pause').textContent = STATE.paused ? '▶ 继续' : '⏸ 暂停';
+}
+function resetVisibleState(){
+  STATE.slots = [];
+  STATE.cursor = 0;
+  STATE.totalSlotsProcessed = 0;
+  STATE.attack = null;
+  STATE.cumulativeBonus = 0;
+  STATE.attackCount = 0;
+  STATE.bonusHistory = [];
+  STATE.releasePulse = null;
+  STATE.slideAnim = null;
+  injectCountdown = 0;
+  drawChart();
+  updateStatus();
+  document.getElementById('chart-sub').textContent = '尚未发动攻击';
+}
+function resetDemo(){
+  if(STATE.heartbeat){ clearInterval(STATE.heartbeat); STATE.heartbeat = null; }
+  STATE.mode = 'idle';
+  STATE.paused = false;
+  resetVisibleState();
+  setChainStatus('idle');
+  document.getElementById('btn-pause').textContent = '⏸ 暂停';
+}
+function updateSpeed(v){
+  STATE.speed = parseInt(v);
+  if(STATE.heartbeat) setHeartbeat();
+}
+
+// ============= Chart =============
+function drawChart(){
+  chartCtx.clearRect(0, 0, chartW, chartH);
+  const pad = { l: 46, r: 14, t: 14, b: 22 };
+  const plotW = chartW - pad.l - pad.r;
+  const plotH = chartH - pad.t - pad.b;
+  const yMin = 0, yMax = 0.10;
+  const yOf = v => pad.t + plotH * (1 - (v - yMin) / (yMax - yMin));
+
+  chartCtx.save();
+  chartCtx.strokeStyle = 'rgba(100,125,140,.06)';
+  for(let v=0; v<=yMax+1e-6; v+=0.02){
+    const y = yOf(v);
+    chartCtx.beginPath();
+    chartCtx.moveTo(pad.l, y);
+    chartCtx.lineTo(pad.l + plotW, y);
+    chartCtx.stroke();
+  }
+  chartCtx.restore();
+
+  chartCtx.save();
+  chartCtx.fillStyle = 'rgba(92,110,118,.85)';
+  chartCtx.font = '10px JetBrains Mono';
+  chartCtx.textAlign = 'right';
+  chartCtx.textBaseline = 'middle';
+  for(let v=0; v<=yMax+1e-6; v+=0.02){
+    chartCtx.fillText((v*100).toFixed(0) + '%', pad.l - 6, yOf(v));
+  }
+  chartCtx.restore();
+
+  // Theoretical target line at 7.09%
+  chartCtx.save();
+  chartCtx.strokeStyle = 'rgba(174,115,14,.45)';
+  chartCtx.setLineDash([3,3]);
+  const yT = yOf(0.0709);
+  chartCtx.beginPath();
+  chartCtx.moveTo(pad.l, yT);
+  chartCtx.lineTo(pad.l + plotW, yT);
+  chartCtx.stroke();
+  chartCtx.setLineDash([]);
+  chartCtx.fillStyle = 'rgba(174,115,14,.75)';
+  chartCtx.font = '10px "Noto Sans SC", sans-serif';
+  chartCtx.textAlign = 'left';
+  chartCtx.fillText('理论收益上限 7.09%', pad.l + 6, yT - 6);
+  chartCtx.restore();
+
+  const hist = STATE.bonusHistory;
+  if(hist.length > 0){
+    const maxSlot = Math.max(40, hist[hist.length-1].slot + 4);
+    chartCtx.save();
+    chartCtx.strokeStyle = '#25845e';
+    chartCtx.lineWidth = 2;
+    chartCtx.shadowColor = '#25845e';
+    chartCtx.shadowBlur = 4;
+    chartCtx.beginPath();
+    hist.forEach((pt, i) => {
+      const x = pad.l + plotW * pt.slot / maxSlot;
+      const y = yOf(Math.max(yMin, Math.min(yMax, pt.bonus)));
+      if(i === 0) chartCtx.moveTo(x, y);
+      else chartCtx.lineTo(x, y);
+    });
+    chartCtx.stroke();
+    chartCtx.restore();
+
+    const last = hist[hist.length-1];
+    const lx = pad.l + plotW * last.slot / maxSlot;
+    const ly = yOf(Math.max(yMin, Math.min(yMax, last.bonus)));
+    chartCtx.save();
+    chartCtx.fillStyle = '#25845e';
+    chartCtx.beginPath();
+    chartCtx.arc(lx, ly, 3, 0, Math.PI*2);
+    chartCtx.fill();
+    chartCtx.restore();
+  }
+}
+
+function pushBonusPoint(){
+  if(STATE.bonusHistory.length === 0){
+    STATE.bonusHistory.push({ slot: 0, bonus: 0 });
+  }
+  STATE.bonusHistory.push({ slot: STATE.totalSlotsProcessed, bonus: STATE.cumulativeBonus });
+  if(STATE.bonusHistory.length > 300) STATE.bonusHistory.shift();
+  drawChart();
+  document.getElementById('chart-sub').textContent =
+    '已完成攻击 ' + STATE.attackCount + ' 次 · 当前额外收益 ' + (STATE.cumulativeBonus*100).toFixed(2) + '%';
+}
+
+// ============= Tooltip =============
+canvas.addEventListener('mousemove', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  let hit = null;
+  for(let i=0;i<STATE.slots.length && !hit;i++){
+    const slot = STATE.slots[i];
+    const baseX = slotIdxToX(i) + slideOffsetPx();
+    const x = baseX + 6;
+    const w = SLOT_W - 12;
+    const yPub = trackY('pub');
+    if(mx >= x && mx <= x+w && my >= yPub && my <= yPub + BLOCK_H){
+      if(slot.block || slot.virtual){
+        hit = { kind: slot.virtual ? 'virt' : (slot.pruned ? 'disc' : 'pub'), slot, idx: i };
+      }
+    }
+    const yPriv = trackY('priv');
+    if(!hit && mx >= x && mx <= x+w && my >= yPriv && my <= yPriv + BLOCK_H){
+      if(slot.privBlock){ hit = { kind: 'priv', slot, idx: i }; }
+    }
+  }
+  if(hit){
+    tooltip.style.opacity = '1';
+    tooltip.style.left = (e.clientX + 12) + 'px';
+    tooltip.style.top = (e.clientY + 12) + 'px';
+    let html = '';
+    const s = hit.slot;
+    const role = s.primary
+      ? ('主块出块者：' + (s.primary === 'a' ? '拜占庭' : '诚实'))
+      : ('无主块 · 副块出块者：' + (s.secondary === 'a' ? '拜占庭' : '诚实'));
+    if(hit.kind === 'priv'){
+      html = '<div style="color:#b74646;font-weight:600">拜占庭扣留块（私链）</div>'
+           + '<div style="color:#5c6e76;margin-top:2px">槽位偏移 ' + hit.idx + '</div>'
+           + '<div style="margin-top:3px;color:#a53232">终止条件满足后释放</div>';
+    } else if(hit.kind === 'virt'){
+      html = '<div style="color:#52666d;font-weight:600">虚拟块</div>'
+           + '<div style="color:#5c6e76;margin-top:2px">槽位偏移 ' + hit.idx + '</div>'
+           + '<div style="margin-top:3px">用于估算公链长度</div>';
+    } else if(hit.kind === 'disc'){
+      html = '<div style="color:#c2463d;font-weight:600">已剪枝</div>'
+           + '<div style="color:#5c6e76;margin-top:2px">槽位偏移 ' + hit.idx + '</div>'
+           + '<div style="margin-top:3px;color:#a53232">私链释放后被分叉选择丢弃</div>';
+    } else if(s.block){
+      const typeText = s.block.type === 'P' ? '主块' : '副块';
+      const prodText = s.block.producer === 'a' ? '拜占庭' : '诚实';
+      const col = s.block.producer === 'a' ? '#ae730e' : '#3556b0';
+      html = '<div style="color:' + col + ';font-weight:600">' + prodText + typeText + '</div>'
+           + '<div style="color:#5c6e76;margin-top:2px">槽位偏移 ' + hit.idx + '</div>'
+           + '<div style="margin-top:3px">' + role + '</div>';
+    }
+    tooltip.innerHTML = html;
+  } else {
+    tooltip.style.opacity = '0';
+  }
+});
+canvas.addEventListener('mouseleave', () => {
+  tooltip.style.opacity = '0';
+});
+
+// ============= Init =============
+function init(){
+  setupCanvas();
+  setupChart();
+  window.addEventListener('resize', () => {
+    setupCanvas();
+    setupChart();
+    drawChart();
+  });
+  ensureWindowFilled();
+  updateStatus();
+  setChainStatus('idle');
+  drawChart();
+  render();
+}
+init();
+</script>
+</body>
+</html>

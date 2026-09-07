@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="zh-CN" data-auth-required="true">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>安全分析 · 区块链安全分析平台</title>
+    <meta name="description" content="以太坊、币安链和波卡链的共识与激励机制安全分析及交互式攻击演示。" />
+    <link rel="stylesheet" href="./auth.css?v=20260907-security" />
+    <link rel="stylesheet" href="./live.css?v=20260830-toolbar-boundary" />
+    <link rel="stylesheet" href="./security.css?v=20260907-security" />
+    <script src="./auth.js?v=20260830-ui-fix"></script>
+  </head>
+  <body class="security-page">
+    <header class="site-header">
+      <a class="site-brand" href="./index.html"><span>区块链与数字金融服务安全监控平台</span></a>
+      <nav class="tool-nav" aria-label="分析工具">
+        <a href="./index.html">首页</a>
+        <a href="./security.html" aria-current="page">安全分析</a>
+        <a href="./track.html">地址追踪</a>
+        <a href="./live.html">实时交易</a>
+        <a href="./profile.html">用户画像</a>
+        <a href="./relation.html">地址关联</a>
+      </nav>
+    </header>
+    <main class="security-shell">
+      <section class="security-intro" aria-labelledby="security-title">
+        <div>
+          <p class="security-eyebrow">BLOCKCHAIN SECURITY</p>
+          <h1 id="security-title">区块链安全分析</h1>
+          <p class="security-lead">从共识活性到激励机制，观察攻击如何改变区块链的运行。</p>
+        </div>
+        <dl class="security-counts" aria-label="已收录分析方法">
+          <div><dt>攻击分类</dt><dd>04</dd></div>
+          <div><dt>覆盖公链</dt><dd>03</dd></div>
+        </dl>
+      </section>
+      <section aria-labelledby="attack-library-title">
+        <div class="security-section-heading">
+          <h2 id="attack-library-title">攻击方法库</h2>
+          <span>选择一种方法，进入交互演示</span>
+        </div>
+        <div class="security-grid">
+          <a class="attack-card" id="eth-liveness" href="./security-eth-liveness.html">
+            <div class="attack-card-top"><span class="attack-chain"><span class="chain-symbol ethereum" aria-hidden="true">E</span>Ethereum</span><span class="attack-number">01</span></div>
+            <div class="attack-card-body"><span class="attack-category">共识安全 / 活性</span><h3>以太坊共识活性攻击</h3><p>观察区块与投票的变化，追踪最终确认停滞及 RANDAO 操纵过程。</p></div>
+            <div class="attack-card-footer"><span class="attack-tags"><span>PoS 共识</span><span>RANDAO</span></span><span class="attack-open">查看演示 <span aria-hidden="true">↗</span></span></div>
+          </a>
+          <a class="attack-card" id="eth-staircase" href="./security-eth-staircase.html">
+            <div class="attack-card-top"><span class="attack-chain"><span class="chain-symbol ethereum" aria-hidden="true">E</span>Ethereum</span><span class="attack-number">02</span></div>
+            <div class="attack-card-body"><span class="attack-category">经济安全 / 激励机制</span><h3>以太坊激励机制攻击</h3><p>跟随阶梯攻击中的区块扣留与投票变化，观察诚实节点的收益损失。</p></div>
+            <div class="attack-card-footer"><span class="attack-tags"><span>阶梯攻击</span><span>收益变化</span></span><span class="attack-open">查看演示 <span aria-hidden="true">↗</span></span></div>
+          </a>
+          <a class="attack-card" id="bsc-finality" href="./security-bsc-finality.html">
+            <div class="attack-card-top"><span class="attack-chain"><span class="chain-symbol bnb" aria-hidden="true">B</span>BNB Smart Chain</span><span class="attack-number">03</span></div>
+            <div class="attack-card-body"><span class="attack-category">共识安全 / 活性</span><h3>币安链共识活性攻击</h3><p>了解 CLSO、分裂投票与同步攻击，探索 Fast Finality 机制的活性问题。</p></div>
+            <div class="attack-card-footer"><span class="attack-tags"><span>Fast Finality</span><span>三类攻击</span></span><span class="attack-open">查看演示 <span aria-hidden="true">↗</span></span></div>
+          </a>
+          <a class="attack-card" id="polkadot-selfish" href="./security-polkadot-selfish.html">
+            <div class="attack-card-top"><span class="attack-chain"><span class="chain-symbol polkadot" aria-hidden="true">P</span>Polkadot</span><span class="attack-number">04</span></div>
+            <div class="attack-card-body"><span class="attack-category">经济安全 / 自私挖矿</span><h3>波卡链自私挖矿攻击</h3><p>比较诚实公链与拜占庭私链的槽位时间线，观察扣留区块带来的额外收益。</p></div>
+            <div class="attack-card-footer"><span class="attack-tags"><span>混合可预测性</span><span>无风险自私挖矿</span></span><span class="attack-open">查看演示 <span aria-hidden="true">↗</span></span></div>
+          </a>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

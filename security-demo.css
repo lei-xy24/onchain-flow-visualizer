@@ -1,0 +1,54 @@
+/* Shared light presentation for the four original, independently scoped demos. */
+:root { color-scheme: light; --bg: #f3f6f7; --bg2: #edf2f3; --card: #fff; --card2: #f0f5f5; --border: #d8e2e4; --border2: #c4d4d7; --txt: #142024; --txt2: #52666d; --txt3: #5c6e76; }
+html { scrollbar-gutter: stable; scroll-padding-top: 92px; }
+body.security-demo-page { margin: 0; background: var(--bg); color: var(--txt); font-family: Inter, ui-sans-serif, system-ui, -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; }
+.security-demo-header { min-height: 70px; padding: 12px 32px; display: grid; grid-template-columns: 130px minmax(0, 1fr) 130px; align-items: center; gap: 20px; border-bottom: 1px solid #d8e2e4; background: rgba(255,255,255,.97); position: sticky; top: 0; z-index: 110; }
+.security-demo-header .page-back-link { justify-self: start; text-decoration: none; }
+.security-demo-context { display: grid; gap: 3px; text-align: center; min-width: 0; }
+.security-demo-context strong { font-size: .96rem; line-height: 1.4; font-weight: 750; }
+.security-demo-context > span { color: #74858b; font-size: .75rem; }
+.security-demo-network { display: inline-flex; align-items: center; justify-content: flex-end; gap: 8px; color: #5c7478; font-size: .78rem; font-weight: 650; }
+.security-demo-dot { width: 6px; height: 6px; background: #087f7b; border-radius: 50%; flex-shrink: 0; }
+.security-demo-page .demo-hero { background: #fff; padding: 30px 32px 26px; border-bottom: 1px solid var(--border); }
+.security-demo-page .demo-hero::before { display: none; }
+.security-demo-page .demo-hero-inner { max-width: 1536px; margin: 0 auto; }
+.security-demo-page .demo-hero h1 { font-family: inherit; color: #142024; font-size: clamp(1.5rem, 2.7vw, 2.3rem); line-height: 1.4; letter-spacing: -.025em; }
+.security-demo-page .demo-hero h1 .hl { background: none; color: #087f7b; -webkit-text-fill-color: #087f7b; }
+.security-demo-page .demo-hero-desc { color: #607279; font-size: 1rem; line-height: 1.85; }
+.security-demo-page .demo-hero-desc strong { color: #314b53; }
+.security-demo-page .demo-main { max-width: 1600px; padding: 24px 32px 48px; }
+.security-demo-page .controls { padding: 14px 16px; border-radius: 12px; box-shadow: 0 3px 12px #14202403; }
+.security-demo-page .ctrl-btn { min-height: 38px; font-family: inherit; font-size: .875rem; border-radius: 7px; }
+.security-demo-page .ctrl-btn.secondary { background: #087f7b; border-color: #087f7b; color: #fff; }
+.security-demo-page .ctrl-btn.secondary:hover { background: #075d5b; color: #fff; }
+.security-demo-page .ctrl-btn.primary { background: #fff1ef; border-color: #ecc5c0; color: #aa3933; }
+.security-demo-page .ctrl-btn.primary:hover { background: #fce6e2; color: #932d29; }
+.security-demo-page button:focus-visible, .security-demo-page select:focus-visible { outline: 3px solid #087f7b60; outline-offset: 3px; }
+.security-demo-page .chain-stage, .security-demo-page .incentive-panel, .security-demo-page .insight-panel, .security-demo-page .phase-card, .security-demo-page .status-card, .security-demo-page .event-log, .security-demo-page .randao-panel { background: #fff; border-color: var(--border); border-radius: 12px; box-shadow: 0 4px 16px #14202404; }
+.security-demo-page .insight-canvas-wrap, .security-demo-page .incentive-canvas-wrap { background: #f9fbfc; border-color: #e1e8eb; }
+.security-demo-page canvas { max-width: 100%; }
+.security-demo-page .chain-status-panel { box-shadow: none; border-radius: 10px; }
+.security-demo-page .chain-status-panel.idle { background: #f0f5f5; border-color: #d8e2e4; }
+.security-demo-page .canvas-tooltip { background: #fff; color: #314b53; border-color: #cbd9dd; box-shadow: 0 8px 26px #14202420; max-width: min(360px, calc(100vw - 24px)); }
+.security-demo-page .attack-overlay { background: rgba(237,242,243,.82); }
+.security-demo-page .attack-overlay-card { background: #fff; border-color: #cbd9dd; box-shadow: 0 20px 60px #1420241a; }
+.security-demo-page .section-title { color: #233c42; }
+.security-demo-page .section-title::before { background: #087f7b; }
+.security-demo-page .demo-meta { margin-top: 20px; }
+.security-demo-page .demo-meta-val { color: #087f7b; }
+.security-demo-page .phase-desc, .security-demo-page .event-msg { line-height: 1.7; }
+.security-demo-page .legend { font-family: inherit; }
+.security-demo-page .insight-legend-dot { box-shadow: none; }
+@media (max-width: 760px) {
+  .security-demo-header { padding: 12px 16px; grid-template-columns: 66px minmax(0, 1fr); gap: 12px; }
+  .security-demo-context { text-align: right; }
+  .security-demo-network { display: none; }
+  .security-demo-page .demo-main, .security-demo-page .demo-hero { padding-left: 16px; padding-right: 16px; }
+  .security-demo-page .controls { flex-direction: row; align-items: center; }
+  .security-demo-page .ctrl-btn { flex: 1 1 auto; justify-content: center; }
+  .security-demo-page .ctrl-speed { width: 100%; justify-content: space-between; }
+  .security-demo-page .ctrl-divider { display: none; }
+  .security-demo-page .chain-stage-header { flex-wrap: wrap; gap: 12px; }
+  .security-demo-page .chain-status-panel { min-width: 0; max-width: 100%; }
+  .security-demo-page .phase-tracker, .security-demo-page .two-col { grid-template-columns: 1fr; }
+}

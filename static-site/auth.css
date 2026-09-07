@@ -2,6 +2,16 @@ html[data-auth-required]:not([data-auth-ready]) body {
   visibility: hidden;
 }
 
+/* Keep the expanded first-level navigation on one line within a scrollable row. */
+body > .site-header .tool-nav { min-width: 0; overflow-x: auto; scrollbar-width: thin; }
+body > .site-header .tool-nav a { flex: 0 0 auto; white-space: nowrap; }
+body > .site-header .auth-header-actions { max-width: 100%; }
+@media (max-width: 1180px) {
+  body > .site-header { flex-wrap: wrap; gap: 12px; padding: 14px 20px; }
+  body > .site-header .auth-header-actions { width: 100%; justify-content: space-between; }
+  body > .site-header .site-brand { min-width: 0; line-height: 1.5; }
+}
+
 .auth-header-actions {
   align-items: center;
   display: flex;
