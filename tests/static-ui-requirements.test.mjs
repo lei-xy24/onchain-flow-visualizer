@@ -54,6 +54,42 @@ function readAnchors(html) {
   });
 }
 
+test("登录品牌使用提供的图片且首页章节只保留编号与小标题", async () => {
+  const [login, index, logo, mirroredLogo] = await Promise.all([
+    readFile(path.join(root, "login.html"), "utf8"),
+    readFile(path.join(root, "index.html"), "utf8"),
+    readFile(path.join(root, "assets/finsec-security-logo.jpg")),
+    readFile(path.join(root, "static-site/assets/finsec-security-logo.jpg")),
+  ]);
+  assert.match(login, /<img class="login-brand-mark" src="\.\/assets\/finsec-security-logo\.jpg" alt="" width="56" height="56"/);
+  assert.doesNotMatch(login, /class="login-brand-mark"[^>]*>FS</);
+  assert.ok(logo.length > 1000);
+  assert.equal(logo.readUInt16BE(0), 0xffd8, "品牌图片应为 JPEG");
+  assert.deepEqual(mirroredLogo, logo);
+  const headings = [...index.matchAll(/<header class="chapter-heading">([\s\S]*?)<\/header>/g)];
+  assert.equal(headings.length, 3);
+  for (const [number, heading] of headings.entries()) {
+    assert.match(heading[1], /<h2\b/);
+    assert.match(heading[1], new RegExp(`>0${number + 1}<`));
+    assert.doesNotMatch(heading[1], /<p\b/);
+  }
+});
+
+test("人物与市场字体取适中档位且保留窄屏图表滚动", async () => {
+  const [radar, story, market, html] = await Promise.all([
+    readFile(path.join(root, "hot-topic.css"), "utf8"),
+    readFile(path.join(root, "event-explorer.css"), "utf8"),
+    readFile(path.join(root, "global-markets.css"), "utf8"),
+    readFile(path.join(root, "event-explorer.html"), "utf8"),
+  ]);
+  assert.match(radar, /\.proof-card p, \.theme-copy > p, \.evidence-about\s*\{[^}]*font-size:\s*0\.875rem/);
+  assert.match(story, /\.chapter-body, \.signal-evidence p, \.watch-card p\s*\{[^}]*font-size:\s*0\.875rem/);
+  assert.match(market, /\.insight-card p\s*\{[^}]*font-size:\s*0\.875rem/);
+  assert.match(market, /\.chart-axis-label\s*\{[^}]*font-size:\s*16px/);
+  assert.match(html, /class="trend-scroll"[^>]*tabindex="0"/);
+  assert.match(story, /\.trend-scroll\s*\{[^}]*overflow-x:\s*auto/);
+});
+
 test("所有业务页先执行登录门禁并提供根目录静态镜像", async () => {
   for (const file of protectedPages) {
     const html = await readFile(path.join(root, file), "utf8");
