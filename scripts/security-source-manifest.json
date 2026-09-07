@@ -1,0 +1,46 @@
+{
+  "repository": "https://github.com/tsinghua-cel/platform",
+  "commit": "aa7e9850a0c733b7c37b0281e5978e7bbb8e9549",
+  "demos": [
+    {
+      "id": "eth-liveness",
+      "name": "以太坊共识活性攻击",
+      "network": "Ethereum",
+      "canvasCount": 3,
+      "file": "security-eth-liveness.html",
+      "sourceSha256": "0da5edbb48cb77859fdc9b1d484f2829b521a1ed8c8da9a9c92f705175b0ae3a",
+      "copySha256": "c9131424952f91f86f907e43c8cf5c00e23eb04f1d9243e3b0357a1985cf271e",
+      "simulationSha256": "d0ed7c56434df00d5df23471331183179549b8f7b55a0215fc5bf9b2501c8419"
+    },
+    {
+      "id": "eth-staircase",
+      "name": "以太坊激励机制攻击",
+      "network": "Ethereum",
+      "canvasCount": 2,
+      "file": "security-eth-staircase.html",
+      "sourceSha256": "82635975be7e28629139165e67033d43b3cea8c723997027478a92fc5518e8c3",
+      "copySha256": "361bb462a0c07ed2d7709967caffd0aca9ae030a4c048c214f7e36829d9049ff",
+      "simulationSha256": "fb2deffcabe15f9024ff5330e6c44abfd0a53c7338949649cfe993c4562f66f5"
+    },
+    {
+      "id": "bsc-finality",
+      "name": "币安链共识活性攻击",
+      "network": "BNB Smart Chain",
+      "canvasCount": 1,
+      "file": "security-bsc-finality.html",
+      "sourceSha256": "b350bf80993cc05d797c96c749ac65782568e2cb55ebbcea16d17f901567a362",
+      "copySha256": "73230bdb946d41c93ec4c73f9c9c16f88292bd422711e34f22d2c0859f72731c",
+      "simulationSha256": "47ffbcf0d50ce8e72c8bf7c6947111fbf0de0f9f92663e92589d4214de0ac368"
+    },
+    {
+      "id": "polkadot-selfish",
+      "name": "波卡链自私挖矿攻击",
+      "network": "Polkadot",
+      "canvasCount": 2,
+      "file": "security-polkadot-selfish.html",
+      "sourceSha256": "92a447ff5ed0055bbc1a649c73ccf4728177246a8d9309625cd365b8ed68b43d",
+      "copySha256": "f6875e4f2fa53b771bb06911f54fb2d2862db3eb6bd9702cc89ce7a0fb6e3d0a",
+      "simulationSha256": "0447d28f8fed2ae352304763afedb3e86e27c1a2847c3e4552964fcab2e3c034"
+    }
+  ]
+}

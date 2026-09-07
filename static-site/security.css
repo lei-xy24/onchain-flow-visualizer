@@ -1,0 +1,49 @@
+.security-page { background: #f3f6f7; color: #142024; }
+.security-shell { max-width: 1200px; margin: 0 auto; padding: 38px 28px 64px; }
+.security-intro { display: flex; align-items: center; justify-content: space-between; gap: 32px; padding: 12px 0 30px; border-bottom: 1px solid #d8e1e3; }
+.security-eyebrow { margin: 0 0 12px; color: #087f7b; font-size: .78rem; font-weight: 800; letter-spacing: .16em; }
+.security-intro h1 { font-size: clamp(1.9rem, 3.2vw, 2.65rem); line-height: 1.25; letter-spacing: -.035em; margin: 0; }
+.security-lead { margin: 14px 0 0; color: #647174; font-size: 1rem; line-height: 1.7; }
+.security-counts { display: flex; gap: 32px; flex-shrink: 0; margin: 0; }
+.security-counts > div { border-left: 1px solid #d1dcdf; padding-left: 26px; }
+.security-counts dt { color: #6b7c80; font-size: .82rem; }
+.security-counts dd { margin: 6px 0 0; font: 600 2.2rem/1.2 ui-monospace, SFMono-Regular, Consolas, monospace; letter-spacing: -.05em; }
+.security-section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 28px 0 18px; }
+.security-section-heading h2 { margin: 0; font-size: 1.05rem; }
+.security-section-heading > span { font-size: .875rem; color: #728084; }
+.security-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 22px; }
+.attack-card { display: flex; flex-direction: column; min-width: 0; border: 1px solid #d8e2e4; background: #fff; border-radius: 16px; padding: 26px 28px 0; text-decoration: none; box-shadow: 0 5px 18px #14202404; transition: border-color .18s, box-shadow .18s, transform .18s; scroll-margin-top: 30px; }
+.attack-card:hover { border-color: #67b6b1; box-shadow: 0 12px 28px #075d5b10; transform: translateY(-3px); }
+.attack-card:focus-visible { outline: 3px solid #087f7b; outline-offset: 4px; }
+.attack-card:target { border-color: #087f7b; }
+.attack-card-top { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+.attack-chain { display: flex; align-items: center; gap: 10px; font-size: .85rem; font-weight: 650; color: #57676b; }
+.chain-symbol { display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid #dde6eb; border-radius: 10px; font-size: 1rem; font-weight: 850; }
+.chain-symbol.ethereum { background: #edf1fb; color: #4263ab; border-color: #dce3f6; }
+.chain-symbol.bnb { background: #fff6df; color: #a47712; border-color: #f1e4bd; }
+.chain-symbol.polkadot { background: #fcecf3; color: #ae3e6b; border-color: #f3d9e5; }
+.attack-number { font: 500 1.6rem/1 ui-monospace, SFMono-Regular, Consolas, monospace; color: #bac9cd; letter-spacing: -.05em; }
+.attack-card-body { padding: 26px 0 25px; flex: 1; }
+.attack-category { color: #087f7b; font-size: .78rem; letter-spacing: .06em; font-weight: 700; }
+.attack-card h3 { margin: 10px 0 12px; font-size: clamp(1.2rem, 1.9vw, 1.55rem); line-height: 1.4; color: #142024; }
+.attack-card p { margin: 0; max-width: 440px; color: #6b797d; font-size: .94rem; line-height: 1.8; }
+.attack-card-footer { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 18px 0; border-top: 1px solid #edf1f2; }
+.attack-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.attack-tags > span { color: #62777b; background: #f0f5f5; border-radius: 5px; padding: 5px 8px; font-size: .75rem; line-height: 1.4; }
+.attack-open { white-space: nowrap; font-size: .85rem; font-weight: 750; color: #087f7b; }
+.attack-open > span { display: inline-block; margin-left: 8px; font-size: 1.2rem; transition: transform .18s; }
+.attack-card:hover .attack-open > span { transform: translate(2px, -2px); }
+@media (max-width: 740px) {
+  .security-shell { padding: 24px 16px 40px; }
+  .security-intro { align-items: flex-start; flex-direction: column; gap: 20px; padding-bottom: 24px; }
+  .security-counts { gap: 28px; }
+  .security-counts > div { padding-left: 16px; }
+  .security-counts dd { font-size: 1.6rem; }
+  .security-section-heading { flex-wrap: wrap; }
+  .security-grid { grid-template-columns: 1fr; gap: 16px; }
+  .attack-card { padding: 22px 20px 0; }
+  .attack-card h3 { font-size: 1.35rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .attack-card, .attack-open > span { transition: none; }
+}

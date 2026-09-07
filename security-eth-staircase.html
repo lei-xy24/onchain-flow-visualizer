@@ -1,0 +1,1539 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-auth-required="true" data-auth-show-logout="false">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>以太坊 PoS 阶梯攻击演示 — USENIX Security 2024</title>
+<style>
+:root{
+  --bg:#f3f6f7;
+  --bg2:#edf2f3;
+  --card:#ffffff;
+  --card2:#f0f5f5;
+  --border:rgba(100,125,140,.1);
+  --border2:rgba(100,125,140,.2);
+  --accent:#4263d5;
+  --accent-b:#3556b0;
+  --green:#25845e;
+  --red:#c2463d;
+  --red-d:#dc2626;
+  --amber:#ae730e;
+  --purple:#7556c8;
+  --pink:#b33f78;
+  --txt:#142024;
+  --txt2:#52666d;
+  --txt3:#5c6e76;
+  --anim-scale:4;
+
+  /* Attestation set palette (paper Figure 3) */
+  --a1:#278548;
+  --a1-bg:rgba(39,133,72,.16);
+  --a2:#3556b0;
+  --a2-bg:rgba(53,86,176,.16);
+  --a3:#b74646;
+  --a3-bg:rgba(183,70,70,.18);
+  --discarded:#475569;
+  --discarded-bg:rgba(71,85,105,.28);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans SC','Inter',sans-serif;background:var(--bg);color:var(--txt);overflow-x:hidden;font-size:16px}
+
+/* Hero */
+.demo-hero{
+  padding:1.2rem 2.5rem 1rem;
+  border-bottom:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.demo-hero::before{
+  content:'';position:absolute;inset:0;
+  background-image:
+    linear-gradient(rgba(66,99,213,.025) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(66,99,213,.025) 1px,transparent 1px);
+  background-size:48px 48px;
+  mask-image:radial-gradient(ellipse 70% 60% at 50% 50%,black,transparent);
+}
+.demo-hero-inner{position:relative;max-width:calc(1800px - 5rem);margin:0 auto}
+.demo-hero h1{font-size:clamp(1.85rem,3.2vw,2.75rem);font-weight:800;line-height:1.18;margin-bottom:.75rem}
+.demo-hero h1 .hl{
+  background:linear-gradient(135deg,var(--red) 0%,var(--amber) 50%,var(--accent-b) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.demo-hero-body{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:1.2rem;
+  align-items:start;
+}
+.demo-hero-desc{
+  grid-column:1 / -1;
+  font-size:1rem;color:var(--txt);max-width:none;line-height:1.58;font-weight:400;
+}
+.demo-hero-desc strong{color:#075d5b;font-weight:800}
+
+/* Main */
+.demo-main{padding:1rem 2.5rem 4rem;max-width:1800px;margin:0 auto}
+
+.section{margin-bottom:1.2rem}
+.section-title{
+  font-size:1.05rem;font-weight:700;margin-bottom:.3rem;
+  display:flex;align-items:center;gap:.6rem;
+}
+.section-title::before{
+  content:'';width:3px;height:18px;background:var(--accent);border-radius:2px;
+}
+.section-desc{color:var(--txt3);font-size:.86rem;margin-bottom:.9rem;margin-left:.9rem}
+
+/* Controls */
+.controls{
+  display:flex;gap:.6rem;margin-bottom:0.75rem;flex-wrap:wrap;align-items:center;
+  padding:.9rem 1rem;background:var(--card);border:1px solid var(--border);border-radius:10px;
+}
+.ctrl-btn{
+  padding:.5rem 1.1rem;font-size:.92rem;font-weight:600;
+  border:1px solid var(--border2);border-radius:6px;background:var(--card2);
+  color:var(--txt2);cursor:pointer;transition:all .25s;
+  font-family:'Noto Sans SC',sans-serif;
+  display:inline-flex;align-items:center;gap:.35rem;
+}
+.ctrl-btn:hover{border-color:var(--accent);color:var(--accent-b);transform:translateY(-1px)}
+.ctrl-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+.ctrl-btn.primary{background:rgba(194,70,61,.12);border-color:rgba(194,70,61,.3);color:var(--red)}
+.ctrl-btn.primary:hover{background:rgba(194,70,61,.2);border-color:var(--red);color:var(--red)}
+.ctrl-btn.secondary{background:rgba(66,99,213,.1);border-color:rgba(66,99,213,.25);color:var(--accent-b)}
+.ctrl-divider{width:1px;height:22px;background:var(--border);margin:0 .3rem}
+.ctrl-speed{
+  display:flex;align-items:center;gap:.4rem;color:var(--txt3);font-size:.85rem;margin-left:auto;
+}
+.ctrl-speed select{
+  background:var(--card2);color:var(--txt);border:1px solid var(--border2);
+  padding:.3rem .6rem;border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:.85rem;cursor:pointer;
+}
+
+/* Sliders */
+.sliders{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:1rem 1.4rem;
+  padding:.85rem 1.1rem;background:var(--card);border:1px solid var(--border);border-radius:10px;
+  margin-bottom:.75rem;
+}
+.slider-row{display:flex;flex-direction:column;gap:.3rem}
+.slider-head{
+  display:flex;align-items:baseline;justify-content:space-between;gap:.5rem;
+  font-family:'JetBrains Mono',monospace;
+}
+.slider-head .lbl{font-size:.78rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.05em}
+.slider-head .val{font-size:.95rem;font-weight:700;color:var(--accent-b)}
+.slider-head .val .unit{color:var(--txt3);font-weight:500;font-size:.78rem;margin-left:.2em}
+.slider-row input[type=range]{
+  -webkit-appearance:none;appearance:none;
+  width:100%;height:4px;background:var(--card2);border-radius:3px;outline:none;
+  border:1px solid var(--border2);
+}
+.slider-row input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;appearance:none;
+  width:16px;height:16px;border-radius:50%;
+  background:var(--accent);cursor:pointer;border:2px solid var(--bg);
+  box-shadow:0 0 0 1px var(--accent);
+}
+.slider-row input[type=range]::-moz-range-thumb{
+  width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid var(--bg);
+}
+.slider-row .hint{font-size:.72rem;color:var(--txt3);font-family:'JetBrains Mono',monospace}
+.slider-row .hint.warn{color:var(--amber)}
+.slider-row .hint.ok{color:var(--green)}
+
+/* Phase tracker */
+.phase-tracker{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:.85rem;margin-bottom:1.2rem;
+}
+.phase-card{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:.9rem 1.05rem;transition:all .35s;position:relative;overflow:hidden;
+}
+.phase-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:var(--border2);transition:background .3s;
+}
+.phase-card.active::before{background:linear-gradient(90deg,var(--red),var(--amber))}
+.phase-card.done::before{background:var(--green)}
+.phase-card.active{border-color:var(--red);box-shadow:0 0 0 2px rgba(194,70,61,.08)}
+.phase-card.done{opacity:.78}
+.phase-num{
+  font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;
+  color:var(--txt3);line-height:1;margin-bottom:.3rem;transition:color .3s;
+}
+.phase-card.active .phase-num{color:var(--red)}
+.phase-card.done .phase-num{color:var(--green)}
+.phase-name{font-size:.95rem;font-weight:600;margin-bottom:.25rem}
+.phase-desc{font-size:.78rem;color:var(--txt3);line-height:1.55;font-family:'JetBrains Mono',monospace}
+.phase-desc strong{color:var(--accent-b)}
+.phase-desc .red{color:var(--red)}
+.phase-desc .green{color:var(--green)}
+
+/* Status grid */
+.status-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:.7rem;
+  margin-bottom:1.2rem;
+}
+.status-card{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:.7rem .9rem;transition:all .3s;
+}
+.status-card.active{border-color:var(--accent);box-shadow:0 0 0 2px rgba(66,99,213,.08)}
+.status-card.danger{border-color:rgba(194,70,61,.32);box-shadow:0 0 0 2px rgba(194,70,61,.07)}
+.status-card.warn{border-color:rgba(174,115,14,.32);box-shadow:0 0 0 2px rgba(174,115,14,.06)}
+.status-card .lbl{font-size:.72rem;color:var(--txt3);text-transform:uppercase;letter-spacing:.05em;font-family:'JetBrains Mono',monospace}
+.status-card .val{font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700;color:var(--accent-b);margin-top:.18rem;line-height:1.2}
+.status-card .val.red{color:var(--red)}
+.status-card .val.green{color:var(--green)}
+.status-card .val.amber{color:var(--amber)}
+.status-card .val.discarded{color:var(--discarded);text-decoration:line-through;text-decoration-color:var(--red)}
+.status-card .sub{font-size:.7rem;color:var(--txt3);margin-top:.15rem;font-family:'JetBrains Mono',monospace}
+.status-card.flash-update{animation:flashUp .9s ease-out}
+@keyframes flashUp{
+  0%{box-shadow:0 0 0 0 rgba(194,70,61,.5);background:rgba(194,70,61,.08)}
+  100%{box-shadow:0 0 0 0 rgba(194,70,61,0);background:var(--card)}
+}
+
+/* Main canvas stage */
+.chain-stage{
+  background:var(--card);border:1px solid var(--border);border-radius:12px;
+  padding:1.1rem 1.2rem 1rem;margin-bottom:1.2rem;
+  position:relative;overflow:hidden;
+}
+.chain-stage-header{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:.7rem;flex-wrap:wrap;gap:.6rem;
+}
+.chain-stage-title{font-size:1.02rem;font-weight:600}
+.chain-stage-label{
+  font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--txt3);
+}
+.chain-status-panel{
+  min-width:240px;padding:.65rem .9rem;border-radius:10px;
+  background:rgba(66,99,213,.08);border:1px solid rgba(66,99,213,.24);
+  color:var(--accent);box-shadow:0 12px 32px rgba(15,23,42,.24);
+  transition:background .3s,border-color .3s,color .3s,box-shadow .3s;
+}
+.chain-status-main{font-size:.76rem;font-weight:600;line-height:1.45;color:var(--txt2)}
+.chain-status-height{
+  display:flex;align-items:baseline;justify-content:space-between;gap:.8rem;margin-bottom:.32rem;
+}
+.chain-status-label{font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;color:var(--txt)}
+.chain-status-value{font-family:'JetBrains Mono',monospace;font-size:1.65rem;font-weight:800;line-height:1;color:currentColor}
+.chain-status-panel.idle{background:rgba(92,110,118,.08);border-color:rgba(92,110,118,.3);color:var(--txt2)}
+.chain-status-panel.normal{
+  background:linear-gradient(135deg,rgba(37,132,94,.13),rgba(66,99,213,.1));
+  border-color:rgba(37,132,94,.3);color:var(--green);
+}
+.chain-status-panel.attacking{
+  background:rgba(194,70,61,.12);color:var(--red);border-color:rgba(194,70,61,.38);
+  box-shadow:0 14px 36px rgba(194,70,61,.12);
+  animation:pulse calc(1.8s * var(--anim-scale)) ease-in-out infinite;
+}
+@keyframes pulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(194,70,61,.2)}
+  50%{box-shadow:0 0 0 6px rgba(194,70,61,0)}
+}
+
+#mainCanvas{
+  width:100%;
+  display:block;
+  border-radius:8px;
+}
+
+.legend{
+  display:flex;gap:1rem;margin-top:.8rem;flex-wrap:wrap;padding-top:.7rem;
+  border-top:1px dashed var(--border);
+}
+.legend-item{
+  display:flex;align-items:center;gap:.35rem;font-size:.78rem;color:var(--txt3);
+}
+.legend-dot{width:11px;height:11px;border-radius:2px;flex-shrink:0}
+.legend-dot.honest{background:rgba(66,99,213,.22);border:1px solid rgba(66,99,213,.7)}
+.legend-dot.byz{background:rgba(174,115,14,.20);border:1px solid rgba(174,115,14,.7)}
+.legend-dot.priv{background:rgba(92,110,118,.22);border:1px dashed rgba(183,70,70,.7)}
+.legend-dot.pruned{background:rgba(194,70,61,.15);border:1px solid rgba(194,70,61,.5)}
+.legend-dot.a1{background:var(--a1-bg);border:1px solid var(--a1)}
+.legend-dot.a2{background:var(--a2-bg);border:1px solid var(--a2)}
+.legend-dot.a3{background:var(--a3-bg);border:1px solid var(--a3)}
+.legend-dot.disc{background:var(--discarded-bg);border:1px solid var(--discarded)}
+
+/* Two col bottom */
+.two-col{display:grid;grid-template-columns:1.4fr 1fr;gap:1.2rem}
+.two-col > div{min-width:0}
+@media(max-width:1100px){.two-col{grid-template-columns:1fr}}
+.event-log{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:1rem;height:300px;overflow-y:auto;
+  font-family:'JetBrains Mono',monospace;font-size:.78rem;
+}
+.event-log::-webkit-scrollbar{width:6px}
+.event-log::-webkit-scrollbar-track{background:transparent}
+.event-log::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+.event-item{
+  padding:.32rem 0;color:var(--txt2);display:flex;gap:.6rem;
+  border-bottom:1px dashed rgba(100,125,140,.05);
+  animation:slideIn calc(.3s * var(--anim-scale)) ease;
+}
+@keyframes slideIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+.event-item:last-child{border-bottom:none}
+.event-time{color:var(--txt3);flex-shrink:0;min-width:80px;font-size:.72rem}
+.event-tag{
+  flex-shrink:0;padding:.04rem .35rem;border-radius:3px;font-size:.68rem;font-weight:600;
+  min-width:62px;text-align:center;
+}
+.event-tag.info{background:rgba(66,99,213,.1);color:var(--accent-b)}
+.event-tag.attack{background:rgba(194,70,61,.1);color:var(--red)}
+.event-tag.success{background:rgba(37,132,94,.1);color:var(--green)}
+.event-tag.warn{background:rgba(174,115,14,.1);color:var(--amber)}
+.event-tag.release{background:rgba(194,70,61,.22);color:#a53232;font-weight:700}
+.event-msg{color:var(--txt)}
+.event-msg .hl{color:var(--accent-b)}
+.event-msg .red{color:var(--red)}
+.event-msg .green{color:var(--green)}
+.event-msg .amber{color:var(--amber)}
+.event-msg .a3{color:var(--a3)}
+
+.incentive-panel{
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  padding:1rem;display:flex;flex-direction:column;gap:.7rem;
+}
+.incentive-header{
+  display:flex;align-items:baseline;justify-content:space-between;gap:.6rem;flex-wrap:wrap;
+}
+.incentive-title{font-size:.95rem;font-weight:600}
+.incentive-sub{font-size:.74rem;color:var(--txt3);font-family:'JetBrains Mono',monospace}
+.incentive-canvas-wrap{
+  position:relative;background:rgba(255,255,255,.5);
+  border:1px solid rgba(100,125,140,.14);border-radius:8px;overflow:hidden;
+}
+#chartCanvas{width:100%;height:280px;display:block}
+.formula-block{
+  font-family:'JetBrains Mono',monospace;font-size:.74rem;color:var(--txt2);
+  background:var(--card2);border:1px dashed var(--border2);border-radius:6px;
+  padding:.55rem .7rem;line-height:1.7;
+}
+.formula-block .k{color:var(--accent-b);font-weight:600}
+.formula-block .v{color:var(--green);font-weight:600}
+.formula-block .r{color:var(--red);font-weight:600}
+.formula-block .row{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem}
+.formula-block .row .small{color:var(--txt3);font-size:.7rem}
+
+/* Tooltip */
+.canvas-tooltip{
+  position:absolute;pointer-events:none;
+  background:var(--bg2);border:1px solid var(--border2);
+  padding:.4rem .6rem;border-radius:6px;font-size:.74rem;
+  font-family:'JetBrains Mono',monospace;color:var(--txt);
+  z-index:50;opacity:0;transition:opacity .15s;
+  box-shadow:0 4px 16px rgba(0,0,0,.4);
+  white-space:nowrap;
+}
+
+.footer-note{
+  margin-top:1.2rem;padding:1rem 1.2rem;
+  background:var(--card);border:1px solid var(--border);border-radius:10px;
+  font-size:.84rem;color:var(--txt3);line-height:1.7;
+}
+.footer-note strong{color:var(--accent-b)}
+
+@media(max-width:1180px){
+  .demo-hero-body{grid-template-columns:1fr}
+}
+@media(max-width:768px){
+  .demo-hero,.demo-main{padding-left:1.2rem;padding-right:1.2rem}
+  .phase-tracker{grid-template-columns:1fr}
+  .controls{flex-direction:column;align-items:stretch}
+  .ctrl-speed{margin-left:0;justify-content:space-between}
+}
+</style>
+<link rel="stylesheet" href="./auth.css?v=20260907-security">
+<link rel="stylesheet" href="./security-demo.css?v=20260907-security">
+<script src="./auth.js?v=20260830-ui-fix"></script>
+</head>
+<body class="security-demo-page">
+<!-- security-shell-start -->
+<header class="security-demo-header">
+  <a class="page-back-link" href="./security.html#eth-staircase" aria-label="返回安全分析">返回</a>
+  <div class="security-demo-context"><strong>以太坊激励机制攻击</strong><span>区块链安全分析</span></div>
+  <span class="security-demo-network">Ethereum<span class="security-demo-dot" aria-hidden="true"></span></span>
+</header>
+<!-- security-shell-end -->
+
+<div class="demo-hero">
+  <div class="demo-hero-inner">
+    <h1>以太坊 PoS <span class="hl">激励机制阶梯攻击</span>演示</h1>
+    <div class="demo-hero-body">
+      <p class="demo-hero-desc">
+        <strong>关键发现：</strong>提出以太坊（全球第二高市值区块链平台）激励机制阶梯攻击，使诚实节点无法获得应得收益。<br>
+        <strong>国际影响：</strong>成果获以太坊官方确认，发表于安全领域国际顶级会议。
+      </p>
+    </div>
+  </div>
+</div>
+
+<div class="demo-main">
+
+  <!-- Controls -->
+  <div class="controls">
+    <button class="ctrl-btn secondary" onclick="startNormal()" id="btn-normal">▶ 正常运行</button>
+    <button class="ctrl-btn primary" onclick="launchAttack()" id="btn-attack">发动阶梯攻击</button>
+    <div class="ctrl-divider"></div>
+    <button class="ctrl-btn" onclick="stepForward()" id="btn-step">↦ 单步执行</button>
+    <button class="ctrl-btn" onclick="togglePause()" id="btn-pause">⏸ 暂停</button>
+    <button class="ctrl-btn" onclick="resetDemo()">↺ 重置</button>
+    <div class="ctrl-speed">
+      速度
+      <select id="speed-sel" onchange="updateSpeed(this.value)">
+        <option value="12000">0.5× 慢速</option>
+        <option value="6000" selected>1× 正常</option>
+        <option value="3000">2× 快速</option>
+        <option value="1500">4× 极速</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Main chain visualization -->
+  <div class="chain-stage">
+    <div class="chain-stage-header">
+      <div>
+        <div class="chain-stage-title">以太坊PoS阶梯攻击演示</div>
+      </div>
+      <div class="chain-status-panel idle" id="chain-status-panel">
+        <div class="chain-status-height">
+          <span class="chain-status-label">诚实激励损失率</span>
+          <strong class="chain-status-value" id="loss-display">0%</strong>
+        </div>
+        <div class="chain-status-main" id="chain-status-main">待命，等待演示开始</div>
+      </div>
+    </div>
+    <canvas id="mainCanvas" width="1600" height="380"></canvas>
+    <div class="legend">
+      <div class="legend-item"><span class="legend-dot honest"></span>诚实出块</div>
+      <div class="legend-item"><span class="legend-dot byz"></span>拜占庭出块（公开）</div>
+      <div class="legend-item"><span class="legend-dot priv"></span>扣留块</div>
+      <div class="legend-item"><span class="legend-dot pruned"></span>已剪枝</div>
+      <div class="legend-item"><span class="legend-dot a1"></span>旧源投票</div>
+      <div class="legend-item"><span class="legend-dot a2"></span>新源投票</div>
+      <div class="legend-item"><span class="legend-dot a3"></span>拜占庭投票</div>
+      <div class="legend-item"><span class="legend-dot disc"></span>票被丢弃</div>
+    </div>
+  </div>
+
+  <!-- Bottom: full-width incentive chart -->
+  <div class="incentive-panel">
+    <div class="incentive-header">
+      <div class="incentive-title">诚实节点收益变化</div>
+      <div class="incentive-sub" id="chart-sub">尚未发动攻击</div>
+    </div>
+    <div class="incentive-canvas-wrap">
+      <canvas id="chartCanvas" width="1600" height="280"></canvas>
+    </div>
+  </div>
+
+</div>
+
+<div class="canvas-tooltip" id="tooltip"></div>
+
+<script>
+// ============================================================
+// ETHEREUM STAIRCASE ATTACK VISUALIZATION
+// Paper: Max Attestation Matters (USENIX Security 2024)
+// 2-epoch cycle, 32 slots/epoch, attestation bars per slot
+// ============================================================
+
+const canvas = document.getElementById('mainCanvas');
+const ctx = canvas.getContext('2d');
+const tooltip = document.getElementById('tooltip');
+const chartCanvas = document.getElementById('chartCanvas');
+const chartCtx = chartCanvas.getContext('2d');
+
+let W = 1600, H = 380;
+let chartW = 500, chartH = 170;
+const dpr = window.devicePixelRatio || 1;
+
+function setupCanvas(){
+  const rect = canvas.getBoundingClientRect();
+  W = rect.width;
+  H = rect.height;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  recomputeBlockW();
+}
+function setupChart(){
+  const rect = chartCanvas.getBoundingClientRect();
+  chartW = rect.width;
+  chartH = rect.height;
+  chartCanvas.width = chartW * dpr;
+  chartCanvas.height = chartH * dpr;
+  chartCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+// ============= Layout =============
+const SLOTS_PER_EPOCH = 14;   // match liveness compact view
+const EPOCHS_VISIBLE = 2;
+const COMMITTEE_SIZE = 10;
+const BLOCK_H = 22;
+const SLOT_GAP = 3;
+const EPOCH_GAP = 24;
+const ATT_BAR_H = 12;
+const ATT_BAR_GAP = 2;
+const TRACK_LABEL_W = 70;
+const TRACK_GAP = 32;
+const ANIM_TIME_SCALE = 1;
+
+// Responsive BLOCK_W: compute from current canvas width so 2 full epochs always fit.
+let BLOCK_W = 24;
+function recomputeBlockW(){
+  const rightPad = 18;
+  const totalSlots = SLOTS_PER_EPOCH * EPOCHS_VISIBLE;          // 28
+  const totalGaps  = (SLOTS_PER_EPOCH - 1) * EPOCHS_VISIBLE;     // 26
+  const fixed = TRACK_LABEL_W + EPOCH_GAP + rightPad + totalGaps * SLOT_GAP;
+  const bw = Math.floor((W - fixed) / totalSlots);
+  BLOCK_W = Math.max(14, Math.min(36, bw));
+}
+
+function animMs(ms){ return ms * ANIM_TIME_SCALE; }
+
+function slideProgress(){
+  if(!STATE.slideAnim) return 0;
+  const elapsed = performance.now() - STATE.slideAnim.startTime;
+  const p = Math.min(1, elapsed / STATE.slideAnim.duration);
+  return 1 - Math.pow(1 - p, 3);
+}
+function effectiveXPos(es){
+  return es - slideProgress();
+}
+function epochSlotToX(epochSlot, slot){
+  const epochW = SLOTS_PER_EPOCH * (BLOCK_W + SLOT_GAP) - SLOT_GAP;
+  const left = TRACK_LABEL_W + effectiveXPos(epochSlot) * (epochW + EPOCH_GAP);
+  return left + slot * (BLOCK_W + SLOT_GAP);
+}
+function effectiveLeftmostDepth(){
+  const ep0 = STATE.epochs[0];
+  if(!ep0) return 0;
+  const base = ep0.depth || 0;
+  if(!STATE.slideAnim) return base;
+  const ep1 = STATE.epochs[1];
+  if(!ep1) return base;
+  return base + ((ep1.depth || 0) - base) * slideProgress();
+}
+function trackY(track, es){
+  const top = 26;
+  const step = BLOCK_H + 10;
+  const ep = STATE.epochs[es];
+  let idx = 0;
+  if(track === 'public') idx = 0;
+  else if(track === 'private') idx = 1;
+  else if(track === 'bj') idx = (ep && ep.isPrimer) ? 1 : 2;
+  const depth = ep ? (ep.depth || 0) : 0;
+  return top + (idx + depth - effectiveLeftmostDepth()) * step;
+}
+
+// ============= Parameters =============
+const PARAMS = {
+  N: 16384,
+  fPct: 33.3,
+  maxAtt: 128,
+};
+
+function fAbs(){ return Math.round(PARAMS.N * PARAMS.fPct / 100); }
+function nMinusF(){ return PARAMS.N - fAbs(); }
+function nC(){
+  const MaxCom = 64;
+  if(PARAMS.N <= 4096 * MaxCom) return PARAMS.N / 128;
+  return 32 * MaxCom;
+}
+function nA(){ return PARAMS.maxAtt; }
+function feasible(){ return nA() >= nC(); }
+function pSucc(){
+  const r = (PARAMS.N - fAbs()) / PARAMS.N;
+  return 1 - Math.pow(r, 4);
+}
+function steadyStateLossRate(){
+  const f = fAbs();
+  const numer = 4*PARAMS.N/15 - 9*f/10;
+  const denom = PARAMS.N - f;
+  if(denom <= 0) return 1;
+  return 1 - numer / denom;
+}
+
+// ============= State =============
+const STATE = {
+  mode: 'idle',
+  paused: false,
+  speed: 6000,
+  heartbeat: null,
+  currentCycle: 0,
+  currentEpoch: 0,
+  cellInEpoch: 0,
+  epochSlotPos: 0,
+  phase: 0,
+  epochs: [null, null],
+  lj: { label: 'cp_0', e: 0 },
+  cycleA1: 0,
+  cycleA2: 0,
+  cycleA3: 0,
+  lossHistory: [],
+  cumulativeLoss: 0,
+  releasePulse: null,
+  slideAnim: null,
+};
+
+// ============= Epoch generation =============
+function genEpoch(epochNum){
+  const fProb = PARAMS.fPct / 100;
+  const proposers = [];
+  for(let s=0;s<SLOTS_PER_EPOCH;s++){
+    proposers.push(Math.random() < fProb ? 'a' : 'h');
+  }
+  // v_j = last slot (forced byzantine withholder)
+  proposers[SLOTS_PER_EPOCH - 1] = 'a';
+  const vj = SLOTS_PER_EPOCH - 1;
+  // t_adv around mid-epoch (forced byzantine release point)
+  const midLo = Math.floor(SLOTS_PER_EPOCH * 0.42);
+  const midHi = Math.floor(SLOTS_PER_EPOCH * 0.6);
+  let tadv = -1;
+  for(let s=midLo;s<=midHi;s++){
+    if(proposers[s] === 'a'){ tadv = s; break; }
+  }
+  if(tadv === -1){
+    tadv = midLo + Math.floor(Math.random()*(midHi - midLo + 1));
+    proposers[tadv] = 'a';
+  }
+  const committees = [];
+  for(let s=0;s<SLOTS_PER_EPOCH;s++){
+    const com = [];
+    for(let i=0;i<COMMITTEE_SIZE;i++){
+      com.push(Math.random() < fProb ? 'a' : 'h');
+    }
+    committees.push(com);
+  }
+  return {
+    epochNum,
+    proposers,
+    committees,
+    vjSlot: vj,
+    tadvSlot: tadv,
+    blocks: new Array(SLOTS_PER_EPOCH).fill(null),
+    bjPrivate: null,
+    voteStates: new Array(SLOTS_PER_EPOCH).fill(null).map(() => ({ honest:'none', byz:'none' })),
+    bjReleasedAt: null,
+    didRelease: false,
+  };
+}
+
+function makeBlock(producer, slot, epochNum, opts={}){
+  return {
+    producer, slot, epochNum,
+    type: producer === 'h' ? 'honest' : 'byz',
+    isCheckpoint: slot === 0,
+    isVj: !!opts.isVj,
+    isTadv: !!opts.isTadv,
+    pruned: false,
+    promoted: !!opts.promoted,
+    a3PackCount: opts.a3PackCount || 0,
+  };
+}
+
+// Logging removed — event log was deleted from the layout.
+function addLog(){ /* no-op */ }
+const logEl = null;
+
+// Parameters are fixed at defaults — no UI controls.
+
+// ============= Status =============
+function updateStatus(){
+  // The big loss number lives in chain-status-panel (top-right of canvas).
+  const loss = STATE.cumulativeLoss;
+  const el = document.getElementById('loss-display');
+  if(el) el.textContent = (loss * 100).toFixed(1) + '%';
+}
+
+function setChainStatus(mode){
+  const panel = document.getElementById('chain-status-panel');
+  const main = document.getElementById('chain-status-main');
+  panel.classList.remove('idle','normal','attacking');
+  if(mode === 'idle'){
+    panel.classList.add('idle');
+    main.textContent = '待命，等待演示开始';
+  } else if(mode === 'normal'){
+    panel.classList.add('normal');
+    main.textContent = '正常运行 · 诚实节点持续获得激励';
+  } else {
+    panel.classList.add('attacking');
+    main.innerHTML = STATE.phase === 1
+      ? ''
+      : '<span style="color:#a53232">攻击中：A_1 票将在 slot t_adv 被丢弃</span>';
+  }
+}
+
+function updatePhase(p){
+  STATE.phase = p;
+}
+
+function flashUpdate(cardId){
+  const el = document.getElementById(cardId);
+  if(!el) return;
+  el.classList.remove('flash-update');
+  void el.offsetWidth;
+  el.classList.add('flash-update');
+}
+
+// ============= Drawing helpers =============
+function roundRect(c, x, y, w, h, r){
+  r = Math.max(0, Math.min(r, w/2, h/2));
+  c.beginPath();
+  c.moveTo(x+r, y);
+  c.lineTo(x+w-r, y);
+  c.quadraticCurveTo(x+w, y, x+w, y+r);
+  c.lineTo(x+w, y+h-r);
+  c.quadraticCurveTo(x+w, y+h, x+w-r, y+h);
+  c.lineTo(x+r, y+h);
+  c.quadraticCurveTo(x, y+h, x, y+h-r);
+  c.lineTo(x, y+r);
+  c.quadraticCurveTo(x, y, x+r, y);
+  c.closePath();
+}
+
+function drawBlockShape(c, block, x, y){
+  const colors = {
+    'honest': { fill:'rgba(66,99,213,.55)', stroke:'rgba(53,86,176,.95)' },
+    'byz':    { fill:'rgba(174,115,14,.55)', stroke:'rgba(155,101,12,.95)'  },
+    'priv':   { fill:'rgba(92,110,118,.45)', stroke:'rgba(183,70,70,.9)' },
+  };
+  if(block.pruned){
+    c.save();
+    c.beginPath();
+    roundRect(c, x, y, BLOCK_W, BLOCK_H, 3);
+    c.clip();
+    c.fillStyle = 'rgba(194,70,61,.22)';
+    c.fillRect(x, y, BLOCK_W, BLOCK_H);
+    c.strokeStyle = 'rgba(194,70,61,.7)';
+    c.lineWidth = 1;
+    for(let i=-BLOCK_H;i<BLOCK_W+BLOCK_H;i+=3){
+      c.beginPath();
+      c.moveTo(x+i, y);
+      c.lineTo(x+i+BLOCK_H, y+BLOCK_H);
+      c.stroke();
+    }
+    c.restore();
+    c.save();
+    c.strokeStyle = 'rgba(194,70,61,.85)';
+    c.lineWidth = 1.2;
+    c.setLineDash([3,2]);
+    roundRect(c, x, y, BLOCK_W, BLOCK_H, 3);
+    c.stroke();
+    c.setLineDash([]);
+    c.restore();
+    return;
+  }
+
+  const role = block.isPrivate ? 'priv' : block.type;
+  const col = colors[role] || colors.honest;
+
+  c.save();
+  if(block.isCheckpoint){
+    c.shadowColor = role === 'priv' ? 'rgba(183,70,70,.7)' : 'rgba(66,99,213,.5)';
+    c.shadowBlur = 10;
+  }
+  c.fillStyle = col.fill;
+  roundRect(c, x, y, BLOCK_W, BLOCK_H, 3);
+  c.fill();
+  c.shadowBlur = 0;
+
+  c.strokeStyle = col.stroke;
+  c.lineWidth = block.isCheckpoint ? 1.6 : 1;
+  if(block.isPrivate) c.setLineDash([3,2]);
+  roundRect(c, x, y, BLOCK_W, BLOCK_H, 3);
+  c.stroke();
+  c.setLineDash([]);
+
+  c.restore();
+}
+
+function drawBlock(block, epochSlot, slot){
+  const x = epochSlotToX(epochSlot, slot);
+  if(!block){
+    const y = trackY('public', epochSlot);
+    ctx.save();
+    ctx.strokeStyle = 'rgba(82,102,109,.1)';
+    ctx.setLineDash([2,2]);
+    roundRect(ctx, x, y, BLOCK_W, BLOCK_H, 3);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+    return;
+  }
+  const trackName = block.isVj ? 'bj' : (block.onLower ? 'private' : 'public');
+  const y = trackY(trackName, epochSlot);
+  drawBlockShape(ctx, block, x, y);
+}
+
+function drawVjPrivate(epochSlot, slot, a3Count){
+  // b_j block itself is drawn by drawBlock on the 'bj' track.
+  // Here we draw the parent arrow: from b_j UP to the previous-track's last block.
+  const ep = STATE.epochs[epochSlot];
+  if(!ep) return;
+  let parentSlot = -1;
+  for(let s=slot-1;s>=0;s--){
+    const b = ep.blocks[s];
+    if(b && !b.isVj && !b.pruned){ parentSlot = s; break; }
+  }
+  if(parentSlot < 0) return;
+  const parent = ep.blocks[parentSlot];
+  const parentTrack = parent.onLower ? 'private' : 'public';
+  const parentY = trackY(parentTrack, epochSlot);
+  const px = epochSlotToX(epochSlot, parentSlot) + BLOCK_W/2;
+  const py = parentY + BLOCK_H;
+  const cx = epochSlotToX(epochSlot, slot) + BLOCK_W/2;
+  const cy = trackY('bj', epochSlot);
+  ctx.save();
+  ctx.strokeStyle = 'rgba(183,70,70,.65)';
+  ctx.lineWidth = 1.2;
+  ctx.setLineDash([3,2]);
+  ctx.beginPath();
+  ctx.moveTo(cx, cy);
+  const mid = (py + cy) / 2;
+  ctx.bezierCurveTo(cx, mid, px, mid, px, py);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = 'rgba(183,70,70,.9)';
+  ctx.beginPath();
+  ctx.moveTo(px, py);
+  ctx.lineTo(px-4, py+6);
+  ctx.lineTo(px+4, py+6);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
+}
+
+function attColorFor(state){
+  switch(state){
+    case 'A1': return { fill:'#278548', bg:'rgba(39,133,72,.18)' };
+    case 'A2': return { fill:'#3556b0', bg:'rgba(53,86,176,.18)' };
+    case 'A3': return { fill:'#b74646', bg:'rgba(183,70,70,.18)' };
+    case 'discarded': return { fill:'#475569', bg:'rgba(71,85,105,.28)' };
+    default: return { fill:'#1e293b', bg:'rgba(30,41,59,.4)' };
+  }
+}
+
+function drawAttCell(x, y, w, h, st){
+  if(st === 'none'){
+    ctx.fillStyle = 'rgba(82,102,109,.1)';
+    ctx.fillRect(x, y, w, h);
+    return;
+  }
+  const col = attColorFor(st);
+  if(st === 'discarded'){
+    ctx.save();
+    ctx.beginPath();
+    ctx.rect(x, y, w, h);
+    ctx.clip();
+    ctx.fillStyle = col.bg;
+    ctx.fillRect(x, y, w, h);
+    ctx.strokeStyle = 'rgba(71,85,105,.85)';
+    ctx.lineWidth = .8;
+    for(let k=-h;k<w+h;k+=3){
+      ctx.beginPath();
+      ctx.moveTo(x+k, y);
+      ctx.lineTo(x+k+h, y+h);
+      ctx.stroke();
+    }
+    ctx.restore();
+  } else {
+    ctx.fillStyle = col.bg;
+    ctx.fillRect(x, y, w, h);
+    ctx.fillStyle = col.fill;
+    ctx.globalAlpha = .9;
+    ctx.fillRect(x+0.5, y+0.5, w-1, h-1);
+    ctx.globalAlpha = 1;
+  }
+}
+
+function drawAttBar(epoch, epochSlot, slot){
+  if(!epoch) return;
+  const x = epochSlotToX(epochSlot, slot);
+  const yTop = trackY('public', epochSlot) - ATT_BAR_GAP - ATT_BAR_H;
+  const vs = epoch.voteStates[slot];
+  if(!vs) return;
+
+  // background
+  ctx.save();
+  ctx.fillStyle = 'rgba(15,23,42,.55)';
+  roundRect(ctx, x, yTop, BLOCK_W, ATT_BAR_H, 2);
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(82,102,109,.15)';
+  ctx.lineWidth = .5;
+  ctx.stroke();
+  ctx.restore();
+
+  // 2/3 honest + 1/3 byzantine
+  const innerW = BLOCK_W - 2;
+  const honestW = Math.round(innerW * 2 / 3);
+  const byzW = innerW - honestW;
+  const innerH = ATT_BAR_H - 2;
+  drawAttCell(x + 1, yTop + 1, honestW, innerH, vs.honest);
+  drawAttCell(x + 1 + honestW, yTop + 1, byzW, innerH, vs.byz);
+}
+
+function drawEpochFrame(epochSlot, epoch){
+  const epochW = SLOTS_PER_EPOCH * (BLOCK_W + SLOT_GAP) - SLOT_GAP;
+  const left = epochSlotToX(epochSlot, 0) - 4;
+  const top = trackY('public', epochSlot) - ATT_BAR_H - ATT_BAR_GAP - 6;
+  const bottom = trackY('bj', epochSlot) + BLOCK_H + 8;
+
+  ctx.save();
+  ctx.fillStyle = 'rgba(66,99,213,.025)';
+  roundRect(ctx, left, top, epochW + 8, bottom - top, 6);
+  ctx.fill();
+  ctx.strokeStyle = 'rgba(66,99,213,.12)';
+  ctx.setLineDash([2,3]);
+  ctx.lineWidth = 1;
+  roundRect(ctx, left, top, epochW + 8, bottom - top, 6);
+  ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.restore();
+}
+
+function drawTrackLabels(){ /* labels removed */ }
+
+function drawConnectors(){
+  ctx.save();
+
+  for(let es=0;es<STATE.epochs.length;es++){
+    const ep = STATE.epochs[es];
+    if(!ep) continue;
+    const yUpper = trackY('public', es) + BLOCK_H/2;
+    const yLower = trackY('private', es) + BLOCK_H/2;
+    // Upper
+    let prevUX = -1, prevUPruned = false;
+    for(let s=0;s<SLOTS_PER_EPOCH;s++){
+      const b = ep.blocks[s];
+      if(!b || b.onLower) continue;
+      const x1 = epochSlotToX(es, s);
+      if(prevUX >= 0){
+        const col = (b.pruned || prevUPruned) ? 'rgba(194,70,61,.35)' : 'rgba(66,99,213,.35)';
+        ctx.strokeStyle = col;
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(prevUX, yUpper);
+        ctx.lineTo(x1, yUpper);
+        ctx.stroke();
+      }
+      prevUX = x1 + BLOCK_W;
+      prevUPruned = b.pruned;
+    }
+    // Lower (new chain — excludes b_j which lives on its own bottom track)
+    let prevLX = -1;
+    for(let s=0;s<SLOTS_PER_EPOCH;s++){
+      const b = ep.blocks[s];
+      if(!b || !b.onLower || b.isPrivate || b.isVj) continue;
+      const x1 = epochSlotToX(es, s);
+      if(prevLX >= 0){
+        ctx.strokeStyle = 'rgba(174,115,14,.55)';
+        ctx.lineWidth = 1.2;
+        ctx.beginPath();
+        ctx.moveTo(prevLX, yLower);
+        ctx.lineTo(x1, yLower);
+        ctx.stroke();
+      }
+      prevLX = x1 + BLOCK_W;
+    }
+  }
+
+  for(let i=0;i+1<STATE.epochs.length;i++){
+    const epL = STATE.epochs[i], epR = STATE.epochs[i+1];
+    if(!epL || !epR) continue;
+    // Dead-chain continuation: epoch i's middle (last new-chain block) → epoch i+1's upper (first block)
+    // In staircase, both endpoints are at the same Y (L_{i+1}).
+    let lastMid = -1;
+    for(let s=SLOTS_PER_EPOCH-1;s>=0;s--){
+      const b = epL.blocks[s];
+      if(b && b.onLower && !b.isPrivate && !b.isVj){ lastMid = s; break; }
+    }
+    if(lastMid === -1){
+      for(let s=SLOTS_PER_EPOCH-1;s>=0;s--){
+        const b = epL.blocks[s];
+        if(b && !b.onLower && !b.pruned){ lastMid = s; break; }
+      }
+    }
+    let firstU = -1;
+    for(let s=0;s<SLOTS_PER_EPOCH;s++){
+      const b = epR.blocks[s];
+      if(b && !b.onLower){ firstU = s; break; }
+    }
+    if(lastMid >= 0 && firstU >= 0){
+      const lastB = epL.blocks[lastMid];
+      const x1 = epochSlotToX(i, lastMid) + BLOCK_W;
+      const x2 = epochSlotToX(i+1, firstU);
+      const y1 = trackY(lastB.onLower ? 'private' : 'public', i) + BLOCK_H/2;
+      const y2 = trackY('public', i+1) + BLOCK_H/2;
+      const col = epR.blocks[firstU].pruned ? 'rgba(194,70,61,.35)' : 'rgba(66,99,213,.3)';
+      ctx.strokeStyle = col;
+      ctx.lineWidth = 1;
+      ctx.setLineDash([2,2]);
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // New-chain continuation: epoch i's b_j → epoch i+1's middle (c_adv).
+    // Same Y in staircase. Only after b_j released.
+    let bjSlot = -1;
+    for(let s=SLOTS_PER_EPOCH-1;s>=0;s--){
+      const b = epL.blocks[s];
+      if(b && b.isVj && !b.isPrivate){ bjSlot = s; break; }
+    }
+    let firstMid = -1;
+    for(let s=0;s<SLOTS_PER_EPOCH;s++){
+      const b = epR.blocks[s];
+      if(b && b.onLower && !b.isVj){ firstMid = s; break; }
+    }
+    if(bjSlot >= 0 && firstMid >= 0){
+      const x1 = epochSlotToX(i, bjSlot) + BLOCK_W;
+      const x2 = epochSlotToX(i+1, firstMid);
+      const y1 = trackY('bj', i) + BLOCK_H/2;
+      const y2 = trackY('private', i+1) + BLOCK_H/2;
+      ctx.strokeStyle = 'rgba(174,115,14,.55)';
+      ctx.lineWidth = 1.2;
+      ctx.setLineDash([2,2]);
+      ctx.beginPath();
+      ctx.moveTo(x1, y1);
+      ctx.lineTo(x2, y2);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+  }
+  ctx.restore();
+}
+
+function drawReleasePulse(){
+  if(!STATE.releasePulse) return;
+  const { startTime, duration, epochSlot, slot } = STATE.releasePulse;
+  const elapsed = performance.now() - startTime;
+  const p = Math.min(1, elapsed / duration);
+  if(p >= 1){ STATE.releasePulse = null; return; }
+  const x = epochSlotToX(epochSlot, slot) + BLOCK_W/2;
+  const y = trackY('public', epochSlot) + BLOCK_H/2;
+  const radius = 8 + p * 60;
+  ctx.save();
+  ctx.strokeStyle = `rgba(194,70,61,${1 - p})`;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(x, y, radius, 0, Math.PI*2);
+  ctx.stroke();
+  ctx.strokeStyle = `rgba(183,70,70,${(1 - p)*0.7})`;
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.arc(x, y, radius*0.6, 0, Math.PI*2);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function render(){
+  ctx.clearRect(0, 0, W, H);
+  ctx.save();
+  ctx.strokeStyle = 'rgba(100,125,140,.03)';
+  ctx.lineWidth = 1;
+  for(let x=0;x<W;x+=40){
+    ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,H);ctx.stroke();
+  }
+  for(let y=0;y<H;y+=40){
+    ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(W,y);ctx.stroke();
+  }
+  ctx.restore();
+
+  const epCount = STATE.epochs.length;
+  for(let es=0;es<epCount;es++){
+    drawEpochFrame(es, STATE.epochs[es]);
+  }
+
+  drawTrackLabels();
+  drawConnectors();
+
+  for(let es=0;es<epCount;es++){
+    const ep = STATE.epochs[es];
+    if(!ep) continue;
+    for(let s=0;s<SLOTS_PER_EPOCH;s++){
+      drawBlock(ep.blocks[s], es, s);
+      drawAttBar(ep, es, s);
+    }
+    if(ep.bjPrivate){
+      drawVjPrivate(es, ep.bjPrivate.slot, ep.bjPrivate.a3Count);
+    }
+  }
+
+  drawReleasePulse();
+
+  if(STATE.mode === 'attack' || STATE.mode === 'normal'){
+    const x = epochSlotToX(STATE.epochSlotPos, Math.min(SLOTS_PER_EPOCH-1, STATE.cellInEpoch)) + BLOCK_W/2;
+    ctx.save();
+    ctx.strokeStyle = 'rgba(66,99,213,.25)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2,3]);
+    ctx.beginPath();
+    ctx.moveTo(x, 8);
+    ctx.lineTo(x, H - 8);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.restore();
+  }
+
+  requestAnimationFrame(render);
+}
+
+// ============= Chart =============
+function drawChart(){
+  chartCtx.clearRect(0, 0, chartW, chartH);
+  const pad = { l: 38, r: 12, t: 12, b: 22 };
+  const plotW = chartW - pad.l - pad.r;
+  const plotH = chartH - pad.t - pad.b;
+  const yMax = 1.0;
+  const yMin = -0.5;
+  const yRange = yMax - yMin;
+  const yOf = v => pad.t + plotH * (1 - (v - yMin) / yRange);
+
+  chartCtx.save();
+  chartCtx.strokeStyle = 'rgba(100,125,140,.06)';
+  for(let v=yMax;v>=yMin-1e-6;v-=0.5){
+    const y = yOf(v);
+    chartCtx.beginPath();
+    chartCtx.moveTo(pad.l, y);
+    chartCtx.lineTo(pad.l + plotW, y);
+    chartCtx.stroke();
+  }
+  chartCtx.restore();
+
+  chartCtx.save();
+  chartCtx.fillStyle = 'rgba(92,110,118,.85)';
+  chartCtx.font = '10px JetBrains Mono';
+  chartCtx.textAlign = 'right';
+  chartCtx.textBaseline = 'middle';
+  for(let v=yMax;v>=yMin-1e-6;v-=0.5){
+    chartCtx.fillText(Math.round(v*100)+'%', pad.l - 5, yOf(v));
+  }
+  chartCtx.restore();
+
+  const hist = STATE.lossHistory;
+  if(hist.length > 0){
+    const maxEp = Math.max(20, hist[hist.length-1].epoch + 2);
+    chartCtx.save();
+    chartCtx.strokeStyle = '#c2463d';
+    chartCtx.lineWidth = 2;
+    chartCtx.shadowColor = '#c2463d';
+    chartCtx.shadowBlur = 4;
+    chartCtx.beginPath();
+    hist.forEach((pt, i) => {
+      const revenue = 1 - pt.loss;
+      const clamped = Math.max(yMin, Math.min(yMax, revenue));
+      const x = pad.l + plotW * pt.epoch / maxEp;
+      const y = yOf(clamped);
+      if(i === 0) chartCtx.moveTo(x, y);
+      else chartCtx.lineTo(x, y);
+    });
+    chartCtx.stroke();
+    chartCtx.restore();
+
+    const last = hist[hist.length-1];
+    const lastRev = Math.max(yMin, Math.min(yMax, 1 - last.loss));
+    const lx = pad.l + plotW * last.epoch / maxEp;
+    const ly = yOf(lastRev);
+    chartCtx.save();
+    chartCtx.fillStyle = '#c2463d';
+    chartCtx.beginPath();
+    chartCtx.arc(lx, ly, 3, 0, Math.PI*2);
+    chartCtx.fill();
+    chartCtx.restore();
+  }
+}
+
+function pushLossPoint(){
+  if(STATE.lossHistory.length === 0){
+    STATE.lossHistory.push({ epoch: 0, loss: 0 });
+  }
+  STATE.lossHistory.push({ epoch: STATE.currentEpoch, loss: STATE.cumulativeLoss });
+  if(STATE.lossHistory.length > 200) STATE.lossHistory.shift();
+  drawChart();
+  document.getElementById('chart-sub').textContent =
+    `已攻击 ${STATE.lossHistory.length - 1} epoch · 当前收益 ${((1-STATE.cumulativeLoss)*100).toFixed(1)}%`;
+}
+
+// ============= Attack heartbeat =============
+function beginCycle(){
+  STATE.currentCycle = 1;
+  STATE.cellInEpoch = 0;
+  STATE.epochSlotPos = 0;
+  const ep0 = genEpoch(STATE.currentEpoch);
+  ep0.depth = 0;
+  ep0.isPrimer = true;
+  const ep1 = genEpoch(STATE.currentEpoch + 1);
+  ep1.depth = 0;
+  STATE.epochs = [ep0, ep1];
+  STATE.cycleA1 = 0; STATE.cycleA2 = 0; STATE.cycleA3 = 0;
+  STATE.releasePulse = null;
+  updatePhase(1);
+  addLog('CYCLE', `▶▶ 阶梯攻击开始 · 每个 epoch: 前段剪枝 + 末段扣留 b_j`, 'attack');
+  setChainStatus('attacking');
+  updateStatus();
+}
+
+function countByzantineAttestorsThusFar(ep){
+  let n = 0;
+  for(let s=0;s<SLOTS_PER_EPOCH;s++){
+    for(let i=0;i<COMMITTEE_SIZE;i++){
+      if(ep.committees[s][i] === 'a') n++;
+    }
+  }
+  return n;
+}
+
+function advanceAttackSlot(){
+  const es = STATE.epochSlotPos;
+  const ep = STATE.epochs[es];
+  if(!ep) return;
+  const slot = STATE.cellInEpoch;
+  const producer = ep.proposers[slot];
+  const prevEp = es > 0 ? STATE.epochs[es - 1] : null;
+  const hasPrevBj = !!(prevEp && prevEp.bjPrivate && !prevEp.bjReleasedAt);
+
+  if(slot === 0){
+    if(hasPrevBj) updatePhase(2); else updatePhase(1);
+    addLog('PHASE', `Epoch <span class="hl">${ep.epochNum}</span> 开始`, 'attack');
+  }
+
+  // Block production
+  if(slot === ep.tadvSlot && hasPrevBj){
+    ep.blocks[slot] = makeBlock('a', slot, ep.epochNum, { isTadv:true });
+    ep.blocks[slot].onLower = true;
+    triggerRelease(ep);
+  } else if(slot === ep.vjSlot){
+    const a3Count = countByzantineAttestorsThusFar(ep);
+    ep.blocks[slot] = {
+      type:'byz', producer:'a', slot, epochNum: ep.epochNum,
+      isCheckpoint:false, isVj:true, isPrivate:true, pruned:false,
+      onLower:true, a3PackCount:a3Count,
+    };
+    ep.bjPrivate = { slot, a3Count };
+    addLog('WITHHOLD', `slot ${slot}: v_j 出 <span class="red">b_j</span> · 打包 |A_3|=${a3Count} 票 · <span class="red">扣留</span>`, 'attack');
+  } else {
+    ep.blocks[slot] = makeBlock(producer, slot, ep.epochNum, {});
+    // Post-release slots in this epoch live on lower track (new main chain).
+    if(ep.didRelease && slot > ep.tadvSlot){
+      ep.blocks[slot].onLower = true;
+    }
+  }
+
+  // Vote bars
+  ep.voteStates[slot].byz = 'A3';
+  STATE.cycleA3++;
+  if(hasPrevBj && slot < ep.tadvSlot){
+    ep.voteStates[slot].honest = 'A1';
+    STATE.cycleA1++;
+  } else {
+    ep.voteStates[slot].honest = 'A2';
+    STATE.cycleA2++;
+  }
+
+  STATE.cellInEpoch++;
+  if(STATE.cellInEpoch >= SLOTS_PER_EPOCH){
+    STATE.cellInEpoch = 0;
+    if(STATE.epochSlotPos === 0){
+      STATE.epochSlotPos = 1;
+      STATE.currentEpoch++;
+    } else {
+      slideToNextEpoch();
+      return;
+    }
+  }
+  updateStatus();
+}
+
+function slideToNextEpoch(){
+  const finishedEp = STATE.epochs[1];
+  if(finishedEp && finishedEp.didRelease){
+    finishCycleBookkeeping();
+  }
+  STATE.currentEpoch++;
+  const incoming = genEpoch(STATE.currentEpoch);
+  const lastEp = STATE.epochs[STATE.epochs.length - 1];
+  incoming.depth = lastEp ? ((lastEp.isPrimer ? 0 : lastEp.depth) + 1) : 1;
+  STATE.epochs.push(incoming);
+  STATE.slideAnim = {
+    startTime: performance.now(),
+    duration: animMs(500),
+  };
+  setTimeout(() => {
+    if(STATE.mode !== 'attack'){ STATE.slideAnim = null; return; }
+    STATE.epochs.shift();
+    STATE.slideAnim = null;
+    STATE.cellInEpoch = 0;
+    STATE.epochSlotPos = 1;
+  }, animMs(500));
+}
+
+function triggerRelease(ep){
+  const es = STATE.epochSlotPos;
+  const prevEp = STATE.epochs[es - 1];
+  if(!prevEp || !prevEp.bjPrivate) return;
+  const releaseSlot = ep.tadvSlot;
+  ep.didRelease = true;
+  STATE.releasePulse = {
+    startTime: performance.now(),
+    duration: 900,
+    epochSlot: es,
+    slot: releaseSlot,
+  };
+  addLog('RELEASE', `<span class="red">★ slot ${releaseSlot}: 释放 b_j + c_adv</span> · 触发前一 epoch b_j 上链`, 'release');
+
+  STATE.lj = { label: `b_i^${prevEp.epochNum}`, e: prevEp.epochNum };
+  addLog('LJ-UPDATE', `<span class="red">⚠ LJ 更新</span>: → <span class="hl">b_i^${prevEp.epochNum}</span>`, 'attack');
+
+  // Prune current epoch's pre-tadv slots (the doomed upper chain)
+  for(let s=0;s<releaseSlot;s++){
+    if(ep.blocks[s]) ep.blocks[s].pruned = true;
+    if(ep.voteStates[s].honest === 'A1') ep.voteStates[s].honest = 'discarded';
+  }
+  // Promote previous epoch's b_j
+  prevEp.bjReleasedAt = { slot: releaseSlot };
+  const bj = prevEp.blocks[prevEp.bjPrivate.slot];
+  if(bj){
+    bj.isPrivate = false;
+    bj.promoted = true;
+  }
+  for(let s=prevEp.bjPrivate.slot+1;s<SLOTS_PER_EPOCH;s++){
+    if(prevEp.blocks[s]) prevEp.blocks[s].pruned = true;
+  }
+  addLog('PROMOTE', `b_j 上链 · 与 c_adv 一起成为新主链`, 'attack');
+  addLog('DISCARD', `<span class="red">${STATE.cycleA1} 张 A_1 票被丢弃</span>`, 'attack');
+}
+
+function finishCycleBookkeeping(){
+  const a1 = STATE.cycleA1;
+  const a2 = STATE.cycleA2;
+  const target = steadyStateLossRate();
+  const alpha = 0.15;
+  STATE.cumulativeLoss = STATE.cumulativeLoss + alpha * (target - STATE.cumulativeLoss);
+  pushLossPoint();
+  addLog('SUMMARY', `周期 ${STATE.currentCycle} 完成 · |A_1|=${a1} 丢弃 · |A_2|=${a2} 入账 · |A_3|=${STATE.cycleA3} · 稳态损失率 ${(target*100).toFixed(1)}% · 累积 ${(STATE.cumulativeLoss*100).toFixed(1)}%`, 'success');
+  STATE.currentCycle++;
+  STATE.cycleA1 = 0; STATE.cycleA2 = 0; STATE.cycleA3 = 0;
+}
+
+// ============= Normal mode =============
+function advanceNormalSlot(){
+  let ep = STATE.epochs[STATE.epochSlotPos];
+  if(!ep){
+    ep = genEpoch(STATE.currentEpoch);
+    STATE.epochs[STATE.epochSlotPos] = ep;
+  }
+  const slot = STATE.cellInEpoch;
+  const producer = ep.proposers[slot];
+  ep.blocks[slot] = makeBlock(producer, slot, ep.epochNum, {});
+  ep.voteStates[slot].honest = 'A2';
+  ep.voteStates[slot].byz = 'A3';
+  STATE.cellInEpoch++;
+  if(STATE.cellInEpoch >= SLOTS_PER_EPOCH){
+    STATE.cellInEpoch = 0;
+    STATE.currentEpoch++;
+    if(STATE.epochSlotPos === 0){
+      STATE.epochSlotPos = 1;
+    } else {
+      STATE.epochs[0] = STATE.epochs[1];
+      STATE.epochs[1] = null;
+    }
+  }
+  updateStatus();
+}
+
+function heartbeatStep(){
+  if(STATE.paused) return;
+  if(STATE.slideAnim) return;
+  if(STATE.mode === 'normal'){
+    advanceNormalSlot();
+  } else if(STATE.mode === 'attack'){
+    advanceAttackSlot();
+  }
+}
+
+function setHeartbeat(){
+  if(STATE.heartbeat) clearInterval(STATE.heartbeat);
+  const interval = STATE.speed / SLOTS_PER_EPOCH;
+  STATE.heartbeat = setInterval(heartbeatStep, interval);
+}
+
+// ============= Controls =============
+function startNormal(){
+  resetVisibleState();
+  STATE.mode = 'normal';
+  setChainStatus('normal');
+  addLog('MODE', '<span class="green">切换到正常运行</span>', 'success');
+  setHeartbeat();
+  updatePhase(0);
+}
+
+async function launchAttack(){
+  if(STATE.mode === 'attack') return;
+  resetVisibleState();
+  STATE.mode = 'attack';
+  addLog('MODE', '<span class="red">▶ 发动阶梯攻击</span> · 每 2 epoch 一周期', 'attack');
+  beginCycle();
+  setHeartbeat();
+}
+
+function stepForward(){
+  if(STATE.mode === 'idle'){
+    startNormal();
+    if(STATE.heartbeat) clearInterval(STATE.heartbeat);
+    STATE.heartbeat = null;
+  }
+  heartbeatStep();
+}
+
+function togglePause(){
+  STATE.paused = !STATE.paused;
+  document.getElementById('btn-pause').textContent = STATE.paused ? '▶ 继续' : '⏸ 暂停';
+  addLog('CTRL', STATE.paused ? '已暂停' : '已继续', 'info');
+}
+
+function resetVisibleState(){
+  STATE.epochs = [null, null];
+  STATE.cellInEpoch = 0;
+  STATE.epochSlotPos = 0;
+  STATE.currentCycle = 0;
+  STATE.currentEpoch = 0;
+  STATE.cycleA1 = 0;
+  STATE.cycleA2 = 0;
+  STATE.cycleA3 = 0;
+  STATE.cumulativeLoss = 0;
+  STATE.lossHistory = [];
+  STATE.lj = { label:'cp_0', e:0 };
+  STATE.phase = 0;
+  STATE.releasePulse = null;
+  STATE.slideAnim = null;
+  drawChart();
+  updateStatus();
+}
+
+function resetDemo(){
+  if(STATE.heartbeat){ clearInterval(STATE.heartbeat); STATE.heartbeat = null; }
+  STATE.mode = 'idle';
+  STATE.paused = false;
+  resetVisibleState();
+  setChainStatus('idle');
+  updatePhase(0);
+  document.getElementById('btn-pause').textContent = '⏸ 暂停';
+}
+
+function updateSpeed(v){
+  STATE.speed = parseInt(v);
+  if(STATE.heartbeat) setHeartbeat();
+}
+
+// ============= Tooltip =============
+canvas.addEventListener('mousemove', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+  let hit = null;
+  let hitMeta = null;
+  for(let es=0;es<STATE.epochs.length && !hit;es++){
+    const ep = STATE.epochs[es];
+    if(!ep) continue;
+    for(let s=0;s<SLOTS_PER_EPOCH && !hit;s++){
+      const x = epochSlotToX(es, s);
+      const yPub = trackY('public', es);
+      if(mx >= x && mx <= x+BLOCK_W && my >= yPub && my <= yPub + BLOCK_H){
+        if(ep.blocks[s] && !ep.blocks[s].onLower){ hit = ep.blocks[s]; hitMeta = { track:'public', epoch:ep.epochNum, slot:s }; break; }
+      }
+      const yBar = yPub - ATT_BAR_GAP - ATT_BAR_H;
+      if(mx >= x && mx <= x+BLOCK_W && my >= yBar && my <= yBar + ATT_BAR_H){
+        const innerW = BLOCK_W - 2;
+        const honestW = Math.round(innerW * 2 / 3);
+        const isHonestSide = (mx - x - 1) < honestW;
+        const vs = ep.voteStates[s];
+        hit = {
+          isAttBar:true,
+          state: isHonestSide ? vs.honest : vs.byz,
+          side: isHonestSide ? 'honest' : 'byz',
+          slot:s,
+        };
+        hitMeta = { track:'attBar', epoch:ep.epochNum, slot:s };
+        break;
+      }
+      const yPriv = trackY('private', es);
+      if(mx >= x && mx <= x+BLOCK_W && my >= yPriv && my <= yPriv + BLOCK_H){
+        if(ep.blocks[s] && ep.blocks[s].onLower && !ep.blocks[s].isVj){ hit = ep.blocks[s]; hitMeta = { track:'lower', epoch:ep.epochNum, slot:s }; break; }
+      }
+      const yBj = trackY('bj', es);
+      if(mx >= x && mx <= x+BLOCK_W && my >= yBj && my <= yBj + BLOCK_H){
+        if(ep.blocks[s] && ep.blocks[s].isVj){ hit = ep.blocks[s]; hitMeta = { track:'bj', epoch:ep.epochNum, slot:s }; break; }
+      }
+    }
+  }
+  if(hit){
+    tooltip.style.opacity = '1';
+    tooltip.style.left = (e.clientX + 12) + 'px';
+    tooltip.style.top = (e.clientY + 12) + 'px';
+    let html = '';
+    if(hit.isAttBar){
+      const stateNames = {
+        'A1':'诚实票 · 旧 source（release 后将丢弃）',
+        'A2':'诚实票 · 新 source（入新主链）',
+        'A3':'拜占庭票 · 扣留待打包',
+        'discarded':'已丢弃',
+        'none':'尚未投票',
+      };
+      const sideLabel = hit.side === 'honest' ? '诚实节点 2/3' : '拜占庭节点 1/3';
+      html = `<div style="color:#3556b0;font-weight:600">slot ${hit.slot} · ${sideLabel}</div>
+        <div style="color:#5c6e76;margin-top:2px">epoch ${hitMeta.epoch}</div>
+        <div style="margin-top:3px">${stateNames[hit.state] || hit.state}</div>`;
+    } else if(hit.isBjPrivate){
+      html = `<div style="color:#b74646;font-weight:600">b_j · 扣留块</div>
+        <div style="color:#5c6e76;margin-top:2px">epoch ${hitMeta.epoch} · slot ${hit.slot}</div>
+        <div style="margin-top:3px">打包 |A_3| = ${hit.a3Count} 张拜占庭票</div>
+        <div style="margin-top:2px;color:#c2463d">将在 epoch e+1 中段释放</div>`;
+    } else {
+      const typeLabel = hit.isCheckpoint ? '检查点 b_i' :
+                        hit.isVj ? 'v_j（最后拜占庭 proposer）' :
+                        hit.isTadv ? 't_adv 释放点 proposer' :
+                        hit.pruned ? '已剪枝' :
+                        hit.type === 'honest' ? '诚实区块' : '拜占庭区块';
+      const col = hit.pruned ? '#c2463d' : (hit.type === 'honest' ? '#3556b0' : '#ae730e');
+      html = `<div style="color:${col};font-weight:600">${typeLabel}</div>
+        <div style="color:#5c6e76;margin-top:2px">epoch ${hitMeta.epoch} · slot ${hit.slot}</div>
+        ${hit.a3PackCount>0?'<div style="margin-top:2px;color:#b74646">打包 |A_3|='+hit.a3PackCount+'</div>':''}
+        ${hit.pruned?'<div style="margin-top:2px;color:#c2463d">★ 因 J(c)&lt;LJ 被剪枝</div>':''}`;
+    }
+    tooltip.innerHTML = html;
+  } else {
+    tooltip.style.opacity = '0';
+  }
+});
+canvas.addEventListener('mouseleave', () => {
+  tooltip.style.opacity = '0';
+});
+
+// ============= Init =============
+function init(){
+  setupCanvas();
+  setupChart();
+  window.addEventListener('resize', () => {
+    setupCanvas();
+    setupChart();
+    drawChart();
+  });
+  updateStatus();
+  setChainStatus('idle');
+  drawChart();
+  render();
+}
+init();
+</script>
+</body>
+</html>

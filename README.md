@@ -2,6 +2,8 @@
 
 本仓库以 `static-site/` 前端为交付主体。链上概览、地址追踪、用户画像、地址关联和实时交易只消费后端团队提供的 HTTP 接口，本仓库不实现这些业务后端；接口地址统一配置在 `static-site/runtime-config.js`，留空时使用内置演示数据。
 
+“安全分析”位于一级导航的“首页”之后：`security.html` 汇总四类攻击，`security-*.html` 提供原有交互演示。内容来自 [tsinghua-cel/platform](https://github.com/tsinghua-cel/platform/tree/aa7e9850a0c733b7c37b0281e5978e7bbb8e9549) 的 `eth-liveness.html`、`eth-staircase.html`、`bsc-finality.html` 和 `polkadot-selfish.html`；保留说明、参数及模拟流程，仅转换配色并增加登录门禁与返回导航。`security-demo.css` 统一白色主题，来源和内容指纹记录在 `scripts/security-source-manifest.json`。这是浏览器内的动画模拟，不需要后端接口或行情密钥。后续更新旧版源码时，可在固定来源提交的本地目录上运行 `node scripts/import-security-demos.mjs <旧版源码目录>`，再验证内容和模拟代码指纹。
+
 静态站带有统一的演示登录页。登录状态只保存在当前浏览器会话中，退出按钮只显示在一级页面；二级结果与故事页面通过“返回”回到对应一级页面。这是前端演示门禁，不替代服务器鉴权。单位转换优先通过 Binance 公共行情查询 ETH、BNB、POL 和稳定币的实时 USDT 报价，并自动降级到 Gate.io 或 CoinGecko；使用 60 秒浏览器缓存，前端不保存行情 API Key。USDT 报价会明确标注为“近似美元”，不会冒充精确法币汇率。
 
 “人物兴趣雷达”由 GitHub Actions 每周一北京时间 08:15 运行：从 `trump.fm` 读取特朗普的 Truth Social 归档，并通过 X API 读取马斯克、Vitalik 和 CZ 的公开动态；随后调用 DeepSeek V4 Pro 归纳真实关注主题。事件行情与兴趣主题独立：DeepSeek 先在看不到价格的阶段判断动态是否存在明确的市场传导路径并预选候选资产，之后 CoinGecko 才提供历史小时行情；只有价格、成交量或相对 BTC 表现达到预设异常阈值的事件才展示。`deploy/` 保留阿里云 systemd 作为可选的自托管替代方案。
