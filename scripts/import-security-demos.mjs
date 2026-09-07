@@ -58,6 +58,8 @@ export function copyFingerprint(html) {
 }
 
 export function adaptDemo(source, demo) {
+  const isBsc = demo.id === "bsc-finality";
+  const styleVersion = isBsc ? "20260907-bsc-layout" : "20260907-security";
   const header = `<!-- security-shell-start -->
 <header class="security-demo-header">
   <a class="page-back-link" href="./security.html#${demo.id}" aria-label="返回安全分析">返回</a>
@@ -68,8 +70,8 @@ export function adaptDemo(source, demo) {
   const output = lightPalette(source).replace(/^\uFEFF/, "")
     .replace('<html lang="zh-CN">', '<html lang="zh-CN" data-auth-required="true" data-auth-show-logout="false">')
     .replace(/<link[^>]+href="https:\/\/fonts\.googleapis\.com[^>]+>\s*/g, "")
-    .replace("</head>", '<link rel="stylesheet" href="./auth.css?v=20260907-security">\n<link rel="stylesheet" href="./security-demo.css?v=20260907-security">\n<script src="./auth.js?v=20260830-ui-fix"></script>\n</head>')
-    .replace("<body>", `<body class="security-demo-page">\n${header}`)
+    .replace("</head>", `<link rel="stylesheet" href="./auth.css?v=20260907-security">\n<link rel="stylesheet" href="./security-demo.css?v=${styleVersion}">\n<script src="./auth.js?v=20260830-ui-fix"></script>\n</head>`)
+    .replace("<body>", `<body class="security-demo-page${isBsc ? " security-demo-bsc" : ""}">\n${header}`)
     .replace(/^[\t ]+$/gm, "");
   if (sha(withoutPalette(originalScripts(source).join("\n"))) !== sha(withoutPalette(originalScripts(output).join("\n")))) {
     throw new Error(`${demo.id}: simulation changed beyond its color palette`);
