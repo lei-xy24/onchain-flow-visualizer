@@ -25,7 +25,7 @@
 }
 
 body {
-  font-size: 1rem;
+  font-size: 0.875rem;
   line-height: 1.6;
   min-width: 320px;
   min-height: 100vh;
@@ -100,10 +100,10 @@ a:focus-visible {
 .page-header-status span,
 .page-header-status time { display: block; }
 
-.page-header-context strong { color: #243638; font-size: 1rem; }
+.page-header-context strong { color: #243638; font-size: 0.875rem; }
 .page-header-context span,
-.page-header-status time { overflow: hidden; margin-top: 3px; color: #849294; font-size: .875rem; text-overflow: ellipsis; white-space: nowrap; }
-.page-header-status span { color: var(--teal-dark); font-size: .875rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
+.page-header-status time { overflow: hidden; margin-top: 3px; color: #849294; font-size: 0.8125rem; text-overflow: ellipsis; white-space: nowrap; }
+.page-header-status span { color: var(--teal-dark); font-size: 0.8125rem; font-weight: 850; letter-spacing: .08em; text-transform: uppercase; }
 
 .radar-brand {
   display: flex;
@@ -131,14 +131,14 @@ a:focus-visible {
 }
 
 .radar-brand strong {
-  font-size: 1.125rem;
+  font-size: 1rem;
   letter-spacing: 0.01em;
 }
 
 .radar-brand small {
   margin-top: 2px;
   color: #8b989a;
-  font-size: .875rem;
+  font-size: 0.8125rem;
   letter-spacing: 0.13em;
   text-transform: uppercase;
 }
@@ -152,7 +152,7 @@ a:focus-visible {
   padding: 8px 11px;
   border-radius: 7px;
   color: #536164;
-  font-size: 1rem;
+  font-size: 0.875rem;
   text-decoration: none;
 }
 
@@ -211,7 +211,7 @@ a:focus-visible {
 .eyebrow {
   margin: 0 0 8px;
   color: var(--teal);
-  font-size: .875rem;
+  font-size: 0.8125rem;
   font-weight: 850;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -236,7 +236,7 @@ a:focus-visible {
   max-width: 750px;
   margin: 17px 0 21px;
   color: #b9ccce;
-  font-size: 1.125rem;
+  font-size: 1rem;
   line-height: 1.85;
 }
 
@@ -254,7 +254,7 @@ a:focus-visible {
   border-radius: 999px;
   color: #bde4e1;
   background: rgba(117, 218, 208, 0.07);
-  font-size: .875rem;
+  font-size: 0.8125rem;
 }
 
 .source-card {
@@ -271,7 +271,7 @@ a:focus-visible {
 .source-card-top p {
   margin: 0 0 3px;
   color: #8b989a;
-  font-size: .875rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: 0.13em;
   text-transform: uppercase;
@@ -279,7 +279,7 @@ a:focus-visible {
 
 .source-card-top h2 {
   margin: 0;
-  font-size: 1.375rem;
+  font-size: 1.25rem;
 }
 
 .source-signal {
@@ -314,7 +314,7 @@ a:focus-visible {
   min-height: 42px;
   margin: 15px 0 17px;
   color: var(--muted);
-  font-size: 1rem;
+  font-size: 0.875rem;
   line-height: 1.7;
 }
 
@@ -340,14 +340,14 @@ a:focus-visible {
 .source-meta dt {
   margin-bottom: 5px;
   color: #93a0a1;
-  font-size: .875rem;
+  font-size: 0.8125rem;
 }
 
 .source-meta dd {
   overflow: hidden;
   margin: 0;
   color: #344345;
-  font-size: .875rem;
+  font-size: 0.8125rem;
   font-weight: 750;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -360,7 +360,7 @@ a:focus-visible {
   gap: 10px;
   margin: -3px 0 12px;
   color: #647477;
-  font-size: .875rem;
+  font-size: 0.8125rem;
   font-weight: 800;
 }
 
@@ -384,7 +384,7 @@ a:focus-visible {
   border-radius: 8px;
   color: var(--teal-dark);
   background: var(--teal-soft);
-  font-size: 1rem;
+  font-size: 0.875rem;
   font-weight: 750;
   cursor: pointer;
 }
@@ -427,7 +427,7 @@ a:focus-visible {
   color: var(--teal);
   background: var(--teal-soft);
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: .875rem;
+  font-size: 0.8125rem;
   font-weight: 800;
 }
 
@@ -438,12 +438,12 @@ a:focus-visible {
 
 .method-strip strong {
   margin-bottom: 3px;
-  font-size: 1rem;
+  font-size: 0.875rem;
 }
 
 .method-strip small {
   color: #849294;
-  font-size: .875rem;
+  font-size: 0.8125rem;
   line-height: 1.4;
 }
 
@@ -468,14 +468,14 @@ a:focus-visible {
 
 .section-heading h2 {
   margin: 0;
-  font-size: 1.625rem;
+  font-size: 1.4375rem;
   letter-spacing: -0.02em;
 }
 
 .section-heading > p {
   margin: 0;
   color: var(--muted);
-  font-size: .875rem;
+  font-size: 0.8125rem;
 }
 
 .people-list {
@@ -528,7 +528,7 @@ a:focus-visible {
 .person-avatar {
   width: 47px;
   height: 47px;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
 }
 
 .person-avatar img,
@@ -541,7 +541,7 @@ a:focus-visible {
 .person-card h3 {
   overflow: hidden;
   margin: 0 0 4px;
-  font-size: 1rem;
+  font-size: 0.875rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -550,7 +550,7 @@ a:focus-visible {
   overflow: hidden;
   margin: 0 0 6px;
   color: #788688;
-  font-size: .875rem;
+  font-size: 0.8125rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -559,7 +559,7 @@ a:focus-visible {
   display: flex;
   gap: 7px;
   color: #879497;
-  font-size: .875rem;
+  font-size: 0.8125rem;
 }
 
 .person-meta span:first-child {
@@ -574,7 +574,7 @@ a:focus-visible {
   border-radius: 999px;
   color: #aa6614;
   background: #fff3df;
-  font-size: .875rem;
+  font-size: 0.8125rem;
   text-align: center;
 }
 
@@ -622,13 +622,13 @@ a:focus-visible {
 
 .selected-figure h2 {
   margin: 0 0 5px;
-  font-size: 1.625rem;
+  font-size: 1.4375rem;
 }
 
 .selected-figure p {
   margin: 0 0 7px;
   color: #728083;
-  font-size: .875rem;
+  font-size: 0.8125rem;
 }
 
 .verified-account {
@@ -643,7 +643,7 @@ a:focus-visible {
   color: #426066;
   background: #edf2f3;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: .875rem;
+  font-size: 0.8125rem;
 }
 
 .verified-account span::before {
@@ -667,13 +667,13 @@ a:focus-visible {
 .figure-metrics dt {
   margin-bottom: 5px;
   color: #8c999b;
-  font-size: .875rem;
+  font-size: 0.8125rem;
 }
 
 .figure-metrics dd {
   margin: 0;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 850;
 }
 
@@ -689,14 +689,14 @@ a:focus-visible {
 
 .theme-heading h2 {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.125rem;
 }
 
 .theme-heading > p {
   max-width: 400px;
   margin: 0;
   color: #819092;
-  font-size: .875rem;
+  font-size: 0.8125rem;
   line-height: 1.6;
   text-align: right;
 }
@@ -762,21 +762,21 @@ a:focus-visible {
   gap: 10px;
 }
 
-.market-preview-heading > strong { color: #486164; font-size: .875rem; letter-spacing: .06em; }
+.market-preview-heading > strong { color: #486164; font-size: 0.8125rem; letter-spacing: .06em; }
 .market-status { padding: 4px 7px; border-radius: 999px; color: #176d67; background: #e4f2f0; font-size: .75rem; font-weight: 850; white-space: nowrap; }
 .market-status.strong { color: #9a5210; background: #fff0d8; }
 .market-status.ordinary,.market-status.historical,.market-status.neutral { color: #68787a; background: #e9eeee; }
 .market-status.insufficient { color: #8c681d; background: #fff4d9; }
-.market-preview-empty { display: grid; place-items: center; min-height: 96px; margin: 9px 0 0; padding: 16px; border: 1px dashed #cbd9d8; border-radius: 9px; color: #7f8d8f; background: rgba(255,255,255,.65); font-size: .875rem; line-height: 1.6; text-align: center; }
+.market-preview-empty { display: grid; place-items: center; min-height: 96px; margin: 9px 0 0; padding: 16px; border: 1px dashed #cbd9d8; border-radius: 9px; color: #7f8d8f; background: rgba(255,255,255,.65); font-size: 0.8125rem; line-height: 1.6; text-align: center; }
 .market-preview-empty.insufficient { color: #846926; border-color: #ddc993; background: #fffaf0; }
 .market-event-list { display: grid; gap: 7px; margin-top: 8px; }
 .market-event { padding: 8px 9px; border: 1px solid #d8e3e2; border-radius: 9px; background: white; }
 .market-event.ordinary { --teal: #738385; }
 .market-event-top > div { min-width: 0; }
 .market-event-top strong,.market-event-top time { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.market-event-top strong { max-width: 260px; color: #304547; font-size: .875rem; }
+.market-event-top strong { max-width: 260px; color: #304547; font-size: 0.8125rem; }
 .market-event-top time { margin-top: 3px; color: #98a4a6; font-size: .75rem; }
-.market-event-top > span { flex: 0 0 auto; color: var(--teal-dark); font-family: ui-monospace,SFMono-Regular,Menlo,monospace; font-size: .875rem; font-weight: 850; }
+.market-event-top > span { flex: 0 0 auto; color: var(--teal-dark); font-family: ui-monospace,SFMono-Regular,Menlo,monospace; font-size: 0.8125rem; font-weight: 850; }
 .market-sparkline { display: block; width: 100%; height: 62px; margin-top: 4px; }
 .spark-baseline { stroke: #dbe5e4; stroke-width: 1; stroke-dasharray: 3 3; }
 .spark-event-line { stroke: #d09b4a; stroke-width: 1; stroke-dasharray: 3 3; }
@@ -789,7 +789,7 @@ a:focus-visible {
 .theme-rank {
   color: #a0acad;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 1.5rem;
+  font-size: 1.3125rem;
   font-weight: 850;
 }
 
@@ -805,7 +805,7 @@ a:focus-visible {
 
 .theme-title-row h3 {
   margin: 0;
-  font-size: 1.125rem;
+  font-size: 1rem;
 }
 
 .trend {
@@ -813,7 +813,7 @@ a:focus-visible {
   border-radius: 999px;
   color: #3c6f69;
   background: #e9f4f2;
-  font-size: .875rem;
+  font-size: 0.8125rem;
   font-weight: 800;
 }
 
@@ -825,7 +825,7 @@ a:focus-visible {
 .theme-copy > p {
   margin: 7px 0 9px;
   color: #718183;
-  font-size: .875rem;
+  font-size: 0.8125rem;
   line-height: 1.55;
 }
 
@@ -844,7 +844,7 @@ a:focus-visible {
   border-radius: 5px;
   color: #51686a;
   background: #edf3f3;
-  font-size: .875rem;
+  font-size: 0.8125rem;
 }
 
 .theme-score {
@@ -862,7 +862,7 @@ a:focus-visible {
 .theme-score small {
   margin-top: 1px;
   color: #849395;
-  font-size: .875rem;
+  font-size: 0.8125rem;
 }
 
 .score-bar {
@@ -910,7 +910,7 @@ a:focus-visible {
   border-radius: 7px;
   color: #748184;
   background: transparent;
-  font-size: .875rem;
+  font-size: 0.8125rem;
   cursor: pointer;
 }
 
@@ -922,7 +922,7 @@ a:focus-visible {
   border-radius: 999px;
   color: #768587;
   background: #eef2f2;
-  font-size: .875rem;
+  font-size: 0.8125rem;
 }
 
 .filter-tabs button:hover,
@@ -962,7 +962,7 @@ a:focus-visible {
   outline: 0;
   color: #324143;
   background: transparent;
-  font-size: .875rem;
+  font-size: 0.8125rem;
 }
 
 .follow-list-heading,
@@ -977,7 +977,7 @@ a:focus-visible {
   padding: 9px 19px;
   color: #98a3a5;
   background: #fafbfb;
-  font-size: .875rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1024,7 +1024,7 @@ a:focus-visible {
 .account-avatar {
   width: 43px;
   height: 43px;
-  font-size: 1rem;
+  font-size: 0.875rem;
 }
 
 .account-copy {
@@ -1034,7 +1034,7 @@ a:focus-visible {
 .account-copy h3 {
   overflow: hidden;
   margin: 0 0 3px;
-  font-size: 1rem;
+  font-size: 0.875rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -1043,7 +1043,7 @@ a:focus-visible {
   overflow: hidden;
   margin: 0 0 6px;
   color: #788689;
-  font-size: .875rem;
+  font-size: 0.8125rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -1059,7 +1059,7 @@ a:focus-visible {
 .mapping-chip {
   padding: 4px 6px;
   border-radius: 5px;
-  font-size: .875rem;
+  font-size: 0.8125rem;
 }
 
 .account-tags span {
@@ -1075,7 +1075,7 @@ a:focus-visible {
 
 .change-status small {
   color: #8b989a;
-  font-size: .875rem;
+  font-size: 0.8125rem;
   line-height: 1.4;
 }
 
@@ -1120,13 +1120,13 @@ a:focus-visible {
 
 .mapping-summary strong {
   color: #354547;
-  font-size: .875rem;
+  font-size: 0.8125rem;
 }
 
 .mapping-summary small {
   margin-top: 4px;
   color: #91a0a2;
-  font-size: .875rem;
+  font-size: 0.8125rem;
 }
 
 .follow-empty {
@@ -1135,7 +1135,7 @@ a:focus-visible {
   min-height: 330px;
   padding: 35px;
   color: #879496;
-  font-size: 1rem;
+  font-size: 0.875rem;
   text-align: center;
 }
 
@@ -1171,13 +1171,13 @@ a:focus-visible {
 .empty-detail h2 {
   margin: 0 0 8px;
   color: #39494b;
-  font-size: 1.375rem;
+  font-size: 1.25rem;
 }
 
 .empty-detail p {
   max-width: 260px;
   margin: 0;
-  font-size: .875rem;
+  font-size: 0.8125rem;
   line-height: 1.65;
 }
 
@@ -1203,7 +1203,7 @@ a:focus-visible {
 
 .evidence-header-top h2 {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.3125rem;
 }
 
 .evidence-account {
@@ -1219,13 +1219,13 @@ a:focus-visible {
 
 .evidence-account h2 {
   margin: 0 0 4px;
-  font-size: 1.375rem;
+  font-size: 1.25rem;
 }
 
 .evidence-account p {
   margin: 0;
   color: #a7bec0;
-  font-size: .875rem;
+  font-size: 0.8125rem;
 }
 
 .confidence-badge {
@@ -1235,7 +1235,7 @@ a:focus-visible {
   border-radius: 6px;
   color: #7de2d8;
   background: rgba(105, 216, 205, 0.08);
-  font-size: .875rem;
+  font-size: 0.8125rem;
   font-weight: 800;
 }
 
@@ -1244,7 +1244,7 @@ a:focus-visible {
 .evidence-about {
   margin: 8px 0 0;
   color: #b7c9cb;
-  font-size: .875rem;
+  font-size: 0.8125rem;
   line-height: 1.5;
 }
 
@@ -1266,7 +1266,7 @@ a:focus-visible {
 .evidence-section h3 {
   margin: 0 0 7px;
   color: #748285;
-  font-size: .875rem;
+  font-size: 0.8125rem;
   font-weight: 850;
   letter-spacing: 0.1em;
   text-transform: uppercase;
@@ -1292,14 +1292,14 @@ a:focus-visible {
 
 .score-item span {
   color: #819092;
-  font-size: .875rem;
+  font-size: 0.8125rem;
 }
 
 .score-item strong {
   margin-top: 3px;
   color: #34494b;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 1.125rem;
+  font-size: 1rem;
 }
 
 .score-item i {
@@ -1340,7 +1340,7 @@ a:focus-visible {
 
 .proof-title span {
   color: #899799;
-  font-size: .875rem;
+  font-size: 0.8125rem;
 }
 
 .proof-list {
@@ -1414,13 +1414,13 @@ a:focus-visible {
 
 .proof-card h4 {
   margin: 8px 0 4px;
-  font-size: .875rem;
+  font-size: 0.8125rem;
 }
 
 .proof-card p {
   margin: 0 0 8px;
   color: #768587;
-  font-size: .875rem;
+  font-size: 0.8125rem;
   line-height: 1.55;
 }
 
@@ -1439,7 +1439,7 @@ a:focus-visible {
   border-radius: 8px;
   color: white;
   background: var(--teal);
-  font-size: .875rem;
+  font-size: 0.8125rem;
   font-weight: 850;
   text-decoration: none;
   flex: 0 0 auto;
@@ -1455,7 +1455,7 @@ a:focus-visible {
   place-items: center;
   min-height: 88px;
   color: #a0444b;
-  font-size: .875rem;
+  font-size: 0.8125rem;
 }
 
 .social-proof {
@@ -1480,13 +1480,13 @@ a:focus-visible {
 .social-proof span {
   margin-bottom: 5px;
   color: #8b989a;
-  font-size: .875rem;
+  font-size: 0.8125rem;
 }
 
 .social-proof strong {
   overflow: hidden;
   color: #415154;
-  font-size: .875rem;
+  font-size: 0.8125rem;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -1511,7 +1511,7 @@ a:focus-visible {
 }
 
 .target-top strong {
-  font-size: .875rem;
+  font-size: 0.8125rem;
 }
 
 .target-top span {
@@ -1528,7 +1528,7 @@ a:focus-visible {
   margin: 8px 0;
   color: #647477;
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: .875rem;
+  font-size: 0.8125rem;
   line-height: 1.5;
 }
 
@@ -1551,7 +1551,7 @@ a:focus-visible {
   border-radius: 7px;
   color: white;
   background: var(--teal);
-  font-size: .875rem;
+  font-size: 0.8125rem;
   font-weight: 800;
   text-decoration: none;
 }
@@ -1566,7 +1566,7 @@ a:focus-visible {
   border-radius: 8px;
   color: #7d8b8d;
   background: #fafcfc;
-  font-size: .875rem;
+  font-size: 0.8125rem;
   line-height: 1.65;
 }
 
@@ -1645,7 +1645,7 @@ a:focus-visible {
 .sync-dialog > p {
   margin: 0 0 7px;
   color: #65cfc5;
-  font-size: .875rem;
+  font-size: 0.8125rem;
   font-weight: 850;
   letter-spacing: 0.15em;
   text-transform: uppercase;
@@ -1658,7 +1658,7 @@ a:focus-visible {
 
 .sync-dialog > span {
   color: #9bb4b6;
-  font-size: .875rem;
+  font-size: 0.8125rem;
 }
 
 .sync-steps {
@@ -1675,7 +1675,7 @@ a:focus-visible {
   border-radius: 6px;
   color: #718d8f;
   background: rgba(255, 255, 255, 0.035);
-  font-size: .875rem;
+  font-size: 0.8125rem;
 }
 
 .sync-steps li.is-active {
@@ -1698,7 +1698,7 @@ a:focus-visible {
   color: white;
   background: #163033;
   box-shadow: 0 15px 35px rgba(15, 38, 40, 0.25);
-  font-size: .875rem;
+  font-size: 0.8125rem;
   line-height: 1.6;
 }
 
@@ -1925,7 +1925,7 @@ a:focus-visible {
 .market-event-top { align-items: flex-start; flex-wrap: wrap; }
 .theme-select { grid-template-columns: 36px minmax(0, 1fr) 90px; gap: 14px; }
 .proof-list { grid-auto-columns: minmax(300px, 45%); }
-.proof-card p, .theme-copy > p, .evidence-about { color: #5e7174; font-size: 1rem; line-height: 1.75; }
+.proof-card p, .theme-copy > p, .evidence-about { color: #5e7174; font-size: 0.875rem; line-height: 1.75; }
 .proof-top time, .source-meta dt, .page-header-context span, .page-header-status time, .market-event-top time { color: #667b7e; }
 .market-sparkline { height: 88px; }
 @media (max-width: 1280px) {

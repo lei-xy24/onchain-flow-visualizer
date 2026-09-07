@@ -192,16 +192,14 @@ body > .site-header .auth-header-actions { max-width: 100%; }
 }
 
 .login-brand-mark {
-  align-items: center;
-  background: #69ded2;
-  border-radius: 10px;
-  color: #102126;
-  display: inline-flex;
-  font-size: 1.05rem;
-  font-weight: 950;
-  height: 44px;
-  justify-content: center;
-  width: 44px;
+  background: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  display: block;
+  flex: 0 0 56px;
+  height: 56px;
+  object-fit: contain;
+  width: 56px;
 }
 
 .login-brand strong,
