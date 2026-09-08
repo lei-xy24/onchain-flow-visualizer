@@ -137,6 +137,8 @@ test("首页九模块按四章节排列，人物保留四张真实图片及2×2�
   assert.match(css, /\.hot-topic-people img\s*\{[^}]*height:\s*auto;[^}]*aspect-ratio:\s*1;/);
   assert.match(css, /\.cross-market-visual span small\s*\{[^}]*text-align:\s*center[^}]*width:\s*100%/s);
   assert.match(css, /\.intelligence-grid\s*\{[^}]*grid-template-columns:\s*repeat\(2,/);
+  assert.match(css, /\.hot-topic-card\s*\{\s*background:\s*#e9eeef;\s*\}/);
+  assert.doesNotMatch(css, /\.cross-market-card\s*\{[^}]*background(?:-color)?:/, "市场卡片应继承人物卡片的同一底色");
   assert.match(css, /@media \(max-width: 800px\)[\s\S]*?\.intelligence-grid\s*\{[^}]*grid-template-columns:\s*1fr/);
   assert.match(index, /美股<small>USA<\/small>/);
   const ids = [...index.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);

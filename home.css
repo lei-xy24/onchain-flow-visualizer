@@ -50,7 +50,6 @@ h1 { margin: 0; font-size: clamp(1.6rem, 2.6vw, 2.25rem); line-height: 1.35; }
 .module-link .module-arrow { display: grid; place-items: center; width: 31px; height: 31px; border-radius: 50%; background: #e5efef; color: var(--teal-dark); font-size: 1.2rem; flex: none; }
 .module-link:hover .module-arrow { background: var(--teal-dark); color: #fff; }
 .hot-topic-card { background: #e9eeef; }
-.cross-market-card { background: #e9edf2; }
 .feature-layout { display: grid; grid-template-columns: 132px minmax(0, 1fr); gap: 22px; align-items: center; flex: 1; }
 .hot-topic-people, .cross-market-visual { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; width: 132px; }
 .hot-topic-people img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border: 1px solid #b1d4d2; border-radius: 11px; }
