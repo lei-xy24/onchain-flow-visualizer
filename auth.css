@@ -192,14 +192,14 @@ body > .site-header .auth-header-actions { max-width: 100%; }
 }
 
 .login-brand-mark {
-  background: #ffffff;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 12px;
+  background: transparent;
+  border: 0;
+  border-radius: 0;
   display: block;
-  flex: 0 0 56px;
-  height: 56px;
+  flex: 0 0 64px;
+  height: 64px;
   object-fit: contain;
-  width: 56px;
+  width: 64px;
 }
 
 .login-brand strong,
