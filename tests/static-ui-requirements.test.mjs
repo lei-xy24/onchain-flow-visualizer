@@ -3,6 +3,7 @@ import test from "node:test";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { runInNewContext } from "node:vm";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const protectedPages = [
@@ -21,6 +22,8 @@ const mirroredFiles = [
   ...protectedPages,
   "auth.css",
   "auth.js",
+  "home.css",
+  "home-navigation.js",
   "currency-rates.js",
   "event-explorer.css",
   "event-explorer.js",
@@ -54,20 +57,23 @@ function readAnchors(html) {
   });
 }
 
-test("登录品牌使用提供的图片且首页章节只保留编号与小标题", async () => {
-  const [login, index, logo, mirroredLogo] = await Promise.all([
+test("登录品牌使用透明图标且首页四章节只保留编号与小标题", async () => {
+  const [login, index, css, logo, mirroredLogo] = await Promise.all([
     readFile(path.join(root, "login.html"), "utf8"),
     readFile(path.join(root, "index.html"), "utf8"),
-    readFile(path.join(root, "assets/finsec-security-logo.jpg")),
-    readFile(path.join(root, "static-site/assets/finsec-security-logo.jpg")),
+    readFile(path.join(root, "auth.css"), "utf8"),
+    readFile(path.join(root, "assets/finsec-security-emblem.png")),
+    readFile(path.join(root, "static-site/assets/finsec-security-emblem.png")),
   ]);
-  assert.match(login, /<img class="login-brand-mark" src="\.\/assets\/finsec-security-logo\.jpg" alt="" width="56" height="56"/);
+  assert.match(login, /<img class="login-brand-mark" src="\.\/assets\/finsec-security-emblem\.png" alt="" width="64" height="64"/);
   assert.doesNotMatch(login, /class="login-brand-mark"[^>]*>FS</);
+  assert.match(css, /\.login-brand-mark\s*\{[^}]*background:\s*transparent;[^}]*border:\s*0;[^}]*border-radius:\s*0;/);
   assert.ok(logo.length > 1000);
-  assert.equal(logo.readUInt16BE(0), 0xffd8, "品牌图片应为 JPEG");
+  assert.equal(logo.subarray(0, 8).toString("hex"), "89504e470d0a1a0a", "品牌图片应为 PNG");
+  assert.equal(logo[25], 6, "品牌图片应保留 RGBA 透明通道");
   assert.deepEqual(mirroredLogo, logo);
   const headings = [...index.matchAll(/<header class="chapter-heading">([\s\S]*?)<\/header>/g)];
-  assert.equal(headings.length, 3);
+  assert.equal(headings.length, 4);
   for (const [number, heading] of headings.entries()) {
     assert.match(heading[1], /<h2\b/);
     assert.match(heading[1], new RegExp(`>0${number + 1}<`));
@@ -107,29 +113,70 @@ test("所有业务页先执行登录门禁并提供根目录静态镜像", async
   }
 });
 
-test("全球市场联动入口紧跟人物兴趣雷达并复用同尺寸卡片骨架", async () => {
-  const index = await readFile(path.join(root, "index.html"), "utf8");
+test("首页九模块按四章节排列，人物保留四张真实图片及2×2布局", async () => {
+  const [index, css] = await Promise.all([
+    readFile(path.join(root, "index.html"), "utf8"),
+    readFile(path.join(root, "home.css"), "utf8"),
+  ]);
   const radarIndex = index.indexOf('aria-labelledby="hot-topic-title"');
   const marketIndex = index.indexOf('aria-labelledby="cross-market-title"');
   const chainIndex = index.indexOf('aria-labelledby="chain-title"');
-
   assert.ok(radarIndex >= 0, "首页缺少人物兴趣雷达卡片");
   assert.ok(marketIndex > radarIndex, "全球市场联动应排在人物兴趣雷达之后");
-  assert.ok(chainIndex < radarIndex, "多链运行状态应归入第一组链上运行态势");
-  assert.match(
-    index.slice(radarIndex - 120, marketIndex),
-    /<section class="hot-topic-card section-gap"/,
-    "人物兴趣雷达应使用 hot-topic-card 骨架",
-  );
-  assert.match(
-    index.slice(marketIndex - 120),
-    /<section class="hot-topic-card cross-market-card section-gap"/,
-    "全球市场联动应复用 hot-topic-card 骨架",
-  );
-  assert.match(index, /\.hot-topic-card\s*\{[^}]*min-height:\s*205px/s);
-  assert.match(index, /\.hot-topic-card\s*\{[^}]*grid-template-columns:\s*132px\s+minmax\(0,\s*1fr\)\s+360px/s);
-  assert.match(index, /\.cross-market-visual span small\s*\{[^}]*text-align:\s*center[^}]*width:\s*100%/s);
-  assert.match(index, /href="\.\/global-markets\.html"/);
+  assert.ok(chainIndex > marketIndex, "链上数据应归入第二章节");
+  const modules = [...index.matchAll(/<article\b[^>]*data-module="([A-I])"[^>]*>([\s\S]*?)<\/article>/g)];
+  assert.deepEqual(modules.map((match) => match[1]), ["A", "B", "C", "G", "E", "F", "H", "I", "D"]);
+  const destinations = { A: "./hot-topic.html", B: "./global-markets.html", C: "#network-overview", G: "./live.html", E: "#capital-overview", F: "./track.html", H: "./profile.html", I: "./relation.html", D: "./security.html" };
+  for (const [, id, content] of modules) {
+    assert.match(content, /<h3\b/);
+    assert.ok(readAnchors(content).some((link) => link.href === destinations[id]), `${id} 应有实际入口`);
+  }
+  const portraits = [...modules[0][2].matchAll(/<img\b[^>]*src="([^"]+)"/g)].map((match) => match[1]);
+  assert.deepEqual(portraits, ["./assets/trump-chainwatch-editorial.png", "./assets/elon-musk-chainwatch-editorial.png", "./assets/vitalik-buterin-chainwatch-editorial.png", "./assets/changpeng-zhao-chainwatch-editorial.png"]);
+  assert.match(css, /\.hot-topic-people, \.cross-market-visual\s*\{[^}]*grid-template-columns:\s*repeat\(2,/);
+  assert.match(css, /\.hot-topic-people img\s*\{[^}]*height:\s*auto;[^}]*aspect-ratio:\s*1;/);
+  assert.match(css, /\.cross-market-visual span small\s*\{[^}]*text-align:\s*center[^}]*width:\s*100%/s);
+  assert.match(css, /\.intelligence-grid\s*\{[^}]*grid-template-columns:\s*repeat\(2,/);
+  assert.match(css, /@media \(max-width: 800px\)[\s\S]*?\.intelligence-grid\s*\{[^}]*grid-template-columns:\s*1fr/);
+  assert.match(index, /美股<small>USA<\/small>/);
+  const ids = [...index.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
+  assert.equal(new Set(ids).size, ids.length, "首页不应存在重复 id");
+  for (const id of ["data-note", "metric-strip", "chain-rows", "transfer-list", "protocol-list"]) assert.ok(ids.includes(id), `保留数据挂载点 ${id}`);
+  assert.match(index, /<tbody id="chain-rows"><\/tbody>/);
+  for (const anchor of readAnchors(index).filter((link) => link.href.startsWith("#"))) assert.ok(ids.includes(anchor.href.slice(1)), `${anchor.href} 目标必须存在`);
+  assert.match(index, /class="table-scroll" tabindex="0"/);
+  assert.match(index, /const BACKEND_API_URL = globalThis\.ONCHAIN_API_CONFIG\?\.overview/);
+  assert.match(index, /const REFRESH_INTERVAL_MS = 10000/);
+});
+
+test("首页数据入口和直接哈希链接均展开对应内容，章节跳转不干预数据与接口", async () => {
+  const script = await readFile(path.join(root, "home-navigation.js"), "utf8");
+  const events = {};
+  const sections = {
+    "network-overview": { tagName: "DETAILS", open: false, closest: () => true },
+    "capital-overview": { tagName: "DETAILS", open: false, closest: () => true },
+    operations: { tagName: "SECTION", closest: () => true },
+    outside: { tagName: "DETAILS", open: false, closest: () => null },
+  };
+  const links = Object.keys(sections).map((id) => ({
+    getAttribute: () => `#${id}`,
+    addEventListener: (_type, callback) => { events[id] = callback; },
+  }));
+  const window = { location: { hash: "#network-overview" }, addEventListener: (type, callback) => { events[type] = callback; } };
+  runInNewContext(script, { document: { getElementById: (id) => sections[id], querySelectorAll: () => links }, window });
+  assert.equal(sections["network-overview"].open, true);
+  events["capital-overview"]();
+  assert.equal(sections["capital-overview"].open, true);
+  assert.doesNotThrow(() => events.operations());
+  events.outside();
+  assert.equal(sections.outside.open, false);
+  sections["network-overview"].open = false;
+  window.location.hash = "#network-overview";
+  events.hashchange();
+  assert.equal(sections["network-overview"].open, true);
+  window.location.hash = "#missing";
+  assert.doesNotThrow(() => events.hashchange());
+  assert.doesNotMatch(script, /fetch\(|setInterval\(|localStorage|sessionStorage/);
 });
 
 test("全球市场联动页只保留返回上级入口且提供可访问的数据探索控件", async () => {
