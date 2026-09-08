@@ -92,8 +92,8 @@ td.num, th.num { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, mon
 .transfer-list, .protocol-list { display: grid; }
 .transfer-row { display: grid; align-items: center; border-top: 1px solid #eef2f3; gap: 4px 12px; grid-template-columns: minmax(0, 1fr) auto; padding: 12px 0; }
 .transfer-route { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .875rem; overflow-wrap: anywhere; }
-.transfer-route a, .transfer-meta a, .protocol-type a { color: var(--teal-dark); text-decoration: none; }
-.transfer-route a:hover, .transfer-meta a:hover, .protocol-type a:hover { text-decoration: underline; }
+.transfer-meta a { color: var(--teal-dark); text-decoration: none; }
+.transfer-meta a:hover { text-decoration: underline; }
 .transfer-meta, .protocol-type { color: var(--muted); font-size: .8125rem; line-height: 1.5; }
 .transfer-amount { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .9rem; font-weight: 700; text-align: right; }
 .protocol-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; border-top: 1px solid #eef2f3; padding: 12px 0; }

@@ -181,6 +181,57 @@ test("首页数据入口和直接哈希链接均展开对应内容，章节跳�
   assert.doesNotMatch(script, /fetch\(|setInterval\(|localStorage|sessionStorage/);
 });
 
+test("首页资金和协议地址为不可跳转文字，刷新后保持且保留查看交易", async () => {
+  const html = await readFile(path.join(root, "index.html"), "utf8");
+  const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
+  const renderers = script.slice(script.indexOf("function renderTransfers("));
+  class Element {
+    constructor(tag) { this.tagName = tag.toUpperCase(); this.children = []; this.value = ""; }
+    set textContent(value) { this.value = String(value); this.children = []; }
+    get textContent() { return this.value + this.children.map((child) => child.textContent).join(""); }
+    append(...children) { this.children.push(...children); }
+  }
+  const lists = { "transfer-list": new Element("div"), "protocol-list": new Element("div") };
+  const sampleTransfer = { from: `0x${"a".repeat(40)}`, to: `0x${"b".repeat(40)}`, hash: `0x${"d".repeat(64)}`, value: "2000000000000", tokenDecimal: "6", tokenSymbol: "USDT", timeStamp: String(Math.floor(Date.now() / 1000)) };
+  const sampleProtocol = { name: "测试协议", type: "dex", address: `0x${"c".repeat(40)}`, eventCount: 4 };
+  const context = {
+    document: {
+      createElement: (tag) => new Element(tag),
+      createTextNode: (text) => { const node = new Element("#text"); node.textContent = text; return node; },
+      getElementById: (id) => lists[id],
+    },
+    LARGE_TRANSFER_MIN: 1000000,
+    PROTOCOL_TYPE_NAMES: { dex: "去中心化交易所" },
+    liveMode: true,
+    sampleTransfer,
+    sampleProtocol,
+  };
+  const descendants = (node) => [node, ...node.children.flatMap(descendants)];
+  for (let refresh = 0; refresh < 2; refresh += 1) {
+    runInNewContext(`${renderers}\nrenderTransfers([sampleTransfer]); renderProtocols([sampleProtocol]);`, context);
+    const transfers = descendants(lists["transfer-list"]);
+    const protocols = descendants(lists["protocol-list"]);
+    assert.equal(lists["transfer-list"].children.length, 1);
+    const addresses = [...transfers, ...protocols].filter((node) => node.tagName === "SPAN");
+    assert.deepEqual(addresses.map((node) => node.title), [sampleTransfer.from, sampleTransfer.to, sampleProtocol.address]);
+    for (const address of addresses) {
+      assert.equal(address.href, undefined);
+      assert.equal(address.onclick, undefined);
+      assert.equal(address.textContent, address.title.slice(0, 8) + "..." + address.title.slice(-4));
+    }
+    assert.equal(protocols.filter((node) => node.tagName === "A").length, 0);
+    const links = transfers.filter((node) => node.tagName === "A");
+    assert.equal(links.length, 1);
+    assert.equal(links[0].textContent, "查看交易");
+    assert.equal(links[0].href, `https://etherscan.io/tx/${sampleTransfer.hash}`);
+    assert.match(lists["transfer-list"].textContent, /2,000,000 USDT/);
+  }
+  context.liveMode = false;
+  runInNewContext(`${renderers}\nrenderTransfers([sampleTransfer]);`, context);
+  assert.equal(descendants(lists["transfer-list"]).filter((node) => node.tagName === "A").length, 0);
+  assert.doesNotMatch(script, /createAddressTrackingLink|new URL\("\.\/result\.html"/);
+});
+
 test("全球市场联动页只保留返回上级入口且提供可访问的数据探索控件", async () => {
   const [html, css, script] = await Promise.all([
     readFile(path.join(root, "global-markets.html"), "utf8"),
